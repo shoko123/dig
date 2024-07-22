@@ -1,0 +1,3 @@
+*.sqlite*
+UsersTableSeeder.php
+seeders/sql/tmp/
