@@ -16,18 +16,50 @@ class MediaService extends BaseService implements MediaServiceInterface
         $ordered = collect(['Photo', 'Drawing', 'Photo and Drawing', 'Plan', 'Misc']);
         $names = Media::distinct('collection_name')->get();
 
-        //dump("names: " . $names); 
-
-        //sanity check
-        $res = $names->every(function (int $value, int $key) use ($ordered) {
-            return $ordered->has($value);
+        //sanity checks
+        $res = $names->first(function (string $value, int $key) use ($ordered) {
+            return !$ordered->has($value);
         });
 
-        throw_if(!$res, "Mismatch between media collection names and names stored in DB");
+        throw_if($res, "MediaService.collection_names(): Collection name \"" . $res . "\" doesn't exist in the the ordered collection names");
 
         return $ordered;
     }
 
+    //TODO change name to media_record
+    public static function carousel(string $source, array $params)
+    {
+        switch ($params) {
+            case "Media":
+                $media = Media::findOrFail($params["id"]);
+
+                return [
+
+                    //TODO 'media' => static::format_media_item($media)
+                    'id' => $params["id"],
+                    'urls' => [
+                        'full' => $media->getPath(),
+                        'tn' => $media->getPath('tn'),
+                    ],
+                    'size' => $media->size,
+                    'collection_name' => $media->collection_name,
+                    'file_name' => $media->file_name,
+                    'order_column' => $media->order_column,
+                ];
+            case "DigModuleItem":
+                $media = static::media_by_model_type_and_id($params["module_type"], $params["module_id"]);
+                $full_class = 'App\Models\DigModule\Specific\\' . $params["module_id"] . '\\' . $params["module_id"];
+                $model = new $full_class;
+                $item = $model::findOrfail($media->model_id);
+
+                return [
+                    'id' => $item["id"],
+                    'short' => $item['short'],
+                    'urls' => count($item->media) === 0 ? null : MediaService::format_media_item($media),
+                    'module' => class_basename($model),
+                ];
+        }
+    }
     public function upload(array $params): array
     {
         $model = static::makeModel($params["module"]);
@@ -107,40 +139,5 @@ class MediaService extends BaseService implements MediaServiceInterface
     public static function format_media_item(Media $record): array
     {
         return ['id' => $record['id'], 'urls' => ['full' => $record->getPath(), 'tn' => $record->getPath('tn')], 'order_column' => $record['order_column']];
-    }
-
-    //TODO change name to media_record
-    public static function carousel(string $source, array $params)
-    {
-        switch ($params) {
-            case "Media":
-                $media = Media::findOrFail($params["id"]);
-
-                return [
-
-                    //TODO 'media' => static::format_media_item($media)
-                    'id' => $params["id"],
-                    'urls' => [
-                        'full' => $media->getPath(),
-                        'tn' => $media->getPath('tn'),
-                    ],
-                    'size' => $media->size,
-                    'collection_name' => $media->collection_name,
-                    'file_name' => $media->file_name,
-                    'order_column' => $media->order_column,
-                ];
-            case "DigModuleItem":
-                $media = static::media_by_model_type_and_id($params["module_type"], $params["module_id"]);
-                $full_class = 'App\Models\DigModule\Specific\\' . $params["module_id"] . '\\' . $params["module_id"];
-                $model = new $full_class;
-                $item = $model::findOrfail($media->model_id);
-
-                return [
-                    'id' => $item["id"],
-                    'short' => $item['short'],
-                    'urls' => count($item->media) === 0 ? null : MediaService::format_media_item($media),
-                    'module' => class_basename($model),
-                ];
-        }
     }
 }
