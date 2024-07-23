@@ -26,7 +26,9 @@ router.beforeEach(async (to, from) => {
     //console.log(`router.beforeEach returned ${JSON.stringify(res, null, 2)}`);
     return res
   } catch (err) {
-    console.log(`navigationErrorHandler error: ${JSON.stringify(err, null, 2)} to: ${to.path}`)
+    console.log(
+      `**** navigationErrorHandler **** error: ${JSON.stringify(err, null, 2)} to: ${to.path}`,
+    )
     showSpinner(false)
     return { name: 'home' }
     //return false

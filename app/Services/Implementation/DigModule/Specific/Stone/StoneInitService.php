@@ -20,6 +20,14 @@ class StoneInitService extends DigModuleInitService implements DigModuleInitSpec
             'related_collection_views' => ['Gallery', 'Tabular', 'Chips'],
         ];
     }
+    public static function dateColumns(): array
+    {
+        return  [
+            "excavation_date",
+            "catalog_date",
+            "specialist_date"
+        ];
+    }
 
     public static function welcomeText(): array
     {

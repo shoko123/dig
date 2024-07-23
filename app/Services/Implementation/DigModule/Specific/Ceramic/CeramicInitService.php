@@ -21,6 +21,11 @@ class CeramicInitService extends DigModuleInitService implements DigModuleInitSp
         ];
     }
 
+    public static function dateColumns(): array
+    {
+        return  [];
+    }
+
     public static function welcomeText(): array
     {
         return [

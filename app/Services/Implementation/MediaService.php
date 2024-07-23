@@ -30,7 +30,7 @@ class MediaService extends BaseService implements MediaServiceInterface
     public static function carousel(string $source, array $params)
     {
         switch ($params) {
-            case "Media":
+            case "media":
                 $media = Media::findOrFail($params["id"]);
 
                 return [
@@ -46,10 +46,12 @@ class MediaService extends BaseService implements MediaServiceInterface
                     'file_name' => $media->file_name,
                     'order_column' => $media->order_column,
                 ];
-            case "DigModuleItem":
-                $media = static::media_by_model_type_and_id($params["module_type"], $params["module_id"]);
-                $full_class = 'App\Models\DigModule\Specific\\' . $params["module_id"] . '\\' . $params["module_id"];
-                $model = new $full_class;
+            case "main":
+            case "related":
+                $media = static::media_by_model_type_and_id($params["module"], $params["id"]);
+                // $full_class = 'App\Models\DigModule\Specific\\' . $params["module"] . '\\' . $params["module"];
+                // $model = new  $full_class;
+                $model = static::makeModel($params["module"]);
                 $item = $model::findOrfail($media->model_id);
 
                 return [

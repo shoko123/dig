@@ -21,6 +21,11 @@ class LocusInitService extends DigModuleInitService implements DigModuleInitSpec
         ];
     }
 
+    public static function dateColumns(): array
+    {
+        return  [];
+    }
+
     public static function welcomeText(): array
     {
         return [

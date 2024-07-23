@@ -37,7 +37,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   const { parseSlug, parseUrlQuery } = useRoutesParserStore()
   const { clearSelectedFilters } = useFilterStore()
   const { apiQueryPayload } = storeToRefs(useFilterStore())
-  const { setModuleInfo } = useModuleStore()
+  const { setModuleInfo, tagAndSlugFromId } = useModuleStore()
   const { setTrio, trioReset } = useTrioStore()
   const { setItemMedia } = useMediaStore()
 
@@ -247,7 +247,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     slug: string,
   ): Promise<{ success: boolean; message: string }> {
     const { array } = storeToRefs(useCollectionRelatedStore())
-    //console.log(`loadItem() slug: ${slug}`)
+    console.log(`loadItem() slug: ${slug}`)
     const sp = parseSlug(module, slug)
     if (!sp.success) {
       console.log(`parseSlug() failed`)
@@ -255,12 +255,13 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     }
 
     const res = await send<TApiItemShow<TApiFieldsUnion>>('model/show', 'post', {
-      module: module,
+      module,
       id: sp.id,
     })
 
     if (res.success) {
-      r.to.slug = res.data.slug
+      // console.log(`loadItem() success! res: ${JSON.stringify(res, null, 2)}`)
+      r.to.slug = tagAndSlugFromId(module, res.data.fields.id).slug
       setItemMedia(res.data.media)
       array.value = res.data.related
       i.saveitemFieldsPlus(res.data)

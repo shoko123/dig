@@ -33,6 +33,7 @@ abstract class DigModuleInitService extends DigModuleService implements DigModul
                 "media" => Media::where('model_type', class_basename($this->model))->count()
             ],
             "display_options" => static::displayOptions(),
+            "date_columns" => static::dateColumns(),
             "first_record" => $this->model->select('id')->firstOrFail(),
             "trio" => $this->trio(),
         ];
