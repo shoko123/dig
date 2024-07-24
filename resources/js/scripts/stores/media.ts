@@ -176,8 +176,8 @@ export const useMediaStore = defineStore('media', () => {
 
     const res = await send<TApiArray<'media'>[]>('media/reorder', 'post', {
       module: r.current.module,
-      id: i.fields?.id,
-      ordered,
+      module_id: i.fields?.id,
+      ordered_media_ids: ordered,
     })
 
     if (res.success) {

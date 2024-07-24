@@ -9,6 +9,7 @@ use App\Http\Controllers\DigModule\DigModuleMutateController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CarouselController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -25,7 +26,7 @@ Route::post('model/init', [DigModuleInitController::class, 'init']);
 Route::post('model/index', [DigModuleReadController::class, 'index']);
 Route::post('model/page', [DigModuleReadController::class, 'page']);
 Route::post('model/show', [DigModuleReadController::class, 'show']);
-Route::post('model/carousel', [MediaController::class, 'carousel']);
+Route::post('carousel/show', [CarouselController::class, 'show']);
 //});
 
 Route::get('about/me', [AuthController::class, 'me']);

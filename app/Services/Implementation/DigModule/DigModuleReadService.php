@@ -155,7 +155,7 @@ abstract class DigModuleReadService extends DigModuleService implements DigModul
             case 'Gallery':
                 $this->builder = $this->model->select($this->fieldsForGalleryPage())
                     ->with(['media' => function ($query) {
-                        $query->orderBy('order_column');
+                        $query->orderBy('order_column')->limit(1);
                     }]);
                 break;
         }
@@ -187,12 +187,27 @@ abstract class DigModuleReadService extends DigModuleService implements DigModul
 
     ////////////// show //////////////////
 
+    public function show_carousel(string $module, string $id): array
+    {
+        $mediaCollection = MediaService::media_by_module_and_id($module, $id);
+
+        $model = static::makeModel($module);
+        $item = $model->findOrfail($id);
+
+        return [
+            'id' => $item["id"],
+            'short' => $item['short'],
+            'urls' => count($item->media) === 0 ? null : $mediaCollection[0]["urls"],
+            'module' => $module
+        ];
+    }
+
     public function show(string $id): array
     {
         $this->applyShowLoad();
         $item = $this->builder->findOrFail($id);
         $extra = $this->extraDetails($item);
-        return $this->formatResponse($item, $extra);
+        return $this->formatShowResponse($item, $extra);
     }
 
     protected function applyShowLoad(): void
@@ -211,7 +226,7 @@ abstract class DigModuleReadService extends DigModuleService implements DigModul
         return [];
     }
 
-    protected function formatResponse(object $item, array $extra): array
+    protected function formatShowResponse(object $item, array $extra): array
     {
         $mediaArray = MediaService::format_media_collection($item->media);
 

@@ -8,11 +8,9 @@ use App\Services\Implementation\MediaService;
 
 class MediaController extends Controller
 {
-    protected MediaService $ms;
-
     public function __construct()
     {
-        $this->ms = new MediaService();
+        //
     }
 
     /**
@@ -20,16 +18,15 @@ class MediaController extends Controller
      */
     public function upload(Request $r)
     {
-        return response()->json($this->ms->upload($r->toArray(), 200));
+        return response()->json(MediaService::upload($r["module"], $r["id"], $r["media_files"], $r["media_collection_name"]), 200);
     }
-
 
     /**
      * Reorder item's related media collection.
      */
     public function reorder(Request $r)
     {
-        return response()->json($this->ms->reorder($r->toArray(), 200));
+        return response()->json(MediaService::reorder($r["module"], $r["module_id"], $r["ordered_media_ids"]), 200);
     }
 
     /**
@@ -37,8 +34,7 @@ class MediaController extends Controller
      */
     public function destroy(Request $r)
     {
-        return response()->json($this->ms->destroy($r->toArray(), 200));
-        //
+        return response()->json(MediaService::destroy($r["media_id"], $r["module"], $r["module_id"], 200));
     }
 
     /**
@@ -46,6 +42,6 @@ class MediaController extends Controller
      */
     public function edit(Request $r)
     {
-        return response()->json($this->ms->edit($r->toArray(), 200));
+        return response()->json(MediaService::edit($r->toArray(), 200));
     }
 }

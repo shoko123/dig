@@ -66,12 +66,10 @@ export const useCarouselStore = defineStore('carousel', () => {
     switch (collectionName.value) {
       case 'main':
         {
-          const res = await send<TApiCarousel<'main'>>('media/carousel', 'post', {
-            source: collectionName.value,
-            params: {
-              module: derived.value.module,
-              id: <TApiArray>item,
-            },
+          const res = await send<TApiCarousel<'main'>>('carousel/show', 'post', {
+            source: 'main',
+            module: derived.value.module,
+            module_id: <TApiArray>item,
           })
           if (res.success) {
             carouselItemDetails.value = {
@@ -87,11 +85,9 @@ export const useCarouselStore = defineStore('carousel', () => {
         break
       case 'media':
         {
-          const res = await send<TApiCarousel<'media'>>('media/carousel', 'post', {
-            source: collectionName.value,
-            params: {
-              id: (<TApiCarousel<'media'>>item).id,
-            },
+          const res = await send<TApiCarousel<'media'>>('carousel/show', 'post', {
+            source: 'media',
+            media_id: (<TApiCarousel<'media'>>item).id,
           })
           if (res.success) {
             carouselItemDetails.value = {
@@ -109,7 +105,6 @@ export const useCarouselStore = defineStore('carousel', () => {
             return { success: false, message: `Failed to load carousel item.` }
           }
         }
-
         break
 
       case 'related':

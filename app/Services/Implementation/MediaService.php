@@ -27,67 +27,46 @@ class MediaService extends BaseService implements MediaServiceInterface
         return $ordered;
     }
 
-    public static function carousel(string $source, array $params)
+    public static function show_carousel(string $media_id)
     {
-        switch ($params) {
-            case "media":
-                $media = Media::findOrFail($params["id"]);
+        $media = Media::findOrFail($media_id);
 
-                return [
-
-                    //TODO 'media' => static::format_media_item($media)
-                    'id' => $params["id"],
-                    'urls' => [
-                        'full' => $media->getPath(),
-                        'tn' => $media->getPath('tn'),
-                    ],
-                    'size' => $media->size,
-                    'collection_name' => $media->collection_name,
-                    'file_name' => $media->file_name,
-                    'order_column' => $media->order_column,
-                ];
-            case "main":
-            case "related":
-                $mediaCollection = static::media_by_module_and_id($params["module"], $params["id"]);
-
-                $model = static::makeModel($params["module"]);
-                $item = $model::findOrfail($mediaCollection->model_id);
-
-                return [
-                    'id' => $item["id"],
-                    'short' => $item['short'],
-                    'urls' => count($item->media) === 0 ? null : MediaService::format_media_item($mediaCollection[0]),
-                    'module' => class_basename($model),
-                ];
-        }
+        return array_merge(
+            MediaService::format_media_item($media),
+            [
+                'size' => $media->size,
+                'collection_name' => $media->collection_name,
+                'file_name' => $media->file_name,
+            ]
+        );
     }
 
-    public function upload(array $params): array
+    public static function upload(string $module, string $id, array $media_files, string $media_collection_name): array
     {
-        $model = static::makeModel($params["module"]);
+        $model = static::makeModel($module);
         try {
-            $item = $model->findOrFail($params['id']);
+            $item = $model->findOrFail($id);
 
             //attach media to item
-            foreach ($params['media_files'] as $key => $media_file) {
+            foreach ($media_files as $key => $media_file) {
                 //$meta = exif_read_data($media_file);
                 $item
                     ->addMedia($media_file)
-                    ->toMediaCollection($params['media_collection_name']);
+                    ->toMediaCollection($media_collection_name);
             }
-            return static::format_media_collection($item->getMedia("*"));
+            return static::media_by_module_and_id($module, $id);
         } catch (Exception $error) {
             throw new Exception('Failed to upload media. error: ' . $error);
         }
     }
 
-    public static function destroy(array $params): array
+    public static function destroy(string $media_id, string $module, string $module_id): array
     {
         //Get media record by media_id
-        $mediaToDelete = Media::findOrFail($params['media_id']);
+        $mediaToDelete = Media::findOrFail($media_id);
 
         //verify that this media record matches item sent (by model_type and model_id)
-        if (($mediaToDelete['model_type'] !== $params['module']) || $mediaToDelete['model_id'] !== $params['module_id']) {
+        if (($mediaToDelete['model_type'] !== $module) || $mediaToDelete['model_id'] !== $module_id) {
             throw new Exception('Media/Model mismatch abort destroy');
         }
 
@@ -95,13 +74,12 @@ class MediaService extends BaseService implements MediaServiceInterface
         $mediaToDelete->delete();
 
         //return updated media for item
-        $mediaCollection = static::media_by_module_and_id($params['module'], $params['module_id']);
-        return static::format_media_collection($mediaCollection);
+        return static::media_by_module_and_id($module, $module_id);
     }
 
-    public static function reorder(array $params): array
+    public static function reorder(string $module, string $module_id, array $ordered_media_ids): array
     {
-        foreach ($params['ordered'] as $possible) {
+        foreach ($ordered_media_ids as $possible) {
             $record = Media::findOrFail($possible['id']);
             if ($record['order_column'] !== $possible['order']) {
                 $record['order_column'] = $possible['order'];
@@ -110,8 +88,7 @@ class MediaService extends BaseService implements MediaServiceInterface
         }
 
         //return updated media for item
-        $mediaCollection = static::media_by_module_and_id($params['module'], $params['id']);
-        return static::format_media_collection($mediaCollection);
+        return static::media_by_module_and_id($module, $module_id);
     }
 
     public static function edit(array $params): array
@@ -119,11 +96,13 @@ class MediaService extends BaseService implements MediaServiceInterface
         return [];
     }
 
-    public static function media_by_module_and_id(string $module, string $id): MediaCollection
+    public static function media_by_module_and_id(string $module, string $id): array
     {
         $model = static::makeModel($module);
-        $item = $model->findOrFail($id);
-        return $item->getMedia("*");
+        $item = $model->with(['media' => function ($query) {
+            $query->orderBy('order_column');
+        }])->findOrFail($id);
+        return static::format_media_collection($item->media);
     }
 
     public static function format_media_collection(MediaCollection $media_records): array

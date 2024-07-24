@@ -181,7 +181,7 @@ export const useFilterStore = defineStore('filter', () => {
 
   async function getCount() {
     const res = await send<TApiArray[]>('model/index', 'post', {
-      model: current.value.module,
+      module: current.value.module,
       query: apiQueryPayload.value,
     })
     return res.success ? res.data.length : -1
