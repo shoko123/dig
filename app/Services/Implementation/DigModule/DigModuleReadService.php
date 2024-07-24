@@ -174,20 +174,14 @@ abstract class DigModuleReadService extends DigModuleService implements DigModul
                 return $res->toArray();
 
             case 'Gallery':
-                $r = collect([]);
-                $r = $res->map(function ($item, $key) {
-                    $media = null;
-                    if (!$item->media->isEmpty()) {
-                        $media = MediaService::format_media_item($item->media[0])["urls"];
-                    }
-
+                return $res->map(function ($item, $key) {
                     return [
                         'id' => $item['id'],
                         'short' => $item['short'],
-                        'media' => $media,
+                        'media' => $item->media->isEmpty() ? null :
+                            MediaService::format_media_item($item->media[0])["urls"],
                     ];
-                });
-                return $r->toArray();
+                })->toArray();
         }
     }
 

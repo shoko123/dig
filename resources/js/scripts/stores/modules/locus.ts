@@ -12,7 +12,7 @@ export const useLocusStore = defineStore('locus', () => {
   const slugToId: FuncSlugToId = function (slug: string) {
     const arr = slug.split('.')
 
-    if (arr.length === 1) {
+    if (arr.length !== 3) {
       return {
         success: false,
         message: 'No . [dot] detected in slug',

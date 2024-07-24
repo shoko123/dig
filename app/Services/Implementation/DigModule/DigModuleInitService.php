@@ -34,7 +34,7 @@ abstract class DigModuleInitService extends DigModuleService implements DigModul
             ],
             "display_options" => static::displayOptions(),
             "date_columns" => static::dateColumns(),
-            "first_record" => $this->model->select('id')->firstOrFail(),
+            "first_id" => $this->model->select('id')->firstOrFail()["id"],
             "trio" => $this->trio(),
         ];
     }

@@ -13,15 +13,17 @@ class MediaService extends BaseService implements MediaServiceInterface
     public static function collection_names()
     {
         $ordered = collect(['Photo', 'Drawing', 'Photo and Drawing', 'Plan', 'Misc']);
-        $names = Media::distinct('collection_name')->get();
 
-        //sanity checks
-        $res = $names->first(function (string $value, int $key) use ($ordered) {
-            return !$ordered->has($value);
-        });
+        //verify that the table is not corrupted by some unwelcomed collection_name
+        if (Media::count() > 0) {
+            $names = Media::distinct('collection_name')->get();
 
-        throw_unless($res, "MediaService.collection_names(): Collection name \"" . $res . "\" doesn't exist in the the ordered collection names");
+            $res = $names->first(function (string $value, int $key) use ($ordered) {
+                return !$ordered->has($value);
+            });
 
+            throw_unless($res, "MediaService.collection_names(): Collection name \"" . $res . "\" doesn't exist in the the ordered collection names");
+        }
         return $ordered;
     }
 

@@ -27,6 +27,36 @@ return new class extends Migration
 
             $table->unique(['category', 'a', 'b']);
         });
+
+
+        Schema::create('locus_tag_groups', function (Blueprint $table) {
+            $table->tinyIncrements('id');
+            $table->string('name', 40);
+            $table->boolean('multiple')->default(0);
+        });
+
+        Schema::create('locus_tags', function (Blueprint $table) {
+            $table->smallIncrements('id');
+            $table->string('name', 50);
+            $table->unsignedTinyInteger('group_id');
+            $table->unsignedSmallInteger('order_column');
+
+            $table->foreign('group_id')
+                ->references('id')
+                ->on('locus_tag_groups')
+                ->onUpdate('cascade');
+        });
+
+        Schema::create('locus-locus_tags', function (Blueprint $table) {
+            //$table->unsignedInteger('item_id');
+            $table->string('item_id', 15);
+            $table->foreign('item_id')->references('id')->on('loci')->onUpdate('cascade');
+
+            $table->unsignedSmallInteger('tag_id')->unsigned();
+            $table->foreign('tag_id')->references('id')->on('locus_tags')->onUpdate('cascade');
+
+            $table->primary(['item_id', 'tag_id']);
+        });
     }
 
     /**
