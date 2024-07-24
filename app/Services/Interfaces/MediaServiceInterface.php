@@ -23,7 +23,7 @@ interface MediaServiceInterface
 
     public static function edit(array $params): array;
 
-    public static function media_by_model_type_and_id(string $model_type, string $model_id);
+    public static function media_by_module_and_id(string $model_type, string $model_id);
 
     public static function format_media_collection(MediaCollection $media_records): array;
 

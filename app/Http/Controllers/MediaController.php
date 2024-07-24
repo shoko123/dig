@@ -20,7 +20,7 @@ class MediaController extends Controller
      */
     public function upload(Request $r)
     {
-        $this->ms->upload($r->toArray());
+        return response()->json($this->ms->upload($r->toArray(), 200));
     }
 
 
@@ -29,7 +29,7 @@ class MediaController extends Controller
      */
     public function reorder(Request $r)
     {
-        $this->ms->reorder($r->toArray());
+        return response()->json($this->ms->reorder($r->toArray(), 200));
     }
 
     /**
@@ -37,7 +37,7 @@ class MediaController extends Controller
      */
     public function destroy(Request $r)
     {
-        $this->ms->destroy($r->toArray());
+        return response()->json($this->ms->destroy($r->toArray(), 200));
         //
     }
 
@@ -46,6 +46,6 @@ class MediaController extends Controller
      */
     public function edit(Request $r)
     {
-        $this->ms->edit($r->toArray());
+        return response()->json($this->ms->edit($r->toArray(), 200));
     }
 }

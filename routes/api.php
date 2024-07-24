@@ -8,6 +8,7 @@ use App\Http\Controllers\DigModule\DigModuleReadController;
 use App\Http\Controllers\DigModule\DigModuleMutateController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\AuthController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -27,7 +28,7 @@ Route::post('model/show', [DigModuleReadController::class, 'show']);
 Route::post('model/carousel', [MediaController::class, 'carousel']);
 //});
 
-
+Route::get('about/me', [AuthController::class, 'me']);
 // Route::get('about/me', [PermissionController::class, 'me'])->middleware('auth:sanctum');
 
 //mutator APIs

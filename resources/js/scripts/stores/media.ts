@@ -124,8 +124,8 @@ export const useMediaStore = defineStore('media', () => {
     })
 
     const idAsString = (<TFieldsUnion>i.fields).id as unknown as string
-    fd.append('model', <TModule>r.current.module)
-    fd.append('model_id', idAsString)
+    fd.append('module', <TModule>r.current.module)
+    fd.append('id', idAsString)
     fd.append('media_collection_name', mediaCollectionName.value)
 
     const res = await send<TApiArray<'media'>[]>('media/upload', 'post', fd)
@@ -149,8 +149,8 @@ export const useMediaStore = defineStore('media', () => {
 
     const res = await send<TApiArray<'media'>[]>('media/destroy', 'post', {
       media_id,
-      model: r.current.module,
-      model_id: (<TFieldsUnion>i.fields).id,
+      module: r.current.module,
+      module_id: (<TFieldsUnion>i.fields).id,
     })
     if (res.success) {
       showUploader.value = false
@@ -175,8 +175,8 @@ export const useMediaStore = defineStore('media', () => {
     )
 
     const res = await send<TApiArray<'media'>[]>('media/reorder', 'post', {
-      model: r.current.module,
-      model_id: i.fields?.id,
+      module: r.current.module,
+      id: i.fields?.id,
       ordered,
     })
 

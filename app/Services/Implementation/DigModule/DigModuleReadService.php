@@ -178,7 +178,7 @@ abstract class DigModuleReadService extends DigModuleService implements DigModul
                 $r = $res->map(function ($item, $key) {
                     $media = null;
                     if (!$item->media->isEmpty()) {
-                        $media = MediaService::format_media_item($item->media[0]);
+                        $media = MediaService::format_media_item($item->media[0])["urls"];
                     }
 
                     return [

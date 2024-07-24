@@ -8,7 +8,6 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use App\Services\Interfaces\MediaServiceInterface;
 use App\Services\Implementation\BaseService;
 
-
 class MediaService extends BaseService implements MediaServiceInterface
 {
     public static function collection_names()
@@ -21,12 +20,11 @@ class MediaService extends BaseService implements MediaServiceInterface
             return !$ordered->has($value);
         });
 
-        throw_if($res, "MediaService.collection_names(): Collection name \"" . $res . "\" doesn't exist in the the ordered collection names");
+        throw_unless($res, "MediaService.collection_names(): Collection name \"" . $res . "\" doesn't exist in the the ordered collection names");
 
         return $ordered;
     }
 
-    //TODO change name to media_record
     public static function carousel(string $source, array $params)
     {
         switch ($params) {
@@ -48,25 +46,25 @@ class MediaService extends BaseService implements MediaServiceInterface
                 ];
             case "main":
             case "related":
-                $media = static::media_by_model_type_and_id($params["module"], $params["id"]);
-                // $full_class = 'App\Models\DigModule\Specific\\' . $params["module"] . '\\' . $params["module"];
-                // $model = new  $full_class;
+                $mediaCollection = static::media_by_module_and_id($params["module"], $params["id"]);
+
                 $model = static::makeModel($params["module"]);
-                $item = $model::findOrfail($media->model_id);
+                $item = $model::findOrfail($mediaCollection->model_id);
 
                 return [
                     'id' => $item["id"],
                     'short' => $item['short'],
-                    'urls' => count($item->media) === 0 ? null : MediaService::format_media_item($media),
+                    'urls' => count($item->media) === 0 ? null : MediaService::format_media_item($mediaCollection[0]),
                     'module' => class_basename($model),
                 ];
         }
     }
+
     public function upload(array $params): array
     {
         $model = static::makeModel($params["module"]);
         try {
-            $item = $model->findOrFail($params['model_id']);
+            $item = $model->findOrFail($params['id']);
 
             //attach media to item
             foreach ($params['media_files'] as $key => $media_file) {
@@ -75,10 +73,7 @@ class MediaService extends BaseService implements MediaServiceInterface
                     ->addMedia($media_file)
                     ->toMediaCollection($params['media_collection_name']);
             }
-
-            // return updated media for item
-            $mediaCollection = static::media_by_model_type_and_id($params['module_type'], $params['model_id']);
-            return static::format_media_collection($mediaCollection);
+            return static::format_media_collection($item->getMedia("*"));
         } catch (Exception $error) {
             throw new Exception('Failed to upload media. error: ' . $error);
         }
@@ -90,7 +85,7 @@ class MediaService extends BaseService implements MediaServiceInterface
         $mediaToDelete = Media::findOrFail($params['media_id']);
 
         //verify that this media record matches item sent (by model_type and model_id)
-        if (($mediaToDelete['model_type'] !== $params['model']) || $mediaToDelete['model_id'] !== $params['model_id']) {
+        if (($mediaToDelete['model_type'] !== $params['module']) || $mediaToDelete['model_id'] !== $params['module_id']) {
             throw new Exception('Media/Model mismatch abort destroy');
         }
 
@@ -98,7 +93,7 @@ class MediaService extends BaseService implements MediaServiceInterface
         $mediaToDelete->delete();
 
         //return updated media for item
-        $mediaCollection = static::media_by_model_type_and_id($params['module_type'], $params['model_id']);
+        $mediaCollection = static::media_by_module_and_id($params['module'], $params['module_id']);
         return static::format_media_collection($mediaCollection);
     }
 
@@ -113,7 +108,7 @@ class MediaService extends BaseService implements MediaServiceInterface
         }
 
         //return updated media for item
-        $mediaCollection = static::media_by_model_type_and_id($params['module_type'], $params['model_id']);
+        $mediaCollection = static::media_by_module_and_id($params['module'], $params['id']);
         return static::format_media_collection($mediaCollection);
     }
 
@@ -122,11 +117,11 @@ class MediaService extends BaseService implements MediaServiceInterface
         return [];
     }
 
-    public static function media_by_model_type_and_id(string $model_type, string $model_id)
+    public static function media_by_module_and_id(string $module, string $id): MediaCollection
     {
-        return Media::where('model_id', '=', $model_id)->where('model_type', '=', $model_type)->orderBy('order_column', 'asc')->findOrFail();
-
-        //return static::format_media_collection($mc);
+        $model = static::makeModel($module);
+        $item = $model->findOrFail($id);
+        return $item->getMedia("*");
     }
 
     public static function format_media_collection(MediaCollection $media_records): array

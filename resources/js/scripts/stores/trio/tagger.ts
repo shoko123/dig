@@ -41,7 +41,7 @@ export const useTaggerStore = defineStore('tagger', () => {
     const { current } = storeToRefs(useRoutesMainStore())
 
     const payload = {
-      model: current.value.module,
+      module: current.value.module,
       id: (<TFieldsUnion>fields.value).id,
       ids: <number[]>[],
       model_tag_ids: <number[]>[],
