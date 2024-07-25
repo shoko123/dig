@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Services\Implementation\MediaService;
 
-class AppController extends Controller
+class AppController extends BaseController
 {
     /**
      * Init the app.

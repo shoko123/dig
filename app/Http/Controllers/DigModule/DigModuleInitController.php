@@ -2,23 +2,18 @@
 
 namespace App\Http\Controllers\DigModule;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Services\Implementation\DigModule\DigModuleInitService;
-use Exception;
 
-class DigModuleInitController extends Controller
+use Illuminate\Http\Request;
+use App\Http\Controllers\BaseController;
+use App\Services\Implementation\DigModule\DigModuleInitService;
+
+class DigModuleInitController extends BaseController
 {
     protected DigModuleInitService $ms;
 
     public function __construct(Request $r)
     {
-        if (in_array($r["module"], ['Locus', 'Stone', 'Ceramic'])) {
-            $full_class = 'App\Services\Implementation\DigModule\Specific\\' . request()->module . '\\' . request()->module . 'InitService';
-            $this->ms = new $full_class(request()->module);
-        } else {
-            abort(422, 'Illegal module field value: "' . request()->module . '"');
-        }
+        $this->ms = static::makeDigModuleService('init_service', $r["module"]);
     }
 
     /**

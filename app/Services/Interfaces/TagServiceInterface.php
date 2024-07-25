@@ -7,5 +7,5 @@ interface TagServiceInterface
     /**
      * Sync model tags, global_tags and lookup values
      */
-    public function sync(string $module, string $id, array $new_tags): void;
+    public static function sync(string $module, string $id, array $module_tag_ids, array $global_tag_ids, array $columns): void;
 }

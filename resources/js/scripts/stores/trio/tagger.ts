@@ -43,8 +43,8 @@ export const useTaggerStore = defineStore('tagger', () => {
     const payload = {
       module: current.value.module,
       id: (<TFieldsUnion>fields.value).id,
-      ids: <number[]>[],
-      model_tag_ids: <number[]>[],
+      global_tag_ids: <number[]>[],
+      module_tag_ids: <number[]>[],
       columns: <{ column_name: string; val: number | string }[]>[],
     }
 
@@ -52,11 +52,11 @@ export const useTaggerStore = defineStore('tagger', () => {
       const group = <TGroupColumn>trio.value.groupsObj[trio.value.paramsObj[paramKey].groupKey]
       switch (group.code) {
         case 'TG':
-          payload.ids.push(<number>trio.value.paramsObj[paramKey].extra)
+          payload.global_tag_ids.push(<number>trio.value.paramsObj[paramKey].extra)
           break
 
         case 'TM':
-          payload.model_tag_ids.push(<number>trio.value.paramsObj[paramKey].extra)
+          payload.module_tag_ids.push(<number>trio.value.paramsObj[paramKey].extra)
           break
 
         case 'CL':

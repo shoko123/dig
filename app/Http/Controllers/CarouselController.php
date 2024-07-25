@@ -3,16 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Services\Implementation\MediaService;
 
-class CarouselController extends Controller
+class CarouselController extends BaseController
 {
-    protected MediaService $ms;
-
     public function __construct()
     {
-        //$this->ms = new MediaService();
+        //
     }
 
     /**
@@ -26,8 +23,7 @@ class CarouselController extends Controller
 
             case 'main':
             case 'related':
-                $full_class = 'App\Services\Implementation\DigModule\Specific\\' . request()->module . '\\' . request()->module . 'ReadService';
-                $rs = new $full_class(request()->module);
+                $rs = static::makeDigModuleService('read_service', $r["module"]);
                 return response()->json($rs->show_carousel($r["module"], $r["module_id"]), 200);
         }
     }

@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 
-class AuthController extends Controller
+class AuthController extends BaseController
 {
     public function __construct()
     {

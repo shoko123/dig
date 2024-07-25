@@ -3,12 +3,9 @@
 namespace App\Http\Controllers\DigModule;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Services\Implementation\DigModule\DigModuleStoreService;
-use App\Services\Implementation\MediaService;
-use App\Services\Implementation\TagService;
+use App\Http\Controllers\BaseController;
 
-class DigModuleMutateController extends Controller
+class DigModuleMutateController extends BaseController
 {
     /**
      * Create/update a DigModule record.

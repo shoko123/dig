@@ -8,10 +8,12 @@ use App\Services\Implementation\BaseService;
 
 class TagService extends BaseService implements TagServiceInterface
 {
-    public function sync(string $module, string $id, array $new_tags): void
+    public static function sync(string $module, string $id, array $module_tag_ids, array $global_tag_ids, array $columns): void
+
+    // public static function sync(string $module, string $id, array $new_tags): void
     {
-        $model = $this->makeModel($module);
-        //get item with tags
+        //get item with tags        
+        $model = static::makeModel($module);
         $item = $model->with([
             'model_tags' => function ($query) {
                 $query->select('id');
@@ -22,9 +24,9 @@ class TagService extends BaseService implements TagServiceInterface
         ])->findOrFail($id);
 
         //model_tags
-        //**********/
+        //----------
         //transform 'current' and 'new' to a standard 'Collection'
-        $new_model_ids = isset($new_tags['model_tag_ids']) ? collect($new_tags['model_tag_ids']) : collect([]);
+        $new_model_ids = collect($module_tag_ids);
         $current_model_ids = collect($item->model_tags->map(function (object $item, int $key) {
             return $item['id'];
         }));
@@ -34,8 +36,8 @@ class TagService extends BaseService implements TagServiceInterface
         $detach_model_ids = $current_model_ids->diff($new_model_ids)->values()->all();
 
         //global_tags
-        //***********/
-        $new_global_ids = isset($new_tags['ids']) ? collect($new_tags['ids']) : collect([]);
+        //-----------
+        $new_global_ids = collect($global_tag_ids);
         $current_global_ids = collect($item->global_tags->map(function (object $item, int $key) {
             return $item['id'];
         }));
@@ -45,14 +47,14 @@ class TagService extends BaseService implements TagServiceInterface
         $detach_global_ids = $current_global_ids->diff($new_global_ids)->values()->all();
 
         //update column values
-        if (isset($new_tags['columns'])) {
-            foreach ($new_tags['columns'] as $col) {
+        if (isset($columns)) {
+            foreach ($columns as $col) {
                 $item[$col['column_name']] = $col['val'];
             }
         }
 
         //save changes
-        /*************/
+        //------------
         DB::transaction(function () use ($item, $detach_model_ids, $attach_model_ids, $attach_global_ids, $detach_global_ids) {
             $item->save();
             $item->model_tags()->detach($detach_model_ids);
