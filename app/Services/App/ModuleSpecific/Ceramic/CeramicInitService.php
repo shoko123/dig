@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services\Implementation\DigModule\specific\Ceramic;
+namespace App\Services\App\ModuleSpecific\Ceramic;
 
-use App\Services\Implementation\DigModule\DigModuleInitService;
-use App\Services\Interfaces\DigModuleInitSpecificServiceInterface;
+use App\Services\App\DigModuleInitService;
+use App\Services\App\ModuleSpecific\Interfaces\InitSpecificServiceInterface;
 
-class CeramicInitService extends DigModuleInitService implements DigModuleInitSpecificServiceInterface
+class CeramicInitService extends DigModuleInitService implements InitSpecificServiceInterface
 {
     function __construct()
     {

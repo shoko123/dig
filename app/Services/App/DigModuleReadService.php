@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Services\Implementation\DigModule;
+namespace App\Services\App;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-use App\Services\Interfaces\DigModuleReadSpecificServiceInterface;
+use App\Services\App\ModuleSpecific\Interfaces\ReadSpecificServiceInterface;
 use App\Models\DigModule\DigModuleModel;
-use App\Services\Implementation\MediaService;
+use App\Services\App\MediaService;
 use App\Models\Tag\Tag;
 
-abstract class DigModuleReadService extends DigModuleService implements DigModuleReadSpecificServiceInterface
+abstract class DigModuleReadService extends DigModuleService implements ReadSpecificServiceInterface
 {
     protected DigModuleModel $model;
     protected Builder $builder;

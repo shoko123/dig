@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services\Implementation\DigModule\Specific\Stone;
+namespace App\Services\App\ModuleSpecific\Stone;
 
-use App\Services\Implementation\DigModule\DigModuleReadService;
-use App\Services\Interfaces\DigModuleReadSpecificServiceInterface;
+use App\Services\App\DigModuleReadService;
+use App\Services\App\ModuleSpecific\Interfaces\ReadSpecificServiceInterface;
 
-class StoneReadService extends DigModuleReadService implements DigModuleReadSpecificServiceInterface
+class StoneReadService extends DigModuleReadService implements ReadSpecificServiceInterface
 {
     function __construct()
     {

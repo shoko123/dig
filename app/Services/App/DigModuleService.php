@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Services\Implementation\DigModule;
+namespace App\Services\App;
 
 use App\Models\DigModule\DigModuleModel;
-use App\Services\Implementation\BaseService;
+use App\Services\App\BaseService;
 
 class DigModuleService extends BaseService
 {

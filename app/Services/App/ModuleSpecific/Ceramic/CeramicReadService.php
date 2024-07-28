@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services\Implementation\DigModule\Specific\Ceramic;
+namespace App\Services\App\ModuleSpecific\Ceramic;
 
-use App\Services\Implementation\DigModule\DigModuleReadService;
-use App\Services\Interfaces\DigModuleReadSpecificServiceInterface;
+use App\Services\App\DigModuleReadService;
+use App\Services\App\ModuleSpecific\Interfaces\ReadSpecificServiceInterface;
 
-class CeramicReadService extends DigModuleReadService implements DigModuleReadSpecificServiceInterface
+class CeramicReadService extends DigModuleReadService implements ReadSpecificServiceInterface
 {
     function __construct()
     {

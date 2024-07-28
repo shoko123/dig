@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Implementation;
+namespace App\Services\App;
 
 class BaseService
 {

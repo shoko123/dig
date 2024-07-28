@@ -7,7 +7,7 @@ use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Resources\Json\JsonResource;
 // use App\Http\Controllers\DigModule\DigModuleReadController;
-// use App\Services\Implementation\DigModule\DigModuleService;
+// use App\Services\App\DigModule\DigModuleService;
 
 class AppServiceProvider extends ServiceProvider
 {

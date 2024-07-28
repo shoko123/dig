@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Implementation\DigModule;
+namespace App\Services\App;
 
 use Illuminate\Support\Carbon;
 use \Exception;

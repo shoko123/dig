@@ -4,7 +4,7 @@ namespace App\Http\Controllers\DigModule;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
-use App\Services\Implementation\DigModule\DigModuleReadService;
+use App\Services\App\DigModuleReadService;
 
 class DigModuleReadController extends BaseController
 {

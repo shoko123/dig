@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services\Implementation\DigModule\Specific\Locus;
+namespace App\Services\App\ModuleSpecific\Locus;
 
-use App\Services\Implementation\DigModule\DigModuleReadService;
-use App\Services\Interfaces\DigModuleReadSpecificServiceInterface;
+use App\Services\App\DigModuleReadService;
+use App\Services\App\ModuleSpecific\Interfaces\ReadSpecificServiceInterface;
 
-class LocusReadService extends DigModuleReadService implements DigModuleReadSpecificServiceInterface
+class LocusReadService extends DigModuleReadService implements ReadSpecificServiceInterface
 {
     function __construct()
     {

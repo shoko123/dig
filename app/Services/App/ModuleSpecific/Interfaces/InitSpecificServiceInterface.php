@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services\Interfaces;
+namespace App\Services\App\ModuleSpecific\Interfaces;
 
-interface DigModuleInitSpecificServiceInterface
+interface InitSpecificServiceInterface
 {
     public static function displayOptions(): array;
     public static function welcomeText(): array;

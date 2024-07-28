@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Implementation\DigModule;
+namespace App\Services\App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -8,10 +8,10 @@ use Exception;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 
-use App\Services\Interfaces\DigModuleInitSpecificServiceInterface;
+use App\Services\App\ModuleSpecific\Interfaces\InitSpecificServiceInterface;
 use App\Models\Tag\TagGroup;
 
-abstract class DigModuleInitService extends DigModuleService implements DigModuleInitSpecificServiceInterface
+abstract class DigModuleInitService extends DigModuleService implements InitSpecificServiceInterface
 {
     protected Model $moduleTagGroup;
 

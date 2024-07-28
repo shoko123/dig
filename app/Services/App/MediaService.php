@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services\Implementation;
+namespace App\Services\App;
 
 use \Exception;
 use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use App\Services\Implementation\BaseService;
+use App\Services\App\BaseService;
 
 class MediaService extends BaseService
 {

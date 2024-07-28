@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Services\Implementation;
+namespace App\Services\App;
 
 use Illuminate\Support\Facades\DB;
-use App\Services\Implementation\BaseService;
+use App\Services\App\BaseService;
 
 class DestroyService extends BaseService
 {

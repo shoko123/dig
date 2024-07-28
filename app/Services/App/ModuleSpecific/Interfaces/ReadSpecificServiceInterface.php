@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services\Interfaces;
+namespace App\Services\App\ModuleSpecific\Interfaces;
 
-interface DigModuleReadSpecificServiceInterface
+interface ReadSpecificServiceInterface
 {
     public function applyBespokeFilters(array $params): void;
     public function applyDefaultOrder(): void;

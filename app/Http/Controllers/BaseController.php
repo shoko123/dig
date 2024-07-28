@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller;
 
-use App\Services\Implementation\DigModule\DigModuleStoreService;
+use App\Services\App\DigModuleStoreService;
 
 class BaseController extends Controller
 {
@@ -19,7 +19,7 @@ class BaseController extends Controller
             abort(422, '*** Illegal module field value: "' . $module . '"');
         }
 
-        $full_class_name = 'App\Services\Implementation\DigModule\Specific\\' . $module . '\\' . $module;
+        $full_class_name = 'App\Services\App\ModuleSpecific\\' . $module . '\\' . $module;
         switch ($service_name) {
             case 'init_service':
                 $full_class_name .= 'InitService';

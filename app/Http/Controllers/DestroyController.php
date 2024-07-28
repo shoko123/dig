@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Services\Implementation\DestroyService;
+use App\Services\App\DestroyService;
 
 class DestroyController extends BaseController
 {

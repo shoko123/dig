@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Services\Implementation\TagService;
+use App\Services\App\TagService;
 
 class TagController extends BaseController
 {

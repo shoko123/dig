@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services\Implementation\DigModule\specific\Locus;
+namespace App\Services\App\ModuleSpecific\Locus;
 
-use App\Services\Implementation\DigModule\DigModuleInitService;
-use App\Services\Interfaces\DigModuleInitSpecificServiceInterface;
+use App\Services\App\DigModuleInitService;
+use App\Services\App\ModuleSpecific\Interfaces\InitSpecificServiceInterface;
 
-class LocusInitService extends DigModuleInitService implements DigModuleInitSpecificServiceInterface
+class LocusInitService extends DigModuleInitService implements InitSpecificServiceInterface
 {
     function __construct()
     {

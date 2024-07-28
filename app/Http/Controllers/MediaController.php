@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\Implementation\MediaService;
+use App\Services\App\MediaService;
 
 class MediaController extends BaseController
 {
