@@ -10,6 +10,7 @@ use App\Http\Controllers\MediaController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CarouselController;
+use App\Http\Controllers\DestroyController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -36,7 +37,7 @@ Route::get('about/me', [AuthController::class, 'me']);
 // Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
 Route::post('model/store', [DigModuleStoreController::class, 'store']);
 Route::put('model/store', [DigModuleStoreController::class, 'store']);
-Route::post('model/destroy', [DigModuleStoreController::class, 'destroy']);
+Route::post('model/destroy', [DestroyController::class, 'destroy']);
 Route::post('tags/sync', [TagController::class, 'sync']);
 Route::post('media/upload', [MediaController::class, 'upload']);
 Route::post('media/destroy', [MediaController::class, 'destroy']);

@@ -5,13 +5,12 @@ namespace App\Services\Implementation\DigModule;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-use App\Services\Interfaces\DigModuleReadServiceInterface;
 use App\Services\Interfaces\DigModuleReadSpecificServiceInterface;
 use App\Models\DigModule\DigModuleModel;
 use App\Services\Implementation\MediaService;
 use App\Models\Tag\Tag;
 
-abstract class DigModuleReadService extends DigModuleService implements DigModuleReadServiceInterface, DigModuleReadSpecificServiceInterface
+abstract class DigModuleReadService extends DigModuleService implements DigModuleReadSpecificServiceInterface
 {
     protected DigModuleModel $model;
     protected Builder $builder;
@@ -32,7 +31,7 @@ abstract class DigModuleReadService extends DigModuleService implements DigModul
         $this->builderIndexApplyFilters($query);
 
         if (empty($query['order_by'])) {
-            $this->applyDefaulOrder();
+            $this->applyDefaultOrder();
         } else {
             $this->builderIndexOrder($query['order_by']);
         }

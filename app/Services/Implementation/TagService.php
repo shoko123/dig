@@ -3,10 +3,9 @@
 namespace App\Services\Implementation;
 
 use Illuminate\Support\Facades\DB;
-use App\Services\Interfaces\TagServiceInterface;
 use App\Services\Implementation\BaseService;
 
-class TagService extends BaseService implements TagServiceInterface
+class TagService extends BaseService
 {
     public static function sync(string $module, string $id, array $module_tag_ids, array $global_tag_ids, array $columns): void
 

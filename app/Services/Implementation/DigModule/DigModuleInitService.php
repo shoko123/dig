@@ -7,11 +7,11 @@ use Illuminate\Support\Facades\DB;
 use Exception;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-use App\Services\Interfaces\DigModuleInitServiceInterface;
+
 use App\Services\Interfaces\DigModuleInitSpecificServiceInterface;
 use App\Models\Tag\TagGroup;
 
-abstract class DigModuleInitService extends DigModuleService implements DigModuleInitServiceInterface, DigModuleInitSpecificServiceInterface
+abstract class DigModuleInitService extends DigModuleService implements DigModuleInitSpecificServiceInterface
 {
     protected Model $moduleTagGroup;
 

@@ -5,10 +5,9 @@ namespace App\Services\Implementation;
 use \Exception;
 use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use App\Services\Interfaces\MediaServiceInterface;
 use App\Services\Implementation\BaseService;
 
-class MediaService extends BaseService implements MediaServiceInterface
+class MediaService extends BaseService
 {
     public static function collection_names()
     {

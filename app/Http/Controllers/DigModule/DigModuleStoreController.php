@@ -20,17 +20,9 @@ class DigModuleStoreController extends BaseController
     public function store(Request $r)
     {
         if ($r->isMethod('post')) {
-            return response()->json($this->service->create($r->fields), 200);
+            return response()->json($this->service->create($r->fields), 201);
         } else {
             return response()->json($this->service->update($r->fields), 200);
         }
-    }
-
-    /**
-     * Remove the specified DigModule from storage.
-     */
-    public function destroy(Request $locus)
-    {
-        //
     }
 }

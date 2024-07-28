@@ -140,9 +140,11 @@ export const useItemStore = defineStore('item', () => {
       newIndex = itemIndex.value === 0 ? length - 1 : itemIndex.value - 1
     }
 
-    const mainArrayItem = <TApiArray>itemByIndex('main', newIndex)
-    //console.log(`nextSlug: ${mainArrayItem.slug}`)
-    return mainArrayItem
+    const tagAndSlug = tagAndSlugFromId(
+      <TModule>current.value.module,
+      <TApiArray>itemByIndex('main', newIndex),
+    )
+    return tagAndSlug.slug
   }
 
   async function itemRemove(): Promise<
@@ -152,8 +154,7 @@ export const useItemStore = defineStore('item', () => {
     //const prev = next('main', itemIndexById((<TFieldsUnion>fields.value).id), false)
 
     const res = await send<TApiItemShow<TApiFieldsUnion>>('model/destroy', 'post', {
-      model: current.value.module,
-      slug: slug.value,
+      module: current.value.module,
       id: fields.value?.id,
     })
 
@@ -162,13 +163,14 @@ export const useItemStore = defineStore('item', () => {
     }
 
     console.log(`${current.value.module}item.itemRemove() success!`)
+    const prevSlug = nextSlug(false)
     const newLength = removeItemIdFromMainArray((<TFieldsUnion>fields.value).id)
 
     //return of slug === null means that is was the last element in the current array.
     if (newLength === 0) {
       return { success: true, slug: null }
     } else {
-      return { success: true, slug: (<TFieldsUnion>fields.value).id }
+      return { success: true, slug: prevSlug }
     }
   }
 

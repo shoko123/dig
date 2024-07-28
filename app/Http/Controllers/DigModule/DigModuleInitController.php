@@ -19,8 +19,8 @@ class DigModuleInitController extends BaseController
     /**
      * Get the module's init data (counts, trio, description_text)
      */
-    public function init(): array
+    public function init()
     {
-        return $this->ms->init();
+        return response()->json($this->ms->init(), 200);
     }
 }

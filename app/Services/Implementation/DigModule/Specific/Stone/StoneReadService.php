@@ -19,7 +19,7 @@ class StoneReadService extends DigModuleReadService implements DigModuleReadSpec
         }
     }
 
-    public function applyDefaulOrder(): void
+    public function applyDefaultOrder(): void
     {
         $this->builder->orderBy('id_year', 'asc')->orderBy('id_object_no', 'asc');
     }

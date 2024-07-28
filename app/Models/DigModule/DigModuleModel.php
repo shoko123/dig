@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Illuminate\Support\Carbon;
 
 abstract class DigModuleModel extends Model implements HasMedia
 {
@@ -20,10 +19,7 @@ abstract class DigModuleModel extends Model implements HasMedia
     protected $guarded = [];
     protected $date_columns = [];
 
-    public function dateColumns()
-    {
-        return $this->date_columns;
-    }
+    public abstract function dateColumns(): array;
 
     public function registerMediaConversions(?Media $media = null): void
     {

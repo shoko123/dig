@@ -20,7 +20,7 @@ class DigModuleReadController extends BaseController
      */
     public function index(Request $r)
     {
-        return $this->ms->index($r["query"]);
+        return response()->json($this->ms->index($r["query"]), 200);
     }
 
     /**
@@ -28,7 +28,7 @@ class DigModuleReadController extends BaseController
      */
     public function page(Request $r)
     {
-        return $this->ms->page($r["ids"], $r["view"]);
+        return response()->json($this->ms->page($r["ids"], $r["view"]), 200);
     }
 
     /**
@@ -36,6 +36,6 @@ class DigModuleReadController extends BaseController
      */
     public function show(Request $r)
     {
-        return $this->ms->show($r["id"]);
+        return response()->json($this->ms->show($r["id"]), 200);
     }
 }

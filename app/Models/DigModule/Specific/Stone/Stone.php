@@ -38,4 +38,9 @@ class Stone extends DigModuleModel
     {
         return $this->belongsTo(StoneCataloger::class, 'cataloger_id');
     }
+
+    public function dateColumns(): array
+    {
+        return ['excavation_date', 'catalog_date'];
+    }
 }

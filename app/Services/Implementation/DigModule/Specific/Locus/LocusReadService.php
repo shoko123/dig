@@ -19,7 +19,7 @@ class LocusReadService extends DigModuleReadService implements DigModuleReadSpec
         }
     }
 
-    public function applyDefaulOrder(): void
+    public function applyDefaultOrder(): void
     {
         $this->builder->orderBy('id', 'asc');
     }

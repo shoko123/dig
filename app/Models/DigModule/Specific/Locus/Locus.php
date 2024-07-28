@@ -23,4 +23,9 @@ class Locus extends DigModuleModel
     {
         return $this->morphToMany(Tag::class, 'taggable');
     }
+
+    public function dateColumns(): array
+    {
+        return [];
+    }
 }

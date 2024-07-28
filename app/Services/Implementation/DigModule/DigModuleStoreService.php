@@ -5,9 +5,7 @@ namespace App\Services\Implementation\DigModule;
 use Illuminate\Support\Carbon;
 use \Exception;
 
-use App\Services\Interfaces\DigModuleStoreServiceInterface;
-
-class DigModuleStoreService  extends DigModuleService implements DigModuleStoreServiceInterface
+class DigModuleStoreService  extends DigModuleService
 {
     public function __construct(string $module)
     {

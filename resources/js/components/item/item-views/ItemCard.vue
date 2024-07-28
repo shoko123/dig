@@ -10,12 +10,10 @@
             <component :is="itemForm" />
           </v-col>
           <v-col :cols="widths[1]" class="px-1">
-            <MediaSquare
-              v-bind="{
-                source: 'media',
-                itemIndex: 0,
-              }"
-            />
+            <MediaSquare v-bind="{
+        source: 'media',
+        itemIndex: 0,
+      }" />
           </v-col>
         </v-row>
       </div>
@@ -48,7 +46,6 @@ const itemForm = computed<Component | null>(() => {
       return StoneForm
 
     default:
-      console.log(`ItemCard.vue invalid Module`)
       return null
   }
 })

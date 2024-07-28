@@ -7,11 +7,6 @@ use App\Services\Implementation\MediaService;
 
 class MediaController extends BaseController
 {
-    public function __construct()
-    {
-        //
-    }
-
     /**
      * Upload an array of media files.
      */
