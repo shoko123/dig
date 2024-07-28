@@ -7,22 +7,29 @@ use \Exception;
 
 use App\Services\Interfaces\DigModuleStoreServiceInterface;
 
-abstract class DigModuleStoreService extends DigModuleService implements DigModuleStoreServiceInterface
+class DigModuleStoreService  extends DigModuleService implements DigModuleStoreServiceInterface
 {
-    function __construct(string $module)
+    public function __construct(string $module)
     {
         parent::__construct($module);
     }
 
-    public function store(array $new_item, bool $methodIsPost): array
+    public  function create(array $fields): array
     {
-        if (!$methodIsPost) {
-            $this->model->findOrFail($new_item['id']);
-        }
+        return $this->save($fields);
+    }
 
+    public function update(array $fields): array
+    {
+        $this->model = $this->model->findOrFail($fields['id']);
+        return $this->save($fields);
+    }
+
+    protected function save(array $fields): array
+    {
         //copy the validated data from the validated array to the 'item' object.
         //If JSON field is a "date", use Carbon to format to mysql Date field.
-        foreach ($new_item as $key => $value) {
+        foreach ($fields as $key => $value) {
             if (str_contains($key, "_date") && strtotime($value) !== false) {
                 $this->model[$key] = Carbon::parse($value)->format('Y-m-d');
             } else {
@@ -36,19 +43,9 @@ abstract class DigModuleStoreService extends DigModuleService implements DigModu
             throw new Exception('Error while saving item to DB: ' . $error);
         }
 
-        if ($methodIsPost) {
-            return [
-                'fields' => $this->model->makeHidden(['short']),
-                'media' => [],
-                'global_tags' => [],
-                'model_tags' => [],
-                'short' => $this->model->short,
-            ];
-        } else {
-            return [
-                'fields' => $this->model->makeHidden(['short']),
-                'short' => $this->model->short,
-            ];
-        }
+        return [
+            'fields' => $this->model->makeHidden(['short']),
+            'short' => $this->model->short,
+        ];
     }
 }

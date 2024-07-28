@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\DigModule\DigModuleInitController;
 use App\Http\Controllers\DigModule\DigModuleReadController;
-use App\Http\Controllers\DigModule\DigModuleMutateController;
+use App\Http\Controllers\DigModule\DigModuleStoreController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\AuthController;
@@ -34,9 +34,9 @@ Route::get('about/me', [AuthController::class, 'me']);
 
 //mutator APIs
 // Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
-Route::post('model/store', [DigModuleMutateController::class, 'store']);
-Route::put('model/store', [DigModuleMutateController::class, 'store']);
-Route::post('model/destroy', [DigModuleMutateController::class, 'destroy']);
+Route::post('model/store', [DigModuleStoreController::class, 'store']);
+Route::put('model/store', [DigModuleStoreController::class, 'store']);
+Route::post('model/destroy', [DigModuleStoreController::class, 'destroy']);
 Route::post('tags/sync', [TagController::class, 'sync']);
 Route::post('media/upload', [MediaController::class, 'upload']);
 Route::post('media/destroy', [MediaController::class, 'destroy']);

@@ -58,9 +58,8 @@ export const useItemNewStore = defineStore('itemNew', () => {
       'model/store',
       isCreate ? 'post' : 'put',
       {
-        model: current.value.module,
-        item: newFields,
-        id: newFields.id,
+        module: current.value.module,
+        fields: newFields,
       },
     )
     if (!res.success) {

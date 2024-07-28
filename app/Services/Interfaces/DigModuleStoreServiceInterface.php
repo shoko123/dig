@@ -4,5 +4,6 @@ namespace App\Services\Interfaces;
 
 interface DigModuleStoreServiceInterface
 {
-    public function store(array $new_item, bool $methodIsPost): array;
+    public function create(array $fields): array;
+    public function update(array $fields): array;
 }

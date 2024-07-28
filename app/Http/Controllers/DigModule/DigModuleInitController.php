@@ -21,6 +21,6 @@ class DigModuleInitController extends BaseController
      */
     public function init(): array
     {
-        return  $this->ms->init();
+        return $this->ms->init();
     }
 }

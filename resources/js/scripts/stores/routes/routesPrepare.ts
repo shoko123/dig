@@ -150,7 +150,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
         case 'item.prepareForCreate':
           {
             const res = await send<TApiArray[]>('model/index', 'post', {
-              model: module,
+              module,
               query: {},
             })
             if (res.success) {

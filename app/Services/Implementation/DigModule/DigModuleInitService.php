@@ -14,14 +14,12 @@ use App\Models\Tag\TagGroup;
 abstract class DigModuleInitService extends DigModuleService implements DigModuleInitServiceInterface, DigModuleInitSpecificServiceInterface
 {
     protected Model $moduleTagGroup;
-    protected Model $globalTagGroup;
 
     function __construct(string $module)
     {
         parent::__construct($module);
         $tagGroupName = 'App\Models\DigModule\Specific\\' . $module . '\\' . $module . 'TagGroup';
         $this->moduleTagGroup = new $tagGroupName;
-        $this->globalTagGroup = new TagGroup;
     }
 
     public function init(): array
@@ -134,7 +132,7 @@ abstract class DigModuleInitService extends DigModuleService implements DigModul
 
     private function getGlobalTagsGroupDetails($group_name, $group)
     {
-        $gtg = $this->globalTagGroup->with(['tags' => function ($q) {
+        $gtg = TagGroup::with(['tags' => function ($q) {
             $q->select('id', 'name', 'group_id');
         }])
             ->select('id', 'name')
