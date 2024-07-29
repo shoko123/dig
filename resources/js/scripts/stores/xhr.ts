@@ -6,7 +6,7 @@ export const useXhrStore = defineStore('xhr', () => {
   async function setAxios() {
     axios.defaults.baseURL = `${window.location.protocol}//${window.location.host}`
     axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
-    axios.defaults.headers.common['Content-Type'] = 'application/json'
+    //axios.defaults.headers.common['Content-Type'] = 'application/json' <- disabled because of media upload
     axios.defaults.headers.common['Accept'] = 'application/json'
     axios.defaults.withCredentials = true
     //console.log(`setAxios defaults: ${JSON.stringify(axios.defaults, null, 2)}`)

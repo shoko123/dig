@@ -3,9 +3,10 @@
 namespace App\Services\App;
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use \Exception;
 
-class StoreService  extends DigModuleService
+class MutateService extends DigModuleService
 {
     public function __construct(string $module)
     {
@@ -45,5 +46,23 @@ class StoreService  extends DigModuleService
             'fields' => $this->model->makeHidden(['short']),
             'short' => $this->model->short,
         ];
+    }
+
+    public function destroy(string $module, string $id): array
+    {
+        //get item with tags        
+        $model = static::makeModel($module);
+
+        $item = $this->model->with(['model_tags', 'global_tags'])->findOrFail($id);
+        DB::transaction(function () use ($item) {
+            $item->model_tags()->detach();
+            $item->global_tags()->detach();
+            $item->delete();
+        });
+
+        unset($item->model_tags);
+        unset($item->global_tags);
+
+        return $item->toArray();
     }
 }

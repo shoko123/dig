@@ -6,10 +6,6 @@ use App\Models\User;
 
 class AuthController extends BaseController
 {
-    public function __construct()
-    {
-    }
-
     public function me()
     {
         //dd("ME");

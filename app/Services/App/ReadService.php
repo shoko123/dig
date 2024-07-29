@@ -28,8 +28,6 @@ abstract class ReadService extends DigModuleService implements ReadSpecificServi
 
     public function index(array $query): array
     {
-        //$res = $this->model->findOrFail('87');
-        throw new GeneralJsonException("Test JSON Exception", 422);
         $this->builder = $this->model->select('id');
         $this->builderIndexApplyFilters($query);
 

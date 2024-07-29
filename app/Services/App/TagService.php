@@ -8,8 +8,6 @@ use App\Services\App\BaseService;
 class TagService extends BaseService
 {
     public static function sync(string $module, string $id, array $module_tag_ids, array $global_tag_ids, array $columns): void
-
-    // public static function sync(string $module, string $id, array $new_tags): void
     {
         //get item with tags        
         $model = static::makeModel($module);
