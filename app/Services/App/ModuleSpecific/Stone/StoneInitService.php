@@ -3,7 +3,7 @@
 namespace App\Services\App\ModuleSpecific\Stone;
 
 use App\Services\App\InitService;
-use App\Services\App\ModuleSpecific\Interfaces\InitSpecificServiceInterface;
+use App\Services\App\ModuleSpecific\AInterfaces\InitSpecificServiceInterface;
 
 class StoneInitService extends InitService implements InitSpecificServiceInterface
 {

@@ -3,7 +3,7 @@
 namespace App\Services\App\ModuleSpecific\Ceramic;
 
 use App\Services\App\ReadService;
-use App\Services\App\ModuleSpecific\Interfaces\ReadSpecificServiceInterface;
+use App\Services\App\ModuleSpecific\AInterfaces\ReadSpecificServiceInterface;
 
 class CeramicReadService extends ReadService implements ReadSpecificServiceInterface
 {

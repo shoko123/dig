@@ -3,7 +3,7 @@
 namespace App\Services\App\ModuleSpecific\Stone;
 
 use App\Services\App\ReadService;
-use App\Services\App\ModuleSpecific\Interfaces\ReadSpecificServiceInterface;
+use App\Services\App\ModuleSpecific\AInterfaces\ReadSpecificServiceInterface;
 
 class StoneReadService extends ReadService implements ReadSpecificServiceInterface
 {

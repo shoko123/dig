@@ -8,7 +8,7 @@ use Exception;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 
-use App\Services\App\ModuleSpecific\Interfaces\InitSpecificServiceInterface;
+use App\Services\App\ModuleSpecific\AInterfaces\InitSpecificServiceInterface;
 use App\Models\Tag\TagGroup;
 
 abstract class InitService extends DigModuleService implements InitSpecificServiceInterface

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\App\ModuleSpecific\Interfaces;
+namespace App\Services\App\ModuleSpecific\AInterfaces;
 
 interface InitSpecificServiceInterface
 {

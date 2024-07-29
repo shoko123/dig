@@ -3,7 +3,7 @@
 namespace App\Services\App\ModuleSpecific\Ceramic;
 
 use App\Services\App\InitService;
-use App\Services\App\ModuleSpecific\Interfaces\InitSpecificServiceInterface;
+use App\Services\App\ModuleSpecific\AInterfaces\InitSpecificServiceInterface;
 
 class CeramicInitService extends InitService implements InitSpecificServiceInterface
 {
