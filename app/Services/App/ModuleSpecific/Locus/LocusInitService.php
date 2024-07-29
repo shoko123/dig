@@ -3,7 +3,7 @@
 namespace App\Services\App\ModuleSpecific\Locus;
 
 use App\Services\App\InitService;
-use App\Services\App\ModuleSpecific\AInterfaces\InitSpecificServiceInterface;
+use App\Services\App\ModuleSpecific\InitSpecificServiceInterface;
 
 class LocusInitService extends InitService implements InitSpecificServiceInterface
 {

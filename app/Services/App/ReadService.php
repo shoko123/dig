@@ -5,7 +5,7 @@ namespace App\Services\App;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-use App\Services\App\ModuleSpecific\AInterfaces\ReadSpecificServiceInterface;
+use App\Services\App\ModuleSpecific\ReadSpecificServiceInterface;
 use App\Models\DigModule\DigModuleModel;
 use App\Services\App\MediaService;
 use App\Models\Tag\Tag;

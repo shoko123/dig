@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\App\ModuleSpecific\AInterfaces;
+namespace App\Services\App\ModuleSpecific;
 
 interface ReadSpecificServiceInterface
 {
