@@ -5,11 +5,11 @@ namespace App\Http\Controllers\DigModule;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
-use App\Services\App\DigModuleInitService;
+use App\Services\App\InitService;
 
 class DigModuleInitController extends BaseController
 {
-    protected DigModuleInitService $ms;
+    protected InitService $ms;
 
     public function __construct(Request $r)
     {

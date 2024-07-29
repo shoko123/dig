@@ -2,10 +2,10 @@
 
 namespace App\Services\App\ModuleSpecific\Stone;
 
-use App\Services\App\DigModuleReadService;
+use App\Services\App\ReadService;
 use App\Services\App\ModuleSpecific\Interfaces\ReadSpecificServiceInterface;
 
-class StoneReadService extends DigModuleReadService implements ReadSpecificServiceInterface
+class StoneReadService extends ReadService implements ReadSpecificServiceInterface
 {
     function __construct()
     {

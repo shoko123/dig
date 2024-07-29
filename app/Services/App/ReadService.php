@@ -10,7 +10,7 @@ use App\Models\DigModule\DigModuleModel;
 use App\Services\App\MediaService;
 use App\Models\Tag\Tag;
 
-abstract class DigModuleReadService extends DigModuleService implements ReadSpecificServiceInterface
+abstract class ReadService extends DigModuleService implements ReadSpecificServiceInterface
 {
     protected DigModuleModel $model;
     protected Builder $builder;

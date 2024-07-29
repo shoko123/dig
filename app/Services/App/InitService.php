@@ -11,7 +11,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use App\Services\App\ModuleSpecific\Interfaces\InitSpecificServiceInterface;
 use App\Models\Tag\TagGroup;
 
-abstract class DigModuleInitService extends DigModuleService implements InitSpecificServiceInterface
+abstract class InitService extends DigModuleService implements InitSpecificServiceInterface
 {
     protected Model $moduleTagGroup;
 

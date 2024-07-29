@@ -5,7 +5,7 @@ namespace App\Services\App;
 use Illuminate\Support\Carbon;
 use \Exception;
 
-class DigModuleStoreService  extends DigModuleService
+class StoreService  extends DigModuleService
 {
     public function __construct(string $module)
     {

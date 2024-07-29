@@ -4,11 +4,11 @@ namespace App\Http\Controllers\DigModule;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
-use App\Services\App\DigModuleStoreService;
+use App\Services\App\StoreService;
 
 class DigModuleStoreController extends BaseController
 {
-    protected DigModuleStoreService $service;
+    protected StoreService $service;
 
     public function __construct(Request $r)
     {

@@ -2,10 +2,10 @@
 
 namespace App\Services\App\ModuleSpecific\Ceramic;
 
-use App\Services\App\DigModuleReadService;
+use App\Services\App\ReadService;
 use App\Services\App\ModuleSpecific\Interfaces\ReadSpecificServiceInterface;
 
-class CeramicReadService extends DigModuleReadService implements ReadSpecificServiceInterface
+class CeramicReadService extends ReadService implements ReadSpecificServiceInterface
 {
     function __construct()
     {

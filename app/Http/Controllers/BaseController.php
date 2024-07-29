@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller;
 
-use App\Services\App\DigModuleStoreService;
+use App\Services\App\StoreService;
 
 class BaseController extends Controller
 {
@@ -28,7 +28,7 @@ class BaseController extends Controller
                 $full_class_name .= 'ReadService';
                 break;
             case 'store_service':
-                return new DigModuleStoreService($module);
+                return new StoreService($module);
 
             default:
                 abort(422, '*** Illegal service value: "' . $service_name . '"');

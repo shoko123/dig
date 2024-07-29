@@ -2,10 +2,10 @@
 
 namespace App\Services\App\ModuleSpecific\Locus;
 
-use App\Services\App\DigModuleInitService;
+use App\Services\App\InitService;
 use App\Services\App\ModuleSpecific\Interfaces\InitSpecificServiceInterface;
 
-class LocusInitService extends DigModuleInitService implements InitSpecificServiceInterface
+class LocusInitService extends InitService implements InitSpecificServiceInterface
 {
     function __construct()
     {

@@ -2,10 +2,10 @@
 
 namespace App\Services\App\ModuleSpecific\Locus;
 
-use App\Services\App\DigModuleReadService;
+use App\Services\App\ReadService;
 use App\Services\App\ModuleSpecific\Interfaces\ReadSpecificServiceInterface;
 
-class LocusReadService extends DigModuleReadService implements ReadSpecificServiceInterface
+class LocusReadService extends ReadService implements ReadSpecificServiceInterface
 {
     function __construct()
     {

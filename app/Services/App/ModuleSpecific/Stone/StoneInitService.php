@@ -2,10 +2,10 @@
 
 namespace App\Services\App\ModuleSpecific\Stone;
 
-use App\Services\App\DigModuleInitService;
+use App\Services\App\InitService;
 use App\Services\App\ModuleSpecific\Interfaces\InitSpecificServiceInterface;
 
-class StoneInitService extends DigModuleInitService implements InitSpecificServiceInterface
+class StoneInitService extends InitService implements InitSpecificServiceInterface
 {
     function __construct()
     {

@@ -2,10 +2,10 @@
 
 namespace App\Services\App\ModuleSpecific\Ceramic;
 
-use App\Services\App\DigModuleInitService;
+use App\Services\App\InitService;
 use App\Services\App\ModuleSpecific\Interfaces\InitSpecificServiceInterface;
 
-class CeramicInitService extends DigModuleInitService implements InitSpecificServiceInterface
+class CeramicInitService extends InitService implements InitSpecificServiceInterface
 {
     function __construct()
     {
