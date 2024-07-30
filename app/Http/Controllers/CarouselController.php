@@ -18,9 +18,12 @@ class CarouselController extends BaseController
                 return response()->json(MediaService::show_carousel($r["media_id"]), 200);
 
             case 'main':
-            case 'related':
                 $rs = static::makeDigModuleService(ServiceEnum::Read, $r["module"]);
                 return response()->json($rs->show_carousel($r["module"], $r["module_id"]), 200);
+
+            case 'related':
+            default:
+                abort(422, 'unsupported "source": ' . $r["source"]);
         }
     }
 }

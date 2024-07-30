@@ -28,20 +28,20 @@ Route::post('model/show', [DigModuleController::class, 'show']);
 Route::post('carousel/show', [CarouselController::class, 'show']);
 //});
 
-Route::get('about/me', [AuthController::class, 'me']);
-// Route::get('about/me', [PermissionController::class, 'me'])->middleware('auth:sanctum');
+// Route::get('about/me', [AuthController::class, 'me']);
+Route::get('about/me', [AuthController::class, 'me'])->middleware('auth:sanctum');
 
 //mutator APIs
-// Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
-Route::post('model/store', [DigModuleController::class, 'store']);
-Route::put('model/store', [DigModuleController::class, 'store']);
-Route::post('model/destroy', [DigModuleController::class, 'destroy']);
-Route::post('tags/sync', [TagController::class, 'sync']);
-Route::post('media/upload', [MediaController::class, 'upload']);
-Route::post('media/destroy', [MediaController::class, 'destroy']);
-Route::post('media/edit', [MediaController::class, 'edit']);
-Route::post('media/reorder', [MediaController::class, 'reorder']);
-// });
+Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
+    Route::post('model/store', [DigModuleController::class, 'store']);
+    Route::put('model/store', [DigModuleController::class, 'store']);
+    Route::post('model/destroy', [DigModuleController::class, 'destroy']);
+    Route::post('tags/sync', [TagController::class, 'sync']);
+    Route::post('media/upload', [MediaController::class, 'upload']);
+    Route::post('media/destroy', [MediaController::class, 'destroy']);
+    Route::post('media/edit', [MediaController::class, 'edit']);
+    Route::post('media/reorder', [MediaController::class, 'reorder']);
+});
 
 
 //more open routes

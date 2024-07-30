@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Contracts\VerifyEmailResponse;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -20,7 +21,15 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->instance(VerifyEmailResponse::class, new class implements VerifyEmailResponse
+        {
+            public function toResponse($request)
+            {
+                return response()->json([
+                    'msg' => 'Email verification was successful! Please close this tab and return to the application',
+                ], 200);
+            }
+        });
     }
 
     /**
@@ -34,7 +43,7 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
         RateLimiter::for('login', function (Request $request) {
-            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
+            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())) . '|' . $request->ip());
 
             return Limit::perMinute(5)->by($throttleKey);
         });

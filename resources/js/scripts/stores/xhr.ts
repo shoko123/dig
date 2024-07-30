@@ -37,7 +37,7 @@ export const useXhrStore = defineStore('xhr', () => {
         method,
         data: data === undefined ? null : data,
       })
-      return { success: true, data: res.data }
+      return { success: true, data: res.data, status: res.status, message: res.statusText }
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         console.log(

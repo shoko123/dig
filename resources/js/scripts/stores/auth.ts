@@ -9,6 +9,7 @@ import type {
   TResetPasswordForm,
   TUser,
 } from '@/js/types/authTypes'
+
 import type { TPageName } from '@/js/types/routesTypes'
 import type { TXhrEmptyResult, TXhrResult } from '@/js/types/generalTypes'
 import { useXhrStore } from './xhr'
