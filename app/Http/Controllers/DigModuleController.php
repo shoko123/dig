@@ -5,15 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\ServiceEnum;
+use App\Http\Requests\BaseRequest;
+use App\Http\Requests\PageRequest;
 
 class DigModuleController extends BaseController
 {
     /**
      * Get the module's init data (counts, trio, description_text)
      */
-    public function init(Request $r)
+    public function init(BaseRequest $r)
     {
-        $initService = static::makeDigModuleService(ServiceEnum::Init, $r["module"]);
+        $v = $r->validated();
+        $initService = static::makeDigModuleService(ServiceEnum::Init, $v["module"]);
         return response()->json($initService->init(), 200);
     }
 
@@ -29,8 +32,9 @@ class DigModuleController extends BaseController
     /**
      * Retrieve a sub-collection (page) of records of ids sent, formated according to the page's type (Tabular, Media)
      */
-    public function page(Request $r)
+    public function page(PageRequest $r)
     {
+        $v = $r->validated();
         $readService = static::makeDigModuleService(ServiceEnum::Read, $r["module"]);
         return response()->json($readService->page($r["ids"], $r["view"]), 200);
     }

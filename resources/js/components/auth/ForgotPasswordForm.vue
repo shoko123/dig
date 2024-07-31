@@ -1,14 +1,8 @@
 <template>
   <div class="text-subtitle-1 text-medium-emphasis">Recovery Email</div>
 
-  <v-text-field
-    v-model="data.email"
-    :error-messages="emailErrors"
-    density="compact"
-    placeholder="Email address"
-    prepend-inner-icon="mdi-email-outline"
-    variant="outlined"
-  />
+  <v-text-field v-model="data.email" :error-messages="emailErrors" density="compact" placeholder="Email address"
+    prepend-inner-icon="mdi-email-outline" variant="outlined" />
 
   <v-btn block class="mb-8" color="blue" size="large" variant="tonal" @click="sendForgotPassword">
     Send Email
@@ -29,7 +23,7 @@ import { useVuelidate } from '@vuelidate/core'
 import { required, email } from '@vuelidate/validators'
 
 const { showSnackbar } = useNotificationsStore()
-const { logout, forgotPassword, resetAndGoTo, openDialog } = useAuthStore()
+const { forgotPassword, resetAndGoTo, openDialog } = useAuthStore()
 
 const data = reactive({
   email: '',
@@ -56,24 +50,17 @@ async function sendForgotPassword() {
     return
   }
 
-  const res1 = await logout()
-  if (!res1.success) {
-    showSnackbar('logout request failed. Redirected to home page')
-    resetAndGoTo('home')
-    return
-  }
-
-  const res2 = await forgotPassword(data)
-  if (res2.success) {
+  const res = await forgotPassword(data)
+  if (res.success) {
     openDialog(
       `A password reset was sent to ${data.email}. Please check your email, reset password then click below to continue to the login page.`,
     )
   } else {
-    if (res2.status === 422) {
-      showSnackbar(`${res2.message}`)
+    if (res.status === 422) {
+      showSnackbar(`${res.message}`)
     } else {
       showSnackbar(
-        `forgot-password request failed. Error: ${res2.message}. Redirected to home page`,
+        `forgot-password request failed. Error: ${res.message}. Redirected to home page`,
       )
       resetAndGoTo('home')
     }
