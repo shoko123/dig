@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-
 use App\Http\Requests\BaseRequest;
 
 class PageRequest extends BaseRequest
@@ -13,10 +12,7 @@ class PageRequest extends BaseRequest
     public function authorize(): bool
     {
         return true;
-        // $p = $this->input('model') . '-media';
-        // return $this->user('sanctum')->can($p);
     }
-
 
     /**
      * Get the validation rules that apply to the request.

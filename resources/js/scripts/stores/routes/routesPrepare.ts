@@ -151,7 +151,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           {
             const res = await send<TApiArray[]>('model/index', 'post', {
               module,
-              query: {},
             })
             if (res.success) {
               prepareForNew(true, res.data)

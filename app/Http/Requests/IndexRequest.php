@@ -35,9 +35,9 @@ class IndexRequest extends BaseRequest
             'query.global_tag_ids.*' => 'exists:tags,id',
             //
             'query.column_value' => ['array'],
-            'query.column_value.*.name' => ['required', $this->rule_value_column_name_exists()],
+            'query.column_value.*.column_name' => ['required', $this->rule_value_column_name_exists()],
             'query.column_value.*.vals' => ['array'],
-            'query.column_value.*.vals.*' => ['required', 'alpha_num:ascii'],
+            'query.column_value.*.vals.*' => ['required', 'string'], //'alpha_num:ascii'
             //
             //TODO validate that vals exist in the other tables' values (awkward)
             'query.column_lookup' => ['array'],

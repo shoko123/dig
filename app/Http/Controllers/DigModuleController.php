@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\ServiceEnum;
 use App\Http\Requests\BaseRequest;
 use App\Http\Requests\PageRequest;
 use App\Http\Requests\IndexRequest;
+use App\Http\Requests\StoreRequest;
+use App\Http\Requests\ItemByIdRequest;
 
 class DigModuleController extends BaseController
 {
@@ -28,14 +29,9 @@ class DigModuleController extends BaseController
     {
         $v = $r->validated();
         $readService = static::makeDigModuleService(ServiceEnum::Read, $v["module"]);
-        return response()->json($readService->index($r["query"]), 200);
+        return response()->json($readService->index($v["query"] ?? null), 200);
     }
 
-    public function ORIGindex(Request $r)
-    {
-        $readService = static::makeDigModuleService(ServiceEnum::Read, $r["module"]);
-        return response()->json($readService->index($r["query"]), 200);
-    }
     /**
      * Retrieve a sub-collection (page) of records of ids sent, formated according to the page's type (Tabular, Media)
      */
@@ -43,33 +39,37 @@ class DigModuleController extends BaseController
     {
         $v = $r->validated();
         $readService = static::makeDigModuleService(ServiceEnum::Read, $r["module"]);
-        return response()->json($readService->page($r["ids"], $r["view"]), 200);
+        return response()->json($readService->page($v["ids"], $v["view"]), 200);
     }
 
     /**
      * Retrieve a single record and related data.
      */
-    public function show(Request $r)
+    public function show(ItemByIdRequest $r)
     {
-        $readService = static::makeDigModuleService(ServiceEnum::Read, $r["module"]);
-        return response()->json($readService->show($r["id"]), 200);
+        $v = $r->validated();
+        $readService = static::makeDigModuleService(ServiceEnum::Read, $v["module"]);
+        return response()->json($readService->show($v["id"]), 200);
     }
+
     /**
      * Create/update a DigModule record.
      */
-    public function store(Request $r)
+    public function store(StoreRequest $r)
     {
-        $mutateService = static::makeDigModuleService(ServiceEnum::Mutate, $r["module"]);
+        $v = $r->validated();
+        $mutateService = static::makeDigModuleService(ServiceEnum::Mutate, $v["module"]);
         if ($r->isMethod('post')) {
-            return response()->json($mutateService->create($r->fields), 201);
+            return response()->json($mutateService->create($v["fields"]), 201);
         } else {
-            return response()->json($mutateService->update($r->fields), 200);
+            return response()->json($mutateService->update($v["fields"]), 200);
         }
     }
 
-    public function destroy(Request $r)
+    public function destroy(ItemByIdRequest $r)
     {
+        $v = $r->validated();
         $mutateService = static::makeDigModuleService(ServiceEnum::Mutate, $r["module"]);
-        return response()->json($mutateService->destroy($r["module"], $r["id"]), 200);
+        return response()->json($mutateService->destroy($v["module"], $v["id"]), 200);
     }
 }

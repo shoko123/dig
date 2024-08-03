@@ -26,10 +26,12 @@ abstract class ReadService extends DigModuleService implements ReadSpecificServi
 
     /////////////// index ///////////////////
 
-    public function index(array $query): array
+    public function index(array | null $query): array
     {
         $this->builder = $this->model->select('id');
-        $this->builderIndexApplyFilters($query);
+        if (!is_null($query)) {
+            $this->builderIndexApplyFilters($query);
+        }
 
         if (empty($query['order_by'])) {
             $this->applyDefaultOrder();

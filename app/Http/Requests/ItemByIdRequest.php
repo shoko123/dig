@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Requests\DigModules;
+namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
 
-class LocusCreateRequest extends FormRequest
+class ItemByIdRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,15 @@ class LocusCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'module' => $this->rule_allowed_module_name(),
+            'id' => $this->rule_id_exists_in_model_table(),
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'id' => 'An invalid or non existing id - `:input`',
         ];
     }
 }

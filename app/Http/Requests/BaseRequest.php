@@ -21,7 +21,7 @@ enum ModuleConfigData: int
 class BaseRequest extends FormRequest
 {
     public static $moduleDetails = [
-        'Locus' => ['loci', 'locus_tags', [], [], ['id', 'oc_label'], ['category', 'a', 'b', 'published_date']],
+        'Locus' => ['loci', 'locus_tags', [], ['category'], ['id', 'oc_label'], ['category', 'a', 'b', 'published_date']],
         'Pottery' => ['pottery', 'pottery_tags', [], [], [], []],
         'Stone' => ['stones', 'stone_tags',  ['base_type_id', 'material_id', 'cataloger_id'], ['id_year', 'id_object_no'], ['id'], ['id_year', 'id_object_no', 'excavation_date', 'catalog_date']]
     ];
