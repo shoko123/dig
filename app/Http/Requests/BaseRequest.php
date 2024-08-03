@@ -6,27 +6,74 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Auth\Access\AuthorizationException;
+use App\Exceptions\GeneralJsonException;
+
+enum ModuleConfigData: int
+{
+    case TableName = 0;
+    case TagTableName = 1;
+    case LookupColumnNames = 2;
+    case ValueColumnNames = 3;
+    case SearchColumnNames = 4;
+    case OrderByColumnNames = 5;
+}
 
 class BaseRequest extends FormRequest
 {
-    public static $moduleToTableName = [
-        'Locus' => 'loci',
-        'Pottery' => 'pottery',
-        'Stone' => 'stones',
+    public static $moduleDetails = [
+        'Locus' => ['loci', 'locus_tags', [], [], ['id', 'oc_label'], ['category', 'a', 'b', 'published_date']],
+        'Pottery' => ['pottery', 'pottery_tags', [], [], [], []],
+        'Stone' => ['stones', 'stone_tags',  ['base_type_id', 'material_id', 'cataloger_id'], ['id_year', 'id_object_no'], ['id'], ['id_year', 'id_object_no', 'excavation_date', 'catalog_date']]
     ];
 
-    protected static $rule_allowed_module_name = 'required|in:Locus,Pottery,Stone';
-
-    protected function tableName(): string
+    protected function prepareForValidation(): void
     {
-        return self::$moduleToTableName[$this->input('module')];
+        //Verify that the module is valid as it used as a key for other validations using $moduleTable[] above.
+        if (is_null($this->input('module')) || !in_array($this->input('module'), array_keys(self::$moduleDetails))) {
+            throw new GeneralJsonException("Invalid module name: `" . $this->input('module') . "`", 422);
+        }
+    }
+
+    //protected static $rule_allowed_module_name = 'required|in:Locus,Pottery,Stone';
+    protected static function rule_allowed_module_name(): string
+    {
+        return 'required|bail|in:' . implode(",", array_keys(self::$moduleDetails));
+    }
+
+    protected function getModuleData(ModuleConfigData $d): string | array
+    {
+        return self::$moduleDetails[$this->input('module')][$d->value];
     }
 
     protected function rule_id_exists_in_model_table(): string
     {
-        return 'required|exists:' . $this->tableName() . ',id';
+        return 'required|exists:' . $this->getModuleData(ModuleConfigData::TableName) . ',id';
     }
 
+    protected function rule_id_exists_in_model_tags_table(): string
+    {
+        return 'exists:' . $this->getModuleData(ModuleConfigData::TagTableName) . ',id';
+    }
+
+    protected function rule_lookup_column_name_exists(): string
+    {
+        return 'in:' . implode(",", $this->getModuleData(ModuleConfigData::LookupColumnNames));
+    }
+
+    protected function rule_value_column_name_exists(): string
+    {
+        return 'in:' . implode(",", $this->getModuleData(ModuleConfigData::ValueColumnNames));
+    }
+
+    protected function rule_search_column_name_exists(): string
+    {
+        return 'in:' . implode(",", $this->getModuleData(ModuleConfigData::SearchColumnNames));
+    }
+
+    protected function rule_order_by_column_name_exists(): string
+    {
+        return 'in:' . implode(",", $this->getModuleData(ModuleConfigData::OrderByColumnNames));
+    }
     public function authorize(): bool
     {
         return true;
@@ -44,7 +91,7 @@ class BaseRequest extends FormRequest
      */
     public function rules(): array
     {
-        return ['module' => static::$rule_allowed_module_name];
+        return ['module' => static::rule_allowed_module_name()];
     }
 
     public function failedValidation(Validator $validator)

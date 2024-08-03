@@ -7,6 +7,7 @@ use App\Http\Controllers\BaseController;
 use App\Http\Controllers\ServiceEnum;
 use App\Http\Requests\BaseRequest;
 use App\Http\Requests\PageRequest;
+use App\Http\Requests\IndexRequest;
 
 class DigModuleController extends BaseController
 {
@@ -23,12 +24,18 @@ class DigModuleController extends BaseController
     /**
      * Filter the module's table and return an array of ids.
      */
-    public function index(Request $r)
+    public function index(IndexRequest $r)
+    {
+        $v = $r->validated();
+        $readService = static::makeDigModuleService(ServiceEnum::Read, $v["module"]);
+        return response()->json($readService->index($r["query"]), 200);
+    }
+
+    public function ORIGindex(Request $r)
     {
         $readService = static::makeDigModuleService(ServiceEnum::Read, $r["module"]);
         return response()->json($readService->index($r["query"]), 200);
     }
-
     /**
      * Retrieve a sub-collection (page) of records of ids sent, formated according to the page's type (Tabular, Media)
      */

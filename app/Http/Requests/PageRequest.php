@@ -26,7 +26,7 @@ class PageRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'module' => static::$rule_allowed_module_name,
+            'module' => $this->rule_allowed_module_name(),
             'ids' => ['required', 'array', 'between:1,200'],
             'ids.*' => $this->rule_id_exists_in_model_table(),
             'view' => ['required', 'in:Tabular,Gallery'],

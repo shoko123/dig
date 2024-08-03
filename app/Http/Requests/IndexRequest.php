@@ -25,10 +25,41 @@ class IndexRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'module' => static::$rule_allowed_module_name,
-            'ids' => ['required', 'array', 'between:1,200'],
-            'ids.*' => $this->rule_id_exists_in_model_table(),
-            'view' => ['required', 'in:Tabular,Gallery'],
+            //'module' => verified also in BaseRequest.prepareForValidation(),
+            'module' => $this->rule_allowed_module_name(),
+            //
+            'query.model_tag_ids' => ['array'],
+            'query.model_tag_ids.*' => $this->rule_id_exists_in_model_tags_table(),
+            //
+            'query.global_tag_ids' => ['array'],
+            'query.global_tag_ids.*' => 'exists:tags,id',
+            //
+            'query.column_value' => ['array'],
+            'query.column_value.*.name' => ['required', $this->rule_value_column_name_exists()],
+            'query.column_value.*.vals' => ['array'],
+            'query.column_value.*.vals.*' => ['required', 'alpha_num:ascii'],
+            //
+            //TODO validate that vals exist in the other tables' values (awkward)
+            'query.column_lookup' => ['array'],
+            'query.column_lookup.*.column_name' => $this->rule_lookup_column_name_exists(),
+            'query.column_lookup.*.vals' => ['array'],
+            'query.column_lookup.*.vals.*' => ['numeric', 'integer'],
+            //        
+            'query.column_search.*' => ['array'],
+            'query.column_search.*.column_name' => [$this->rule_search_column_name_exists()],
+            'query.column_search.*.column_name.vals' => ['array'],
+            'query.column_search.*.column_name.vals.*' => ['string'],
+            //
+            'query.media' => ['array'],
+            'query.media.*' => ['string'],
+            //
+            'query.bespoke' => ['array'],
+            'query.bespoke.*' => ['string'],
+            //
+            'query.order_by.*' => ['array'],
+            'query.order_by.*.column_name' => [$this->rule_order_by_column_name_exists()],
+            'query.order_by.*.asc' => ['boolean'],
+
         ];
     }
 

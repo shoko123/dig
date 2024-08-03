@@ -42,8 +42,8 @@ export const useFilterStore = defineStore('filter', () => {
     const all: TApiFilters = {
       model_tag_ids: [],
       global_tag_ids: [],
-      column_values: [],
-      column_lookup_ids: [],
+      column_value: [],
+      column_lookup: [],
       column_search: [],
       media: [],
       bespoke: [],
@@ -63,54 +63,54 @@ export const useFilterStore = defineStore('filter', () => {
         case 'CV':
         case 'CR':
           {
-            const i = all.column_values.findIndex((x) => {
+            const i = all.column_value.findIndex((x) => {
               return x.column_name === (<TGroupColumn>group).column_name
             })
             if (i === -1) {
               //if new group, push the param's group into the groups array with itself as the first param
-              all.column_values.push({
+              all.column_value.push({
                 column_name: (<TGroupColumn>group).column_name,
                 vals: [param.text],
               })
             } else {
               //if the group is already selected, add param's text to the group's params array
-              all.column_values[i].vals.push(param.text)
+              all.column_value[i].vals.push(param.text)
             }
           }
           break
 
         case 'CL':
           {
-            const i = all.column_lookup_ids.findIndex((x) => {
+            const i = all.column_lookup.findIndex((x) => {
               return x.column_name === (<TGroupColumn>group).column_name
             })
             if (i === -1) {
               //if new group, push the param's group into the groups array with itself as the first param
-              all.column_lookup_ids.push({
+              all.column_lookup.push({
                 column_name: (<TGroupColumn>group).column_name,
                 vals: [<number>param.extra],
               })
             } else {
               //if the group is already selected, add param's text to the group's params array
-              all.column_lookup_ids[i].vals.push(<number>param.extra)
+              all.column_lookup[i].vals.push(<number>param.extra)
             }
           }
           break
 
         case 'CB':
           {
-            const i = all.column_values.findIndex((x) => {
+            const i = all.column_value.findIndex((x) => {
               return x.column_name === (<TGroupColumn>group).column_name
             })
             if (i === -1) {
               //if new group, push the param's group into the groups array with itself as the first param
-              all.column_values.push({
+              all.column_value.push({
                 column_name: (<TGroupColumn>group).column_name,
                 vals: [<string>param.extra],
               })
             } else {
               //if the group is already selected, add param's text to the group's params array
-              all.column_values[i].vals.push(<string>param.extra)
+              all.column_value[i].vals.push(<string>param.extra)
             }
           }
           break

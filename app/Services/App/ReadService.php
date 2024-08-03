@@ -54,12 +54,12 @@ abstract class ReadService extends DigModuleService implements ReadSpecificServi
             $this->applyGlobalTagFilters($query['global_tag_ids']);
         }
 
-        if (!empty($query['column_lookup_ids'])) {
-            $this->applyColumnLookupOrValueFilters($query['column_lookup_ids']);
+        if (!empty($query['column_lookup'])) {
+            $this->applyColumnLookupOrValueFilters($query['column_lookup']);
         }
 
-        if (!empty($query['column_values'])) {
-            $this->applyColumnLookupOrValueFilters($query['column_values']);
+        if (!empty($query['column_value'])) {
+            $this->applyColumnLookupOrValueFilters($query['column_value']);
         }
 
         if (!empty($query['column_search'])) {
