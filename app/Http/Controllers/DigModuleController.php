@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\ServiceEnum;
-use App\Http\Requests\BaseRequest;
+use App\Http\Requests\ModuleRequest;
 use App\Http\Requests\PageRequest;
 use App\Http\Requests\IndexRequest;
 use App\Http\Requests\StoreRequest;
@@ -15,7 +15,7 @@ class DigModuleController extends BaseController
     /**
      * Get the module's init data (counts, trio, description_text)
      */
-    public function init(BaseRequest $r)
+    public function init(ModuleRequest $r)
     {
         $v = $r->validated();
         $initService = static::makeDigModuleService(ServiceEnum::Init, $v["module"]);

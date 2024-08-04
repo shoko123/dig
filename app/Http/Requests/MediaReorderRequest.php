@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\ModuleRequest;
 
-class ItemByIdRequest extends ModuleRequest
+class MediaReorderRequest extends ModuleRequest
 {
     public function authorize(): bool
     {
@@ -15,14 +15,8 @@ class ItemByIdRequest extends ModuleRequest
     {
         return [
             'module' => $this->rule_module_name_required_valid(),
-            'id' => ['required', $this->rule_id_exists_in_module_table()],
-        ];
-    }
-
-    public function messages(): array
-    {
-        return [
-            'id' => 'An invalid or non existing id - `:input`',
+            'module_id' => $this->rule_id_exists_in_module_table(),
+            'ordered_media_ids.*' => 'nullable|exists:media,id',
         ];
     }
 }

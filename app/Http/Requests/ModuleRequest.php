@@ -18,7 +18,7 @@ enum ModuleConfigData: int
     case OrderByColumnNames = 5;
 }
 
-class BaseRequest extends FormRequest
+class ModuleRequest extends FormRequest
 {
     public static $moduleDetails = [
         'Locus' => ['loci', 'locus_tags', [], ['category'], ['id', 'oc_label'], ['category', 'a', 'b', 'published_date']],
@@ -45,12 +45,12 @@ class BaseRequest extends FormRequest
         return self::$moduleDetails[$this->input('module')][$d->value];
     }
 
-    protected function rule_id_exists_in_model_table(): string
+    protected function rule_id_exists_in_module_table(): string
     {
         return 'exists:' . $this->getModuleData(ModuleConfigData::TableName) . ',id';
     }
 
-    protected function rule_id_exists_in_model_tags_table(): string
+    protected function rule_id_exists_in_module_tags_table(): string
     {
         return 'exists:' . $this->getModuleData(ModuleConfigData::TagTableName) . ',id';
     }
@@ -81,7 +81,7 @@ class BaseRequest extends FormRequest
 
     protected function failedAuthorization()
     {
-        throw new AuthorizationException('Authorization failed in BaseRequest.');
+        throw new AuthorizationException('Authorization failed in ModuleRequest.');
     }
 
     /**

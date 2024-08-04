@@ -167,9 +167,7 @@ export const useMediaStore = defineStore('media', () => {
     const r = useRoutesMainStore()
     const i = useItemStore()
     const cm = useCollectionMediaStore()
-    const ordered = cm.array.map((x, index) => {
-      return { id: x.id, order: index + 1 }
-    })
+    const ordered = cm.array.map((x) => x.id)
     console.log(
       `reorder()  model: ${r.current.module}, id: ${i.fields?.id} ,ordered: ${JSON.stringify(ordered, null, 2)}`,
     )

@@ -2,29 +2,21 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\BaseRequest;
+use App\Http\Requests\ModuleRequest;
 
-class PageRequest extends BaseRequest
+class PageRequest extends ModuleRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
             'module' => $this->rule_module_name_required_valid(),
             'ids' => ['required', 'array', 'between:1,200'],
-            'ids.*' => $this->rule_id_exists_in_model_table(),
+            'ids.*' => $this->rule_id_exists_in_module_table(),
             'view' => ['required', 'in:Tabular,Gallery'],
         ];
     }

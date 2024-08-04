@@ -2,34 +2,23 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\BaseRequest;
+use App\Http\Requests\ModuleRequest;
 
-class IndexRequest extends BaseRequest
+class IndexRequest extends ModuleRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
-        // $p = $this->input('model') . '-media';
-        // return $this->user('sanctum')->can($p);
     }
 
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            //'module' => verified also in BaseRequest.prepareForValidation(),
+            //'module' => verified also in ModuleRequest.prepareForValidation(),
             'module' => $this->rule_module_name_required_valid(),
             //
             'query.model_tag_ids' => ['array'],
-            'query.model_tag_ids.*' => $this->rule_id_exists_in_model_tags_table(),
+            'query.model_tag_ids.*' => $this->rule_id_exists_in_module_tags_table(),
             //
             'query.global_tag_ids' => ['array'],
             'query.global_tag_ids.*' => 'exists:tags,id',
@@ -58,8 +47,7 @@ class IndexRequest extends BaseRequest
             //
             'query.order_by.*' => ['array'],
             'query.order_by.*.column_name' => [$this->rule_order_by_column_name_exists()],
-            'query.order_by.*.asc' => ['boolean'],
-
+            'query.order_by.*.asc' => ['boolean']
         ];
     }
 

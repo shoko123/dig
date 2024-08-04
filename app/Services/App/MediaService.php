@@ -6,6 +6,7 @@ use \Exception;
 use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use App\Services\App\BaseService;
+use App\Exceptions\GeneralJsonException;
 
 class MediaService extends BaseService
 {
@@ -54,8 +55,8 @@ class MediaService extends BaseService
                     ->toMediaCollection($media_collection_name);
             }
             return static::media_by_module_and_id($module, $id);
-        } catch (Exception $error) {
-            throw new Exception('Failed to upload media. error: ' . $error);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage() . $e->getCode());
         }
     }
 
@@ -66,7 +67,7 @@ class MediaService extends BaseService
 
         //verify that this media record matches item sent (by model_type and model_id)
         if (($mediaToDelete['model_type'] !== $module) || $mediaToDelete['model_id'] !== $module_id) {
-            throw new Exception('Media/Model mismatch abort destroy');
+            throw new GeneralJsonException('Media/Model mismatch abort destroy', 422);
         }
 
         //delete
@@ -78,10 +79,10 @@ class MediaService extends BaseService
 
     public static function reorder(string $module, string $module_id, array $ordered_media_ids): array
     {
-        foreach ($ordered_media_ids as $possible) {
-            $record = Media::findOrFail($possible['id']);
-            if ($record['order_column'] !== $possible['order']) {
-                $record['order_column'] = $possible['order'];
+        foreach ($ordered_media_ids as $index => $id) {
+            $record = Media::findOrFail($id);
+            if ($record['order_column'] !== $index) {
+                $record['order_column'] = $index;
                 $record->save();
             }
         }

@@ -87,7 +87,7 @@ export const useCarouselStore = defineStore('carousel', () => {
         {
           const res = await send<TApiCarousel<'media'>>('carousel/show', 'post', {
             source: 'media',
-            module: derived.value.module, //required to exist by App\Http\Requests\BaseRequest.prepaerForValidation()
+            module: derived.value.module, //required to exist by App\Http\Requests\ModuleRequest.prepaerForValidation()
             media_id: (<TApiCarousel<'media'>>item).id,
           })
 
