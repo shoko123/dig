@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Requests\ModuleSpecific;
+namespace App\Http\Requests\Module\ModuleSpecific;
 
-use App\Http\Requests\ModuleSpecific\StoreRules;
+use App\Http\Requests\Module\ModuleSpecific\StoreRules;
 
 class StoneStoreRules extends StoreRules
 {

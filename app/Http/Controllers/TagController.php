@@ -9,7 +9,7 @@ use App\Services\App\TagService;
 class TagController extends BaseController
 {
     /**
-     * Sync item's tags (model and global tags, and also discrete column values).
+     * Sync item's tags (module and global tags, and also discrete column values).
      */
     public function sync(Request $r)
     {

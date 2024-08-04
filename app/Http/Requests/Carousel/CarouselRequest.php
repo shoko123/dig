@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Carousel;
 
-use App\Http\Requests\ModuleRequest;
+use App\Http\Requests\Module\ModuleRequest;
 
 class CarouselRequest extends ModuleRequest
 {

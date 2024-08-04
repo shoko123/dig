@@ -153,7 +153,7 @@ export const useItemStore = defineStore('item', () => {
     const { removeItemIdFromMainArray } = useCollectionMainStore()
     //const prev = next('main', itemIndexById((<TFieldsUnion>fields.value).id), false)
 
-    const res = await send<TApiItemShow<TApiFieldsUnion>>('model/destroy', 'post', {
+    const res = await send<TApiItemShow<TApiFieldsUnion>>('module/destroy', 'post', {
       module: current.value.module,
       id: fields.value?.id,
     })

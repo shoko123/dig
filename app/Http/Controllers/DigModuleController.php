@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\ServiceEnum;
-use App\Http\Requests\ModuleRequest;
-use App\Http\Requests\PageRequest;
-use App\Http\Requests\IndexRequest;
-use App\Http\Requests\StoreRequest;
-use App\Http\Requests\ItemByIdRequest;
+use App\Http\Requests\Module\ModuleRequest;
+use App\Http\Requests\Module\PageRequest;
+use App\Http\Requests\Module\IndexRequest;
+use App\Http\Requests\Module\StoreRequest;
+use App\Http\Requests\Module\ItemByIdRequest;
 
 class DigModuleController extends BaseController
 {

@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Services\App\MediaService;
-use App\Http\Requests\MediaUploadRequest;
-use App\Http\Requests\MediaReorderRequest;
-use App\Http\Requests\MediaDestroyRequest;
+use App\Http\Requests\Media\MediaUploadRequest;
+use App\Http\Requests\Media\MediaReorderRequest;
+use App\Http\Requests\Media\MediaDestroyRequest;
 
 class MediaController extends BaseController
 {

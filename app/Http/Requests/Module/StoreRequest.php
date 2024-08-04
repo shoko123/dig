@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Module;
 
-use App\Http\Requests\ModuleRequest;
-use App\Http\Requests\ModuleSpecific\StoreRules;
+use App\Http\Requests\Module\ModuleRequest;
+use App\Http\Requests\Module\ModuleSpecific\StoreRules;
 
 class StoreRequest extends ModuleRequest
 {
@@ -19,7 +19,7 @@ class StoreRequest extends ModuleRequest
     {
         parent::prepareForValidation();
 
-        $full_class = 'App\Http\Requests\ModuleSpecific\\' . $this->input('module') . 'StoreRules';
+        $full_class = 'App\Http\Requests\Module\ModuleSpecific\\' . $this->input('module') . 'StoreRules';
         $this->rulesClass =  new $full_class;
     }
 

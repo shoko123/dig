@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Media;
 
-use App\Http\Requests\ModuleRequest;
+use App\Http\Requests\Module\ModuleRequest;
 use App\Services\App\MediaService;
 use Illuminate\Validation\Rules\File;
 

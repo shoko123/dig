@@ -149,7 +149,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
         case 'item.prepareForCreate':
           {
-            const res = await send<TApiArray[]>('model/index', 'post', {
+            const res = await send<TApiArray[]>('module/index', 'post', {
               module,
             })
             if (res.success) {
@@ -171,7 +171,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
   async function loadModule(module: TModule): Promise<{ success: boolean; message: string }> {
     trioReset()
-    const res = await send<TApiModuleInit>('model/init', 'post', { module: module })
+    const res = await send<TApiModuleInit>('module/init', 'post', { module: module })
     if (res.success) {
       setModuleInfo({
         counts: res.data.counts,
@@ -222,7 +222,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       return resParseUrl
     }
 
-    const res2 = await send<TApiArray[]>('model/index', 'post', {
+    const res2 = await send<TApiArray[]>('module/index', 'post', {
       module: module,
       query: apiQueryPayload.value,
     })
@@ -253,7 +253,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       return { success: false, message: sp.message }
     }
 
-    const res = await send<TApiItemShow<TApiFieldsUnion>>('model/show', 'post', {
+    const res = await send<TApiItemShow<TApiFieldsUnion>>('module/show', 'post', {
       module,
       id: sp.id,
     })

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\ModuleSpecific;
+namespace App\Http\Requests\Module\ModuleSpecific;
 
 abstract class StoreRules
 {

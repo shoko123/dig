@@ -180,7 +180,7 @@ export const useFilterStore = defineStore('filter', () => {
   }
 
   async function getCount() {
-    const res = await send<TApiArray[]>('model/index', 'post', {
+    const res = await send<TApiArray[]>('module/index', 'post', {
       module: current.value.module,
       query: apiQueryPayload.value,
     })

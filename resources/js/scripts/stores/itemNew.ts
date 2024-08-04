@@ -55,7 +55,7 @@ export const useItemNewStore = defineStore('itemNew', () => {
     )
 
     const res = await send<TApiItemShow<TApiFieldsUnion>>(
-      'model/store',
+      'module/store',
       isCreate ? 'post' : 'put',
       {
         module: current.value.module,
