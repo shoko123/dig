@@ -30,14 +30,14 @@ class BaseRequest extends FormRequest
     {
         //Verify that the module is valid as it used as a key for other validations using $moduleTable[] above.
         if (is_null($this->input('module')) || !in_array($this->input('module'), array_keys(self::$moduleDetails))) {
-            throw new GeneralJsonException("Invalid module name: `" . $this->input('module') . "`", 422);
+            throw new GeneralJsonException("Absent or invalid module name: `" . $this->input('module') . "`", 422);
         }
     }
 
-    //protected static $rule_allowed_module_name = 'required|in:Locus,Pottery,Stone';
-    protected static function rule_allowed_module_name(): string
+    //protected static $rule_module_name_required_valid = 'required|in:Locus,Pottery,Stone';
+    protected static function rule_module_name_required_valid(): string
     {
-        return 'required|bail|in:' . implode(",", array_keys(self::$moduleDetails));
+        return 'required|in:' . implode(",", array_keys(self::$moduleDetails));
     }
 
     protected function getModuleData(ModuleConfigData $d): string | array
@@ -47,7 +47,7 @@ class BaseRequest extends FormRequest
 
     protected function rule_id_exists_in_model_table(): string
     {
-        return 'required|exists:' . $this->getModuleData(ModuleConfigData::TableName) . ',id';
+        return 'exists:' . $this->getModuleData(ModuleConfigData::TableName) . ',id';
     }
 
     protected function rule_id_exists_in_model_tags_table(): string
@@ -91,7 +91,7 @@ class BaseRequest extends FormRequest
      */
     public function rules(): array
     {
-        return ['module' => static::rule_allowed_module_name()];
+        return ['module' => static::rule_module_name_required_valid()];
     }
 
     public function failedValidation(Validator $validator)

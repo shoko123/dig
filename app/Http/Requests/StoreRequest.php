@@ -35,7 +35,7 @@ class StoreRequest extends BaseRequest
     {
         return array_merge(
             [
-                'module' => $this->rule_allowed_module_name()
+                'module' => $this->rule_module_name_required_valid()
             ],
             $this->rulesClass->rules($this->isMethod('post'))
         );

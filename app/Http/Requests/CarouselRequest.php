@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Http\Requests\BaseRequest;
+use Illuminate\Validation\Rule;
 
-class PageRequest extends BaseRequest
+class CarouselRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,19 +23,20 @@ class PageRequest extends BaseRequest
     public function rules(): array
     {
         return [
+            'source' => ['required', 'in:main,media,related'],
             'module' => $this->rule_module_name_required_valid(),
-            'ids' => ['required', 'array', 'between:1,200'],
-            'ids.*' => $this->rule_id_exists_in_model_table(),
-            'view' => ['required', 'in:Tabular,Gallery'],
+            'module_id' => ['required_if:source,main', $this->rule_id_exists_in_model_table()], //['required_if:source,main'],
+            'media_id' => ['required_if:source,media', 'numeric', 'integer'],
+
         ];
+
+        // 'role_id' => Rule::requiredIf($request->user()->is_admin),
     }
 
     public function messages(): array
     {
         return [
-            'ids.*' => 'A non existing id - `:input` - was sent to the page() endpoint',
-            'ids' => 'page length exceeds 200',
-            'view' => 'View value sent - `:input` - is not allowed'
+            'source' => 'An invalid or non existing source - `:input`',
         ];
     }
 }

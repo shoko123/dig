@@ -22,8 +22,8 @@ class ItemByIdRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'module' => $this->rule_allowed_module_name(),
-            'id' => $this->rule_id_exists_in_model_table(),
+            'module' => $this->rule_module_name_required_valid(),
+            'id' => ['required', $this->rule_id_exists_in_model_table()],
         ];
     }
 
