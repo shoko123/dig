@@ -131,7 +131,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
             $res->map(function ($y, $key) use ($group, $column_name) {
                 return ['text' => $group['manipulator']($y->$column_name), 'extra' => $y->$column_name];
             });
-
+        unset($group["manipulator"]);
         return array_merge($group, [
             'group_name' => $group_name,
             'params' => $params,

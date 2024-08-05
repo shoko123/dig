@@ -15,7 +15,7 @@
               </thead>
               <tbody>
                 <tr v-for="(item, index) in orderByAvailable" :key="index">
-                  <td>{{ item.name }}</td>
+                  <td>{{ item.text }}</td>
                   <td>
                     <v-btn prepend-icon="mdi-arrow-up" @click="orderParamClicked(index, true)">
                       Add

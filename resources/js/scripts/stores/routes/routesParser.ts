@@ -164,7 +164,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
         return { success: false, message: `Duplicate url Order By parameter "${nameOnly}".` }
       }
 
-      const ordeByIndex = orderByOptions.value.findIndex((y) => y.name === nameOnly)
+      const ordeByIndex = orderByOptions.value.findIndex((y) => y.text === nameOnly)
 
       if (ordeByIndex === undefined || (lastTwo !== '.A' && lastTwo !== '.D')) {
         return { success: false, message: `Unrecognized url Order By parameter "${x}".` }

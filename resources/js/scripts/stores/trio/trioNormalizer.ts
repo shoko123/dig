@@ -3,6 +3,7 @@ import { useMediaStore } from '../media'
 
 import type {
   TApiTrio,
+  TApiParam,
   TGroupTmpUnion,
   TGroupUnion,
   TApiGroupByCode,
@@ -12,7 +13,6 @@ import type {
   TGroupLabelToKey,
   TGroupColumn,
   TParamTmp,
-  TApiParamNameAndColumn,
 } from '@/js/types/trioTypes'
 
 export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
@@ -23,7 +23,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   let paramsObj: TParamObj = {}
   let groupLabelToKey: TGroupLabelToKey = {}
   let fieldNameToGroupKey: TGroupLabelToKey = {}
-  let orderByOptions: TApiParamNameAndColumn[] = []
+  let orderByOptions: TApiParam[] = []
   let catCnt = 0
   let grpCnt = 0
   let prmCnt = 0
@@ -52,18 +52,10 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
         const grpKey = pad(grpCnt, 3)
         categories[catCnt].groupKeys.push(grpKey)
         switch (grp.group_type_code) {
-          case 'CL':
-            handleCL(grp as TApiGroupByCode<'CL'>)
-            break
           case 'CV':
             handleCV(grp as TApiGroupByCode<'CV'>)
             break
-          case 'CB':
-            handleCB(grp as TApiGroupByCode<'CB'>)
-            break
-          case 'CR':
-            handleCR(grp as TApiGroupByCode<'CR'>)
-            break
+
           case 'CS':
             handleCS(grp as TApiGroupByCode<'CS'>)
             break
@@ -114,7 +106,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     groupsObj[grpKey] = grpToSave
     groupLabelToKey[grpToSave.label] = grpKey
 
-    if (['CL', 'CV', 'CR', 'CB'].includes(grpToSave.code)) {
+    if ('CV' === grpToSave.code) {
       fieldNameToGroupKey[(<TGroupColumn>grpToSave).column_name] = grpKey
     }
   }
@@ -130,50 +122,57 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     })
   }
 
-  function handleCL(grp: TApiGroupByCode<'CL'>) {
-    tmpParams = grp.params.map((x) => {
-      return { text: x.name, extra: x.id }
-    })
-    tmpGroup = {
-      code: grp.group_type_code,
-      label: grp.group_name,
-      column_name: grp.column_name,
-      dependency: grp.dependency === null ? [] : processDependency(<string[]>grp.dependency),
-    }
-  }
-
   function handleCV(grp: TApiGroupByCode<'CV'>) {
-    tmpParams = grp.params.map((x) => {
-      return { text: x, extra: null }
+    tmpParams = grp.params!.map((x) => {
+      return { text: x.text, extra: null }
     })
+
     tmpGroup = {
       label: grp.group_name,
       code: grp.group_type_code,
       column_name: grp.column_name,
+      text_source: grp.text_source,
+      table_name: grp.table_name,
+      column_type: grp.column_type,
+      dependency: grp.dependency!,
+      allow_dependents: grp.allow_dependents,
+      allow_tagger_access: grp.allow_tagger_access,
     }
   }
 
-  function handleCR(grp: TApiGroupByCode<'CR'>) {
-    tmpParams = grp.params.map((x) => {
-      return { text: x, extra: null }
-    })
-    tmpGroup = {
-      label: grp.group_name,
-      code: grp.group_type_code,
-      column_name: grp.column_name,
-    }
-  }
+  // function handleCL(grp: TApiGroupByCode<'CL'>) {
+  //   tmpParams = grp.params.map((x) => {
+  //     return { text: x.name, extra: x.id }
+  //   })
+  //   tmpGroup = {
+  //     code: grp.group_type_code,
+  //     label: grp.group_name,
+  //     column_name: grp.column_name,
+  //     dependency: grp.dependency === null ? [] : processDependency(<string[]>grp.dependency),
+  //   }
+  // }
 
-  function handleCB(grp: TApiGroupByCode<'CB'>) {
-    tmpParams = grp.params.map((x, index) => {
-      return { text: x, extra: index === 0 ? 1 : 0 }
-    })
-    tmpGroup = {
-      label: grp.group_name,
-      code: grp.group_type_code,
-      column_name: grp.column_name,
-    }
-  }
+  // function handleCR(grp: TApiGroupByCode<'CR'>) {
+  //   tmpParams = grp.params.map((x) => {
+  //     return { text: x, extra: null }
+  //   })
+  //   tmpGroup = {
+  //     label: grp.group_name,
+  //     code: grp.group_type_code,
+  //     column_name: grp.column_name,
+  //   }
+  // }
+
+  // function handleCB(grp: TApiGroupByCode<'CB'>) {
+  //   tmpParams = grp.params.map((x, index) => {
+  //     return { text: x, extra: index === 0 ? 1 : 0 }
+  //   })
+  //   tmpGroup = {
+  //     label: grp.group_name,
+  //     code: grp.group_type_code,
+  //     column_name: grp.column_name,
+  //   }
+  // }
 
   function handleCS(grp: TApiGroupByCode<'CS'>) {
     tmpParams = Array(6).fill({ text: '', extra: null })
@@ -185,8 +184,8 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   }
 
   function handleTG(grp: TApiGroupByCode<'TG'>) {
-    tmpParams = grp.params.map((x) => {
-      return { text: x.name, extra: x.id }
+    tmpParams = grp.params!.map((x) => {
+      return { text: x.text, extra: x.extra }
     })
 
     tmpGroup = {
@@ -199,8 +198,8 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   }
 
   function handleTM(grp: TApiGroupByCode<'TM'>) {
-    tmpParams = grp.params.map((x) => {
-      return { text: x.name, extra: x.id }
+    tmpParams = grp.params!.map((x) => {
+      return { text: x.text, extra: x.extra }
     })
 
     tmpGroup = {
@@ -216,6 +215,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     tmpParams = mediaCollectionNames.value.map((x) => {
       return { text: x, extra: null }
     })
+
     tmpGroup = {
       label: grp.group_name,
       code: grp.group_type_code,
@@ -223,8 +223,10 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   }
 
   function handleOB(grp: TApiGroupByCode<'OB'>) {
-    orderByOptions = grp.params
-    tmpParams = Array(grp.params.length).fill({ text: '', extra: null })
+    orderByOptions = grp.params!
+
+    tmpParams = Array(grp.params!.length).fill({ text: '', extra: null })
+
     tmpGroup = {
       label: grp.group_name,
       code: grp.group_type_code,

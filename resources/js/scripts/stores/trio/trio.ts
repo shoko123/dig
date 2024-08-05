@@ -6,7 +6,7 @@ import type {
   TTrio,
   TGroupLabelToKey,
   TGroupTag,
-  TApiParamNameAndColumn,
+  TApiParam,
   TGroupBase,
 } from '../../../types/trioTypes'
 
@@ -21,7 +21,7 @@ export const useTrioStore = defineStore('trio', () => {
 
   const trio = ref<TTrio>({ categories: [], groupsObj: {}, paramsObj: {} })
   const groupLabelToKey = ref<TGroupLabelToKey>({})
-  const orderByOptions = ref<TApiParamNameAndColumn[]>([])
+  const orderByOptions = ref<TApiParam[]>([])
   const fieldNameToGroupKey = ref<TGroupLabelToKey>({})
   //current index of visible categories/groups
   const categoryIndex = ref<number>(0)
@@ -71,8 +71,8 @@ export const useTrioStore = defineStore('trio', () => {
       let multiple = false
       switch (group.code) {
         case 'CV':
-        case 'CL':
-        case 'CB':
+          // case 'CL':
+          // case 'CB':
           required = true
           multiple = false
           break
@@ -171,9 +171,9 @@ export const useTrioStore = defineStore('trio', () => {
         }
         break
 
-      case 'CL':
       case 'CV':
-      case 'CB':
+        // case 'CL':
+        // case 'CB':
         if (isSelected) {
           //do nothing
         } else {
@@ -257,7 +257,7 @@ export const useTrioStore = defineStore('trio', () => {
       } else {
         const param = trio.value.paramsObj[x]
         const group = trio.value.groupsObj[param.groupKey]
-        if (current.value.name === 'tag' && group.code === 'CL') {
+        if (current.value.name === 'tag' && group.code === 'CV') {
           //unselect required, single selection - replace with default (first entry in group.params[])
           selected.value[i] = group.paramKeys[0]
         } else {
@@ -404,7 +404,7 @@ export const useTrioStore = defineStore('trio', () => {
     }
 
     return orderByOptions.value.filter((x) => {
-      return !orderBySelected.value.some((y) => y.label.slice(0, -2) === x.name)
+      return !orderBySelected.value.some((y) => y.label.slice(0, -2) === x.text)
     })
   })
 

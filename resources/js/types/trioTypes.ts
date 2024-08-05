@@ -2,61 +2,71 @@ type TrioSourceName = 'Item' | 'New' | 'Filter'
 
 type TAllGroups = {
   CV: {
-    apiGroup: TApiGroupColumn<string[]>
+    apiGroup: TApiGroupColumn
     group: TGroupColumnTmp
   }
-  CR: {
-    apiGroup: TApiGroupColumn<string[]>
-    group: TGroupColumnTmp
-  }
-  CB: {
-    apiGroup: TApiGroupColumn<string[]>
-    group: TGroupColumnTmp
-  }
-  CL: {
-    apiGroup: TApiGroupColumn<TApiParamNameAndId[]>
-    group: TGroupColumnTmp
-  }
+  // CR: {
+  //   apiGroup: TApiGroupColumn<string[]>
+  //   group: TGroupColumnTmp
+  // }
+  // CB: {
+  //   apiGroup: TApiGroupColumn<string[]>
+  //   group: TGroupColumnTmp
+  // }
+  // CL: {
+  //   apiGroup: TApiGroupColumn<TApiParamNameAndId[]>
+  //   group: TGroupColumnTmp
+  // }
   CS: {
-    apiGroup: TApiGroupColumn<null>
+    apiGroup: TApiGroupColumn
     group: TGroupColumnTmp
   }
   TM: {
-    apiGroup: TApiGroupTag<TApiParamNameAndId[]>
+    apiGroup: TApiGroupTag
     group: TGroupTagTmp
   }
   TG: {
-    apiGroup: TApiGroupTag<TApiParamNameAndId[]>
+    apiGroup: TApiGroupTag
     group: TGroupTagTmp
   }
   MD: {
-    apiGroup: TApiGroupBase<null>
+    apiGroup: TApiGroupBase
     group: TGroupBaseTmp
   }
   OB: {
-    apiGroup: TApiGroupBase<TApiParamNameAndColumn[]>
+    apiGroup: TApiGroupBase
     group: TGroupColumnTmp
   }
 }
 
 //////////// Backend types /////////////////
 
-type TApiParamNameAndId = { name: string; id: number }
+//type TApiParamNameAndId = { name: string; id: number }
 
-type TApiParamNameAndColumn = { name: string; column_name: string }
+// type TApiParamNameAndColumn = { name: string; column_name: string }
+type TApiParam = { text: string; extra: boolean | number | string }
 
-type TApiGroupBase<T> = {
+type TApiGroupBase = {
   group_type_code: TCodeUnion
   group_name: string
-  params: T
+  params: null | TApiParam[]
 }
 
-type TApiGroupColumn<T> = TApiGroupBase<T> & {
+type TApiGroupColumn = TApiGroupBase & {
+  text_source: string
+  table_name: string
   column_name: string
+  column_type: 'boolean' | 'string' | 'number'
   dependency: null | string[]
+  allow_dependents: boolean
+  allow_tagger_access: boolean
+
+  /////
+  // column_name: string
+  // dependency: null | string[]
 }
 
-type TApiGroupTag<T> = TApiGroupBase<T> & {
+type TApiGroupTag = TApiGroupBase & {
   group_id: number
   dependency: null | string[]
   multiple: boolean
@@ -68,7 +78,7 @@ type TApiTrio = { name: string; groups: TGroupApiUnion[] }[]
 
 type TParamTmp = {
   text: string
-  extra: null | number | string
+  extra: null | number | string | boolean
 }
 
 type TParam = TParamTmp & {
@@ -89,7 +99,12 @@ type TGroupTagTmp = TGroupBaseTmp & {
 }
 
 type TGroupColumnTmp = TGroupBaseTmp & {
+  text_source: string
+  table_name: string
   column_name: string
+  column_type: 'boolean' | 'number' | 'string'
+  allow_tagger_access: boolean
+  allow_dependents: boolean
   dependency: string[]
 }
 
@@ -128,6 +143,7 @@ export {
   TrioSourceName,
   TTrio,
   TApiTrio,
+  TApiParam,
   TGroupTmpUnion,
   TParamTmp,
   TGroupUnion,
@@ -139,5 +155,5 @@ export {
   TGroupBase,
   TGroupColumn,
   TGroupTag,
-  TApiParamNameAndColumn,
+  //TApiParamNameAndColumn,
 }

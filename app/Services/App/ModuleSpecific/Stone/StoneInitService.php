@@ -49,7 +49,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'manipulator' => function ($val) {
                     return $val + 2000;
                 },
-                'dependency' => null,
+                'dependency' => [],
                 'allow_tagger_access' => false,
                 'allow_dependents' => false,
             ],
@@ -59,7 +59,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'table_name' => 'stones',
                 'column_name' => 'id_object_no',
                 'column_type' => 'integer',
-                'dependency' => null,
+                'dependency' => [],
                 'allow_tagger_access' => false,
                 'allow_dependents' => false
             ],
@@ -68,7 +68,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'text_source' => 'lookup',
                 'column_name' => 'material_id',
                 'lookup_table_name' => 'stone_materials',
-                'dependency' => null,
+                'dependency' => [],
                 'allow_dependents' => false,
                 'allow_tagger_access' => true,
             ],
@@ -78,7 +78,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'table_name' => 'stones',
                 'column_name' => 'whole',
                 'column_type' => 'boolean',
-                'dependency' => null,
+                'dependency' => [],
                 'allow_dependents' => true,
                 'allow_tagger_access' => true,
                 'params' => [['text' => 'Yes', "extra" => true], ['text' => 'No', "extra" => false]]
@@ -89,7 +89,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'table_name' => 'stones',
                 'column_name' => 'base_type_id',
                 'lookup_table_name' => 'stone_base_types',
-                'dependency' => null,
+                'dependency' => [],
                 'allow_dependents' => true,
                 'allow_tagger_access' => true,
             ],
@@ -99,33 +99,33 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'table_name' => 'stones',
                 'column_name' => 'cataloger_id',
                 'lookup_table_name' => 'stone_catalogers',
-                'dependency' => null,
+                'dependency' => [],
                 'allow_dependents' => false,
                 'allow_tagger_access' => true,
             ],
             'Life Stage' => [
                 'group_type_code' => 'TM',
-                'dependency' => null,
+                'dependency' => [],
                 'multiple' => true,
             ],
             'Morphology' => [
                 'group_type_code' => 'TM',
-                'dependency' => null,
+                'dependency' => [],
                 'multiple' => true,
             ],
             'Profile' => [
                 'group_type_code' => 'TM',
-                'dependency' => null,
+                'dependency' => [],
                 'multiple' => true,
             ],
             'Production' => [
                 'group_type_code' => 'TM',
-                'dependency' => null,
+                'dependency' => [],
                 'multiple' => true,
             ],
             'Use Wear' => [
                 'group_type_code' => 'TM',
-                'dependency' => null,
+                'dependency' => [],
                 'multiple' => true,
             ],
             'Passive Subtype' => [
@@ -175,10 +175,10 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
             'Order By' => [
                 'group_type_code' => 'OB',
                 'params' => [
-                    ['name' => 'Excavation Date', 'column_name' => 'excavation_date'],
-                    ['name' => 'Catalog Date', 'column_name' => 'catalog_date'],
-                    ['name' => 'Year', 'column_name' => 'id_year'],
-                    ['name' => 'Object Number', 'column_name' => 'id_object_no'],
+                    ['text' => 'Excavation Date', 'extra' => 'excavation_date'],
+                    ['text' => 'Catalog Date', 'extra' => 'catalog_date'],
+                    ['text' => 'Year', 'extra' => 'id_year'],
+                    ['text' => 'Object Number', 'extra' => 'id_object_no'],
                 ],
             ],
         ];

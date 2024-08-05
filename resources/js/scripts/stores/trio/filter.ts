@@ -60,9 +60,9 @@ export const useFilterStore = defineStore('filter', () => {
 
       switch (group.code) {
         case 'CV':
-        case 'CR':
-        case 'CB':
-        case 'CL':
+          // case 'CR':
+          // case 'CB':
+          // case 'CL':
           {
             const i = all.column_value.findIndex((x) => {
               return x.column_name === (<TGroupColumn>group).column_name
@@ -121,10 +121,10 @@ export const useFilterStore = defineStore('filter', () => {
 
         case 'OB':
           {
-            const ordeByItem = orderByOptions.value.find((x) => x.name === param.text.slice(0, -2))
+            const ordeByItem = orderByOptions.value.find((x) => x.text === param.text.slice(0, -2))
             assert(ordeByItem !== undefined, `Selected OrderBy param "${param.text} not found`)
             all.order_by.push({
-              column_name: ordeByItem.column_name,
+              column_name: <string>ordeByItem.extra,
               asc: param.text.slice(-1) === 'A',
             })
           }
@@ -208,7 +208,7 @@ export const useFilterStore = defineStore('filter', () => {
       return
     }
 
-    const label = `${orderByAvailable.value[index].name}.${asc ? 'A' : 'D'}`
+    const label = `${orderByAvailable.value[index].text}.${asc ? 'A' : 'D'}`
     // console.log(`paramClicked(${index}) asc: ${asc} params:  ${JSON.stringify(orderByParams, null, 2)} key: ${firstEmptyParam.key} label: ${label}`)
 
     trio.value.paramsObj[firstEmptyParam.key].text = label

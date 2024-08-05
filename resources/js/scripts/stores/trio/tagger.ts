@@ -45,7 +45,7 @@ export const useTaggerStore = defineStore('tagger', () => {
       module_id: (<TFieldsUnion>fields.value).id,
       global_tag_ids: <number[]>[],
       module_tag_ids: <number[]>[],
-      columns: <{ column_name: string; val: number | string }[]>[],
+      columns: <{ column_name: string; val: number | string | boolean }[]>[],
     }
 
     selectedNewItemParams.value.forEach((paramKey) => {
@@ -59,9 +59,9 @@ export const useTaggerStore = defineStore('tagger', () => {
           payload.module_tag_ids.push(<number>trio.value.paramsObj[paramKey].extra)
           break
 
-        case 'CL':
+        // case 'CL':
+        // case 'CB':
         case 'CV':
-        case 'CB':
           {
             const param = trio.value.paramsObj[paramKey]
             payload.columns.push({
