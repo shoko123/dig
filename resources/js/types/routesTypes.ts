@@ -60,8 +60,7 @@ type TSelectedFilterFromQuery = {
 type TApiFilters = {
   model_tag_ids: number[]
   global_tag_ids: number[]
-  column_value: { column_name: string; vals: string[] }[]
-  column_lookup: { column_name: string; vals: number[] }[]
+  column_value: { column_name: string; vals: (string | number | boolean)[] }[]
   column_search: { column_name: string; vals: string[] }[]
   media: string[]
   bespoke: { name: string; vals: string[] }[]

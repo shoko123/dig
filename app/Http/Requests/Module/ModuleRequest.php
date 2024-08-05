@@ -12,19 +12,18 @@ enum ModuleConfigData: int
 {
     case TableName = 0;
     case TagTableName = 1;
-    case LookupColumnNames = 2;
-    case ValueColumnNames = 3;
-    case SearchColumnNames = 4;
-    case OrderByColumnNames = 5;
-    case ColumnNamesUsedByTagger = 6;
+    case ValueColumnNames = 2;
+    case SearchColumnNames = 3;
+    case OrderByColumnNames = 4;
+    case ColumnNamesUsedByTagger = 5;
 }
 
 class ModuleRequest extends FormRequest
 {
     public static $moduleDetails = [
-        'Locus' => ['loci', 'locus_tags', [], ['category'], ['id', 'oc_label'], ['category', 'a', 'b', 'published_date'], []],
-        'Pottery' => ['pottery', 'pottery_tags', [], [], [], [], []],
-        'Stone' => ['stones', 'stone_tags',  ['base_type_id', 'material_id', 'cataloger_id'], ['whole', 'id_year', 'id_object_no'], ['id'], ['id_year', 'id_object_no', 'excavation_date', 'catalog_date'], ['base_type_id', 'material_id', 'cataloger_id', 'whole']]
+        'Locus' => ['loci', 'locus_tags', ['category'], ['id', 'oc_label'], ['category', 'a', 'b', 'published_date'], []],
+        'Pottery' => ['pottery', 'pottery_tags', [], [], [], []],
+        'Stone' => ['stones', 'stone_tags', ['base_type_id', 'material_id', 'cataloger_id', 'whole', 'id_year', 'id_object_no'], ['id'], ['id_year', 'id_object_no', 'excavation_date', 'catalog_date'], ['base_type_id', 'material_id', 'cataloger_id', 'whole']]
     ];
 
     protected function prepareForValidation(): void
@@ -56,22 +55,17 @@ class ModuleRequest extends FormRequest
         return 'exists:' . $this->getModuleData(ModuleConfigData::TagTableName) . ',id';
     }
 
-    protected function rule_lookup_column_name_exists(): string
-    {
-        return 'in:' . implode(",", $this->getModuleData(ModuleConfigData::LookupColumnNames));
-    }
-
-    protected function rule_value_column_name_exists(): string
+    protected function rule_value_column_name_is_valid(): string
     {
         return 'in:' . implode(",", $this->getModuleData(ModuleConfigData::ValueColumnNames));
     }
 
-    protected function rule_search_column_name_exists(): string
+    protected function rule_search_column_name_is_valid(): string
     {
         return 'in:' . implode(",", $this->getModuleData(ModuleConfigData::SearchColumnNames));
     }
 
-    protected function rule_order_by_column_name_exists(): string
+    protected function rule_order_by_column_name_is_valid(): string
     {
         return 'in:' . implode(",", $this->getModuleData(ModuleConfigData::OrderByColumnNames));
     }

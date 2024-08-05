@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Module;
 
 use App\Http\Requests\Module\ModuleRequest;
+use App\Rules\RuleIntegerOrString;
 
 class IndexRequest extends ModuleRequest
 {
@@ -23,19 +24,14 @@ class IndexRequest extends ModuleRequest
             'query.global_tag_ids' => ['array'],
             'query.global_tag_ids.*' => 'exists:tags,id',
             //
+            //TODO validate that vals exist in the other tables' values (awkward)   
             'query.column_value' => ['array'],
-            'query.column_value.*.column_name' => ['required', $this->rule_value_column_name_exists()],
+            'query.column_value.*.column_name' => ['required', $this->rule_value_column_name_is_valid()],
             'query.column_value.*.vals' => ['array'],
-            'query.column_value.*.vals.*' => ['required', 'string'],
+            'query.column_value.*.vals.*' => ['required', new RuleIntegerOrString()],
             //
-            //TODO validate that vals exist in the other tables' values (awkward)
-            'query.column_lookup' => ['array'],
-            'query.column_lookup.*.column_name' => $this->rule_lookup_column_name_exists(),
-            'query.column_lookup.*.vals' => ['array'],
-            'query.column_lookup.*.vals.*' => ['numeric', 'integer'],
-            //        
             'query.column_search.*' => ['array'],
-            'query.column_search.*.column_name' => [$this->rule_search_column_name_exists()],
+            'query.column_search.*.column_name' => [$this->rule_search_column_name_is_valid()],
             'query.column_search.*.column_name.vals' => ['array'],
             'query.column_search.*.column_name.vals.*' => ['string'],
             //
@@ -46,7 +42,7 @@ class IndexRequest extends ModuleRequest
             'query.bespoke.*' => ['string'],
             //
             'query.order_by.*' => ['array'],
-            'query.order_by.*.column_name' => [$this->rule_order_by_column_name_exists()],
+            'query.order_by.*.column_name' => [$this->rule_order_by_column_name_is_valid()],
             'query.order_by.*.asc' => ['boolean']
         ];
     }

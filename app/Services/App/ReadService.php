@@ -56,12 +56,8 @@ abstract class ReadService extends DigModuleService implements ReadSpecificServi
             $this->applyGlobalTagFilters($query['global_tag_ids']);
         }
 
-        if (!empty($query['column_lookup'])) {
-            $this->applyColumnLookupOrValueFilters($query['column_lookup']);
-        }
-
         if (!empty($query['column_value'])) {
-            $this->applyColumnLookupOrValueFilters($query['column_value']);
+            $this->applyColumnValueFilters($query['column_value']);
         }
 
         if (!empty($query['column_search'])) {
@@ -113,7 +109,7 @@ abstract class ReadService extends DigModuleService implements ReadSpecificServi
         }
     }
 
-    public function applyColumnLookupOrValueFilters(array $cols)
+    public function applyColumnValueFilters(array $cols)
     {
         foreach ($cols as $key => $col) {
             $this->builder->whereIn($col['column_name'], $col['vals']);

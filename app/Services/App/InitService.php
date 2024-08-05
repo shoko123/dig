@@ -86,6 +86,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
 
             case 'OB': //order by values
                 return $this->getOrderByDetails($group_name, $group);
+
             case 'MD': //media
                 return array_merge($group, [
                     'group_name' => $group_name,
