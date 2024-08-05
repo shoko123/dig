@@ -72,6 +72,7 @@ export const useTrioStore = defineStore('trio', () => {
       switch (group.code) {
         case 'CV':
         case 'CL':
+        case 'CB':
           required = true
           multiple = false
           break
@@ -102,7 +103,7 @@ export const useTrioStore = defineStore('trio', () => {
     const g = trio.value.groupsObj[groupKey]
 
     //if source is 'New' don't show CS, CR, MD and OB groups.
-    if (current.value.name === 'tag' && ['CS', 'MD', 'CR', 'CB', 'OB'].includes(g.code)) {
+    if (current.value.name === 'tag' && ['CS', 'MD', 'CR', 'OB'].includes(g.code)) {
       return false
     }
 
@@ -172,6 +173,7 @@ export const useTrioStore = defineStore('trio', () => {
 
       case 'CL':
       case 'CV':
+      case 'CB':
         if (isSelected) {
           //do nothing
         } else {

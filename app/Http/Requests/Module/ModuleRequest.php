@@ -16,14 +16,15 @@ enum ModuleConfigData: int
     case ValueColumnNames = 3;
     case SearchColumnNames = 4;
     case OrderByColumnNames = 5;
+    case ColumnNamesUsedByTagger = 6;
 }
 
 class ModuleRequest extends FormRequest
 {
     public static $moduleDetails = [
-        'Locus' => ['loci', 'locus_tags', [], ['category'], ['id', 'oc_label'], ['category', 'a', 'b', 'published_date']],
-        'Pottery' => ['pottery', 'pottery_tags', [], [], [], []],
-        'Stone' => ['stones', 'stone_tags',  ['base_type_id', 'material_id', 'cataloger_id'], ['id_year', 'id_object_no'], ['id'], ['id_year', 'id_object_no', 'excavation_date', 'catalog_date']]
+        'Locus' => ['loci', 'locus_tags', [], ['category'], ['id', 'oc_label'], ['category', 'a', 'b', 'published_date'], []],
+        'Pottery' => ['pottery', 'pottery_tags', [], [], [], [], []],
+        'Stone' => ['stones', 'stone_tags',  ['base_type_id', 'material_id', 'cataloger_id'], ['whole', 'id_year', 'id_object_no'], ['id'], ['id_year', 'id_object_no', 'excavation_date', 'catalog_date'], ['base_type_id', 'material_id', 'cataloger_id', 'whole']]
     ];
 
     protected function prepareForValidation(): void
@@ -74,6 +75,12 @@ class ModuleRequest extends FormRequest
     {
         return 'in:' . implode(",", $this->getModuleData(ModuleConfigData::OrderByColumnNames));
     }
+
+    protected function rule_tagger_column_name_is_valid(): string
+    {
+        return 'in:' . implode(",", $this->getModuleData(ModuleConfigData::ColumnNamesUsedByTagger));
+    }
+
     public function authorize(): bool
     {
         return true;

@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
 use App\Services\App\TagService;
+use App\Http\Requests\Tag\TagSyncRequest;
 
 class TagController extends BaseController
 {
     /**
      * Sync item's tags (module and global tags, and also discrete column values).
      */
-    public function sync(Request $r)
+    public function sync(TagSyncRequest $r)
     {
-        return response()->json(TagService::sync($r["module"], $r["id"], $r["module_tag_ids"], $r["global_tag_ids"], $r["columns"]), 200);
+        $v = $r->validated();
+        return response()->json(TagService::sync($v["module"], $v["module_id"], $v["module_tag_ids"], $v["global_tag_ids"], $v["columns"]), 200);
     }
 }
