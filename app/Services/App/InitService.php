@@ -4,10 +4,8 @@ namespace App\Services\App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use Exception;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-
-
+use App\Exceptions\GeneralJsonException;
 use App\Services\App\ModuleSpecific\InitSpecificServiceInterface;
 use App\Models\Tag\TagGroup;
 
@@ -59,30 +57,20 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
     public function getGroupDetails($group_name): array
     {
         $group = $this->allGroups()[$group_name] ?? null;
-        throw_if(is_null($group), new Exception('***MODEL INIT() ERROR*** Group * ' . $group_name . ' * NOT FOUND'));
+        throw_if(is_null($group), new GeneralJsonException('***MODEL INIT() ERROR*** getGroupDetails() invalid group_name: ' . $group_name, 500));
 
         switch ($group['group_type_code']) {
-            case 'TG': //tags global
+            case 'TG': //global tags
                 return $this->getGlobalTagsGroupDetails($group_name, $group);
 
-            case 'TM': //tags model
+            case 'TM': //module tags
                 return $this->getModelTagsGroupDetails($group_name, $group);
 
-            case 'CV': //column values
-            case 'CR': //column value to be used only for filtering
+            case 'CV': //column values (and its "dependencies")
                 return $this->getColumnGroupDetails($group_name, $group);
-
-            case 'CB': //column boolean
-                return $this->getColumnBooleanDetails($group_name, $group);
-
-            case 'CL': //column lookup values
-                return $this->getLookupGroupDetails($group_name, $group);
 
             case 'CS': //column search
                 return $this->getTextualSearchGroupDetails($group_name, $group);
-
-            case 'BF': //bespoke
-                return $this->getBespokeFilterGroupDetails($group_name, $group);
 
             case 'OB': //order by values
                 return $this->getOrderByDetails($group_name, $group);
@@ -92,20 +80,86 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
                     'group_name' => $group_name,
                     'params' => null,
                 ]);
+
+            case 'DP': //dependency group (bespoke filter)
+                return $this->getDependencyGroupDetails($group_name, $group);
+
+            default:
+                throw new GeneralJsonException('***MODEL INIT() ERROR*** getGroupDetails() invalid group_type_code: ' . $group['group_type_code'], 500);
         }
 
         return [];
     }
 
-    private function getLookupGroupDetails($group_name, $group)
+    private function getColumnGroupDetails($group_name, $group)
     {
-        $params = DB::table($group['table_name'])->get();
+        switch ($group["text_source"]) {
+            case "self":
+                return $this->getCVSelfDetails($group_name, $group);
+
+            case "manipulated":
+                return $this->getCVManipulatedDetails($group_name, $group);
+
+            case "lookup":
+                return $this->getCVLookupDetails($group_name, $group);
+
+            default:
+                throw new GeneralJsonException('***MODEL INIT() ERROR*** invalid text_source: ' . $group["text_source"], 500);
+        }
+    }
+
+    private function getCVSelfDetails($group_name, $group)
+    {
+        $column_name = $group['column_name'];
+        $params = DB::table($group['table_name'])->select($column_name)->distinct()->orderBy($column_name)->get();
+
+        return array_merge($group, [
+            'group_name' => $group_name,
+            'column_type' => 'integer',
+            'params' => $params->map(function ($y, $key) use ($column_name) {
+                return ['text' => $y->$column_name, 'extra' => null];
+            }),
+        ]);
+    }
+
+    private function getCVManipulatedDetails($group_name, $group)
+    {
+        $column_name = $group['column_name'];
+        $res = DB::table($group['table_name'])->select($column_name)->distinct()->orderBy($column_name)->get();
+
+        $params = $group["column_type"] === 'boolean' ? $group["params"] :
+            $res->map(function ($y, $key) use ($group, $column_name) {
+                return ['text' => $group['manipulator']($y->$column_name), 'extra' => $y->$column_name];
+            });
 
         return array_merge($group, [
             'group_name' => $group_name,
             'params' => $params,
         ]);
     }
+    private function getCVLookupDetails($group_name, $group)
+    {
+        $params = DB::table($group['lookup_table_name'])->get();
+
+        return array_merge($group, [
+            'group_name' => $group_name,
+            'params' => $params->map(function ($y, $key) {
+                return ['text' => $y->name, 'extra' => $y->id,];
+            }),
+        ]);
+    }
+
+    private function getCVBespokeDetails($group_name, $group)
+    {
+        ////
+        $paramsFormatted = collect($group['params'])->map(function ($y, $key) {
+            return ['id' => $key, 'name' => $y];
+        });
+        $group['params'] = $paramsFormatted;
+        $group['group_name'] = $group_name;
+        return $group;
+    }
+
 
     private function getModelTagsGroupDetails($group_name, $group)
     {
@@ -116,7 +170,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
             ->where('name', $group_name)
             ->first();
 
-        throw_if(is_null($tg), new Exception('***MODEL INIT() ERROR*** Group * ' . $group_name . ' * NOT FOUND'));
+        throw_if(is_null($tg), new GeneralJsonException('***MODEL INIT() ERROR*** Group * ' . $group_name . ' * NOT FOUND', 500));
 
         return array_merge($group, [
             'group_name' => $group_name,
@@ -124,8 +178,9 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
             'multiple' => $tg->multiple,
             'params' => $tg->tags->map(function ($y) {
                 return [
-                    'id' => $y->id,
-                    'name' => $y->name
+                    'text' => $y->name,
+                    'extra' => $y->id
+
                 ];
             }),
         ]);
@@ -145,36 +200,17 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
             'group_id' => $gtg->id,
             'multiple' => true,
             'params' => $gtg->tags->map(function ($y) {
-                return ['id' => $y->id, 'name' => $y->name];
+                return [
+                    'text' => $y->name,
+                    'extra' => $y->id
+                ];
             }),
         ]);
     }
-
-    private function getColumnGroupDetails($group_name, $group)
-    {
-        $column_name = $group['column_name'];
-        $params = DB::table($group['table_name'])->select($column_name)->distinct()->orderBy($column_name)->get();
-
-        return array_merge($group, [
-            'group_name' => $group_name,
-            //"params"  => $params
-            'params' => $params->map(function ($y, $key) use ($column_name) {
-                return $y->$column_name;
-            }),
-        ]);
-    }
-
-    private function getColumnBooleanDetails($group_name, $group)
-    {
-        return array_merge($group, [
-            'group_name' => $group_name,
-        ]);
-    }
-
     private function getTextualSearchGroupDetails($group_name, $group)
     {
         $group = $this->modelGroups($group_name)[$group_name] ?? null;
-        throw_if(is_null($group), new Exception('***MODEL INIT() ERROR*** Group * ' . $group_name . ' * NOT FOUND'));
+        throw_if(is_null($group), new GeneralJsonException('***MODEL INIT() ERROR*** Group * ' . $group_name . ' * NOT FOUND', 500));
 
         return [
             'group_type_code' => 'CS',
@@ -184,7 +220,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
         ];
     }
 
-    private function getBespokeFilterGroupDetails($group_name, $group)
+    private function getDependencyGroupDetails($group_name, $group)
     {
         $paramsFormatted = collect($group['params'])->map(function ($y, $key) {
             return ['id' => $key, 'name' => $y];

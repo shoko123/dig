@@ -20,6 +20,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
             'related_collection_views' => ['Gallery', 'Tabular', 'Chips'],
         ];
     }
+
     public static function dateColumns(): array
     {
         return  [
@@ -39,39 +40,68 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
     public static function modelGroups(): array
     {
         return [
-
             'Year' => [
-                'group_type_code' => 'CR',
+                'group_type_code' => 'CV',
+                'text_source' => 'manipulated',
                 'table_name' => 'stones',
                 'column_name' => 'id_year',
+                'column_type' => 'integer',
+                'manipulator' => function ($val) {
+                    return $val + 2000;
+                },
+                'dependency' => null,
+                'allow_tagger_access' => false,
+                'allow_dependents' => false,
             ],
             'Object Number' => [
-                'group_type_code' => 'CR',
+                'group_type_code' => 'CV',
+                'text_source' => 'self',
                 'table_name' => 'stones',
                 'column_name' => 'id_object_no',
+                'column_type' => 'integer',
+                'dependency' => null,
+                'allow_tagger_access' => false,
+                'allow_dependents' => false
             ],
             'Material' => [
-                'group_type_code' => 'CL',
-                'dependency' => null,
-                'table_name' => 'stone_materials',
+                'group_type_code' => 'CV',
+                'text_source' => 'lookup',
                 'column_name' => 'material_id',
+                'lookup_table_name' => 'stone_materials',
+                'dependency' => null,
+                'allow_dependents' => false,
+                'allow_tagger_access' => true,
             ],
             'Whole' => [
-                'group_type_code' => 'CB',
+                'group_type_code' => 'CV',
+                'text_source' => 'manipulated',
+                'table_name' => 'stones',
                 'column_name' => 'whole',
-                'params' => ['Yes', 'No'],
+                'column_type' => 'boolean',
+                'dependency' => null,
+                'allow_dependents' => true,
+                'allow_tagger_access' => true,
+                'params' => [['text' => 'Yes', "extra" => true], ['text' => 'No', "extra" => false]]
             ],
             'Basic Typology' => [
-                'group_type_code' => 'CL',
-                'dependency' => null,
-                'table_name' => 'stone_base_types',
+                'group_type_code' => 'CV',
+                'text_source' => 'lookup',
+                'table_name' => 'stones',
                 'column_name' => 'base_type_id',
+                'lookup_table_name' => 'stone_base_types',
+                'dependency' => null,
+                'allow_dependents' => true,
+                'allow_tagger_access' => true,
             ],
             'Cataloger' => [
-                'group_type_code' => 'CL',
-                'dependency' => null,
-                'table_name' => 'stone_catalogers',
+                'group_type_code' => 'CV',
+                'text_source' => 'lookup',
+                'table_name' => 'stones',
                 'column_name' => 'cataloger_id',
+                'lookup_table_name' => 'stone_catalogers',
+                'dependency' => null,
+                'allow_dependents' => false,
+                'allow_tagger_access' => true,
             ],
             'Life Stage' => [
                 'group_type_code' => 'TM',
