@@ -117,7 +117,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
             'group_name' => $group_name,
             'column_type' => 'integer',
             'params' => $params->map(function ($y, $key) use ($column_name) {
-                return ['text' => $y->$column_name, 'extra' => null];
+                return ['text' => $y->$column_name, 'extra' => $y->$column_name];
             }),
         ]);
     }
@@ -148,18 +148,6 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
             }),
         ]);
     }
-
-    private function getCVBespokeDetails($group_name, $group)
-    {
-        ////
-        $paramsFormatted = collect($group['params'])->map(function ($y, $key) {
-            return ['id' => $key, 'name' => $y];
-        });
-        $group['params'] = $paramsFormatted;
-        $group['group_name'] = $group_name;
-        return $group;
-    }
-
 
     private function getModelTagsGroupDetails($group_name, $group)
     {

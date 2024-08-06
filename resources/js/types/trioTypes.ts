@@ -59,7 +59,7 @@ type TApiTrio = { name: string; groups: TGroupApiUnion[] }[]
 
 type TParamTmp = {
   text: string
-  extra: null | number | string | boolean
+  extra: number | string | boolean
 }
 
 type TParam = TParamTmp & {

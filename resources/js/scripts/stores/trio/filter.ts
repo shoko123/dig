@@ -19,9 +19,11 @@ export const useFilterStore = defineStore('filter', () => {
 
   function filtersToQueryObject() {
     const q2: IStringObject = {}
+
     selectedFilterParams.value.sort((a, b) => {
       return a > b ? 1 : -1
     })
+
     selectedFilterParams.value.forEach((k) => {
       const paramUlined = trio.value.paramsObj[k].text.replace(/ /g, '_')
       const groupUlined = trio.value.groupsObj[trio.value.paramsObj[k].groupKey].label.replace(
@@ -67,19 +69,17 @@ export const useFilterStore = defineStore('filter', () => {
             const i = all.column_value.findIndex((x) => {
               return x.column_name === (<TGroupColumn>group).column_name
             })
+
             if (i === -1) {
               //if new group, push the param's group into the groups array with itself as the first param
               all.column_value.push({
                 column_name: (<TGroupColumn>group).column_name,
-                //vals: [param.text],
-                vals: ['CV', 'CR'].includes(group.code) ? [param.text] : [param.extra!],
+                vals: [param.extra], //(<TGroupColumn>group).text_source ===
               })
             } else {
               //if the group is already selected, add param's text to the group's params array
               //all.column_value[i].vals.push(param.text)
-              all.column_value[i].vals.push(
-                ['CV', 'CR'].includes(group.code) ? param.text : param.extra!,
-              )
+              all.column_value[i].vals.push(param.extra)
             }
           }
           break
@@ -101,6 +101,7 @@ export const useFilterStore = defineStore('filter', () => {
             }
           }
           break
+
         case 'TM':
           {
             all.model_tag_ids.push(<number>param.extra)
@@ -140,7 +141,7 @@ export const useFilterStore = defineStore('filter', () => {
       if (trio.value.groupsObj[value].code === 'CS') {
         trio.value.groupsObj[value].paramKeys.forEach((x) => {
           trio.value.paramsObj[x].text = ''
-          trio.value.paramsObj[x].extra = null
+          trio.value.paramsObj[x].extra = ''
         })
       }
     }

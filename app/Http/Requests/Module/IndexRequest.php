@@ -30,10 +30,10 @@ class IndexRequest extends ModuleRequest
             'query.column_value.*.vals' => ['array'],
             'query.column_value.*.vals.*' => ['required', new RuleIntegerOrString()],
             //
-            'query.column_search.*' => ['array'],
+            'query.column_search' => ['array'],
             'query.column_search.*.column_name' => [$this->rule_search_column_name_is_valid()],
-            'query.column_search.*.column_name.vals' => ['array'],
-            'query.column_search.*.column_name.vals.*' => ['string'],
+            'query.column_search.*.vals' => ['array'],
+            'query.column_search.*.vals.*' => ['string'],
             //
             'query.media' => ['array'],
             'query.media.*' => ['string'],

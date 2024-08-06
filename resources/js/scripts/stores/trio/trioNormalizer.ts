@@ -100,7 +100,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     tmpParams.forEach((p) => {
       const prmKey = pad(prmCnt, 3)
       grpToSave.paramKeys.push(prmKey)
-      paramsObj[prmKey] = { text: p.text, extra: p.extra, groupKey: pad(grpCnt, 3) }
+      paramsObj[prmKey] = { ...p, groupKey: pad(grpCnt, 3) }
       prmCnt++
     })
     groupsObj[grpKey] = grpToSave
@@ -112,7 +112,6 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   }
 
   function processDependency(dependency: string[]) {
-    //console.log(`processDep() groupLabelToKey: ${JSON.stringify(groupLabelToKey, null, 2)}`);
     return dependency.map((x) => {
       const pieces = x.split('.')
       const group = groupsObj[groupLabelToKey[pieces[0]]]
@@ -123,9 +122,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   }
 
   function handleCV(grp: TApiGroupByCode<'CV'>) {
-    tmpParams = grp.params.map((x) => {
-      return { text: x.text, extra: null }
-    })
+    tmpParams = grp.params
 
     tmpGroup = {
       label: grp.group_name,
@@ -139,40 +136,6 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
       allow_tagger_access: grp.allow_tagger_access,
     }
   }
-
-  // function handleCL(grp: TApiGroupByCode<'CL'>) {
-  //   tmpParams = grp.params.map((x) => {
-  //     return { text: x.name, extra: x.id }
-  //   })
-  //   tmpGroup = {
-  //     code: grp.group_type_code,
-  //     label: grp.group_name,
-  //     column_name: grp.column_name,
-  //     dependency: grp.dependency === null ? [] : processDependency(<string[]>grp.dependency),
-  //   }
-  // }
-
-  // function handleCR(grp: TApiGroupByCode<'CR'>) {
-  //   tmpParams = grp.params.map((x) => {
-  //     return { text: x, extra: null }
-  //   })
-  //   tmpGroup = {
-  //     label: grp.group_name,
-  //     code: grp.group_type_code,
-  //     column_name: grp.column_name,
-  //   }
-  // }
-
-  // function handleCB(grp: TApiGroupByCode<'CB'>) {
-  //   tmpParams = grp.params.map((x, index) => {
-  //     return { text: x, extra: index === 0 ? 1 : 0 }
-  //   })
-  //   tmpGroup = {
-  //     label: grp.group_name,
-  //     code: grp.group_type_code,
-  //     column_name: grp.column_name,
-  //   }
-  // }
 
   function handleCS(grp: TApiGroupByCode<'CS'>) {
     tmpParams = Array(6).fill({ text: '', extra: null })
@@ -213,7 +176,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
 
   function handleMD(grp: TApiGroupByCode<'MD'>) {
     tmpParams = mediaCollectionNames.value.map((x) => {
-      return { text: x, extra: null }
+      return { text: x, extra: '' }
     })
 
     tmpGroup = {
