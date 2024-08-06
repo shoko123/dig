@@ -44,77 +44,77 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
     {
         $trio = [];
 
-        foreach (static::categories() as $name => $group_names) {
+        foreach (static::categories() as $name => $labels) {
             $category = ['name' => $name, 'groups' => []];
-            foreach ($group_names as $group_name) {
-                array_push($category['groups'], $this->getGroupDetails($group_name));
+            foreach ($labels as $label) {
+                array_push($category['groups'], $this->getGroupDetails($label));
             }
             array_push($trio, $category);
         }
         return $trio;
     }
 
-    public function getGroupDetails($group_name): array
+    public function getGroupDetails($label): array
     {
-        $group = $this->allGroups()[$group_name] ?? null;
-        throw_if(is_null($group), new GeneralJsonException('***MODEL INIT() ERROR*** getGroupDetails() invalid group_name: ' . $group_name, 500));
+        $group = $this->allGroups()[$label] ?? null;
+        throw_if(is_null($group), new GeneralJsonException('***MODEL INIT() ERROR*** getGroupDetails() invalid label: ' . $label, 500));
 
-        switch ($group['group_type_code']) {
+        switch ($group['code']) {
             case 'TG': //global tags
-                return $this->getGlobalTagsGroupDetails($group_name, $group);
+                return $this->getGlobalTagsGroupDetails($label, $group);
 
             case 'TM': //module tags
-                return $this->getModelTagsGroupDetails($group_name, $group);
+                return $this->getModelTagsGroupDetails($label, $group);
 
             case 'CV': //column values (and its "dependencies")
-                return $this->getColumnGroupDetails($group_name, $group);
+                return $this->getColumnGroupDetails($label, $group);
 
             case 'CS': //column search
-                return $this->getTextualSearchGroupDetails($group_name, $group);
+                return $this->getTextualSearchGroupDetails($label, $group);
 
             case 'OB': //order by values
-                return $this->getOrderByDetails($group_name, $group);
+                return $this->getOrderByDetails($label, $group);
 
             case 'MD': //media
                 return array_merge($group, [
-                    'group_name' => $group_name,
+                    'label' => $label,
                     'params' => null,
                 ]);
 
             case 'DP': //dependency group (bespoke filter)
-                return $this->getDependencyGroupDetails($group_name, $group);
+                return $this->getDependencyGroupDetails($label, $group);
 
             default:
-                throw new GeneralJsonException('***MODEL INIT() ERROR*** getGroupDetails() invalid group_type_code: ' . $group['group_type_code'], 500);
+                throw new GeneralJsonException('***MODEL INIT() ERROR*** getGroupDetails() invalid code: ' . $group['code'], 500);
         }
 
         return [];
     }
 
-    private function getColumnGroupDetails($group_name, $group)
+    private function getColumnGroupDetails($label, $group)
     {
         switch ($group["text_source"]) {
             case "self":
-                return $this->getCVSelfDetails($group_name, $group);
+                return $this->getCVSelfDetails($label, $group);
 
             case "manipulated":
-                return $this->getCVManipulatedDetails($group_name, $group);
+                return $this->getCVManipulatedDetails($label, $group);
 
             case "lookup":
-                return $this->getCVLookupDetails($group_name, $group);
+                return $this->getCVLookupDetails($label, $group);
 
             default:
                 throw new GeneralJsonException('***MODEL INIT() ERROR*** invalid text_source: ' . $group["text_source"], 500);
         }
     }
 
-    private function getCVSelfDetails($group_name, $group)
+    private function getCVSelfDetails($label, $group)
     {
         $column_name = $group['column_name'];
         $params = DB::table($group['table_name'])->select($column_name)->distinct()->orderBy($column_name)->get();
 
         return array_merge($group, [
-            'group_name' => $group_name,
+            'label' => $label,
             'column_type' => 'integer',
             'params' => $params->map(function ($y, $key) use ($column_name) {
                 return ['text' => $y->$column_name, 'extra' => $y->$column_name];
@@ -122,7 +122,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
         ]);
     }
 
-    private function getCVManipulatedDetails($group_name, $group)
+    private function getCVManipulatedDetails($label, $group)
     {
         $column_name = $group['column_name'];
         $res = DB::table($group['table_name'])->select($column_name)->distinct()->orderBy($column_name)->get();
@@ -133,35 +133,35 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
             });
         unset($group["manipulator"]);
         return array_merge($group, [
-            'group_name' => $group_name,
+            'label' => $label,
             'params' => $params,
         ]);
     }
-    private function getCVLookupDetails($group_name, $group)
+    private function getCVLookupDetails($label, $group)
     {
         $params = DB::table($group['lookup_table_name'])->get();
 
         return array_merge($group, [
-            'group_name' => $group_name,
+            'label' => $label,
             'params' => $params->map(function ($y, $key) {
                 return ['text' => $y->name, 'extra' => $y->id,];
             }),
         ]);
     }
 
-    private function getModelTagsGroupDetails($group_name, $group)
+    private function getModelTagsGroupDetails($label, $group)
     {
         $tg = $this->moduleTagGroup->with(['tags' => function ($q) {
             $q->select('id', 'name', 'group_id');
         }])
             ->select('id', 'multiple')
-            ->where('name', $group_name)
+            ->where('name', $label)
             ->first();
 
-        throw_if(is_null($tg), new GeneralJsonException('***MODEL INIT() ERROR*** Group * ' . $group_name . ' * NOT FOUND', 500));
+        throw_if(is_null($tg), new GeneralJsonException('***MODEL INIT() ERROR*** Group * ' . $label . ' * NOT FOUND', 500));
 
         return array_merge($group, [
-            'group_name' => $group_name,
+            'label' => $label,
             'group_id' => $tg->id,
             'multiple' => $tg->multiple,
             'params' => $tg->tags->map(function ($y) {
@@ -174,17 +174,17 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
         ]);
     }
 
-    private function getGlobalTagsGroupDetails($group_name, $group)
+    private function getGlobalTagsGroupDetails($label, $group)
     {
         $gtg = TagGroup::with(['tags' => function ($q) {
             $q->select('id', 'name', 'group_id');
         }])
             ->select('id', 'name')
-            ->where('name', $group_name)
+            ->where('name', $label)
             ->first();
 
         return array_merge($group, [
-            'group_name' => $group_name,
+            'label' => $label,
             'group_id' => $gtg->id,
             'multiple' => true,
             'params' => $gtg->tags->map(function ($y) {
@@ -195,74 +195,74 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
             }),
         ]);
     }
-    private function getTextualSearchGroupDetails($group_name, $group)
+    private function getTextualSearchGroupDetails($label, $group)
     {
-        $group = $this->modelGroups($group_name)[$group_name] ?? null;
-        throw_if(is_null($group), new GeneralJsonException('***MODEL INIT() ERROR*** Group * ' . $group_name . ' * NOT FOUND', 500));
+        $group = $this->modelGroups($label)[$label] ?? null;
+        throw_if(is_null($group), new GeneralJsonException('***MODEL INIT() ERROR*** Group * ' . $label . ' * NOT FOUND', 500));
 
         return [
-            'group_type_code' => 'CS',
-            'group_name' => $group_name,
+            'code' => 'CS',
+            'label' => $label,
             'column_name' => $group['column_name'],
             'params' => [],
         ];
     }
 
-    private function getDependencyGroupDetails($group_name, $group)
+    private function getDependencyGroupDetails($label, $group)
     {
         $paramsFormatted = collect($group['params'])->map(function ($y, $key) {
             return ['id' => $key, 'name' => $y];
         });
         $group['params'] = $paramsFormatted;
-        $group['group_name'] = $group_name;
+        $group['label'] = $label;
         return $group;
     }
 
-    private function getOrderByDetails($group_name, $group)
+    private function getOrderByDetails($label, $group)
     {
         return array_merge($group, [
-            'group_name' => $group_name,
+            'label' => $label,
         ]);
     }
 
     protected static $globalGroups =  [
         'Media' => [
-            'group_type_code' => 'MD',
+            'code' => 'MD',
         ],
         'Periods (Top-Level)' => [
-            'group_type_code' => 'TG',
+            'code' => 'TG',
             'dependency' => [],
         ],
         'Neolithic Subperiods' => [
-            'group_type_code' => 'TG',
+            'code' => 'TG',
             'dependency' => ['Periods (Top-Level).Neolithic'],
         ],
         'Bronze Subperiods' => [
-            'group_type_code' => 'TG',
+            'code' => 'TG',
             'dependency' => ['Periods (Top-Level).Bronze'],
         ],
         'Iron Subperiods' => [
-            'group_type_code' => 'TG',
+            'code' => 'TG',
             'dependency' => ['Periods (Top-Level).Iron'],
         ],
         'Hellenistic Subperiods' => [
-            'group_type_code' => 'TG',
+            'code' => 'TG',
             'dependency' => ['Periods (Top-Level).Hellenistic'],
         ],
         'Roman Subperiods' => [
-            'group_type_code' => 'TG',
+            'code' => 'TG',
             'dependency' => ['Periods (Top-Level).Roman'],
         ],
         'Early-Islamic Subperiods' => [
-            'group_type_code' => 'TG',
+            'code' => 'TG',
             'dependency' => ['Periods (Top-Level).Early Islamic'],
         ],
         'Medieval Subperiods' => [
-            'group_type_code' => 'TG',
+            'code' => 'TG',
             'dependency' => ['Periods (Top-Level).Medieval'],
         ],
         'Modern Subperiods' => [
-            'group_type_code' => 'TG',
+            'code' => 'TG',
             'dependency' => ['Periods (Top-Level).Modern'],
         ],
     ];

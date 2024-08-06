@@ -78,9 +78,9 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
         continue
       }
 
-      console.log(
-        `urlQueryEntry(${key}) =>: ${JSON.stringify((<string>value).split(','), null, 2)}`,
-      )
+      // console.log(
+      //   `urlQueryEntry(${key}) =>: ${JSON.stringify((<string>value).split(','), null, 2)}`,
+      // )
 
       const undoUnderKey = key.replace(/_/g, ' ')
       if (undoUnderKey in groupLabelToKey.value === false) {

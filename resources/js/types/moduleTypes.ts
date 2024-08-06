@@ -64,7 +64,7 @@ type TApiModuleInit = {
     related_collection_views: TCollectionView[]
   }
   date_columns: string[]
-  lookups: { column_name: string; group_name: string }[]
+  lookups: { column_name: string; label: string }[]
   trio: TApiTrio
   welcome_text: string
 }

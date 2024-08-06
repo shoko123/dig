@@ -37,30 +37,30 @@ class CeramicInitService extends InitService implements InitSpecificServiceInter
     {
         return [
             'Year' => [
-                'group_type_code' => 'CR',
+                'code' => 'CR',
                 'table_name' => 'ceramics',
                 'column_name' => 'id_year',
             ],
             'Object Number' => [
-                'group_type_code' => 'CR',
+                'code' => 'CR',
                 'table_name' => 'ceramics',
                 'column_name' => 'id_object_no',
             ],
             'Search-Field-Description' => [
-                'group_type_code' => 'CS',
+                'code' => 'CS',
                 'column_name' => 'field_description',
             ],
             'Search-Specialist-Description' => [
-                'group_type_code' => 'CS',
+                'code' => 'CS',
                 'column_name' => 'specialist_description',
             ],
             'Search-Notes' => [
-                'group_type_code' => 'CS',
+                'code' => 'CS',
                 'column_name' => 'notes',
             ],
 
             'Order By' => [
-                'group_type_code' => 'OB',
+                'code' => 'OB',
                 'params' => [
                     ['name' => 'Year', 'column_name' => 'id_year'],
                     ['name' => 'Object No.', 'column_name' => 'id_object_no'],

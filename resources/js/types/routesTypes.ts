@@ -53,7 +53,7 @@ type TRouteInfo = {
 
 type TSelectedFilterFromQuery = {
   param: string
-  group_type_code: string
+  code: string
   extra: string
 }
 

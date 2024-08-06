@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Module;
 
 use App\Http\Requests\Module\ModuleRequest;
-use App\Rules\RuleIntegerOrString;
+use App\Rules\RuleStringIntOrBool;
 
 class IndexRequest extends ModuleRequest
 {
@@ -28,7 +28,7 @@ class IndexRequest extends ModuleRequest
             'query.column_value' => ['array'],
             'query.column_value.*.column_name' => ['required', $this->rule_value_column_name_is_valid()],
             'query.column_value.*.vals' => ['array'],
-            'query.column_value.*.vals.*' => ['required', new RuleIntegerOrString()],
+            'query.column_value.*.vals.*' => ['required', new RuleStringIntOrBool()],
             //
             'query.column_search' => ['array'],
             'query.column_search.*.column_name' => [$this->rule_search_column_name_is_valid()],

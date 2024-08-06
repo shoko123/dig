@@ -5,7 +5,7 @@ namespace App\Rules;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class RuleIntegerOrString implements ValidationRule
+class RuleStringIntOrBool implements ValidationRule
 {
     /**
      * Run the validation rule.
@@ -14,7 +14,7 @@ class RuleIntegerOrString implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (!is_int($value) && !is_string($value)) {
+        if (!is_int($value) && !is_string($value) && !is_bool(($value))) {
             $fail($attribute . " Must be a string or an integer");
         }
     }

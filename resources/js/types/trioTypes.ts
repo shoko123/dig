@@ -32,8 +32,8 @@ type TAllGroups = {
 type TApiParam = { text: string; extra: boolean | number | string }
 
 type TApiGroupBase = {
-  group_type_code: TCodeUnion
-  group_name: string
+  code: TCodeUnion
+  label: string
   params: TApiParam[]
 }
 
@@ -71,6 +71,7 @@ type TParam = TParamTmp & {
 type TGroupBaseTmp = {
   label: string
   code: TCodeUnion
+  params?: TParamTmp[]
 }
 
 type TGroupTagTmp = TGroupBaseTmp & {
@@ -99,16 +100,16 @@ type TGroupTag = AddTrioFields<TGroupTagTmp>
 type TGroupColumn = AddTrioFields<TGroupColumnTmp>
 
 type AddCode<T, V> = T & { code: V }
-type AddGroupTypeCode<T, V> = T & { group_type_code: V }
+type AddGroupTypeCode<T, V> = T & { code: V }
 
 type GroupUnionA<T extends object> = {
-  [k in keyof T]: T[k] & { group_type_code: k }
+  [k in keyof T]: T[k] & { code: k }
 }[keyof T]
 
 type GroupUnionB = GroupUnionA<TAllGroups>
 type TCodeUnion = keyof TAllGroups
-type TGroupApiUnion = AddGroupTypeCode<GroupUnionB['apiGroup'], GroupUnionB['group_type_code']>
-type TGroupTmpUnion = AddCode<GroupUnionB['group'], GroupUnionB['group_type_code']>
+type TGroupApiUnion = AddGroupTypeCode<GroupUnionB['apiGroup'], GroupUnionB['code']>
+type TGroupTmpUnion = AddCode<GroupUnionB['group'], GroupUnionB['code']>
 type TGroupUnion = AddTrioFields<TGroupTmpUnion>
 type TAllByCode<Code extends TCodeUnion> = TAllGroups[Code]
 type TApiGroupByCode<Code extends TCodeUnion> = TAllByCode<Code>['apiGroup']
@@ -125,6 +126,7 @@ export {
   TTrio,
   TApiTrio,
   TApiParam,
+  TGroupApiUnion,
   TGroupTmpUnion,
   TParamTmp,
   TGroupUnion,

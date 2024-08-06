@@ -38,21 +38,21 @@ class LocusInitService extends InitService implements InitSpecificServiceInterfa
     {
         return [
             'Basic Typology' => [
-                'group_type_code' => 'CR',
+                'code' => 'CR',
                 'table_name' => 'loci',
                 'column_name' => 'category',
             ],
 
             'Search-ID' => [
-                'group_type_code' => 'CS',
+                'code' => 'CS',
                 'column_name' => 'id',
             ],
             'Search-OC-Label' => [
-                'group_type_code' => 'CS',
+                'code' => 'CS',
                 'column_name' => 'oc_label',
             ],
             'Order By' => [
-                'group_type_code' => 'OB',
+                'code' => 'OB',
                 'params' => [
                     ['name' => 'Basic Typology', 'column_name' => 'category'],
                     ['name' => 'Number', 'column_name' => 'a'],

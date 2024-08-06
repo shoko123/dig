@@ -183,7 +183,7 @@ export const useTrioStore = defineStore('trio', () => {
           })
           if (currentKey === undefined) {
             console.log(
-              "Error in paramNewClicked - can't find a selected param in current group, wrong group_type_code",
+              "Error in paramNewClicked - can't find a selected param in current group, wrong code",
             )
             return
           }
@@ -193,7 +193,7 @@ export const useTrioStore = defineStore('trio', () => {
         }
         break
       default:
-        console.log('Error in paramNewClicked - wrong group_type_code')
+        console.log('Error in paramNewClicked - wrong code')
     }
   }
 

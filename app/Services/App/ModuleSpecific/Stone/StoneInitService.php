@@ -41,7 +41,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
     {
         return [
             'Year' => [
-                'group_type_code' => 'CV',
+                'code' => 'CV',
                 'text_source' => 'manipulated',
                 'table_name' => 'stones',
                 'column_name' => 'id_year',
@@ -54,7 +54,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'allow_dependents' => false,
             ],
             'Object Number' => [
-                'group_type_code' => 'CV',
+                'code' => 'CV',
                 'text_source' => 'self',
                 'table_name' => 'stones',
                 'column_name' => 'id_object_no',
@@ -64,7 +64,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'allow_dependents' => false
             ],
             'Material' => [
-                'group_type_code' => 'CV',
+                'code' => 'CV',
                 'text_source' => 'lookup',
                 'column_name' => 'material_id',
                 'lookup_table_name' => 'stone_materials',
@@ -73,7 +73,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'allow_tagger_access' => true,
             ],
             'Whole' => [
-                'group_type_code' => 'CV',
+                'code' => 'CV',
                 'text_source' => 'manipulated',
                 'table_name' => 'stones',
                 'column_name' => 'whole',
@@ -84,7 +84,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'params' => [['text' => 'Yes', "extra" => true], ['text' => 'No', "extra" => false]]
             ],
             'Basic Typology' => [
-                'group_type_code' => 'CV',
+                'code' => 'CV',
                 'text_source' => 'lookup',
                 'table_name' => 'stones',
                 'column_name' => 'base_type_id',
@@ -94,7 +94,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'allow_tagger_access' => true,
             ],
             'Cataloger' => [
-                'group_type_code' => 'CV',
+                'code' => 'CV',
                 'text_source' => 'lookup',
                 'table_name' => 'stones',
                 'column_name' => 'cataloger_id',
@@ -104,76 +104,76 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'allow_tagger_access' => true,
             ],
             'Life Stage' => [
-                'group_type_code' => 'TM',
+                'code' => 'TM',
                 'dependency' => [],
                 'multiple' => true,
             ],
             'Morphology' => [
-                'group_type_code' => 'TM',
+                'code' => 'TM',
                 'dependency' => [],
                 'multiple' => true,
             ],
             'Profile' => [
-                'group_type_code' => 'TM',
+                'code' => 'TM',
                 'dependency' => [],
                 'multiple' => true,
             ],
             'Production' => [
-                'group_type_code' => 'TM',
+                'code' => 'TM',
                 'dependency' => [],
                 'multiple' => true,
             ],
             'Use Wear' => [
-                'group_type_code' => 'TM',
+                'code' => 'TM',
                 'dependency' => [],
                 'multiple' => true,
             ],
             'Passive Subtype' => [
-                'group_type_code' => 'TM',
+                'code' => 'TM',
                 'dependency' => ['Basic Typology.Passive'],
                 'multiple' => true,
             ],
             'Active Subtype' => [
-                'group_type_code' => 'TM',
+                'code' => 'TM',
                 'dependency' => ['Basic Typology.Active (handheld)'],
                 'multiple' => true,
             ],
             'Vessel Type' => [
-                'group_type_code' => 'TM',
+                'code' => 'TM',
                 'dependency' => ['Basic Typology.Vessel'],
                 'multiple' => true,
             ],
             'Vessel Part' => [
-                'group_type_code' => 'TM',
+                'code' => 'TM',
                 'dependency' => ['Basic Typology.Vessel'],
                 'multiple' => true,
             ],
             'Vessel Base' => [
-                'group_type_code' => 'TM',
+                'code' => 'TM',
                 'dependency' => ['Vessel Part.Base'],
                 'multiple' => true,
             ],
             'Vessel Wall' => [
-                'group_type_code' => 'TM',
+                'code' => 'TM',
                 'dependency' => ['Vessel Part.Wall'],
                 'multiple' => true,
             ],
             'Vessel Rim' => [
-                'group_type_code' => 'TM',
+                'code' => 'TM',
                 'dependency' => ['Vessel Part.Rim'],
                 'multiple' => true,
             ],
             'Non-Processor Subtype' => [
-                'group_type_code' => 'TM',
+                'code' => 'TM',
                 'dependency' => ['Basic Typology.Non-Processor'],
                 'multiple' => true,
             ],
             'Search-ID' => [
-                'group_type_code' => 'CS',
+                'code' => 'CS',
                 'column_name' => 'id',
             ],
             'Order By' => [
-                'group_type_code' => 'OB',
+                'code' => 'OB',
                 'params' => [
                     ['text' => 'Excavation Date', 'extra' => 'excavation_date'],
                     ['text' => 'Catalog Date', 'extra' => 'catalog_date'],

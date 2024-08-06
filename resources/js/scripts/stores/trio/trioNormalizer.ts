@@ -51,7 +51,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
       cat.groups.forEach((grp) => {
         const grpKey = pad(grpCnt, 3)
         categories[catCnt].groupKeys.push(grpKey)
-        switch (grp.group_type_code) {
+        switch (grp.code) {
           case 'CV':
             handleCV(grp as TApiGroupByCode<'CV'>)
             break
@@ -125,8 +125,8 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     tmpParams = grp.params
 
     tmpGroup = {
-      label: grp.group_name,
-      code: grp.group_type_code,
+      label: grp.label,
+      code: grp.code,
       column_name: grp.column_name,
       text_source: grp.text_source,
       table_name: grp.table_name,
@@ -140,8 +140,8 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   function handleCS(grp: TApiGroupByCode<'CS'>) {
     tmpParams = Array(6).fill({ text: '', extra: null })
     tmpGroup = {
-      label: grp.group_name,
-      code: grp.group_type_code,
+      label: grp.label,
+      code: grp.code,
       column_name: grp.column_name,
     }
   }
@@ -152,8 +152,8 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     })
 
     tmpGroup = {
-      label: grp.group_name,
-      code: grp.group_type_code,
+      label: grp.label,
+      code: grp.code,
       dependency: processDependency(grp.dependency),
       multiple: grp.multiple,
       group_id: grp.group_id,
@@ -166,22 +166,21 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     })
 
     tmpGroup = {
-      label: grp.group_name,
-      code: grp.group_type_code,
+      label: grp.label,
+      code: grp.code,
       dependency: processDependency(grp.dependency),
       multiple: grp.multiple,
       group_id: grp.group_id,
     }
   }
-
   function handleMD(grp: TApiGroupByCode<'MD'>) {
     tmpParams = mediaCollectionNames.value.map((x) => {
       return { text: x, extra: '' }
     })
 
     tmpGroup = {
-      label: grp.group_name,
-      code: grp.group_type_code,
+      label: grp.label,
+      code: grp.code,
     }
   }
 
@@ -191,8 +190,8 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     tmpParams = Array(grp.params.length).fill({ text: '', extra: null })
 
     tmpGroup = {
-      label: grp.group_name,
-      code: grp.group_type_code,
+      label: grp.label,
+      code: grp.code,
     }
   }
 
