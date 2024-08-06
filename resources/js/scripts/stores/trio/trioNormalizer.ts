@@ -123,7 +123,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   }
 
   function handleCV(grp: TApiGroupByCode<'CV'>) {
-    tmpParams = grp.params!.map((x) => {
+    tmpParams = grp.params.map((x) => {
       return { text: x.text, extra: null }
     })
 
@@ -134,7 +134,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
       text_source: grp.text_source,
       table_name: grp.table_name,
       column_type: grp.column_type,
-      dependency: grp.dependency!,
+      dependency: grp.dependency,
       allow_dependents: grp.allow_dependents,
       allow_tagger_access: grp.allow_tagger_access,
     }
@@ -184,28 +184,28 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   }
 
   function handleTG(grp: TApiGroupByCode<'TG'>) {
-    tmpParams = grp.params!.map((x) => {
+    tmpParams = grp.params.map((x) => {
       return { text: x.text, extra: x.extra }
     })
 
     tmpGroup = {
       label: grp.group_name,
       code: grp.group_type_code,
-      dependency: grp.dependency === null ? [] : processDependency(<string[]>grp.dependency),
+      dependency: processDependency(grp.dependency),
       multiple: grp.multiple,
       group_id: grp.group_id,
     }
   }
 
   function handleTM(grp: TApiGroupByCode<'TM'>) {
-    tmpParams = grp.params!.map((x) => {
+    tmpParams = grp.params.map((x) => {
       return { text: x.text, extra: x.extra }
     })
 
     tmpGroup = {
       label: grp.group_name,
       code: grp.group_type_code,
-      dependency: grp.dependency === null ? [] : processDependency(<string[]>grp.dependency),
+      dependency: processDependency(grp.dependency),
       multiple: grp.multiple,
       group_id: grp.group_id,
     }
@@ -223,9 +223,9 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   }
 
   function handleOB(grp: TApiGroupByCode<'OB'>) {
-    orderByOptions = grp.params!
+    orderByOptions = grp.params
 
-    tmpParams = Array(grp.params!.length).fill({ text: '', extra: null })
+    tmpParams = Array(grp.params.length).fill({ text: '', extra: null })
 
     tmpGroup = {
       label: grp.group_name,

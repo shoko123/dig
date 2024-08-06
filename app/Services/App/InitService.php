@@ -216,7 +216,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
             'group_type_code' => 'CS',
             'group_name' => $group_name,
             'column_name' => $group['column_name'],
-            'params' => null,
+            'params' => [],
         ];
     }
 
@@ -243,7 +243,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
         ],
         'Periods (Top-Level)' => [
             'group_type_code' => 'TG',
-            'dependency' => null,
+            'dependency' => [],
         ],
         'Neolithic Subperiods' => [
             'group_type_code' => 'TG',

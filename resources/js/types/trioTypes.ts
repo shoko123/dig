@@ -5,18 +5,6 @@ type TAllGroups = {
     apiGroup: TApiGroupColumn
     group: TGroupColumnTmp
   }
-  // CR: {
-  //   apiGroup: TApiGroupColumn<string[]>
-  //   group: TGroupColumnTmp
-  // }
-  // CB: {
-  //   apiGroup: TApiGroupColumn<string[]>
-  //   group: TGroupColumnTmp
-  // }
-  // CL: {
-  //   apiGroup: TApiGroupColumn<TApiParamNameAndId[]>
-  //   group: TGroupColumnTmp
-  // }
   CS: {
     apiGroup: TApiGroupColumn
     group: TGroupColumnTmp
@@ -41,15 +29,12 @@ type TAllGroups = {
 
 //////////// Backend types /////////////////
 
-//type TApiParamNameAndId = { name: string; id: number }
-
-// type TApiParamNameAndColumn = { name: string; column_name: string }
 type TApiParam = { text: string; extra: boolean | number | string }
 
 type TApiGroupBase = {
   group_type_code: TCodeUnion
   group_name: string
-  params: null | TApiParam[]
+  params: TApiParam[]
 }
 
 type TApiGroupColumn = TApiGroupBase & {
@@ -57,18 +42,14 @@ type TApiGroupColumn = TApiGroupBase & {
   table_name: string
   column_name: string
   column_type: 'boolean' | 'string' | 'number'
-  dependency: null | string[]
+  dependency: string[]
   allow_dependents: boolean
   allow_tagger_access: boolean
-
-  /////
-  // column_name: string
-  // dependency: null | string[]
 }
 
 type TApiGroupTag = TApiGroupBase & {
   group_id: number
-  dependency: null | string[]
+  dependency: string[]
   multiple: boolean
 }
 
@@ -155,5 +136,4 @@ export {
   TGroupBase,
   TGroupColumn,
   TGroupTag,
-  //TApiParamNameAndColumn,
 }
