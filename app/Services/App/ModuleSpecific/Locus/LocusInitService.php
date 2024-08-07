@@ -38,11 +38,15 @@ class LocusInitService extends InitService implements InitSpecificServiceInterfa
     {
         return [
             'Basic Typology' => [
-                'code' => 'CR',
+                'code' => 'CV',
+                'text_source' => 'self',
                 'table_name' => 'loci',
                 'column_name' => 'category',
+                'column_type' => 'string',
+                'dependency' => [],
+                'allow_tagger_access' => false,
+                'allow_dependents' => false,
             ],
-
             'Search-ID' => [
                 'code' => 'CS',
                 'column_name' => 'id',
@@ -54,10 +58,10 @@ class LocusInitService extends InitService implements InitSpecificServiceInterfa
             'Order By' => [
                 'code' => 'OB',
                 'params' => [
-                    ['name' => 'Basic Typology', 'column_name' => 'category'],
-                    ['name' => 'Number', 'column_name' => 'a'],
-                    ['name' => 'Subnumber', 'column_name' => 'b'],
-                    ['name' => 'Publication Date', 'column_name' => 'published_date'],
+                    ['text' => 'Basic Typology', 'extra' => 'category'],
+                    ['text' => 'Number', 'extra' => 'a'],
+                    ['text' => 'Subnumber', 'extra' => 'b'],
+                    ['text' => 'Publication Date', 'extra' => 'published_date'],
                 ],
             ],
         ];
