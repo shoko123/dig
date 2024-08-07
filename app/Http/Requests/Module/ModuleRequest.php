@@ -22,7 +22,7 @@ class ModuleRequest extends FormRequest
 {
     public static $moduleDetails = [
         'Locus' => ['loci', 'locus_tags', ['category'], ['id', 'oc_label'], ['category', 'a', 'b', 'published_date'], []],
-        'Ceramic' => ['ceramic', 'ceramic_tags', [], [], [], []],
+        'Ceramic' => ['ceramics', 'ceramic_tags', [], [], [], []],
         'Stone' => ['stones', 'stone_tags', ['base_type_id', 'material_id', 'cataloger_id', 'whole', 'id_year', 'id_object_no'], ['id'], ['id_year', 'id_object_no', 'excavation_date', 'catalog_date'], ['base_type_id', 'material_id', 'cataloger_id', 'whole']]
     ];
 

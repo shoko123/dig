@@ -12,6 +12,9 @@
     <v-btn :disabled="disableLinks" :to="{ name: 'welcome', params: { module: 'stones' } }">
       Stones
     </v-btn>
+    <v-btn :disabled="disableLinks" :to="{ name: 'welcome', params: { module: 'ceramics' } }">
+      Ceramics
+    </v-btn>
   </div>
   <v-spacer />
   <LoginOrUser />

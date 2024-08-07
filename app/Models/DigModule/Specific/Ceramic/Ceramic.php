@@ -7,7 +7,7 @@ use App\Models\Tag\Tag;
 
 class Ceramic extends DigModuleModel
 {
-    //protected $table = 'ceramics';
+    protected $table = 'ceramics';
 
     public function getShortAttribute()
     {

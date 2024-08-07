@@ -1,7 +1,7 @@
 import type { TModuleInfo } from '@/js/types/moduleTypes'
 
 type TCeramic<T extends TModuleInfo> = {
-  url_name: 'ceramic'
+  url_name: 'ceramics'
   fields: {
     id: string
     name: string

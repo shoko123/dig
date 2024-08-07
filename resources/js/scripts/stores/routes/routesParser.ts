@@ -13,7 +13,7 @@ import { useFilterStore } from '../trio/filter'
 
 const moduleConversion: Record<TUrlModule, TModule> = {
   loci: 'Locus',
-  ceramic: 'Ceramic',
+  ceramics: 'Ceramic',
   stones: 'Stone',
 }
 
@@ -22,7 +22,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
     //console.log(`parseModule() module: "${module}"`)
     switch (module) {
       case 'loci':
-      case 'ceramic':
+      case 'ceramics':
       case 'stones':
         return {
           success: true,
