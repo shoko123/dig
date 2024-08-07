@@ -60,7 +60,7 @@ import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useVuelidate } from '@vuelidate/core'
 import { VDateInput } from 'vuetify/labs/VDateInput'
-import { useStoneStore } from '../../../scripts/stores/modules/stone'
+import { useStoneStore } from '../../../scripts/stores/modules/Stone'
 import { useItemStore } from '../../../scripts/stores/item'
 import IdSelector from '../../form-elements/IdSelector.vue'
 

@@ -32,16 +32,16 @@ import { useItemStore } from '../../../scripts/stores/item'
 import { useCollectionMediaStore } from '../../../scripts/stores/collections/collectionMedia'
 
 import MediaSquare from '../../media/MediaSquare.vue'
-import PotteryForm from '../../modules/pottery/PotteryForm.vue'
-import StoneForm from '../../modules/stones/StoneForm.vue'
+import CeramicForm from '../../modules/Ceramic/CeramicForm.vue'
+import StoneForm from '../../modules/Stone/StoneForm.vue'
 
 let { array } = storeToRefs(useCollectionMediaStore())
 let { derived } = storeToRefs(useItemStore())
 
 const itemForm = computed<Component | null>(() => {
   switch (derived.value.module) {
-    case 'Pottery':
-      return PotteryForm
+    case 'Ceramic':
+      return CeramicForm
     case 'Stone':
       return StoneForm
 

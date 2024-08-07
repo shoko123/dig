@@ -18,12 +18,12 @@ import type { TFieldsByModule } from '@/js/types/moduleTypes'
 import { useVuelidate } from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import { useItemStore } from '../../../scripts/stores/item'
-import { usePotteryStore } from '../../../scripts/stores/modules/pottery'
+import { useCeramicStore } from '../../../scripts/stores/modules/Ceramic'
 import { useTrioStore } from '../../../scripts/stores/trio/trio'
 
 
 const { fields } = storeToRefs(useItemStore())
-const { newFields } = storeToRefs(usePotteryStore())
+const { newFields } = storeToRefs(useCeramicStore())
 const { trio, groupLabelToKey } = storeToRefs(useTrioStore())
 
 const areas = computed(() => {
@@ -40,10 +40,10 @@ const rules = computed(() => {
 })
 
 const currentItemFields = computed(() => {
-  return fields.value! as TFieldsByModule<'Pottery'>
+  return fields.value! as TFieldsByModule<'Ceramic'>
 })
 
-const v = useVuelidate(rules, newFields.value as TFieldsByModule<'Pottery'>)
+const v = useVuelidate(rules, newFields.value as TFieldsByModule<'Ceramic'>)
 
 const nameErrors = computed(() => {
   return <string>(v.value.name.$error ? v.value.name.$errors[0].$message : undefined)

@@ -4,9 +4,9 @@ import { ref, computed } from 'vue'
 import type { TModule } from '../../types/moduleTypes'
 import { useMediaStore } from './media'
 import { useRoutesMainStore } from './routes/routesMain'
-import { useLocusStore } from './modules/locus'
-import { usePotteryStore } from './modules/pottery'
-import { useStoneStore } from './modules/stone'
+import { useLocusStore } from './modules/Locus'
+import { useCeramicStore } from './modules/Ceramic'
+import { useStoneStore } from './modules/Stone'
 
 export const useModuleStore = defineStore('module', () => {
   const { bucketUrl } = storeToRefs(useMediaStore())
@@ -55,12 +55,12 @@ export const useModuleStore = defineStore('module', () => {
     switch (module) {
       case 'Locus':
         return useLocusStore()
-      case 'Pottery':
-        return usePotteryStore()
+      case 'Ceramic':
+        return useCeramicStore()
       case 'Stone':
         return useStoneStore()
       default:
-        return usePotteryStore()
+        return useCeramicStore()
     }
   }
 

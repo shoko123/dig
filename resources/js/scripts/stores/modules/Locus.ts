@@ -3,9 +3,9 @@ import { defineStore, storeToRefs } from 'pinia'
 import { TFieldsByModule, TFieldsUnion, FuncSlugToId } from '@/js/types/moduleTypes'
 import { useItemStore } from '../../../scripts/stores/item'
 import { useItemNewStore } from '../../../scripts/stores/itemNew'
+
 export const useLocusStore = defineStore('locus', () => {
   const newFields = ref<Partial<TFieldsByModule<'Locus'>>>({})
-
   const { fields } = storeToRefs(useItemStore())
   const { openIdSelectorModal } = storeToRefs(useItemNewStore())
 

@@ -26,9 +26,9 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
   const { planTransition } = useRoutesPlanTransitionStore()
   const { showSnackbar, showSpinner } = useNotificationsStore()
 
-  const urlModuleFromModule: { [key in TModule]: string } = {
+  const urlModuleNameFromModule: { [key in TModule]: string } = {
     Locus: 'loci',
-    Pottery: 'pottery',
+    Ceramic: 'ceramics',
     Stone: 'stones',
   }
 
@@ -217,12 +217,14 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
       case 'welcome':
       case 'filter':
       case 'create':
-        urlModule = module === 'current' ? current.value.url_module : urlModuleFromModule[module]
+        urlModule =
+          module === 'current' ? current.value.url_module : urlModuleNameFromModule[module]
         router.push({ name: routeName, params: { module: urlModule } })
         break
 
       case 'index':
-        urlModule = module === 'current' ? current.value.url_module : urlModuleFromModule[module]
+        urlModule =
+          module === 'current' ? current.value.url_module : urlModuleNameFromModule[module]
         query = keepQuery ? current.value.queryParams : ''
         router.push({
           name: 'index',
@@ -232,7 +234,8 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         break
 
       case 'show':
-        urlModule = module === 'current' ? current.value.url_module : urlModuleFromModule[module]
+        urlModule =
+          module === 'current' ? current.value.url_module : urlModuleNameFromModule[module]
         query = keepQuery ? current.value.queryParams : ''
         router.push({
           name: 'show',

@@ -21,6 +21,6 @@ import { useItemStore } from '../../../scripts/stores/item'
 let { fields } = useItemStore()
 
 const item = computed(() => {
-  return fields as TFieldsByModule<'Pottery'>
+  return fields as TFieldsByModule<'Ceramic'>
 })
 </script>

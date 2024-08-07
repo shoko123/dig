@@ -1,13 +1,13 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { TFieldsByModule, TFieldsUnion, FuncSlugToId } from '@/js/types/moduleTypes'
-import { useItemStore } from '../../../scripts/stores/item'
-import { useItemNewStore } from '../../../scripts/stores/itemNew'
+import { useItemStore } from '../item'
+import { useItemNewStore } from '../itemNew'
 
-export const usePotteryStore = defineStore('pottery', () => {
+export const useCeramicStore = defineStore('ceramic', () => {
   const { fields } = storeToRefs(useItemStore())
   const { openIdSelectorModal } = storeToRefs(useItemNewStore())
-  const newFields = ref<Partial<TFieldsByModule<'Pottery'>>>({})
+  const newFields = ref<Partial<TFieldsByModule<'Ceramic'>>>({})
 
   const slugToId: FuncSlugToId = function (slug: string) {
     const arr = slug.split('.')
@@ -42,7 +42,7 @@ export const usePotteryStore = defineStore('pottery', () => {
     if (isCreate) {
       //
     }
-    return newFields.value as TFieldsByModule<'Pottery'>
+    return newFields.value as TFieldsByModule<'Ceramic'>
   }
 
   const headers = computed(() => {

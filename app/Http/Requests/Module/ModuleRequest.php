@@ -22,7 +22,7 @@ class ModuleRequest extends FormRequest
 {
     public static $moduleDetails = [
         'Locus' => ['loci', 'locus_tags', ['category'], ['id', 'oc_label'], ['category', 'a', 'b', 'published_date'], []],
-        'Pottery' => ['pottery', 'pottery_tags', [], [], [], []],
+        'Ceramic' => ['ceramic', 'ceramic_tags', [], [], [], []],
         'Stone' => ['stones', 'stone_tags', ['base_type_id', 'material_id', 'cataloger_id', 'whole', 'id_year', 'id_object_no'], ['id'], ['id_year', 'id_object_no', 'excavation_date', 'catalog_date'], ['base_type_id', 'material_id', 'cataloger_id', 'whole']]
     ];
 
@@ -34,7 +34,7 @@ class ModuleRequest extends FormRequest
         }
     }
 
-    //protected static $rule_module_name_required_valid = 'required|in:Locus,Pottery,Stone';
+    //protected static $rule_module_name_required_valid = 'required|in:Locus,Ceramic,Stone';
     protected static function rule_module_name_required_valid(): string
     {
         return 'required|in:' . implode(",", array_keys(self::$moduleDetails));

@@ -8,7 +8,7 @@ class TagSyncRequest extends ModuleRequest
 {
     private static $modelInfo = [
         'Locus' => ['tag_table_name' => 'loci_tags', 'fields' => []],
-        'Pottery' => ['tag_table_name' => 'pottery_tags', 'fields' => ['area']],
+        'Ceramic' => ['tag_table_name' => 'ceramic_tags', 'fields' => ['area']],
         'Stone' => ['tag_table_name' => 'stone_tags', 'fields' => ['material_id', 'base_type_id', 'cataloger_id']],
     ];
 

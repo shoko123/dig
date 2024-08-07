@@ -22,7 +22,7 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
 
-import { useStoneStore } from '../../../scripts/stores/modules/stone'
+import { useStoneStore } from '../../../scripts/stores/modules/Stone'
 import { useItemNewStore } from '../../../scripts/stores/itemNew'
 const { availableItemNumbers, newFields } = storeToRefs(useStoneStore())
 const { openIdSelectorModal } = storeToRefs(useItemNewStore())

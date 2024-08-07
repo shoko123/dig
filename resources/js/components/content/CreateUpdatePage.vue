@@ -26,8 +26,8 @@ import { useItemNewStore } from '../../scripts/stores/itemNew'
 import { useModuleStore } from '../../scripts/stores/module'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
 
-import StoneNew from '../modules/stones/StoneNew.vue'
-import PotteryNew from '../modules/pottery/PotteryNew.vue'
+import StoneNew from '../modules/Stone/StoneNew.vue'
+import CeramicNew from '../modules/Ceramic/CeramicNew.vue'
 
 let { showSpinner, showSnackbar } = useNotificationsStore()
 let { upload } = useItemNewStore()
@@ -46,13 +46,13 @@ const title = computed(() => {
 
 const formNew = computed<Component>(() => {
   switch (current.value.module) {
-    case 'Pottery':
-      return PotteryNew
+    case 'Ceramic':
+      return CeramicNew
     case 'Stone':
       return StoneNew
     default:
       console.log(`Update.vue invalid module ${current.value.module}`)
-      return PotteryNew
+      return CeramicNew
   }
 })
 

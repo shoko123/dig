@@ -2,7 +2,7 @@ import type { TApiTrio } from '@/js/types/trioTypes'
 import type { TCollectionView } from '@/js/types/collectionTypes'
 import type { TLocus } from '@/js/types/modules/Locus'
 import type { TStone } from '@/js/types/modules/Stone'
-import type { TPottery } from '@/js/types/modules/Pottery'
+import type { TCeramic } from '@/js/types/modules/Ceramic'
 
 type TModuleInfo = {
   url_name: string
@@ -18,7 +18,7 @@ type SwapDatesWithStrings<T> = {
 type TAllModules<T extends TModuleInfo = TModuleInfo> = {
   Stone: TStone<T>
   Locus: TLocus<T>
-  Pottery: TPottery<T>
+  Ceramic: TCeramic<T>
 }
 
 type TAddTagAndSlug<M> = M & { tag: string; slug: string }

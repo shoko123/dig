@@ -5,15 +5,15 @@ import { defineStore, storeToRefs } from 'pinia'
 import type { TModule, TUrlModule } from '../../../types/moduleTypes'
 import type { LocationQuery } from 'vue-router'
 import type { TGroupBase } from '@/js/types/trioTypes'
-import { useLocusStore } from '../modules/locus'
-import { usePotteryStore } from '../modules/pottery'
-import { useStoneStore } from '../modules/stone'
+import { useLocusStore } from '../modules/Locus'
+import { useCeramicStore } from '../modules/Ceramic'
+import { useStoneStore } from '../modules/Stone'
 import { useTrioStore } from '../trio/trio'
 import { useFilterStore } from '../trio/filter'
 
 const moduleConversion: Record<TUrlModule, TModule> = {
   loci: 'Locus',
-  pottery: 'Pottery',
+  ceramic: 'Ceramic',
   stones: 'Stone',
 }
 
@@ -22,7 +22,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
     //console.log(`parseModule() module: "${module}"`)
     switch (module) {
       case 'loci':
-      case 'pottery':
+      case 'ceramic':
       case 'stones':
         return {
           success: true,
@@ -49,8 +49,8 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
         store = useLocusStore()
         break
 
-      case 'Pottery':
-        store = usePotteryStore()
+      case 'Ceramic':
+        store = useCeramicStore()
         break
 
       case 'Stone':

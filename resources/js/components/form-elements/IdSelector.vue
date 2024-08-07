@@ -25,7 +25,7 @@ import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import { useItemNewStore } from '../../scripts/stores/itemNew'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
-import StoneIdSelector from '../modules/stones/StoneIdSelector.vue'
+import StoneIdSelector from '../modules/Stone/StoneIdSelector.vue'
 
 
 const { current } = storeToRefs(useRoutesMainStore())
