@@ -3,10 +3,11 @@
 import { TApiArray } from '@/js/types/collectionTypes'
 import { TApiFieldsUnion } from '@/js/types/moduleTypes'
 
+type TApiTag = { group_label: string; tag_text: string }
 type TApiItemShow<F extends TApiFieldsUnion> = {
   fields: F
-  model_tags: { group_label: string; tag_text: string }[]
-  global_tags: { group_label: string; tag_text: string }[]
+  model_tags: TApiTag[]
+  global_tags: TApiTag[]
   media: TApiArray<'media'>[]
   related: TApiArray<'related'>[]
   slug: string
@@ -18,4 +19,4 @@ type TApiItemUpdate = {
   slug: string
 }
 
-export { TApiItemShow, TApiItemUpdate }
+export { TApiItemShow, TApiTag, TApiItemUpdate }

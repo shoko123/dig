@@ -258,16 +258,16 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       id: sp.id,
     })
 
-    if (res.success) {
-      // console.log(`loadItem() success! res: ${JSON.stringify(res, null, 2)}`)
-      r.to.slug = tagAndSlugFromId(module, res.data.fields.id).slug
-      setItemMedia(res.data.media)
-      array.value = res.data.related
-      i.saveitemFieldsPlus(res.data)
-      return { success: true, message: '' }
-    } else {
+    if (!res.success) {
       return { success: false, message: res.message }
     }
+
+    // console.log(`loadItem() success! res: ${JSON.stringify(res, null, 2)}`)
+    r.to.slug = tagAndSlugFromId(module, res.data.fields.id).slug
+    setItemMedia(res.data.media)
+    array.value = res.data.related
+    i.saveitemFieldsPlus(res.data)
+    return { success: true, message: '' }
   }
 
   async function loadPage(firstPage: boolean): Promise<{ success: boolean; message: string }> {

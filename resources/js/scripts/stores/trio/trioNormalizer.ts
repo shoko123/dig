@@ -60,10 +60,10 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
             handleCS(grp as TApiGroupByCode<'CS'>)
             break
           case 'TM':
-            handleTM(grp as TApiGroupByCode<'TM'>)
+            handleTag(grp as TApiGroupByCode<'TM'>)
             break
           case 'TG':
-            handleTG(grp as TApiGroupByCode<'TG'>)
+            handleTag(grp as TApiGroupByCode<'TG'>)
             break
           case 'MD':
             handleMD(grp as TApiGroupByCode<'MD'>)
@@ -132,8 +132,10 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
       table_name: grp.table_name,
       column_type: grp.column_type,
       dependency: grp.dependency,
+      show_in_item_tags: grp.show_in_item_tags,
+      show_in_filters: grp.show_in_filters,
+      show_in_tagger: grp.show_in_tagger,
       allow_dependents: grp.allow_dependents,
-      allow_tagger_access: grp.allow_tagger_access,
     }
   }
 
@@ -146,7 +148,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     }
   }
 
-  function handleTG(grp: TApiGroupByCode<'TG'>) {
+  function handleTag(grp: TApiGroupByCode<'TM' | 'TG'>) {
     tmpParams = grp.params.map((x) => {
       return { text: x.text, extra: x.extra }
     })
@@ -160,19 +162,6 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     }
   }
 
-  function handleTM(grp: TApiGroupByCode<'TM'>) {
-    tmpParams = grp.params.map((x) => {
-      return { text: x.text, extra: x.extra }
-    })
-
-    tmpGroup = {
-      label: grp.label,
-      code: grp.code,
-      dependency: processDependency(grp.dependency),
-      multiple: grp.multiple,
-      group_id: grp.group_id,
-    }
-  }
   function handleMD(grp: TApiGroupByCode<'MD'>) {
     tmpParams = mediaCollectionNames.value.map((x) => {
       return { text: x, extra: '' }

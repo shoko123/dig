@@ -78,7 +78,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
             case 'MD': //media
                 return array_merge($group, [
                     'label' => $label,
-                    'params' => null,
+                    'params' => [],
                 ]);
 
             case 'DP': //dependency group (bespoke filter)
@@ -94,21 +94,22 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
     private function getColumnGroupDetails($label, $group)
     {
         switch ($group["text_source"]) {
-            case "self":
-                return $this->getCVSelfDetails($label, $group);
+            case "Column":
+                return $this->getCVColumnDetails($label, $group);
 
-            case "manipulated":
+            case "Manipulated":
                 return $this->getCVManipulatedDetails($label, $group);
 
-            case "lookup":
+            case "Lookup":
                 return $this->getCVLookupDetails($label, $group);
+
 
             default:
                 throw new GeneralJsonException('***MODEL INIT() ERROR*** invalid text_source: ' . $group["text_source"], 500);
         }
     }
 
-    private function getCVSelfDetails($label, $group)
+    private function getCVColumnDetails($label, $group)
     {
         $column_name = $group['column_name'];
         $params = DB::table($group['table_name'])->select($column_name)->distinct()->orderBy($column_name)->get();
@@ -137,6 +138,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
             'params' => $params,
         ]);
     }
+
     private function getCVLookupDetails($label, $group)
     {
         $params = DB::table($group['lookup_table_name'])->get();

@@ -1,8 +1,8 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type { TApiFieldsUnion, TFieldsUnion, TModule } from '@/js/types/moduleTypes'
-import type { TApiItemShow } from '@/js/types/itemTypes'
+import type { TApiFieldsUnion, TFieldsUnion, TKeyOfFields, TModule } from '@/js/types/moduleTypes'
+import type { TApiItemShow, TApiTag } from '@/js/types/itemTypes'
 import type { TApiArray } from '@/js/types/collectionTypes'
 import type { IStringObject } from '@/js/types/generalTypes'
 import { useCollectionsStore } from './collections/collections'
@@ -10,8 +10,8 @@ import { useCollectionMainStore } from './collections/collectionMain'
 import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
 import { useModuleStore } from './module'
-
 import { useTrioStore } from './trio/trio'
+import { TGroupColumn } from '@/js/types/trioTypes'
 
 export const useItemStore = defineStore('item', () => {
   const { current } = storeToRefs(useRoutesMainStore())
@@ -58,52 +58,16 @@ export const useItemStore = defineStore('item', () => {
     }
   })
 
-  type KeyOfFields = keyof TFieldsUnion
-
   function saveitemFieldsPlus<F extends TApiFieldsUnion>(apiItem: TApiItemShow<F>) {
     saveItemFields(apiItem.fields)
 
     const res = tagAndSlugFromId(<TModule>current.value.module, apiItem.fields.id)
     tag.value = res.tag
     slug.value = res.slug
-
-    //add CV and CL field's "tags"
     selectedItemParams.value = []
-    for (const x in fieldNameToGroupKey.value) {
-      const group = trio.value.groupsObj[fieldNameToGroupKey.value[x]]
-      // console.log(`Save item column field: "${x}" groupKey: ${fieldNameToGroupKey.value[x]} groupKeys: ${group.paramKeys}`)
-      const paramPropertyToCompare = ['CR', 'CV'].includes(group.code) ? 'text' : 'extra'
-      const paramKey = group.paramKeys.find(
-        (y) =>
-          trio.value.paramsObj[y][paramPropertyToCompare] ===
-          (<TFieldsUnion>fields.value)[<KeyOfFields>x],
-      )
-      if (paramKey === undefined) {
-        console.log(`******serious error while saving item****`)
-        return
-      } else {
-        if (['CV', 'CL', 'CB'].includes(group.code)) {
-          //TODO maybe exclude 'CB' groups? show default if true?
-          selectedItemParams.value.push(paramKey)
-          discreteColumns.value[x] = trio.value.paramsObj[paramKey].text
-        }
-      }
-    }
 
-    //add model and global tags
-    const all = apiItem.model_tags.concat(apiItem.global_tags)
-    for (const x of all) {
-      const group = trio.value.groupsObj[groupLabelToKey.value[x.group_label]]
-      // console.log(`Save item column field: "${x}" groupKey: ${fieldNameToGroupKey.value[x]} groupKeys: ${group.paramKeys}`)
-
-      const paramKey = group.paramKeys.find((y) => trio.value.paramsObj[y].text === x.tag_text)
-      if (paramKey === undefined) {
-        console.log(`******serious error while saving item****`)
-        return
-      } else {
-        selectedItemParams.value.push(paramKey)
-      }
-    }
+    addColumnTags()
+    addExternalTags(apiItem.model_tags.concat(apiItem.global_tags))
   }
 
   function saveItemFields<F extends TApiFieldsUnion>(apiFields: F) {
@@ -111,12 +75,49 @@ export const useItemStore = defineStore('item', () => {
     Object.entries(apiFields).forEach(([key, value]) => {
       //console.log(`Item[${key}] => ${value}`)
       if (dateColumns.value.includes(key)) {
-        tmpMap.set(key, value === null ? null : new Date(<string>value)) //Obj[key] = value === null || value === '' ? null : new Date(<string>value)
+        tmpMap.set(key, value === null ? null : new Date(<string>value))
       } else {
         tmpMap.set(key, value)
       }
     })
     fields.value = Object.fromEntries(tmpMap.entries())
+  }
+
+  function addColumnTags() {
+    for (const x in fieldNameToGroupKey.value) {
+      const group = trio.value.groupsObj[fieldNameToGroupKey.value[x]]
+
+      if (group.code === 'CV' && (<TGroupColumn>group).show_in_item_tags) {
+        const paramKey = group.paramKeys.find(
+          // ** weak comparison because param.extra is either string, number or boolean
+          (y) => trio.value.paramsObj[y].extra == (<TFieldsUnion>fields.value)[<TKeyOfFields>x],
+        )
+
+        if (paramKey === undefined) {
+          console.log(`******serious error while saving item columns****`)
+          return
+        }
+
+        selectedItemParams.value.push(paramKey)
+        discreteColumns.value[x] = trio.value.paramsObj[paramKey].text
+      }
+      console.log(`Add Column Tag: ${group.label} => "${discreteColumns.value[x]} (${x})`)
+    }
+  }
+
+  function addExternalTags(apiTags: TApiTag[]) {
+    // console.log(`SaveItem - Add extrnal (module and global) tags`)
+    for (const x of apiTags) {
+      const group = trio.value.groupsObj[groupLabelToKey.value[x.group_label]]
+      console.log(`Add Tag:  ${x.group_label} => "${x.tag_text}"`)
+
+      const paramKey = group.paramKeys.find((y) => trio.value.paramsObj[y].text === x.tag_text)
+      if (paramKey === undefined) {
+        console.log(`******serious error while saving item's tags****`)
+        return
+      }
+      selectedItemParams.value.push(paramKey)
+    }
   }
 
   //return the newly created/update item's slug (need it only for create())\

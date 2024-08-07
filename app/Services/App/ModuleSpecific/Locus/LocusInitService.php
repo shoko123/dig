@@ -39,12 +39,14 @@ class LocusInitService extends InitService implements InitSpecificServiceInterfa
         return [
             'Basic Typology' => [
                 'code' => 'CV',
-                'text_source' => 'self',
+                'text_source' => 'Column',
                 'table_name' => 'loci',
                 'column_name' => 'category',
                 'column_type' => 'string',
                 'dependency' => [],
-                'allow_tagger_access' => false,
+                'show_in_item_tags' => true,
+                'show_in_filters' => true,
+                'show_in_tagger' => true,
                 'allow_dependents' => false,
             ],
             'Search-ID' => [

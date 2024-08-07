@@ -37,14 +37,21 @@ type TApiGroupBase = {
   params: TApiParam[]
 }
 
+type TColumnTextSource =
+  | 'Column' // exact table value
+  | 'Manipulated' // A one-to-one conversion of the table value
+  | 'Lookup' // lookup table
+
 type TApiGroupColumn = TApiGroupBase & {
-  text_source: string
+  text_source: TColumnTextSource
   table_name: string
   column_name: string
   column_type: 'boolean' | 'string' | 'number'
   dependency: string[]
   allow_dependents: boolean
-  allow_tagger_access: boolean
+  show_in_item_tags: boolean
+  show_in_filters: boolean
+  show_in_tagger: boolean
 }
 
 type TApiGroupTag = TApiGroupBase & {
@@ -81,11 +88,13 @@ type TGroupTagTmp = TGroupBaseTmp & {
 }
 
 type TGroupColumnTmp = TGroupBaseTmp & {
-  text_source: string
+  text_source: TColumnTextSource
   table_name: string
   column_name: string
   column_type: 'boolean' | 'number' | 'string'
-  allow_tagger_access: boolean
+  show_in_item_tags: boolean
+  show_in_filters: boolean
+  show_in_tagger: boolean
   allow_dependents: boolean
   dependency: string[]
 }

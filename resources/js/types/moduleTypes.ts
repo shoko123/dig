@@ -32,6 +32,7 @@ type TAllByName<TModuleName extends TModule> = TAllModules[TModuleName]
 
 type TUrlModule = ModuleUnionB['url_name']
 type TFieldsUnion = ModuleUnionB['fields']
+type TKeyOfFields = keyof TFieldsUnion
 type TApiFieldsUnion = SwapDatesWithStrings<TFieldsUnion>
 type TModifyUnion = ModuleUnionB['modify']
 type TLookupUnion = ModuleUnionB['lookup']
@@ -73,6 +74,7 @@ export {
   TModule,
   TUrlModule,
   TFieldsUnion,
+  TKeyOfFields,
   TApiFieldsUnion,
   TModifyUnion,
   TLookupUnion,
