@@ -43,7 +43,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     tmpParams = []
   }
 
-  function normalizeTrio2(apiTrio: TApiTrio) {
+  function normalizetrio(apiTrio: TApiTrio) {
     reset()
 
     apiTrio.forEach((cat) => {
@@ -191,6 +191,6 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   }
 
   return {
-    normalizeTrio2,
+    normalizetrio,
   }
 })

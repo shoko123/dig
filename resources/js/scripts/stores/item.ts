@@ -87,7 +87,7 @@ export const useItemStore = defineStore('item', () => {
     for (const x in fieldNameToGroupKey.value) {
       const group = trio.value.groupsObj[fieldNameToGroupKey.value[x]]
 
-      if (group.code === 'CV' && (<TGroupColumn>group).show_in_item_tags) {
+      if (group.code === 'CV') {
         const paramKey = group.paramKeys.find(
           // ** weak comparison because param.extra is either string, number or boolean
           (y) => trio.value.paramsObj[y].extra == (<TFieldsUnion>fields.value)[<TKeyOfFields>x],
@@ -98,10 +98,13 @@ export const useItemStore = defineStore('item', () => {
           return
         }
 
-        selectedItemParams.value.push(paramKey)
         discreteColumns.value[x] = trio.value.paramsObj[paramKey].text
+
+        if ((<TGroupColumn>group).show_in_item_tags) {
+          selectedItemParams.value.push(paramKey)
+        }
       }
-      console.log(`Add Column Tag: ${group.label} => "${discreteColumns.value[x]} (${x})`)
+      // console.log(`Add Column Tag: ${group.label} => "${discreteColumns.value[x]} (${x})`)
     }
   }
 
@@ -109,7 +112,7 @@ export const useItemStore = defineStore('item', () => {
     // console.log(`SaveItem - Add extrnal (module and global) tags`)
     for (const x of apiTags) {
       const group = trio.value.groupsObj[groupLabelToKey.value[x.group_label]]
-      console.log(`Add Tag:  ${x.group_label} => "${x.tag_text}"`)
+      // console.log(`Add Tag:  ${x.group_label} => "${x.tag_text}"`)
 
       const paramKey = group.paramKeys.find((y) => trio.value.paramsObj[y].text === x.tag_text)
       if (paramKey === undefined) {
@@ -119,8 +122,6 @@ export const useItemStore = defineStore('item', () => {
       selectedItemParams.value.push(paramKey)
     }
   }
-
-  //return the newly created/update item's slug (need it only for create())\
 
   function itemClear() {
     itemIndex.value = -1

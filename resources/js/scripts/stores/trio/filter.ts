@@ -62,9 +62,6 @@ export const useFilterStore = defineStore('filter', () => {
 
       switch (group.code) {
         case 'CV':
-          // case 'CR':
-          // case 'CB':
-          // case 'CL':
           {
             const i = all.column_value.findIndex((x) => {
               return x.column_name === (<TGroupColumn>group).column_name
@@ -103,21 +100,15 @@ export const useFilterStore = defineStore('filter', () => {
           break
 
         case 'TM':
-          {
-            all.model_tag_ids.push(<number>param.extra)
-          }
+          all.model_tag_ids.push(<number>param.extra)
           break
 
         case 'TG':
-          {
-            all.global_tag_ids.push(<number>param.extra)
-          }
+          all.global_tag_ids.push(<number>param.extra)
           break
 
         case 'MD':
-          {
-            all.media.push(param.text)
-          }
+          all.media.push(param.text)
           break
 
         case 'OB':

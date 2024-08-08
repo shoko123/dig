@@ -8,6 +8,7 @@ import type {
   TGroupTag,
   TApiParam,
   TGroupBase,
+  TGroupColumn,
 } from '../../../types/trioTypes'
 
 import { useTrioNormalizerStore } from './trioNormalizer'
@@ -16,7 +17,7 @@ import { useTaggerStore } from './tagger'
 import { useFilterStore } from './filter'
 
 export const useTrioStore = defineStore('trio', () => {
-  const { normalizeTrio2 } = useTrioNormalizerStore()
+  const { normalizetrio } = useTrioNormalizerStore()
   const { current } = storeToRefs(useRoutesMainStore())
 
   const trio = ref<TTrio>({ categories: [], groupsObj: {}, paramsObj: {} })
@@ -71,8 +72,6 @@ export const useTrioStore = defineStore('trio', () => {
       let multiple = false
       switch (group.code) {
         case 'CV':
-          // case 'CL':
-          // case 'CB':
           required = true
           multiple = false
           break
@@ -102,27 +101,46 @@ export const useTrioStore = defineStore('trio', () => {
   function groupIsAvailable(groupKey: string) {
     const g = trio.value.groupsObj[groupKey]
 
-    //if source is 'New' don't show CS, CR, MD and OB groups.
-    if (current.value.name === 'tag' && ['CS', 'MD', 'CR', 'OB'].includes(g.code)) {
-      return false
+    switch (g.code) {
+      case 'CV':
+        switch (source.value) {
+          case 'filter':
+            if (!(<TGroupColumn>g).show_in_filters) {
+              return false
+            }
+            break
+
+          case 'tagger':
+            if (!(<TGroupColumn>g).show_in_tagger) {
+              return false
+            }
+            break
+          default:
+            return false
+        }
+        break
+
+      case 'TG':
+      case 'TM':
+        break
+
+      default:
+        switch (source.value) {
+          case 'filter':
+            return true
+          case 'tagger':
+          default:
+            return false
+        }
     }
 
-    //if source is filter, and not TM or TG all these groups are available.
-    if (['CS', 'CV', 'CR', 'CB', 'MD', 'OB'].includes(g.code)) {
-      return true
-    }
-
-    if (['TM', 'TG', 'CL'].includes(g.code)) {
-      const tagGroup = <TGroupTag>g
-      return (
-        tagGroup.dependency.length === 0 ||
-        tagGroup.dependency.some((x) => {
-          return selected.value.includes(x)
-        })
-      )
-    }
-    console.log(`**** Error group availability unexpected type : ${g.code}`)
-    return true
+    //Check if dependency conditions are met
+    return (
+      (<TGroupTag>g).dependency.length === 0 ||
+      (<TGroupTag>g).dependency.some((x) => {
+        return selected.value.includes(x)
+      })
+    )
   }
 
   function paramClicked(prmKey: string) {
@@ -302,6 +320,17 @@ export const useTrioStore = defineStore('trio', () => {
     }
   })
 
+  const source = computed(() => {
+    switch (current.value.name) {
+      case 'filter':
+        return 'filter'
+      case 'tag':
+        return 'tagger'
+      default:
+        return null
+    }
+  })
+
   function trioReset() {
     const { clearSelectedFilters } = useFilterStore()
     const { truncateNewItemParams } = useTaggerStore()
@@ -319,7 +348,7 @@ export const useTrioStore = defineStore('trio', () => {
     trioReset()
 
     //const res = normalizeTrio(apiTrio)
-    const res = normalizeTrio2(apiTrio)
+    const res = normalizetrio(apiTrio)
     trio.value = res.trio
     groupLabelToKey.value = res.groupLabelToKey
     orderByOptions.value = res.orderByOptions

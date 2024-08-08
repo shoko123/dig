@@ -1,7 +1,7 @@
 // stores/trio.js
 import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type { TFieldsUnion } from '@/js/types/moduleTypes'
+import type { TFieldsUnion, TKeyOfFields } from '@/js/types/moduleTypes'
 import type { TGroupColumn } from '@/js/types/trioTypes'
 import { useXhrStore } from '../xhr'
 import { useItemStore } from '../item'
@@ -9,31 +9,52 @@ import { useTrioStore } from './trio'
 import { useRoutesMainStore } from '../routes/routesMain'
 
 export const useTaggerStore = defineStore('tagger', () => {
-  const { trio } = storeToRefs(useTrioStore())
+  const { trio, fieldNameToGroupKey } = storeToRefs(useTrioStore())
   const { fields, selectedItemParams } = storeToRefs(useItemStore())
 
   const selectedNewItemParams = ref<string[]>([])
 
-  function copyCurrentToNew() {
-    selectedNewItemParams.value = [...selectedItemParams.value]
+  function prepareTagger() {
+    selectedNewItemParams.value = selectedItemParams.value.filter((x) => {
+      const code = trio.value.groupsObj[trio.value.paramsObj[x].groupKey].code
+      return code === 'TG' || code === 'TM'
+    })
+
+    for (const x in fieldNameToGroupKey.value) {
+      const group = trio.value.groupsObj[fieldNameToGroupKey.value[x]]
+
+      if (group.code === 'CV' && (<TGroupColumn>group).show_in_tagger) {
+        const paramKey = group.paramKeys.find(
+          // ** weak comparison because param.extra is either string, number or boolean
+          (y) => trio.value.paramsObj[y].extra == (<TFieldsUnion>fields.value)[<TKeyOfFields>x],
+        )
+
+        if (paramKey === undefined) {
+          console.log(`******serious error while preparing tagger****`)
+          return
+        }
+
+        selectedNewItemParams.value.push(paramKey)
+      }
+      console.log(`Add Column Tag: ${group.label} => "${x}`)
+    }
   }
 
   function truncateNewItemParams() {
     selectedNewItemParams.value = []
   }
 
-  //When clearing params, set columns lookup and value to default (index 0)
-  function setDefaultNewItemParams() {
+  //When clearing params, set column values to default (index 0)
+  function resetParams() {
     selectedNewItemParams.value = []
-    const clCvParamKeys = selectedItemParams.value.filter((x) =>
-      ['CL', 'CV'].includes(trio.value.groupsObj[trio.value.paramsObj[x].groupKey].code),
-    )
+    for (const x in fieldNameToGroupKey.value) {
+      const group = trio.value.groupsObj[fieldNameToGroupKey.value[x]]
 
-    console.log(`tagger.clear('CL', 'CV' groupKeys): ${JSON.stringify(clCvParamKeys, null, 2)}`)
-    clCvParamKeys.forEach((x) => {
-      const group = trio.value.groupsObj[trio.value.paramsObj[x].groupKey]
-      selectedNewItemParams.value.push(group.paramKeys[0])
-    })
+      if (group.code === 'CV' && (<TGroupColumn>group).show_in_tagger) {
+        selectedNewItemParams.value.push(group.paramKeys[0])
+      }
+      console.log(`Add Column Tag: ${group.label} => "${x}`)
+    }
   }
 
   async function sync() {
@@ -59,14 +80,12 @@ export const useTaggerStore = defineStore('tagger', () => {
           payload.module_tag_ids.push(<number>trio.value.paramsObj[paramKey].extra)
           break
 
-        // case 'CL':
-        // case 'CB':
         case 'CV':
           {
             const param = trio.value.paramsObj[paramKey]
             payload.columns.push({
               column_name: group.column_name,
-              val: ['CL', 'CB'].includes(group.code) ? param.extra! : param.text!,
+              val: param.extra,
             })
           }
           break
@@ -84,9 +103,9 @@ export const useTaggerStore = defineStore('tagger', () => {
 
   return {
     selectedNewItemParams,
-    setDefaultNewItemParams,
     truncateNewItemParams,
-    copyCurrentToNew,
+    prepareTagger,
+    resetParams,
     sync,
   }
 })

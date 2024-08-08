@@ -70,8 +70,8 @@ function goToMedia() {
 
 function goToTagger() {
   console.log(`goToTagger`)
-  const { copyCurrentToNew } = useTaggerStore()
-  copyCurrentToNew()
+  const { prepareTagger } = useTaggerStore()
+  prepareTagger()
   routerPush('tag', <string>derived.value.slug)
 }
 
