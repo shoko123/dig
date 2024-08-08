@@ -9,11 +9,6 @@ class Stone extends DigModuleModel
 {
     //protected $table = 'stones';
 
-    public function getShortAttribute()
-    {
-        return $this->cataloger_description ?? '[No description]';
-    }
-
     public function model_tags()
     {
         return $this->belongsToMany(StoneTag::class, 'stone-stone_tags', 'item_id', 'tag_id');
@@ -42,5 +37,15 @@ class Stone extends DigModuleModel
     public function dateColumns(): array
     {
         return ['excavation_date', 'catalog_date'];
+    }
+
+    public function getDerivedIdAttribute(): string
+    {
+        return 'B' . (string)$this->id_year + 2000 . '.' . $this->id_access_no . '.' . $this->id_object_no;
+    }
+
+    public function getShortAttribute(): string
+    {
+        return $this->cataloger_description ?? '[No description]';
     }
 }

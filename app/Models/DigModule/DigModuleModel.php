@@ -20,6 +20,8 @@ abstract class DigModuleModel extends Model implements HasMedia
     protected $date_columns = [];
 
     public abstract function dateColumns(): array;
+    public abstract function getShortAttribute(): string;
+    public abstract function getDerivedIdAttribute(): string;
 
     public function registerMediaConversions(?Media $media = null): void
     {

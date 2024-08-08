@@ -54,7 +54,7 @@ export const useStoneStore = defineStore('stone', () => {
     if (sections.length !== 3) {
       return {
         success: false,
-        message: 'Unsupported slug format detected',
+        message: `Unsupported slug format detected: ${slug}`,
       }
     }
 

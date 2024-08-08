@@ -190,8 +190,6 @@ export const useTrioStore = defineStore('trio', () => {
         break
 
       case 'CV':
-        // case 'CL':
-        // case 'CB':
         if (isSelected) {
           //do nothing
         } else {

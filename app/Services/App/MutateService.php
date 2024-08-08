@@ -5,6 +5,7 @@ namespace App\Services\App;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use \Exception;
+use App\Exceptions\GeneralJsonException;
 
 class MutateService extends DigModuleService
 {
@@ -35,11 +36,13 @@ class MutateService extends DigModuleService
                 $this->model[$key] = $value;
             }
         }
-
+        if ($this->model->derivedId !== $this->model->id) {
+            throw new GeneralJsonException('Unable to save d/t inconsistency between id: "' . $this->model->id . '" and derived id: ' . $this->model->derivedId, 422);
+        }
         try {
             $this->model->save();
-        } catch (Exception $error) {
-            throw new Exception('Error while saving item to DB: ' . $error);
+        } catch (Exception $e) {
+            throw new GeneralJsonException($e->getMessage() . $e->getCode());
         }
 
         return [

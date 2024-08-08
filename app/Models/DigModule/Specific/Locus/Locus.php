@@ -9,11 +9,6 @@ class Locus extends DigModuleModel
 {
     protected $table = 'loci';
 
-    public function getShortAttribute()
-    {
-        return $this->oc_label; //$short;
-    }
-
     public function model_tags()
     {
         return $this->belongsToMany(LocusTag::class, 'locus-locus_tags', 'item_id', 'tag_id');
@@ -27,5 +22,15 @@ class Locus extends DigModuleModel
     public function dateColumns(): array
     {
         return [];
+    }
+
+    public function getShortAttribute(): string
+    {
+        return $this->oc_label;
+    }
+
+    public function getDerivedIdAttribute(): string
+    {
+        return $this->category . '.' . $this->a . '.' . $this->b;
     }
 }

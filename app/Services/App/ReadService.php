@@ -244,6 +244,7 @@ abstract class ReadService extends DigModuleService implements ReadSpecificServi
             'global_tags' => $global_tags,
             'model_tags' => $model_tags,
             'short' => $item->short,
+            // 'derived_id' => $item->derivedId,
             'related' => [],
         ];
     }

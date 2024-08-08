@@ -16,7 +16,7 @@ class PermissionsSeeder extends Seeder
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $permissions = ['create', 'update', 'delete', 'media', 'tag'];
-        $models = ['Locus', 'Stone'];
+        $models = ['Locus', 'Stone', 'Ceramic'];
 
         foreach ($models as $m) {
             $role = Role::create(['name' => $m . ' manager']);
