@@ -16,7 +16,7 @@ class IndexRequest extends ModuleRequest
     {
         return [
             //'module' => verified also in ModuleRequest.prepareForValidation(),
-            'module' => $this->rule_module_name_required_valid(),
+            'module' => $this->rule_module_name_is_valid(),
             //
             'query.model_tag_ids' => ['array'],
             'query.model_tag_ids.*' => $this->rule_id_exists_in_module_tags_table(),

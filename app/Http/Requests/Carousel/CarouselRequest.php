@@ -15,7 +15,7 @@ class CarouselRequest extends ModuleRequest
     {
         return [
             'source' => ['required', 'in:main,media,related'],
-            'module' => $this->rule_module_name_required_valid(),
+            'module' => $this->rule_module_name_is_valid(),
             'module_id' => ['required_if:source,main', $this->rule_id_exists_in_module_table()],
             'media_id' => ['required_if:source,media', 'numeric', 'integer'],
         ];

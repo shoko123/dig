@@ -14,7 +14,7 @@ class MediaReorderRequest extends ModuleRequest
     public function rules(): array
     {
         return [
-            'module' => $this->rule_module_name_required_valid(),
+            'module' => $this->rule_module_name_is_valid(),
             'module_id' => $this->rule_id_exists_in_module_table(),
             'ordered_media_ids.*' => 'nullable|exists:media,id',
         ];

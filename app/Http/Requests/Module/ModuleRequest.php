@@ -7,72 +7,66 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Auth\Access\AuthorizationException;
 use App\Exceptions\GeneralJsonException;
-
-enum ModuleConfigData: int
-{
-    case TableName = 0;
-    case TagTableName = 1;
-    case ValueColumnNames = 2;
-    case SearchColumnNames = 3;
-    case OrderByColumnNames = 4;
-    case ColumnNamesUsedByTagger = 5;
-}
+use App\Http\Requests\Module\ModuleSpecific\ValidationRules;
 
 class ModuleRequest extends FormRequest
 {
-    public static $moduleDetails = [
-        'Locus' => ['loci', 'locus_tags', ['category'], ['id', 'oc_label'], ['category', 'a', 'b', 'published_date'], []],
-        'Ceramic' => ['ceramics', 'ceramic_tags', [], [], [], []],
-        'Stone' => ['stones', 'stone_tags', ['base_type_id', 'material_id', 'cataloger_id', 'whole', 'id_year', 'id_object_no'], ['id'], ['id_year', 'id_object_no', 'excavation_date', 'catalog_date'], ['base_type_id', 'material_id', 'cataloger_id', 'whole']]
-    ];
+    protected ValidationRules $rules;
 
     protected function prepareForValidation(): void
     {
         //Verify that the module is valid as it used as a key for other validations using $moduleTable[] above.
-        if (is_null($this->input('module')) || !in_array($this->input('module'), array_keys(self::$moduleDetails))) {
+        if (is_null($this->input('module')) || !in_array($this->input('module'), ['Locus', 'Stone', 'Ceramic'])) {
             throw new GeneralJsonException("Absent or invalid module name: `" . $this->input('module') . "`", 422);
         }
+
+        $full_class = 'App\Http\Requests\Module\ModuleSpecific\\' . $this->input('module') . 'ValidationRules';
+        $this->rules =  new $full_class;
     }
 
-    //protected static $rule_module_name_required_valid = 'required|in:Locus,Ceramic,Stone';
-    protected static function rule_module_name_required_valid(): string
+    protected function rule_module_name_is_valid()
     {
-        return 'required|in:' . implode(",", array_keys(self::$moduleDetails));
-    }
-
-    protected function getModuleData(ModuleConfigData $d): string | array
-    {
-        return self::$moduleDetails[$this->input('module')][$d->value];
+        return 'required|in:Locus,Ceramic,Stone';
     }
 
     protected function rule_id_exists_in_module_table(): string
     {
-        return 'exists:' . $this->getModuleData(ModuleConfigData::TableName) . ',id';
+        return $this->rules->rule_id_exists_in_module_table();
     }
 
     protected function rule_id_exists_in_module_tags_table(): string
     {
-        return 'exists:' . $this->getModuleData(ModuleConfigData::TagTableName) . ',id';
+        return $this->rules->rule_id_exists_in_module_tags_table();
     }
 
     protected function rule_value_column_name_is_valid(): string
     {
-        return 'in:' . implode(",", $this->getModuleData(ModuleConfigData::ValueColumnNames));
+        return $this->rules->rule_value_column_name_is_valid();
     }
 
     protected function rule_search_column_name_is_valid(): string
     {
-        return 'in:' . implode(",", $this->getModuleData(ModuleConfigData::SearchColumnNames));
+        return $this->rules->rule_search_column_name_is_valid();
     }
 
     protected function rule_order_by_column_name_is_valid(): string
     {
-        return 'in:' . implode(",", $this->getModuleData(ModuleConfigData::OrderByColumnNames));
+        return $this->rules->rule_order_by_column_name_is_valid();
     }
 
     protected function rule_tagger_column_name_is_valid(): string
     {
-        return 'in:' . implode(",", $this->getModuleData(ModuleConfigData::ColumnNamesUsedByTagger));
+        return $this->rules->rule_tagger_column_name_is_valid();
+    }
+
+    protected function create_rules(): array
+    {
+        return $this->rules->create_rules();
+    }
+
+    protected function update_rules(): array
+    {
+        return $this->rules->update_rules();
     }
 
     public function authorize(): bool
@@ -92,7 +86,7 @@ class ModuleRequest extends FormRequest
      */
     public function rules(): array
     {
-        return ['module' => static::rule_module_name_required_valid()];
+        return ['module' => $this->rule_module_name_is_valid()];
     }
 
     public function failedValidation(Validator $validator)

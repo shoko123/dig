@@ -14,7 +14,7 @@ class MediaDestroyRequest extends ModuleRequest
     public function rules(): array
     {
         return [
-            'module' => $this->rule_module_name_required_valid(),
+            'module' => $this->rule_module_name_is_valid(),
             'module_id' => $this->rule_id_exists_in_module_table(),
             'media_id' => 'exists:media,id',
         ];

@@ -17,7 +17,7 @@ class TagSyncRequest extends ModuleRequest
     {
         //TODO  column_values Rule
         return [
-            'module' => $this->rule_module_name_required_valid(),
+            'module' => $this->rule_module_name_is_valid(),
             'module_id' => $this->rule_id_exists_in_module_table(),
             'module_tag_ids' => 'array',
             'module_tag_ids.*' => $this->rule_id_exists_in_module_tags_table(),

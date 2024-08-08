@@ -20,7 +20,7 @@ class MediaUploadRequest extends ModuleRequest
         $media_collection_rule = 'nullable|in:' . $media_collections->implode(',');
 
         return [
-            'module' => $this->rule_module_name_required_valid(),
+            'module' => $this->rule_module_name_is_valid(),
             'id' => $this->rule_id_exists_in_module_table(),
             'media_collection_name' => $media_collection_rule,
             'media_files.*' => [

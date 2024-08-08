@@ -3,33 +3,31 @@
 namespace App\Http\Requests\Module;
 
 use App\Http\Requests\Module\ModuleRequest;
-use App\Http\Requests\Module\ModuleSpecific\StoreRules;
+//use App\Http\Requests\Module\ModuleSpecific\StoreRules;
 
 class StoreRequest extends ModuleRequest
 {
-    protected StoreRules $rulesClass;
+    //protected StoreRules $rulesClass;
 
     public function authorize(): bool
     {
-        return true;
-        // return $this->user('sanctum')->can($p);
-    }
+        $p = '';
+        if ($this->isMethod('post')) {
+            $p = $this->input('module') . '-create';
+        } else {
+            $p = $this->input('module') . '-update';
+        }
 
-    protected function prepareForValidation(): void
-    {
-        parent::prepareForValidation();
-
-        $full_class = 'App\Http\Requests\Module\ModuleSpecific\\' . $this->input('module') . 'StoreRules';
-        $this->rulesClass =  new $full_class;
+        return $this->user('sanctum')->can($p);
     }
 
     public function rules(): array
     {
         return array_merge(
             [
-                'module' => $this->rule_module_name_required_valid()
+                'module' => $this->rule_module_name_is_valid()
             ],
-            $this->rulesClass->rules($this->isMethod('post'))
+            $this->isMethod('post') ? $this->create_rules() :  $this->update_rules()
         );
     }
 }

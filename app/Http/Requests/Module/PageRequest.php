@@ -14,7 +14,7 @@ class PageRequest extends ModuleRequest
     public function rules(): array
     {
         return [
-            'module' => $this->rule_module_name_required_valid(),
+            'module' => $this->rule_module_name_is_valid(),
             'ids' => ['required', 'array', 'between:1,200'],
             'ids.*' => $this->rule_id_exists_in_module_table(),
             'view' => ['required', 'in:Tabular,Gallery'],

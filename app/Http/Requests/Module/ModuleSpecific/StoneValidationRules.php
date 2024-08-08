@@ -2,11 +2,41 @@
 
 namespace App\Http\Requests\Module\ModuleSpecific;
 
-use App\Http\Requests\Module\ModuleSpecific\StoreRules;
+use App\Http\Requests\Module\ModuleSpecific\ValidationRules;
 
-class StoneStoreRules extends StoreRules
+class StoneValidationRules extends ValidationRules
 {
-    protected static function create_rules(): array
+    function table_name(): string
+    {
+        return 'stones';
+    }
+
+    function tags_table_name(): string
+    {
+        return 'stone_tags';
+    }
+
+    function allowed_value_column_names(): array
+    {
+        return ['base_type_id', 'material_id', 'cataloger_id', 'whole', 'id_year', 'id_object_no'];
+    }
+
+    function allowed_search_column_names(): array
+    {
+        return ['id'];
+    }
+
+    function allowed_order_by_column_names(): array
+    {
+        return ['id_year', 'id_object_no', 'excavation_date', 'catalog_date'];
+    }
+
+    function allowed_tagger_column_names(): array
+    {
+        return ['base_type_id', 'material_id', 'cataloger_id', 'whole'];
+    }
+
+    public function create_rules(): array
     {
         return [
             'fields.id' => 'max:250',
@@ -41,7 +71,7 @@ class StoneStoreRules extends StoreRules
         ];
     }
 
-    static function update_rules(): array
+    public function update_rules(): array
     {
         return [
             'fields.id' => 'required|max:50',

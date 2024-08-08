@@ -14,7 +14,7 @@ class ItemByIdRequest extends ModuleRequest
     public function rules(): array
     {
         return [
-            'module' => $this->rule_module_name_required_valid(),
+            'module' => $this->rule_module_name_is_valid(),
             'id' => ['required', $this->rule_id_exists_in_module_table()],
         ];
     }
