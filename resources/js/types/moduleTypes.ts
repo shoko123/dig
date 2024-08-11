@@ -7,9 +7,8 @@ import type { TCeramic } from '@/js/types/modules/Ceramic'
 type TModuleInfo = {
   url_name: string
   fields: object
-  modify: { id: string }
-  lookup: { id: string }
-  tabular: { id: string }
+  CV: object
+  TabularViewFields: object
 }
 
 type SwapDatesWithStrings<T> = {
@@ -32,11 +31,11 @@ type TAllByName<TModuleName extends TModule> = TAllModules[TModuleName]
 
 type TUrlModule = ModuleUnionB['url_name']
 type TFieldsUnion = ModuleUnionB['fields']
+type TCVFieldsUnion = ModuleUnionB['CV']
 type TKeyOfFields = keyof TFieldsUnion
 type TApiFieldsUnion = SwapDatesWithStrings<TFieldsUnion>
-type TModifyUnion = ModuleUnionB['modify']
-type TLookupUnion = ModuleUnionB['lookup']
-type TApiPageMainTabularUnion = ModuleUnionB['tabular'] & { slug: string }
+
+type TApiPageMainTabularUnion = ModuleUnionB['TabularViewFields'] & { slug: string }
 
 type TFieldsByModule<ModuleName extends TModule> = TAllByName<ModuleName>['fields']
 type TApiFieldsByModule<ModuleName extends TModule> = SwapDatesWithStrings<
@@ -47,9 +46,9 @@ type FieldsAsBooleans<T> = {
   [k in keyof T]: boolean
 }
 
-type TModifyByModule<ModuleName extends TModule> = TAllByName<ModuleName>['modify']
-
-type TTabularByModule<ModuleName extends TModule> = TAllByName<ModuleName>['tabular']
+type TCVByModule<ModuleName extends TModule> = TAllByName<ModuleName>['CV']
+type TKeyOfCVFieldsUnion = keyof TCVFieldsUnion
+type TTabularByModule<ModuleName extends TModule> = TAllByName<ModuleName>['TabularViewFields']
 type TApiTabularByModule<ModuleName extends TModule> = TAddTagAndSlug<TTabularByModule<ModuleName>>
 
 type FuncSlugToId = (
@@ -67,6 +66,7 @@ type TApiModuleInit = {
   trio: TApiTrio
   welcome_text: string
 }
+
 export {
   TModuleInfo,
   TModule,
@@ -74,15 +74,15 @@ export {
   TFieldsUnion,
   TKeyOfFields,
   TApiFieldsUnion,
-  TModifyUnion,
-  TLookupUnion,
+  TCVByModule,
+  TKeyOfCVFieldsUnion,
   TApiPageMainTabularUnion,
   TFieldsByModule,
   TApiFieldsByModule,
-  TModifyByModule,
   TApiTabularByModule,
   TTabularByModule,
   TApiModuleInit,
   FuncSlugToId,
   FieldsAsBooleans,
+  TCVFieldsUnion,
 }

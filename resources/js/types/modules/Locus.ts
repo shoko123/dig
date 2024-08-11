@@ -13,9 +13,8 @@ type TLocus<T extends TModuleInfo> = {
     published_date: string
     updated_date: string
   }
-  modify: Pick<TLocus<T>['fields'], 'id' | 'category' | 'a' | 'b' | 'square'>
-  lookup: Pick<TLocus<T>['fields'], 'id'>
-  tabular: TLocus<T>['fields']
+  CV: Pick<TLocus<T>['fields'], 'id' | 'category' | 'a' | 'b' | 'square'>
+  TabularViewFields: TLocus<T>['fields']
 }
 
 export { TLocus }

@@ -4,7 +4,7 @@ import { defineStore, storeToRefs } from 'pinia'
 import type { TApiFieldsUnion, TFieldsUnion, TKeyOfFields, TModule } from '@/js/types/moduleTypes'
 import type { TApiItemShow, TApiTag } from '@/js/types/itemTypes'
 import type { TApiArray } from '@/js/types/collectionTypes'
-import type { IStringObject } from '@/js/types/generalTypes'
+// import type { IStringObject } from '@/js/types/generalTypes'
 
 import { useCollectionsStore } from './collections/collections'
 import { useCollectionMainStore } from './collections/collectionMain'
@@ -26,7 +26,7 @@ export const useItemStore = defineStore('item', () => {
   const tag = ref<string | undefined>(undefined)
   const short = ref<string | undefined>(undefined)
   const selectedItemParams = ref<string[]>([])
-  const discreteColumns = ref<IStringObject>({})
+
   const ready = ref<boolean>(false)
   const itemViews = ref<string[]>([])
   const itemViewIndex = ref<number>(0)
@@ -52,6 +52,28 @@ export const useItemStore = defineStore('item', () => {
       moduleAndTag: `${current.value === undefined ? '' : current.value.module} ${tag.value === undefined ? '' : tag.value}`,
       short: short.value,
     }
+  })
+
+  const cvColumns = computed(() => {
+    const cvs: Record<string, string | number | boolean> = {}
+    for (const x in fieldNameToGroupKey.value) {
+      const group = trio.value.groupsObj[fieldNameToGroupKey.value[x]]
+
+      if (group.code === 'CV') {
+        const paramKey = group.paramKeys.find(
+          // ** weak comparison because param.extra is either string, number or boolean
+          (y) => trio.value.paramsObj[y].extra == (<TFieldsUnion>fields.value)[<TKeyOfFields>x],
+        )
+
+        if (paramKey === undefined) {
+          console.log(`******serious error while calculating item CV columns****`)
+          return
+        }
+
+        cvs[<string>x] = trio.value.paramsObj[paramKey].text
+      }
+    }
+    return cvs
   })
 
   function saveitemFieldsPlus<F extends TApiFieldsUnion>(apiItem: TApiItemShow<F>) {
@@ -97,13 +119,10 @@ export const useItemStore = defineStore('item', () => {
           return
         }
 
-        discreteColumns.value[x] = trio.value.paramsObj[paramKey].text
-
         if ((<TGroupColumn>group).show_in_item_tags) {
           selectedItemParams.value.push(paramKey)
         }
       }
-      // console.log(`Add Column Tag: ${group.label} => "${discreteColumns.value[x]} (${x})`)
     }
   }
 
@@ -125,7 +144,6 @@ export const useItemStore = defineStore('item', () => {
   function itemClear() {
     itemIndex.value = -1
     fields.value = undefined
-    discreteColumns.value = {}
     slug.value = undefined
     short.value = undefined
     tag.value = undefined
@@ -183,7 +201,6 @@ export const useItemStore = defineStore('item', () => {
     fields,
     id,
     derived,
-    discreteColumns,
     selectedItemParams,
     itemIndex,
     nextSlug,
@@ -195,5 +212,6 @@ export const useItemStore = defineStore('item', () => {
     saveItemFields,
     saveitemFieldsPlus,
     itemRemove,
+    cvColumns,
   }
 })

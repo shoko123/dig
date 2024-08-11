@@ -7,9 +7,8 @@ type TCeramic<T extends TModuleInfo> = {
     name: string
     area: string
   }
-  modify: Pick<TCeramic<T>['fields'], 'id' | 'area'>
-  lookup: Pick<TCeramic<T>['fields'], 'id'>
-  tabular: TCeramic<T>['fields']
+  CV: Pick<TCeramic<T>['fields'], 'id' | 'area'>
+  TabularViewFields: TCeramic<T>['fields']
 }
 
 export { TCeramic }

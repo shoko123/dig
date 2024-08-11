@@ -33,10 +33,11 @@ type TStone<T extends TModuleInfo> = {
     base_type_id: number
     material_id: number
   }
-
-  modify: TStone<T>['fields']
-  lookup: Pick<TStone<T>['fields'], 'id'>
-  tabular: TStone<T>['fields']
+  CV: Pick<TStone<T>['fields'], 'base_type_id' | 'material_id' | 'cataloger_id'>
+  TabularViewFields: Pick<
+    TStone<T>['fields'],
+    'id' | 'cataloger_description' | 'specialist_description'
+  >
 }
 
 export { TStone }

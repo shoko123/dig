@@ -69,7 +69,7 @@ const props = defineProps<{
 }>()
 
 const { newFields, rules, inOC } = storeToRefs(useStoneStore())
-let { discreteColumns } = storeToRefs(useItemStore())
+let { cvColumns } = storeToRefs(useItemStore())
 
 const v = useVuelidate(rules, newFields.value as TFieldsByModule<'Stone'>)
 
@@ -103,7 +103,7 @@ const specialist_descriptionErrors = computed(() => {
 
 
 const cataloger = computed(() => {
-  return discreteColumns.value['cataloger_id']
+  return cvColumns.value!['cataloger_id']
 })
 
 function clearDate(field: string) {
