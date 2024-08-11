@@ -180,7 +180,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       })
       c.resetCollectionsViewIndex()
       i.setItemViewIndex(0)
-      i.saveDateColumns(res.data.date_columns)
       i.itemViews = res.data.display_options.item_views
       c.clear(['main', 'media', 'related'])
 

@@ -17,9 +17,7 @@ abstract class DigModuleModel extends Model implements HasMedia
     protected $keyType = 'string';
     public $timestamps = false;
     protected $guarded = [];
-    protected $date_columns = [];
 
-    public abstract function dateColumns(): array;
     abstract protected function short(): Attribute;
     abstract protected function derivedId(): Attribute;
 

@@ -21,15 +21,6 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
         ];
     }
 
-    public static function dateColumns(): array
-    {
-        return  [
-            "excavation_date",
-            "catalog_date",
-            "specialist_date"
-        ];
-    }
-
     public static function welcomeText(): array
     {
         return [

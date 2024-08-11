@@ -21,11 +21,6 @@ class CeramicInitService extends InitService implements InitSpecificServiceInter
         ];
     }
 
-    public static function dateColumns(): array
-    {
-        return  [];
-    }
-
     public static function welcomeText(): array
     {
         return [

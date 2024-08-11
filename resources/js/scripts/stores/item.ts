@@ -5,6 +5,7 @@ import type { TApiFieldsUnion, TFieldsUnion, TKeyOfFields, TModule } from '@/js/
 import type { TApiItemShow, TApiTag } from '@/js/types/itemTypes'
 import type { TApiArray } from '@/js/types/collectionTypes'
 import type { IStringObject } from '@/js/types/generalTypes'
+
 import { useCollectionsStore } from './collections/collections'
 import { useCollectionMainStore } from './collections/collectionMain'
 import { useRoutesMainStore } from './routes/routesMain'
@@ -26,7 +27,6 @@ export const useItemStore = defineStore('item', () => {
   const short = ref<string | undefined>(undefined)
   const selectedItemParams = ref<string[]>([])
   const discreteColumns = ref<IStringObject>({})
-  const dateColumns = ref<string[]>([])
   const ready = ref<boolean>(false)
   const itemViews = ref<string[]>([])
   const itemViewIndex = ref<number>(0)
@@ -42,10 +42,6 @@ export const useItemStore = defineStore('item', () => {
 
   function setItemViewIndex(index: number) {
     itemViewIndex.value = index
-  }
-
-  function saveDateColumns(date_columns: string[]) {
-    dateColumns.value = date_columns
   }
 
   const derived = computed(() => {
@@ -185,7 +181,6 @@ export const useItemStore = defineStore('item', () => {
     short,
     ready,
     fields,
-    dateColumns,
     id,
     derived,
     discreteColumns,
@@ -199,7 +194,6 @@ export const useItemStore = defineStore('item', () => {
     setItemViewIndex,
     saveItemFields,
     saveitemFieldsPlus,
-    saveDateColumns,
     itemRemove,
   }
 })

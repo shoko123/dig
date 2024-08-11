@@ -18,7 +18,6 @@ export const useItemNewStore = defineStore('itemNew', () => {
   const tag = ref<string | undefined>(undefined)
   const selectedItemParams = ref<string[]>([])
   const discreteColumns = ref<IStringObject>({})
-  const dateColumns = ref<string[]>([])
   const ready = ref<boolean>(false)
 
   const openIdSelectorModal = ref<boolean>(false)
@@ -91,7 +90,6 @@ export const useItemNewStore = defineStore('itemNew', () => {
     tag,
     ready,
     newFields,
-    dateColumns,
     id,
     isCreate,
     isUpdate,

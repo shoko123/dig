@@ -20,11 +20,6 @@ class Ceramic extends DigModuleModel
         return $this->morphToMany(Tag::class, 'taggable');
     }
 
-    public function dateColumns(): array
-    {
-        return [];
-    }
-
     protected function derivedId(): Attribute
     {
         return Attribute::make(

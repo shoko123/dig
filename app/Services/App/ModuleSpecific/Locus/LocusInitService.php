@@ -21,11 +21,6 @@ class LocusInitService extends InitService implements InitSpecificServiceInterfa
         ];
     }
 
-    public static function dateColumns(): array
-    {
-        return  [];
-    }
-
     public static function welcomeText(): array
     {
         return [
