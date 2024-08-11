@@ -94,7 +94,6 @@ class CeramicInitService extends InitService implements InitSpecificServiceInter
                 'Search-Field-Description',
                 'Search-Specialist-Description',
                 'Search-Notes',
-
             ],
             'Order By' => [
                 'Order By',

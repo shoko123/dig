@@ -2,6 +2,8 @@
 
 namespace App\Models\DigModule\Specific\Stone;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Carbon;
 use App\Models\DigModule\DigModuleModel;
 use App\Models\Tag\Tag;
 
@@ -39,13 +41,26 @@ class Stone extends DigModuleModel
         return ['excavation_date', 'catalog_date'];
     }
 
-    public function getDerivedIdAttribute(): string
+    protected function casts(): array
     {
-        return 'B' . (string)$this->id_year + 2000 . '.' . $this->id_access_no . '.' . $this->id_object_no;
+        return [
+            'whole' => 'boolean'
+        ];
     }
 
-    public function getShortAttribute(): string
+    protected function derivedId(): Attribute
     {
-        return $this->cataloger_description ?? '[No description]';
+        return Attribute::make(
+            get: fn(mixed $value, array $attributes) =>
+            'B' . (string)$attributes['id_year'] + 2000 . '.' . $attributes['id_access_no'] . '.' . $attributes['id_object_no']
+        );
+    }
+
+    protected function short(): Attribute
+    {
+        return Attribute::make(
+            get: fn(mixed $value, array $attributes) =>
+            $attributes['cataloger_description']  ?? '[No description]'
+        );
     }
 }

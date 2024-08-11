@@ -2,6 +2,7 @@
 
 namespace App\Models\DigModule\Specific\Ceramic;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use App\Models\DigModule\DigModuleModel;
 use App\Models\Tag\Tag;
 
@@ -24,13 +25,19 @@ class Ceramic extends DigModuleModel
         return [];
     }
 
-    public function getShortAttribute(): string
+    protected function derivedId(): Attribute
     {
-        return $this->specialist_description ?? '[No description]';
+        return Attribute::make(
+            get: fn(mixed $value, array $attributes) =>
+            $attributes['id_year'] . '.' . $attributes['id_aobject']
+        );
     }
 
-    public function getDerivedIdAttribute(): string
+    protected function short(): Attribute
     {
-        return $this->id_year . '.' . $this->id_object;
+        return Attribute::make(
+            get: fn(mixed $value, array $attributes) =>
+            $attributes['specialist_description']  ?? '[No description]'
+        );
     }
 }

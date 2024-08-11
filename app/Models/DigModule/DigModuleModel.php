@@ -2,8 +2,8 @@
 
 namespace App\Models\DigModule;
 
-use Exception;
-
+use DateTimeInterface;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -20,8 +20,8 @@ abstract class DigModuleModel extends Model implements HasMedia
     protected $date_columns = [];
 
     public abstract function dateColumns(): array;
-    public abstract function getShortAttribute(): string;
-    public abstract function getDerivedIdAttribute(): string;
+    abstract protected function short(): Attribute;
+    abstract protected function derivedId(): Attribute;
 
     public function registerMediaConversions(?Media $media = null): void
     {
@@ -30,5 +30,10 @@ abstract class DigModuleModel extends Model implements HasMedia
             ->height(250)
             ->sharpen(10)
             ->nonQueued();
+    }
+
+    protected function serializeDate(DateTimeInterface $date): string
+    {
+        return $date->format('Y-m-d');
     }
 }

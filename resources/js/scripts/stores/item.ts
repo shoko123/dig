@@ -71,11 +71,14 @@ export const useItemStore = defineStore('item', () => {
   }
 
   function saveItemFields<F extends TApiFieldsUnion>(apiFields: F) {
+    // If ket has '_date' and value is a string in YYYY-MM-DD format, assume that we deal with a date column, and make a new Date
+    const isoDateRegex = /^\d{4}-\d{2}-\d{2}$/
     const tmpMap = new Map()
+
     Object.entries(apiFields).forEach(([key, value]) => {
       //console.log(`Item[${key}] => ${value}`)
-      if (dateColumns.value.includes(key)) {
-        tmpMap.set(key, value === null ? null : new Date(<string>value))
+      if (typeof value === 'string' && isoDateRegex.test(value)) {
+        tmpMap.set(key, new Date(<string>value))
       } else {
         tmpMap.set(key, value)
       }

@@ -2,6 +2,7 @@
 
 namespace App\Models\DigModule\Specific\Locus;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use App\Models\DigModule\DigModuleModel;
 use App\Models\Tag\Tag;
 
@@ -24,13 +25,19 @@ class Locus extends DigModuleModel
         return [];
     }
 
-    public function getShortAttribute(): string
+    protected function derivedId(): Attribute
     {
-        return $this->oc_label;
+        return Attribute::make(
+            get: fn(mixed $value, array $attributes) =>
+            $attributes['category'] . '.' . $attributes['a'] . '.' . $attributes['b']
+        );
     }
 
-    public function getDerivedIdAttribute(): string
+    protected function short(): Attribute
     {
-        return $this->category . '.' . $this->a . '.' . $this->b;
+        return Attribute::make(
+            get: fn(mixed $value, array $attributes) =>
+            $attributes['oc_label']
+        );
     }
 }
