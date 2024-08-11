@@ -12,7 +12,7 @@ export const useItemNewStore = defineStore('itemNew', () => {
   const { current } = storeToRefs(useRoutesMainStore())
   const { getStore } = useModuleStore()
   const { send } = useXhrStore()
-  const { trio, fieldNameToGroupKey } = storeToRefs(useTrioStore())
+  const { trio, cvColumnNameToGroupKey } = storeToRefs(useTrioStore())
 
   const slug = ref<string | undefined>(undefined)
   const tag = ref<string | undefined>(undefined)
@@ -40,25 +40,17 @@ export const useItemNewStore = defineStore('itemNew', () => {
 
   const cvColumns = computed(() => {
     const cvs: Record<string, string | number | boolean> = {}
-    for (const x in fieldNameToGroupKey.value) {
-      const group = trio.value.groupsObj[fieldNameToGroupKey.value[x]]
-
-      if (group.code === 'CV') {
-        const paramKey = group.paramKeys.find(
-          // ** weak comparison because param.extra is either string, number or boolean
-          (y) => trio.value.paramsObj[y].extra == (<TFieldsUnion>newFields.value)[<TKeyOfFields>x],
-        )
-
-        if (paramKey === undefined) {
-          console.log(`******serious error while calculating item CV columns****`)
-          return
-        }
-
-        cvs[<string>x] = trio.value.paramsObj[paramKey].text
-      }
+    for (const x in cvColumnNameToGroupKey.value) {
+      const group = trio.value.groupsObj[cvColumnNameToGroupKey.value[x]]
+      const paramKey = group.paramKeys.find(
+        // ** weak comparison because param.extra is either string, number or boolean
+        (y) => trio.value.paramsObj[y].extra == (<TFieldsUnion>newFields.value)[<TKeyOfFields>x],
+      )
+      cvs[<string>x] = trio.value.paramsObj[paramKey!].text
     }
     return cvs
   })
+
   function prepareForNew(isCreate: boolean, ids?: string[]): void {
     const store = getStore(<TModule>current.value.module)
     return store.prepareForNew(isCreate, ids)

@@ -72,7 +72,7 @@ const catalog_date = computed(() => {
 })
 
 const cataloger = computed(() => {
-  return cvColumns.value!['cataloger_id']
+  return cvColumns.value['cataloger_id']
 })
 
 const specialist = computed(() => {

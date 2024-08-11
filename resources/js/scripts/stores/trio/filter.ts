@@ -3,7 +3,6 @@ import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import type { TGroupBase, TGroupColumn } from '@/js/types/trioTypes'
 import type { TApiFilters } from '@/js/types/routesTypes'
-import type { IStringObject } from '@/js/types/generalTypes'
 import type { TApiArray } from '@/js/types/collectionTypes'
 import { useTrioStore } from './trio'
 import { useXhrStore } from '../xhr'
@@ -18,7 +17,9 @@ export const useFilterStore = defineStore('filter', () => {
   const selectedFilterParams = ref<string[]>([])
 
   function filtersToQueryObject() {
-    const q2: IStringObject = {}
+    const q2: {
+      [key: string]: string
+    } = {}
 
     selectedFilterParams.value.sort((a, b) => {
       return a > b ? 1 : -1

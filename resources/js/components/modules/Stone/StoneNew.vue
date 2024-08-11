@@ -103,7 +103,7 @@ const specialist_descriptionErrors = computed(() => {
 
 
 const cataloger = computed(() => {
-  return cvColumns.value!['cataloger_id']
+  return cvColumns.value['cataloger_id']
 })
 
 function clearDate(field: string) {

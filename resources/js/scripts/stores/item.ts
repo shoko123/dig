@@ -4,8 +4,6 @@ import { defineStore, storeToRefs } from 'pinia'
 import type { TApiFieldsUnion, TFieldsUnion, TKeyOfFields, TModule } from '@/js/types/moduleTypes'
 import type { TApiItemShow, TApiTag } from '@/js/types/itemTypes'
 import type { TApiArray } from '@/js/types/collectionTypes'
-// import type { IStringObject } from '@/js/types/generalTypes'
-
 import { useCollectionsStore } from './collections/collections'
 import { useCollectionMainStore } from './collections/collectionMain'
 import { useRoutesMainStore } from './routes/routesMain'
@@ -19,7 +17,7 @@ export const useItemStore = defineStore('item', () => {
   const { collection, itemByIndex } = useCollectionsStore()
   const { tagAndSlugFromId } = useModuleStore()
   const { send } = useXhrStore()
-  const { trio, fieldNameToGroupKey, groupLabelToKey } = storeToRefs(useTrioStore())
+  const { trio, cvColumnNameToGroupKey, groupLabelToKey } = storeToRefs(useTrioStore())
 
   const fields = ref<TFieldsUnion | undefined>(undefined)
   const slug = ref<string | undefined>(undefined)
@@ -55,23 +53,26 @@ export const useItemStore = defineStore('item', () => {
   })
 
   const cvColumns = computed(() => {
+    // return Object.fromEntries(
+    //   Object.keys(cvColumnNameToGroupKey.value).map((k) => {
+    //     return [k, (<TFieldsUnion>fields.value)[<TKeyOfFields>k]]
+    //   }),
+    // )
+
     const cvs: Record<string, string | number | boolean> = {}
-    for (const x in fieldNameToGroupKey.value) {
-      const group = trio.value.groupsObj[fieldNameToGroupKey.value[x]]
+    for (const x in cvColumnNameToGroupKey.value) {
+      const group = trio.value.groupsObj[cvColumnNameToGroupKey.value[x]]
+      const paramKey = group.paramKeys.find(
+        // ** weak comparison because param.extra is either string, number or boolean
+        (y) => trio.value.paramsObj[y].extra == (<TFieldsUnion>fields.value)[<TKeyOfFields>x],
+      )
 
-      if (group.code === 'CV') {
-        const paramKey = group.paramKeys.find(
-          // ** weak comparison because param.extra is either string, number or boolean
-          (y) => trio.value.paramsObj[y].extra == (<TFieldsUnion>fields.value)[<TKeyOfFields>x],
-        )
+      // if (paramKey === undefined) {
+      //   console.log(`******serious error while calculating item CV columns****`)
+      //   return
+      // }
 
-        if (paramKey === undefined) {
-          console.log(`******serious error while calculating item CV columns****`)
-          return
-        }
-
-        cvs[<string>x] = trio.value.paramsObj[paramKey].text
-      }
+      cvs[<string>x] = trio.value.paramsObj[paramKey!].text
     }
     return cvs
   })
@@ -105,23 +106,21 @@ export const useItemStore = defineStore('item', () => {
   }
 
   function addColumnTags() {
-    for (const x in fieldNameToGroupKey.value) {
-      const group = trio.value.groupsObj[fieldNameToGroupKey.value[x]]
+    for (const x in cvColumnNameToGroupKey.value) {
+      const group = trio.value.groupsObj[cvColumnNameToGroupKey.value[x]]
 
-      if (group.code === 'CV') {
-        const paramKey = group.paramKeys.find(
-          // ** weak comparison because param.extra is either string, number or boolean
-          (y) => trio.value.paramsObj[y].extra == (<TFieldsUnion>fields.value)[<TKeyOfFields>x],
-        )
+      const paramKey = group.paramKeys.find(
+        // ** weak comparison because param.extra is either string, number or boolean
+        (y) => trio.value.paramsObj[y].extra == (<TFieldsUnion>fields.value)[<TKeyOfFields>x],
+      )
 
-        if (paramKey === undefined) {
-          console.log(`******serious error while saving item columns****`)
-          return
-        }
+      if (paramKey === undefined) {
+        console.log(`******serious error while saving item columns****`)
+        return
+      }
 
-        if ((<TGroupColumn>group).show_in_item_tags) {
-          selectedItemParams.value.push(paramKey)
-        }
+      if ((<TGroupColumn>group).show_in_item_tags) {
+        selectedItemParams.value.push(paramKey)
       }
     }
   }

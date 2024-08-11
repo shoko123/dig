@@ -22,7 +22,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   let groupsObj: TGroupObj = {}
   let paramsObj: TParamObj = {}
   let groupLabelToKey: TGroupLabelToKey = {}
-  let fieldNameToGroupKey: TGroupLabelToKey = {}
+  let cvColumnNameToGroupKey: TGroupLabelToKey = {}
   let orderByOptions: TApiParam[] = []
   let catCnt = 0
   let grpCnt = 0
@@ -35,7 +35,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     groupsObj = {}
     paramsObj = {}
     groupLabelToKey = {}
-    fieldNameToGroupKey = {}
+    cvColumnNameToGroupKey = {}
     catCnt = 0
     grpCnt = 0
     prmCnt = 0
@@ -82,7 +82,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     return {
       trio: { categories, groupsObj, paramsObj },
       groupLabelToKey,
-      fieldNameToGroupKey,
+      cvColumnNameToGroupKey,
       orderByOptions,
     }
   }
@@ -107,7 +107,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     groupLabelToKey[grpToSave.label] = grpKey
 
     if ('CV' === grpToSave.code) {
-      fieldNameToGroupKey[(<TGroupColumn>grpToSave).column_name] = grpKey
+      cvColumnNameToGroupKey[(<TGroupColumn>grpToSave).column_name] = grpKey
     }
   }
 
