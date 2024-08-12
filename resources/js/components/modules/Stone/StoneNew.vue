@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts" setup>
-import { TFieldsByModule } from '@/js/types/moduleTypes'
+import { TFieldsByModule, TcvColumnsByModule } from '@/js/types/moduleTypes'
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useVuelidate } from '@vuelidate/core'
@@ -101,9 +101,12 @@ const specialist_descriptionErrors = computed(() => {
 //   return <string>(v.value.specialist_date?.$error ? v.value.specialist_date.$errors[0].$message : undefined)
 // })
 
+const cvColumnsTyped = computed(() => {
+  return cvColumns.value as TcvColumnsByModule<'Stone'>
+})
 
 const cataloger = computed(() => {
-  return cvColumns.value['cataloger_id']
+  return cvColumnsTyped.value['cataloger_id']
 })
 
 function clearDate(field: string) {

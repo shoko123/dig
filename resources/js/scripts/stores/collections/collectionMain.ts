@@ -90,7 +90,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
       return { success: false, message: 'Error: page size 0.' }
     }
 
-    const res = await send<TApiPage<'main', 'Gallery', 'Stone'>[]>('module/page', 'post', {
+    const res = await send<TApiPage<'main', 'Gallery'>[]>('module/page', 'post', {
       module: module,
       view: view,
       ids,

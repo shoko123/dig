@@ -1,13 +1,7 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type {
-  TApiFieldsUnion,
-  TFieldsUnion,
-  TKeyOfFields,
-  TKeysOfAllCvColumns,
-  TModule,
-} from '@/js/types/moduleTypes'
+import type { TApiFieldsUnion, TFieldsUnion, TCvColumnUnion, TModule } from '@/js/types/moduleTypes'
 import type { TApiItemShow, TApiTag } from '@/js/types/itemTypes'
 import type { TApiArray } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from './collections/collections'
@@ -57,17 +51,16 @@ export const useItemStore = defineStore('item', () => {
     }
   })
 
-  const cvColumns = computed<Partial<TKeysOfAllCvColumns>>(() => {
+  const cvColumns = computed<Partial<TCvColumnUnion>>(() => {
     const tmpMap = new Map()
     Object.entries(cvColumnNameToGroupKey.value).forEach(([key, value]) => {
       console.log(`cvColumns() Item[key: ${key}] => ${value}`)
       const group = trio.value.groupsObj[value]
       const val = fields.value![key as keyof TFieldsUnion]
-      // const val = (<TFieldsUnion>fields.value)[value as keyof TFieldsUnion]
 
-      console.log(
-        `group: ${JSON.stringify(group, null, 2)} fields: ${JSON.stringify(fields.value, null, 2)} val: ${val}`,
-      )
+      // console.log(
+      //   `group: ${JSON.stringify(group, null, 2)} fields: ${JSON.stringify(fields.value, null, 2)} val: ${val}`,
+      // )
       const paramKey = group.paramKeys.find(
         // ** weak comparison because param.extra is either string, number or boolean
         (y) => trio.value.paramsObj[y].extra == val,
@@ -78,32 +71,12 @@ export const useItemStore = defineStore('item', () => {
         )
       }
       tmpMap.set(key, trio.value.paramsObj[paramKey].text)
-      //cvs[<string>x] = trio.value.paramsObj[paramKey].text
     })
     const res = Object.fromEntries(tmpMap.entries())
     // console.log(`result: ${JSON.stringify(res, null, 2)}`)
     return res
   })
 
-  /*
-  const cvColumns = computed(() => {
-    const cvs: Record<string, string | number | boolean> = {}
-    for (const x in cvColumnNameToGroupKey.value) {
-      const group = trio.value.groupsObj[cvColumnNameToGroupKey.value[x]]
-      const paramKey = group.paramKeys.find(
-        // ** weak comparison because param.extra is either string, number or boolean
-        (y) => trio.value.paramsObj[y].extra == (<TFieldsUnion>fields.value)[<TKeyOfFields>x],
-      )
-      if (paramKey === undefined) {
-        throw new Error(
-          `cvColumns() - Can't find value ${(<TFieldsUnion>fields.value)[<TKeyOfFields>x]} in group ${group.label} column ${x}`,
-        )
-      }
-      cvs[<string>x] = trio.value.paramsObj[paramKey].text
-    }
-    return cvs
-  })
-    */
   function saveitemFieldsPlus<F extends TApiFieldsUnion>(apiItem: TApiItemShow<F>) {
     saveItemFields(apiItem.fields)
 
@@ -133,24 +106,22 @@ export const useItemStore = defineStore('item', () => {
   }
 
   function addColumnTags() {
-    for (const x in cvColumnNameToGroupKey.value) {
-      const group = trio.value.groupsObj[cvColumnNameToGroupKey.value[x]]
-
-      const paramKey = group.paramKeys.find(
-        // ** weak comparison because param.extra is either string, number or boolean
-        (y) => trio.value.paramsObj[y].extra == (<TFieldsUnion>fields.value)[<TKeyOfFields>x],
-      )
-
-      if (paramKey === undefined) {
-        throw new Error(
-          `addColumnTags() - Can't find value ${(<TFieldsUnion>fields.value)[<TKeyOfFields>x]} in group ${group.label} column ${x}`,
-        )
-      }
-
+    Object.entries(cvColumnNameToGroupKey.value).forEach(([key, value]) => {
+      const group = trio.value.groupsObj[value]
       if ((<TGroupColumn>group).show_in_item_tags) {
+        const val = fields.value![key as keyof TFieldsUnion]
+        const paramKey = group.paramKeys.find(
+          // ** weak comparison because param.extra is either string, number or boolean
+          (y) => trio.value.paramsObj[y].extra == val,
+        )
+        if (paramKey === undefined) {
+          throw new Error(
+            `addColumnTags() - Can't find value ${val} in group ${group.label} column ${key}`,
+          )
+        }
         selectedItemParams.value.push(paramKey)
       }
-    }
+    })
   }
 
   function addExternalTags(apiTags: TApiTag[]) {

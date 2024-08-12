@@ -39,7 +39,7 @@ type TApiGroupBase = {
 
 type TColumnTextSource =
   | 'Column' // exact table value
-  | 'Manipulated' // A one-to-one conversion of the table value
+  | 'Manipulated' // A one-to-one conversion of the field values
   | 'Lookup' // lookup table
 
 type TApiGroupColumn = TApiGroupBase & {

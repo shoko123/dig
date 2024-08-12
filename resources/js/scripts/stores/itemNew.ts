@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type { TApiFieldsUnion, TFieldsUnion, TModule, TKeyOfFields } from '@/js/types/moduleTypes'
+import type { TApiFieldsUnion, TFieldsUnion, TModule } from '@/js/types/moduleTypes'
 import type { TApiItemShow } from '@/js/types/itemTypes'
 import { useCollectionMainStore } from './collections/collectionMain'
 import { useRoutesMainStore } from './routes/routesMain'
@@ -39,21 +39,24 @@ export const useItemNewStore = defineStore('itemNew', () => {
   })
 
   const cvColumns = computed(() => {
-    const cvs: Record<string, string | number | boolean> = {}
-    for (const x in cvColumnNameToGroupKey.value) {
-      const group = trio.value.groupsObj[cvColumnNameToGroupKey.value[x]]
+    const tmpMap = new Map()
+    Object.entries(cvColumnNameToGroupKey.value).forEach(([key, value]) => {
+      console.log(`cvColumns() Item[key: ${key}] => ${value}`)
+      const group = trio.value.groupsObj[value]
+      const val = newFields.value![key as keyof TFieldsUnion]
       const paramKey = group.paramKeys.find(
         // ** weak comparison because param.extra is either string, number or boolean
-        (y) => trio.value.paramsObj[y].extra == (<TFieldsUnion>newFields.value)[<TKeyOfFields>x],
+        (y) => trio.value.paramsObj[y].extra == val,
       )
       if (paramKey === undefined) {
         throw new Error(
-          `newItem.cvColumns() - Can't find value ${(<TFieldsUnion>newFields.value)[<TKeyOfFields>x]} in group ${group.label} column ${x}`,
+          `cvColumns() - Can't find value ${val} in group ${group.label} column ${key}`,
         )
       }
-      cvs[<string>x] = trio.value.paramsObj[paramKey!].text
-    }
-    return cvs
+      tmpMap.set(key, trio.value.paramsObj[paramKey].text)
+    })
+    const res = Object.fromEntries(tmpMap.entries())
+    return res
   })
 
   function prepareForNew(isCreate: boolean, ids?: string[]): void {

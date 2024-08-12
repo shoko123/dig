@@ -2,7 +2,7 @@
   <v-container fluid class="pa-1 ma-0">
     <v-row wrap no-gutters>
       <v-text-field v-model="newFields.id" label="Name" :error-messages="nameErrors" class="mr-1" filled />
-      <v-select v-model="newFields.area" label="Area" :items="areas" />
+      <v-select v-model="newFields.specialist_description" label="Specialist Description" :items="areas" />
       <v-text-field v-model="newFields.id" label="Square" :error-messages="squareErrors" class="mr-1" filled />
       <v-text-field v-model="newFields.id" label="stratum" :error-messages="stratumErrors" class="mr-1" filled />
     </v-row>
@@ -34,8 +34,8 @@ const areas = computed(() => {
 const rules = computed(() => {
   return {
     id: {},
-    name: { required },
-    area: { required }, //from select list
+    id_year: { required },
+    id_object_no: { required }, //from select list
   }
 })
 

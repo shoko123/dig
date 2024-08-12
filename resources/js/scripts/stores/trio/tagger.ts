@@ -1,7 +1,7 @@
 // stores/trio.js
 import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type { TFieldsUnion, TKeyOfFields } from '@/js/types/moduleTypes'
+import type { TFieldsUnion } from '@/js/types/moduleTypes'
 import type { TGroupColumn } from '@/js/types/trioTypes'
 import { useXhrStore } from '../xhr'
 import { useItemStore } from '../item'
@@ -19,25 +19,26 @@ export const useTaggerStore = defineStore('tagger', () => {
       const code = trio.value.groupsObj[trio.value.paramsObj[x].groupKey].code
       return code === 'TG' || code === 'TM'
     })
-
-    for (const x in cvColumnNameToGroupKey.value) {
-      const group = trio.value.groupsObj[cvColumnNameToGroupKey.value[x]]
+    const tmpMap = new Map()
+    Object.entries(cvColumnNameToGroupKey.value).forEach(([key, value]) => {
+      const group = trio.value.groupsObj[value]
 
       if (group.code === 'CV' && (<TGroupColumn>group).show_in_tagger) {
+        const val = fields.value![key as keyof TFieldsUnion]
         const paramKey = group.paramKeys.find(
           // ** weak comparison because param.extra is either string, number or boolean
-          (y) => trio.value.paramsObj[y].extra == (<TFieldsUnion>fields.value)[<TKeyOfFields>x],
+          (y) => trio.value.paramsObj[y].extra == val,
         )
-
         if (paramKey === undefined) {
-          console.log(`******serious error while preparing tagger****`)
-          return
+          throw new Error(
+            `prepareTagger() - Can't find value ${val} in group ${group.label} column ${key}`,
+          )
         }
-
         selectedNewItemParams.value.push(paramKey)
       }
-      console.log(`Add Column Tag: ${group.label} => "${x}`)
-    }
+    })
+    const res = Object.fromEntries(tmpMap.entries())
+    return res
   }
 
   function truncateNewItemParams() {

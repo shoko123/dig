@@ -11,9 +11,6 @@ type TModuleInfo = {
   TabularViewFields: object
 }
 
-// utility
-type AllKeys<T> = T extends object ? keyof T : never
-
 type SwapDatesWithStrings<T> = {
   [k in keyof T]: T[k] extends Date ? string : T[k]
 }
@@ -23,39 +20,33 @@ type TAllModules<T extends TModuleInfo = TModuleInfo> = {
   Ceramic: TCeramic<T>
 }
 
-type TAddTagAndSlug<M> = M & { tag: string; slug: string }
-type ModuleUnionA<T extends object> = {
+type AddTagAndSlugProperties<M> = M & { tag: string; slug: string }
+type AddModuleProperty<T extends object> = {
   [k in keyof T]: T[k] & { module: k }
 }[keyof T]
 
-type ModuleUnionB = ModuleUnionA<TAllModules>
+type ModuleUnion = AddModuleProperty<TAllModules>
 type TModule = keyof TAllModules
+
 type TAllByName<TModuleName extends TModule> = TAllModules[TModuleName]
 
-type TUrlModule = ModuleUnionB['url_name']
-type TFieldsUnion = ModuleUnionB['fields']
-type TAllCvColumns = ModuleUnionB['CV']
-
-type TKeysOfAllFields = AllKeys<TFieldsUnion>
-type TKeysOfAllCvColumns = AllKeys<TAllCvColumns>
-type TKeyOfFields = keyof TFieldsUnion
-type TApiFieldsUnion = SwapDatesWithStrings<TFieldsUnion>
-
-type TApiPageMainTabularUnion = ModuleUnionB['TabularViewFields'] & { slug: string }
-
+type TUrlModule = ModuleUnion['url_name']
+type TFieldsUnion = ModuleUnion['fields']
 type TFieldsByModule<ModuleName extends TModule> = TAllByName<ModuleName>['fields']
-type TApiFieldsByModule<ModuleName extends TModule> = SwapDatesWithStrings<
-  TFieldsByModule<ModuleName>
->
+type TCvColumnUnion = ModuleUnion['CV']
+type TcvColumnsByModule<ModuleName extends TModule> = TAllByName<ModuleName>['CV']
+
+type TApiFieldsUnion = SwapDatesWithStrings<TFieldsUnion>
+type TApiPageMainTabularUnion = ModuleUnion['TabularViewFields'] & { slug: string }
 
 type FieldsAsBooleans<T> = {
   [k in keyof T]: boolean
 }
 
-type TCVByModule<ModuleName extends TModule> = TAllByName<ModuleName>['CV']
-
 type TTabularByModule<ModuleName extends TModule> = TAllByName<ModuleName>['TabularViewFields']
-type TApiTabularByModule<ModuleName extends TModule> = TAddTagAndSlug<TTabularByModule<ModuleName>>
+type TApiTabularByModule<ModuleName extends TModule> = AddTagAndSlugProperties<
+  TTabularByModule<ModuleName>
+>
 
 type FuncSlugToId = (
   slug: string,
@@ -78,17 +69,14 @@ export {
   TModule,
   TUrlModule,
   TFieldsUnion,
-  TKeyOfFields,
+  TCvColumnUnion,
   TApiFieldsUnion,
-  TCVByModule,
   TApiPageMainTabularUnion,
   TFieldsByModule,
-  TApiFieldsByModule,
   TApiTabularByModule,
   TTabularByModule,
   TApiModuleInit,
   FuncSlugToId,
   FieldsAsBooleans,
-  TKeysOfAllCvColumns,
-  TKeysOfAllFields,
+  TcvColumnsByModule,
 }
