@@ -46,6 +46,11 @@ export const useItemNewStore = defineStore('itemNew', () => {
         // ** weak comparison because param.extra is either string, number or boolean
         (y) => trio.value.paramsObj[y].extra == (<TFieldsUnion>newFields.value)[<TKeyOfFields>x],
       )
+      if (paramKey === undefined) {
+        throw new Error(
+          `newItem.cvColumns() - Can't find value ${(<TFieldsUnion>newFields.value)[<TKeyOfFields>x]} in group ${group.label} column ${x}`,
+        )
+      }
       cvs[<string>x] = trio.value.paramsObj[paramKey!].text
     }
     return cvs

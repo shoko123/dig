@@ -1,7 +1,13 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type { TApiFieldsUnion, TFieldsUnion, TKeyOfFields, TModule } from '@/js/types/moduleTypes'
+import type {
+  TApiFieldsUnion,
+  TFieldsUnion,
+  TKeyOfFields,
+  TKeysOfAllCvColumns,
+  TModule,
+} from '@/js/types/moduleTypes'
 import type { TApiItemShow, TApiTag } from '@/js/types/itemTypes'
 import type { TApiArray } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from './collections/collections'
@@ -48,17 +54,39 @@ export const useItemStore = defineStore('item', () => {
       slug: current.value.slug,
       tag: tag.value,
       moduleAndTag: `${current.value === undefined ? '' : current.value.module} ${tag.value === undefined ? '' : tag.value}`,
-      short: short.value,
     }
   })
 
-  const cvColumns = computed(() => {
-    // return Object.fromEntries(
-    //   Object.keys(cvColumnNameToGroupKey.value).map((k) => {
-    //     return [k, (<TFieldsUnion>fields.value)[<TKeyOfFields>k]]
-    //   }),
-    // )
+  const cvColumns = computed<Partial<TKeysOfAllCvColumns>>(() => {
+    const tmpMap = new Map()
+    Object.entries(cvColumnNameToGroupKey.value).forEach(([key, value]) => {
+      console.log(`cvColumns() Item[key: ${key}] => ${value}`)
+      const group = trio.value.groupsObj[value]
+      const val = fields.value![key as keyof TFieldsUnion]
+      // const val = (<TFieldsUnion>fields.value)[value as keyof TFieldsUnion]
 
+      console.log(
+        `group: ${JSON.stringify(group, null, 2)} fields: ${JSON.stringify(fields.value, null, 2)} val: ${val}`,
+      )
+      const paramKey = group.paramKeys.find(
+        // ** weak comparison because param.extra is either string, number or boolean
+        (y) => trio.value.paramsObj[y].extra == val,
+      )
+      if (paramKey === undefined) {
+        throw new Error(
+          `cvColumns() - Can't find value ${val} in group ${group.label} column ${key}`,
+        )
+      }
+      tmpMap.set(key, trio.value.paramsObj[paramKey].text)
+      //cvs[<string>x] = trio.value.paramsObj[paramKey].text
+    })
+    const res = Object.fromEntries(tmpMap.entries())
+    // console.log(`result: ${JSON.stringify(res, null, 2)}`)
+    return res
+  })
+
+  /*
+  const cvColumns = computed(() => {
     const cvs: Record<string, string | number | boolean> = {}
     for (const x in cvColumnNameToGroupKey.value) {
       const group = trio.value.groupsObj[cvColumnNameToGroupKey.value[x]]
@@ -66,17 +94,16 @@ export const useItemStore = defineStore('item', () => {
         // ** weak comparison because param.extra is either string, number or boolean
         (y) => trio.value.paramsObj[y].extra == (<TFieldsUnion>fields.value)[<TKeyOfFields>x],
       )
-
-      // if (paramKey === undefined) {
-      //   console.log(`******serious error while calculating item CV columns****`)
-      //   return
-      // }
-
-      cvs[<string>x] = trio.value.paramsObj[paramKey!].text
+      if (paramKey === undefined) {
+        throw new Error(
+          `cvColumns() - Can't find value ${(<TFieldsUnion>fields.value)[<TKeyOfFields>x]} in group ${group.label} column ${x}`,
+        )
+      }
+      cvs[<string>x] = trio.value.paramsObj[paramKey].text
     }
     return cvs
   })
-
+    */
   function saveitemFieldsPlus<F extends TApiFieldsUnion>(apiItem: TApiItemShow<F>) {
     saveItemFields(apiItem.fields)
 
@@ -90,7 +117,7 @@ export const useItemStore = defineStore('item', () => {
   }
 
   function saveItemFields<F extends TApiFieldsUnion>(apiFields: F) {
-    // If ket has '_date' and value is a string in YYYY-MM-DD format, assume that we deal with a date column, and make a new Date
+    // If column_name contains '_date' and value is a string in YYYY-MM-DD format, assume that we deal with a date column, and make a new Date
     const isoDateRegex = /^\d{4}-\d{2}-\d{2}$/
     const tmpMap = new Map()
 
@@ -115,8 +142,9 @@ export const useItemStore = defineStore('item', () => {
       )
 
       if (paramKey === undefined) {
-        console.log(`******serious error while saving item columns****`)
-        return
+        throw new Error(
+          `addColumnTags() - Can't find value ${(<TFieldsUnion>fields.value)[<TKeyOfFields>x]} in group ${group.label} column ${x}`,
+        )
       }
 
       if ((<TGroupColumn>group).show_in_item_tags) {
@@ -133,8 +161,7 @@ export const useItemStore = defineStore('item', () => {
 
       const paramKey = group.paramKeys.find((y) => trio.value.paramsObj[y].text === x.tag_text)
       if (paramKey === undefined) {
-        console.log(`******serious error while saving item's tags****`)
-        return
+        throw new Error(`addExternalTags() - Can't find tag ${x.tag_text} in group ${group.label}`)
       }
       selectedItemParams.value.push(paramKey)
     }

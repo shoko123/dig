@@ -11,6 +11,9 @@ type TModuleInfo = {
   TabularViewFields: object
 }
 
+// utility
+type AllKeys<T> = T extends object ? keyof T : never
+
 type SwapDatesWithStrings<T> = {
   [k in keyof T]: T[k] extends Date ? string : T[k]
 }
@@ -31,7 +34,10 @@ type TAllByName<TModuleName extends TModule> = TAllModules[TModuleName]
 
 type TUrlModule = ModuleUnionB['url_name']
 type TFieldsUnion = ModuleUnionB['fields']
-type TCVFieldsUnion = ModuleUnionB['CV']
+type TAllCvColumns = ModuleUnionB['CV']
+
+type TKeysOfAllFields = AllKeys<TFieldsUnion>
+type TKeysOfAllCvColumns = AllKeys<TAllCvColumns>
 type TKeyOfFields = keyof TFieldsUnion
 type TApiFieldsUnion = SwapDatesWithStrings<TFieldsUnion>
 
@@ -47,7 +53,7 @@ type FieldsAsBooleans<T> = {
 }
 
 type TCVByModule<ModuleName extends TModule> = TAllByName<ModuleName>['CV']
-type TKeyOfCVFieldsUnion = keyof TCVFieldsUnion
+
 type TTabularByModule<ModuleName extends TModule> = TAllByName<ModuleName>['TabularViewFields']
 type TApiTabularByModule<ModuleName extends TModule> = TAddTagAndSlug<TTabularByModule<ModuleName>>
 
@@ -75,7 +81,6 @@ export {
   TKeyOfFields,
   TApiFieldsUnion,
   TCVByModule,
-  TKeyOfCVFieldsUnion,
   TApiPageMainTabularUnion,
   TFieldsByModule,
   TApiFieldsByModule,
@@ -84,5 +89,6 @@ export {
   TApiModuleInit,
   FuncSlugToId,
   FieldsAsBooleans,
-  TCVFieldsUnion,
+  TKeysOfAllCvColumns,
+  TKeysOfAllFields,
 }
