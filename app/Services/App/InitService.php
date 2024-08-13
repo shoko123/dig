@@ -71,7 +71,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
             case 'CS': //column search
                 return $this->getTextualSearchGroupDetails($label, $group);
 
-            case 'OB': //order by values
+            case 'OB': //order by
                 return $this->getOrderByDetails($label, $group);
 
             case 'MD': //media

@@ -1,4 +1,4 @@
-// generalTypes.ts
+// xhrTypes.ts
 type TXhrMethod = 'get' | 'put' | 'post' | 'delete'
 type TXhrResult<T> =
   | {

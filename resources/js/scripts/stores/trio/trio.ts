@@ -23,7 +23,7 @@ export const useTrioStore = defineStore('trio', () => {
   const trio = ref<TTrio>({ categories: [], groupsObj: {}, paramsObj: {} })
   const groupLabelToKey = ref<TGroupLabelToKey>({})
   const orderByOptions = ref<TApiParam[]>([])
-  const cvColumnNameToGroupKey = ref<TGroupLabelToKey>({})
+  const discreteColumnNameToGroupKey = ref<TGroupLabelToKey>({})
   //current index of visible categories/groups
   const categoryIndex = ref<number>(0)
   const groupIndex = ref<number>(0)
@@ -350,7 +350,7 @@ export const useTrioStore = defineStore('trio', () => {
     trio.value = res.trio
     groupLabelToKey.value = res.groupLabelToKey
     orderByOptions.value = res.orderByOptions
-    cvColumnNameToGroupKey.value = res.cvColumnNameToGroupKey
+    discreteColumnNameToGroupKey.value = res.discreteColumnNameToGroupKey
   }
 
   function assert(condition: unknown, msg?: string): asserts condition {
@@ -443,7 +443,7 @@ export const useTrioStore = defineStore('trio', () => {
   return {
     trio,
     groupLabelToKey,
-    cvColumnNameToGroupKey,
+    discreteColumnNameToGroupKey,
     orderByOptions,
     orderByGroup,
     orderByAvailable,

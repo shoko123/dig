@@ -11,7 +11,7 @@ import type {
 } from '@/js/types/authTypes'
 
 import type { TPageName } from '@/js/types/routesTypes'
-import type { TXhrEmptyResult, TXhrResult } from '@/js/types/generalTypes'
+import type { TXhrEmptyResult, TXhrResult } from '@/js/types/xhrTypes'
 import { useXhrStore } from './xhr'
 import { useRoutesMainStore } from './routes/routesMain'
 

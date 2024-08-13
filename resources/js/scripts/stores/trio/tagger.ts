@@ -9,7 +9,7 @@ import { useTrioStore } from './trio'
 import { useRoutesMainStore } from '../routes/routesMain'
 
 export const useTaggerStore = defineStore('tagger', () => {
-  const { trio, cvColumnNameToGroupKey } = storeToRefs(useTrioStore())
+  const { trio, discreteColumnNameToGroupKey } = storeToRefs(useTrioStore())
   const { fields, selectedItemParams } = storeToRefs(useItemStore())
 
   const selectedNewItemParams = ref<string[]>([])
@@ -20,7 +20,7 @@ export const useTaggerStore = defineStore('tagger', () => {
       return code === 'TG' || code === 'TM'
     })
     const tmpMap = new Map()
-    Object.entries(cvColumnNameToGroupKey.value).forEach(([key, value]) => {
+    Object.entries(discreteColumnNameToGroupKey.value).forEach(([key, value]) => {
       const group = trio.value.groupsObj[value]
 
       if (group.code === 'CV' && (<TGroupColumn>group).show_in_tagger) {
@@ -48,8 +48,8 @@ export const useTaggerStore = defineStore('tagger', () => {
   //When clearing params, set column values to default (index 0)
   function resetParams() {
     selectedNewItemParams.value = []
-    for (const x in cvColumnNameToGroupKey.value) {
-      const group = trio.value.groupsObj[cvColumnNameToGroupKey.value[x]]
+    for (const x in discreteColumnNameToGroupKey.value) {
+      const group = trio.value.groupsObj[discreteColumnNameToGroupKey.value[x]]
 
       if (group.code === 'CV' && (<TGroupColumn>group).show_in_tagger) {
         selectedNewItemParams.value.push(group.paramKeys[0])

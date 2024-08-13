@@ -47,13 +47,13 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { TFieldsByModule, TcvColumnsByModule } from '@/js/types/moduleTypes'
+import { TFieldsByModule, TDiscreteColumnsByModule } from '@/js/types/moduleTypes'
 import { useItemStore } from '../../../scripts/stores/item'
 import { dateStringFromDate } from '../../../scripts/utils/utils'
 
 
 
-let { fields, tag, cvColumns } = storeToRefs(useItemStore())
+let { fields, tag, discreteColumns } = storeToRefs(useItemStore())
 
 const item = computed(() => {
   return <TFieldsByModule<'Stone'>>fields.value
@@ -72,7 +72,7 @@ const catalog_date = computed(() => {
 })
 
 const cvColumnsTyped = computed(() => {
-  return cvColumns.value as TcvColumnsByModule<'Stone'>
+  return discreteColumns.value as TDiscreteColumnsByModule<'Stone'>
 })
 
 const cataloger = computed(() => {

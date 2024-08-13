@@ -1,7 +1,12 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type { TApiFieldsUnion, TFieldsUnion, TCvColumnUnion, TModule } from '@/js/types/moduleTypes'
+import type {
+  TApiFieldsUnion,
+  TFieldsUnion,
+  TDiscreteColumnUnion,
+  TModule,
+} from '@/js/types/moduleTypes'
 import type { TApiItemShow, TApiTag } from '@/js/types/itemTypes'
 import type { TApiArray } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from './collections/collections'
@@ -17,7 +22,7 @@ export const useItemStore = defineStore('item', () => {
   const { collection, itemByIndex } = useCollectionsStore()
   const { tagAndSlugFromId } = useModuleStore()
   const { send } = useXhrStore()
-  const { trio, cvColumnNameToGroupKey, groupLabelToKey } = storeToRefs(useTrioStore())
+  const { trio, discreteColumnNameToGroupKey, groupLabelToKey } = storeToRefs(useTrioStore())
 
   const fields = ref<TFieldsUnion | undefined>(undefined)
   const slug = ref<string | undefined>(undefined)
@@ -51,10 +56,10 @@ export const useItemStore = defineStore('item', () => {
     }
   })
 
-  const cvColumns = computed<Partial<TCvColumnUnion>>(() => {
+  const discreteColumns = computed<TDiscreteColumnUnion>(() => {
     const tmpMap = new Map()
-    Object.entries(cvColumnNameToGroupKey.value).forEach(([key, value]) => {
-      console.log(`cvColumns() Item[key: ${key}] => ${value}`)
+    Object.entries(discreteColumnNameToGroupKey.value).forEach(([key, value]) => {
+      // console.log(`discreteColumns() Item[key: ${key}] => ${value}`)
       const group = trio.value.groupsObj[value]
       const val = fields.value![key as keyof TFieldsUnion]
 
@@ -67,7 +72,7 @@ export const useItemStore = defineStore('item', () => {
       )
       if (paramKey === undefined) {
         throw new Error(
-          `cvColumns() - Can't find value ${val} in group ${group.label} column ${key}`,
+          `discreteColumns() - Can't find value ${val} in group ${group.label} column ${key}`,
         )
       }
       tmpMap.set(key, trio.value.paramsObj[paramKey].text)
@@ -106,7 +111,7 @@ export const useItemStore = defineStore('item', () => {
   }
 
   function addColumnTags() {
-    Object.entries(cvColumnNameToGroupKey.value).forEach(([key, value]) => {
+    Object.entries(discreteColumnNameToGroupKey.value).forEach(([key, value]) => {
       const group = trio.value.groupsObj[value]
       if ((<TGroupColumn>group).show_in_item_tags) {
         const val = fields.value![key as keyof TFieldsUnion]
@@ -178,7 +183,7 @@ export const useItemStore = defineStore('item', () => {
       return res
     }
 
-    console.log(`${current.value.module}item.itemRemove() success!`)
+    // console.log(`${current.value.module}item.itemRemove() success!`)
     const prevSlug = nextSlug(false)
     const newLength = removeItemIdFromMainArray((<TFieldsUnion>fields.value).id)
 
@@ -209,6 +214,6 @@ export const useItemStore = defineStore('item', () => {
     saveItemFields,
     saveitemFieldsPlus,
     itemRemove,
-    cvColumns,
+    discreteColumns,
   }
 })

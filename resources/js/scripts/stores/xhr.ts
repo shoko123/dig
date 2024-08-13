@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
-import type { TXhrResult, TXhrMethod } from '@/js/types/generalTypes'
+import type { TXhrResult, TXhrMethod } from '@/js/types/xhrTypes'
 
 export const useXhrStore = defineStore('xhr', () => {
   async function setAxios() {
