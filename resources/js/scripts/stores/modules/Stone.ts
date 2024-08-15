@@ -159,7 +159,6 @@ export const useStoneStore = defineStore('stone', () => {
     newFields.value.thumbnail = ''
     newFields.value.uri = null
     newFields.value.base_type_id = 1
-    newFields.value.base_type_id = 1
     newFields.value.material_id = 1
   }
 
