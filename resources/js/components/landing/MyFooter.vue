@@ -1,23 +1,19 @@
 <template>
-  <v-footer dark padless>
-    <v-card flat tile class="secondary white--text text-center">
-      <v-card-text>
-        <v-btn v-for="(icon, i) in icons" :key="i" class="mx-4 white--text" :href="icon.link" target="_blank" icon>
-          <v-icon size="24px">{{ icon.text }}</v-icon>
-        </v-btn>
-      </v-card-text>
 
-      <v-card-text class="white--text pt-0">
-        Phasellus feugiat arcu sapien, et iaculis ipsum elementum sit amet.
-        Mauris cursus commodo interdum.
-      </v-card-text>
+  <v-footer class="bg-indigo-lighten-1 text-center d-flex flex-column">
+    <div>
+      <v-btn v-for="(icon, i) in icons" :key="i" class="ma-4 white--text" :href="icon.link" target="_blank" icon>
+        <v-icon size="24px">{{ icon.text }}</v-icon>
+      </v-btn>
+    </div>
 
-      <v-divider></v-divider>
-
-      <v-card-text class="white--text">
-        {{ new Date().getFullYear() }} — <strong>Calango WEB</strong>
-      </v-card-text>
-    </v-card>
+    <div>
+      Phasellus feugiat arcu sapien, et iaculis ipsum elementum sit amet.
+      Mauris cursus commodo interdum.
+    </div>
+    <div class="mt-4">
+      {{ new Date().getFullYear() }} — <strong>Nala the destroyer</strong>
+    </div>
   </v-footer>
 </template>
 
@@ -26,6 +22,8 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
+
+//      <v-img src="http://127.0.0.1:9090/dig/app/landing/borderWavesBlue.svg" />
 
 const icons = computed(() => {
   return [
@@ -43,15 +41,11 @@ const icons = computed(() => {
     },
     {
       text: "mdi-instagram",
-      link: "https://instagram.com/joabson_arley/",
+      link: "",
     },
   ]
 })
 
 </script>
 
-<style scoped>
-.v-card {
-  width: 100%;
-}
-</style>
+<style scoped></style>
