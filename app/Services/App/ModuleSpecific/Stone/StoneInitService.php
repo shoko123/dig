@@ -7,7 +7,7 @@ use App\Services\App\ModuleSpecific\InitSpecificServiceInterface;
 
 class StoneInitService extends InitService implements InitSpecificServiceInterface
 {
-    function __construct()
+    public function __construct()
     {
         parent::__construct('Stone');
     }
@@ -38,7 +38,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'column_name' => 'id_year',
                 'column_type' => 'integer',
                 'manipulator' => function ($val) {
-                    return (string)($val + 2000);
+                    return (string) ($val + 2000);
                 },
                 'dependency' => [],
                 'show_in_item_tags' => false,
@@ -68,7 +68,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'show_in_item_tags' => true,
                 'show_in_filters' => true,
                 'show_in_tagger' => true,
-                'params' => [['text' => 'Yes', "extra" => true], ['text' => 'No', "extra" => false]]
+                'params' => [['text' => 'Yes', 'extra' => true], ['text' => 'No', 'extra' => false]],
             ],
             'Basic Typology' => [
                 'code' => 'CV',
@@ -185,7 +185,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'Year',
                 'Media',
                 'Cataloger',
-                'Whole'
+                'Whole',
             ],
             'Periods' => [
                 'Periods (Top-Level)',

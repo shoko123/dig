@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests\Module;
 
-use App\Http\Requests\Module\ModuleRequest;
-
 class PageRequest extends ModuleRequest
 {
     public function authorize(): bool
@@ -26,7 +24,7 @@ class PageRequest extends ModuleRequest
         return [
             'ids.*' => 'A non existing id - `:input` - was sent to the page() endpoint',
             'ids' => 'page length exceeds 200',
-            'view' => 'View value sent - `:input` - is not allowed'
+            'view' => 'View value sent - `:input` - is not allowed',
         ];
     }
 }

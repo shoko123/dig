@@ -2,12 +2,12 @@
 
 namespace App\Services\App\ModuleSpecific\Ceramic;
 
-use App\Services\App\ReadService;
 use App\Services\App\ModuleSpecific\ReadSpecificServiceInterface;
+use App\Services\App\ReadService;
 
 class CeramicReadService extends ReadService implements ReadSpecificServiceInterface
 {
-    function __construct()
+    public function __construct()
     {
         parent::__construct('Ceramic');
     }
@@ -26,7 +26,7 @@ class CeramicReadService extends ReadService implements ReadSpecificServiceInter
 
     public function fieldsForTabularPage(): array
     {
-        return ["id", "field_description", "specialist_description", "notes"];
+        return ['id', 'field_description', 'specialist_description', 'notes'];
     }
 
     public function fieldsForGalleryPage(): array

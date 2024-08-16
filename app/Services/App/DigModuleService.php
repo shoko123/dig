@@ -3,7 +3,6 @@
 namespace App\Services\App;
 
 use App\Models\DigModule\DigModuleModel;
-use App\Services\App\BaseService;
 
 class DigModuleService extends BaseService
 {

@@ -2,11 +2,10 @@
 
 namespace App\Services\App;
 
-use \Exception;
+use App\Exceptions\GeneralJsonException;
+use Exception;
 use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use App\Services\App\BaseService;
-use App\Exceptions\GeneralJsonException;
 
 class MediaService extends BaseService
 {
@@ -19,11 +18,12 @@ class MediaService extends BaseService
             $names = Media::distinct('collection_name')->get();
 
             $res = $names->first(function (string $value, int $key) use ($ordered) {
-                return !$ordered->has($value);
+                return ! $ordered->has($value);
             });
 
-            throw_unless($res, "MediaService.collection_names(): Collection name \"" . $res . "\" doesn't exist in the the ordered collection names");
+            throw_unless($res, 'MediaService.collection_names(): Collection name "'.$res."\" doesn't exist in the the ordered collection names");
         }
+
         return $ordered;
     }
 
@@ -54,9 +54,10 @@ class MediaService extends BaseService
                     ->addMedia($media_file)
                     ->toMediaCollection($media_collection_name);
             }
+
             return static::media_by_module_and_id($module, $id);
         } catch (Exception $e) {
-            throw new Exception($e->getMessage() . $e->getCode());
+            throw new Exception($e->getMessage().$e->getCode());
         }
     }
 
@@ -102,6 +103,7 @@ class MediaService extends BaseService
         $item = $model->with(['media' => function ($query) {
             $query->orderBy('order_column');
         }])->findOrFail($id);
+
         return static::format_media_collection($item->media);
     }
 

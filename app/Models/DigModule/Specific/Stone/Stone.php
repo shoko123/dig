@@ -2,10 +2,9 @@
 
 namespace App\Models\DigModule\Specific\Stone;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Support\Carbon;
 use App\Models\DigModule\DigModuleModel;
 use App\Models\Tag\Tag;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Stone extends DigModuleModel
 {
@@ -39,23 +38,21 @@ class Stone extends DigModuleModel
     protected function casts(): array
     {
         return [
-            'whole' => 'boolean'
+            'whole' => 'boolean',
         ];
     }
 
     protected function derivedId(): Attribute
     {
         return Attribute::make(
-            get: fn(mixed $value, array $attributes) =>
-            'B' . (string)$attributes['id_year'] + 2000 . '.' . $attributes['id_access_no'] . '.' . $attributes['id_object_no']
+            get: fn (mixed $value, array $attributes) => 'B'.(string) $attributes['id_year'] + 2000 .'.'.$attributes['id_access_no'].'.'.$attributes['id_object_no']
         );
     }
 
     protected function short(): Attribute
     {
         return Attribute::make(
-            get: fn(mixed $value, array $attributes) =>
-            $attributes['cataloger_description']  ?? '[No description]'
+            get: fn (mixed $value, array $attributes) => $attributes['cataloger_description'] ?? '[No description]'
         );
     }
 }

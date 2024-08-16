@@ -1,19 +1,17 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CarouselController;
 use App\Http\Controllers\DigModuleController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\TagController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CarouselController;
-
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
-
 
 //open routes
 
@@ -42,7 +40,6 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::post('media/edit', [MediaController::class, 'edit']);
     Route::post('media/reorder', [MediaController::class, 'reorder']);
 });
-
 
 //more open routes
 Route::post('test/status', [AppController::class, 'status']);

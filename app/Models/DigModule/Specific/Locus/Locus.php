@@ -2,9 +2,9 @@
 
 namespace App\Models\DigModule\Specific\Locus;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use App\Models\DigModule\DigModuleModel;
 use App\Models\Tag\Tag;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Locus extends DigModuleModel
 {
@@ -23,16 +23,14 @@ class Locus extends DigModuleModel
     protected function derivedId(): Attribute
     {
         return Attribute::make(
-            get: fn(mixed $value, array $attributes) =>
-            $attributes['category'] . '.' . $attributes['a'] . '.' . $attributes['b']
+            get: fn (mixed $value, array $attributes) => $attributes['category'].'.'.$attributes['a'].'.'.$attributes['b']
         );
     }
 
     protected function short(): Attribute
     {
         return Attribute::make(
-            get: fn(mixed $value, array $attributes) =>
-            $attributes['oc_label']
+            get: fn (mixed $value, array $attributes) => $attributes['oc_label']
         );
     }
 }

@@ -44,7 +44,7 @@ import { useAuthStore } from '../../scripts/stores/auth'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
 
 const { showSnackbar } = useNotificationsStore()
-const { logout, register, resetAndGoTo, openDialog } = useAuthStore()
+const { register, resetAndGoTo, openDialog } = useAuthStore()
 
 import { useVuelidate } from '@vuelidate/core'
 import { required, email, minLength, maxLength, helpers, sameAs } from '@vuelidate/validators'

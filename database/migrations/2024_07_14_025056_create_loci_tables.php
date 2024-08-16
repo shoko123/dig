@@ -28,7 +28,6 @@ return new class extends Migration
             $table->unique(['category', 'a', 'b']);
         });
 
-
         Schema::create('locus_tag_groups', function (Blueprint $table) {
             $table->tinyIncrements('id');
             $table->string('name', 40);

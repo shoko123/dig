@@ -2,41 +2,41 @@
 
 namespace App\Services\App;
 
+use App\Exceptions\GeneralJsonException;
+use App\Models\Tag\TagGroup;
+use App\Services\App\ModuleSpecific\InitSpecificServiceInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use App\Exceptions\GeneralJsonException;
-use App\Services\App\ModuleSpecific\InitSpecificServiceInterface;
-use App\Models\Tag\TagGroup;
 
 abstract class InitService extends DigModuleService implements InitSpecificServiceInterface
 {
     protected Model $moduleTagGroup;
 
-    function __construct(string $module)
+    public function __construct(string $module)
     {
         parent::__construct($module);
-        $tagGroupName = 'App\Models\DigModule\Specific\\' . $module . '\\' . $module . 'TagGroup';
+        $tagGroupName = 'App\Models\DigModule\Specific\\'.$module.'\\'.$module.'TagGroup';
         $this->moduleTagGroup = new $tagGroupName;
     }
 
     public function init(): array
     {
         return [
-            "welcome_text" => static::welcomeText(),
-            "counts" => [
-                "items" => $this->model->count(),
-                "media" => Media::where('model_type', class_basename($this->model))->count()
+            'welcome_text' => static::welcomeText(),
+            'counts' => [
+                'items' => $this->model->count(),
+                'media' => Media::where('model_type', class_basename($this->model))->count(),
             ],
-            "display_options" => static::displayOptions(),
-            "first_id" => $this->model->select('id')->firstOrFail()["id"],
-            "trio" => $this->trio(),
+            'display_options' => static::displayOptions(),
+            'first_id' => $this->model->select('id')->firstOrFail()['id'],
+            'trio' => $this->trio(),
         ];
     }
 
     protected function allGroups(): array
     {
-        return  array_merge(self::$globalGroups, static::modelGroups());
+        return array_merge(self::$globalGroups, static::modelGroups());
     }
 
     public function trio(): array
@@ -50,13 +50,14 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
             }
             array_push($trio, $category);
         }
+
         return $trio;
     }
 
     public function getGroupDetails($label): array
     {
         $group = $this->allGroups()[$label] ?? null;
-        throw_if(is_null($group), new GeneralJsonException('***MODEL INIT() ERROR*** getGroupDetails() invalid label: ' . $label, 500));
+        throw_if(is_null($group), new GeneralJsonException('***MODEL INIT() ERROR*** getGroupDetails() invalid label: '.$label, 500));
 
         switch ($group['code']) {
             case 'TG': //global tags
@@ -84,7 +85,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
                 return $this->getDependencyGroupDetails($label, $group);
 
             default:
-                throw new GeneralJsonException('***MODEL INIT() ERROR*** getGroupDetails() invalid code: ' . $group['code'], 500);
+                throw new GeneralJsonException('***MODEL INIT() ERROR*** getGroupDetails() invalid code: '.$group['code'], 500);
         }
 
         return [];
@@ -92,19 +93,18 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
 
     private function getColumnGroupDetails($label, $group)
     {
-        switch ($group["text_source"]) {
-            case "Column":
+        switch ($group['text_source']) {
+            case 'Column':
                 return $this->getCVColumnDetails($label, $group);
 
-            case "Manipulated":
+            case 'Manipulated':
                 return $this->getCVManipulatedDetails($label, $group);
 
-            case "Lookup":
+            case 'Lookup':
                 return $this->getCVLookupDetails($label, $group);
 
-
             default:
-                throw new GeneralJsonException('***MODEL INIT() ERROR*** invalid text_source: ' . $group["text_source"], 500);
+                throw new GeneralJsonException('***MODEL INIT() ERROR*** invalid text_source: '.$group['text_source'], 500);
         }
     }
 
@@ -127,11 +127,12 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
         $column_name = $group['column_name'];
         $res = DB::table($group['table_name'])->select($column_name)->distinct()->orderBy($column_name)->get();
 
-        $params = $group["column_type"] === 'boolean' ? $group["params"] :
+        $params = $group['column_type'] === 'boolean' ? $group['params'] :
             $res->map(function ($y, $key) use ($group, $column_name) {
                 return ['text' => $group['manipulator']($y->$column_name), 'extra' => $y->$column_name];
             });
-        unset($group["manipulator"]);
+        unset($group['manipulator']);
+
         return array_merge($group, [
             'label' => $label,
             'params' => $params,
@@ -145,7 +146,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
         return array_merge($group, [
             'label' => $label,
             'params' => $params->map(function ($y, $key) {
-                return ['text' => $y->name, 'extra' => $y->id,];
+                return ['text' => $y->name, 'extra' => $y->id];
             }),
         ]);
     }
@@ -159,7 +160,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
             ->where('name', $label)
             ->first();
 
-        throw_if(is_null($tg), new GeneralJsonException('***MODEL INIT() ERROR*** Group * ' . $label . ' * NOT FOUND', 500));
+        throw_if(is_null($tg), new GeneralJsonException('***MODEL INIT() ERROR*** Group * '.$label.' * NOT FOUND', 500));
 
         return array_merge($group, [
             'label' => $label,
@@ -168,7 +169,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
             'params' => $tg->tags->map(function ($y) {
                 return [
                     'text' => $y->name,
-                    'extra' => $y->id
+                    'extra' => $y->id,
 
                 ];
             }),
@@ -191,15 +192,16 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
             'params' => $gtg->tags->map(function ($y) {
                 return [
                     'text' => $y->name,
-                    'extra' => $y->id
+                    'extra' => $y->id,
                 ];
             }),
         ]);
     }
+
     private function getTextualSearchGroupDetails($label, $group)
     {
         $group = $this->modelGroups($label)[$label] ?? null;
-        throw_if(is_null($group), new GeneralJsonException('***MODEL INIT() ERROR*** Group * ' . $label . ' * NOT FOUND', 500));
+        throw_if(is_null($group), new GeneralJsonException('***MODEL INIT() ERROR*** Group * '.$label.' * NOT FOUND', 500));
 
         return [
             'code' => 'CS',
@@ -216,6 +218,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
         });
         $group['params'] = $paramsFormatted;
         $group['label'] = $label;
+
         return $group;
     }
 
@@ -226,7 +229,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
         ]);
     }
 
-    protected static $globalGroups =  [
+    protected static $globalGroups = [
         'Media' => [
             'code' => 'MD',
         ],

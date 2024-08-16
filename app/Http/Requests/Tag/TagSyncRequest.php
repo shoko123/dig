@@ -9,7 +9,8 @@ class TagSyncRequest extends ModuleRequest
 {
     public function authorize(): bool
     {
-        $p = $this->input('module') . '-tag';
+        $p = $this->input('module').'-tag';
+
         return $this->user('sanctum')->can($p);
     }
 
@@ -23,7 +24,7 @@ class TagSyncRequest extends ModuleRequest
             'module_tag_ids.*' => $this->rule_id_exists_in_module_tags_table(),
             'global_tag_ids' => 'array',
             'global_tag_ids.*' => 'exists:tags,id',
-            'columns.*.column_name' =>  ['required', $this->rule_tagger_column_name_is_valid()],
+            'columns.*.column_name' => ['required', $this->rule_tagger_column_name_is_valid()],
             'columns.*.val' => ['required', new RuleStringIntOrBool],
         ];
     }

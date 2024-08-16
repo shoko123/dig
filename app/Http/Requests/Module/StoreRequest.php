@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Module;
 
-use App\Http\Requests\Module\ModuleRequest;
 //use App\Http\Requests\Module\ModuleSpecific\StoreRules;
 
 class StoreRequest extends ModuleRequest
@@ -13,9 +12,9 @@ class StoreRequest extends ModuleRequest
     {
         $p = '';
         if ($this->isMethod('post')) {
-            $p = $this->input('module') . '-create';
+            $p = $this->input('module').'-create';
         } else {
-            $p = $this->input('module') . '-update';
+            $p = $this->input('module').'-update';
         }
 
         return $this->user('sanctum')->can($p);
@@ -25,9 +24,9 @@ class StoreRequest extends ModuleRequest
     {
         return array_merge(
             [
-                'module' => $this->rule_module_name_is_valid()
+                'module' => $this->rule_module_name_is_valid(),
             ],
-            $this->isMethod('post') ? $this->create_rules() :  $this->update_rules()
+            $this->isMethod('post') ? $this->create_rules() : $this->update_rules()
         );
     }
 }

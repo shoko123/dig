@@ -2,12 +2,12 @@
 
 namespace App\Http\Requests\Module;
 
+use App\Exceptions\GeneralJsonException;
+use App\Http\Requests\Module\ModuleSpecific\ValidationRules;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Auth\Access\AuthorizationException;
-use App\Exceptions\GeneralJsonException;
-use App\Http\Requests\Module\ModuleSpecific\ValidationRules;
 
 class ModuleRequest extends FormRequest
 {
@@ -16,12 +16,12 @@ class ModuleRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         //Verify that the module is valid as it used as a key for other validations using $moduleTable[] above.
-        if (is_null($this->input('module')) || !in_array($this->input('module'), ['Locus', 'Stone', 'Ceramic'])) {
-            throw new GeneralJsonException("Absent or invalid module name: `" . $this->input('module') . "`", 422);
+        if (is_null($this->input('module')) || ! in_array($this->input('module'), ['Locus', 'Stone', 'Ceramic'])) {
+            throw new GeneralJsonException('Absent or invalid module name: `'.$this->input('module').'`', 422);
         }
 
-        $full_class = 'App\Http\Requests\Module\ModuleSpecific\\' . $this->input('module') . 'ValidationRules';
-        $this->rules =  new $full_class;
+        $full_class = 'App\Http\Requests\Module\ModuleSpecific\\'.$this->input('module').'ValidationRules';
+        $this->rules = new $full_class;
     }
 
     protected function rule_module_name_is_valid()

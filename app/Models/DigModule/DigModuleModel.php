@@ -14,11 +14,15 @@ abstract class DigModuleModel extends Model implements HasMedia
     use InteractsWithMedia;
 
     public $incrementing = false;
+
     protected $keyType = 'string';
+
     public $timestamps = false;
+
     protected $guarded = [];
 
     abstract protected function short(): Attribute;
+
     abstract protected function derivedId(): Attribute;
 
     public function registerMediaConversions(?Media $media = null): void

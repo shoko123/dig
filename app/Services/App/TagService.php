@@ -3,13 +3,12 @@
 namespace App\Services\App;
 
 use Illuminate\Support\Facades\DB;
-use App\Services\App\BaseService;
 
 class TagService extends BaseService
 {
     public static function sync(string $module, string $id, array $module_tag_ids, array $global_tag_ids, array $columns): void
     {
-        //get item with tags        
+        //get item with tags
         $model = static::makeModel($module);
         $item = $model->with([
             'model_tags' => function ($query) {

@@ -2,12 +2,12 @@
 
 namespace App\Services\App\ModuleSpecific\Stone;
 
-use App\Services\App\ReadService;
 use App\Services\App\ModuleSpecific\ReadSpecificServiceInterface;
+use App\Services\App\ReadService;
 
 class StoneReadService extends ReadService implements ReadSpecificServiceInterface
 {
-    function __construct()
+    public function __construct()
     {
         parent::__construct('Stone');
     }
@@ -26,7 +26,7 @@ class StoneReadService extends ReadService implements ReadSpecificServiceInterfa
 
     public function fieldsForTabularPage(): array
     {
-        return ["id", "context", "excavation_date", "cataloger_description", "conservation_notes"];
+        return ['id', 'context', 'excavation_date', 'cataloger_description', 'conservation_notes'];
     }
 
     public function fieldsForGalleryPage(): array

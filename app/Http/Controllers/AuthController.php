@@ -15,7 +15,7 @@ class AuthController extends BaseController
         return response()->json([
             'name' => $user->name,
             'id' => $user->id,
-            'is_verified' => !($user->email_verified_at === null),
+            'is_verified' => ! ($user->email_verified_at === null),
             'permissions' => $me->getAllPermissions()->pluck('name'),
         ], 200);
     }

@@ -2,12 +2,12 @@
 
 namespace App\Services\App\ModuleSpecific\Locus;
 
-use App\Services\App\ReadService;
 use App\Services\App\ModuleSpecific\ReadSpecificServiceInterface;
+use App\Services\App\ReadService;
 
 class LocusReadService extends ReadService implements ReadSpecificServiceInterface
 {
-    function __construct()
+    public function __construct()
     {
         parent::__construct('Locus');
     }
@@ -26,7 +26,7 @@ class LocusReadService extends ReadService implements ReadSpecificServiceInterfa
 
     public function fieldsForTabularPage(): array
     {
-        return ["id", "oc_label", "category", "square", "published_date"];
+        return ['id', 'oc_label', 'category', 'square', 'published_date'];
     }
 
     public function fieldsForGalleryPage(): array

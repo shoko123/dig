@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use App\Services\App\MutateService;
 // use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller;
-
-use App\Services\App\MutateService;
-use App\Http\Controllers\ServiceEnum;
 
 class BaseController extends Controller
 {
@@ -16,11 +14,11 @@ class BaseController extends Controller
 
     protected static function makeDigModuleService(ServiceEnum $service, string $module)
     {
-        if (!in_array($module, ['Locus', 'Stone', 'Ceramic'])) {
-            abort(422, '*** Illegal module field value: "' . $module . '"');
+        if (! in_array($module, ['Locus', 'Stone', 'Ceramic'])) {
+            abort(422, '*** Illegal module field value: "'.$module.'"');
         }
 
-        $full_class_name = 'App\Services\App\ModuleSpecific\\' . $module . '\\' . $module;
+        $full_class_name = 'App\Services\App\ModuleSpecific\\'.$module.'\\'.$module;
         switch ($service) {
             case ServiceEnum::Init:
                 $full_class_name .= 'InitService';
@@ -34,6 +32,7 @@ class BaseController extends Controller
             default:
                 abort(422, '*** Illegal service value');
         }
+
         return new $full_class_name();
     }
 }

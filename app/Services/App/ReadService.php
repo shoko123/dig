@@ -2,34 +2,33 @@
 
 namespace App\Services\App;
 
-use App\Exceptions\GeneralJsonException;
+use App\Models\DigModule\DigModuleModel;
+use App\Models\Tag\Tag;
+use App\Services\App\ModuleSpecific\ReadSpecificServiceInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-
-use App\Services\App\ModuleSpecific\ReadSpecificServiceInterface;
-use App\Models\DigModule\DigModuleModel;
-use App\Services\App\MediaService;
-use App\Models\Tag\Tag;
 
 abstract class ReadService extends DigModuleService implements ReadSpecificServiceInterface
 {
     protected DigModuleModel $model;
+
     protected Builder $builder;
+
     protected Model $tagModel;
 
     public function __construct(string $module)
     {
         parent::__construct($module);
-        $tagModelName = get_class($this->model) . 'Tag';
+        $tagModelName = get_class($this->model).'Tag';
         $this->tagModel = new $tagModelName;
     }
 
     /////////////// index ///////////////////
 
-    public function index(array | null $query): array
+    public function index(?array $query): array
     {
         $this->builder = $this->model->select('id');
-        if (!is_null($query)) {
+        if (! is_null($query)) {
             $this->builderIndexApplyFilters($query);
         }
 
@@ -48,23 +47,23 @@ abstract class ReadService extends DigModuleService implements ReadSpecificServi
 
     public function builderIndexApplyFilters($query)
     {
-        if (!empty($query['model_tag_ids'])) {
+        if (! empty($query['model_tag_ids'])) {
             $this->applyModelTagFilters($query['model_tag_ids']);
         }
 
-        if (!empty($query['global_tag_ids'])) {
+        if (! empty($query['global_tag_ids'])) {
             $this->applyGlobalTagFilters($query['global_tag_ids']);
         }
 
-        if (!empty($query['column_value'])) {
+        if (! empty($query['column_value'])) {
             $this->applyColumnValueFilters($query['column_value']);
         }
 
-        if (!empty($query['column_search'])) {
+        if (! empty($query['column_search'])) {
             $this->applyColumnSearchFilters($query['column_search']);
         }
 
-        if (!empty($query['media'])) {
+        if (! empty($query['media'])) {
             $this->applyMediaFilter($query['media']);
         }
     }
@@ -121,7 +120,7 @@ abstract class ReadService extends DigModuleService implements ReadSpecificServi
         foreach ($cols as $key => $col) {
             $this->builder->Where(function ($query) use ($col) {
                 foreach ($col['vals'] as $key1 => $term) {
-                    $query->orWhere($col['column_name'], 'LIKE', '%' . $term . '%');
+                    $query->orWhere($col['column_name'], 'LIKE', '%'.$term.'%');
                 }
             });
         }
@@ -160,7 +159,7 @@ abstract class ReadService extends DigModuleService implements ReadSpecificServi
         $this->builder = $this->builder->whereIn('id', $ids);
 
         //order by given (string) ids
-        $sortedIds = "'" . implode("', '", $ids) . "'";
+        $sortedIds = "'".implode("', '", $ids)."'";
 
         $res = $this->builder->orderByRaw("FIELD(id, {$sortedIds})")
             ->get();
@@ -177,7 +176,7 @@ abstract class ReadService extends DigModuleService implements ReadSpecificServi
                         'id' => $item['id'],
                         'short' => $item['short'],
                         'media' => $item->media->isEmpty() ? null :
-                            MediaService::format_media_item($item->media[0])["urls"],
+                            MediaService::format_media_item($item->media[0])['urls'],
                     ];
                 })->toArray();
         }
@@ -193,10 +192,10 @@ abstract class ReadService extends DigModuleService implements ReadSpecificServi
         $item = $model->findOrfail($id);
 
         return [
-            'id' => $item["id"],
+            'id' => $item['id'],
             'short' => $item['short'],
-            'urls' => count($item->media) === 0 ? null : $mediaCollection[0]["urls"],
-            'module' => $module
+            'urls' => count($item->media) === 0 ? null : $mediaCollection[0]['urls'],
+            'module' => $module,
         ];
     }
 
@@ -205,6 +204,7 @@ abstract class ReadService extends DigModuleService implements ReadSpecificServi
         $this->applyShowLoad();
         $item = $this->builder->findOrFail($id);
         $extra = $this->extraDetails($item);
+
         return $this->formatShowResponse($item, $extra);
     }
 

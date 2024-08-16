@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Module;
 
-use App\Http\Requests\Module\ModuleRequest;
 use App\Rules\RuleStringIntOrBool;
 
 class IndexRequest extends ModuleRequest
@@ -24,7 +23,7 @@ class IndexRequest extends ModuleRequest
             'query.global_tag_ids' => ['array'],
             'query.global_tag_ids.*' => 'exists:tags,id',
             //
-            //TODO validate that vals exist in the other tables' values (awkward)   
+            //TODO validate that vals exist in the other tables' values (awkward)
             'query.column_value' => ['array'],
             'query.column_value.*.column_name' => ['required', $this->rule_value_column_name_is_valid()],
             'query.column_value.*.vals' => ['array'],
@@ -43,7 +42,7 @@ class IndexRequest extends ModuleRequest
             //
             'query.order_by.*' => ['array'],
             'query.order_by.*.column_name' => [$this->rule_order_by_column_name_is_valid()],
-            'query.order_by.*.asc' => ['boolean']
+            'query.order_by.*.asc' => ['boolean'],
         ];
     }
 
@@ -52,7 +51,7 @@ class IndexRequest extends ModuleRequest
         return [
             'ids.*' => 'A non existing id - `:input` - was sent to the page() endpoint',
             'ids' => 'page length exceeds 200',
-            'view' => 'View value sent - `:input` - is not allowed'
+            'view' => 'View value sent - `:input` - is not allowed',
         ];
     }
 }

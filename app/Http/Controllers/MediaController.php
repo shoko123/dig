@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use App\Services\App\MediaService;
-use App\Http\Requests\Media\MediaUploadRequest;
-use App\Http\Requests\Media\MediaReorderRequest;
 use App\Http\Requests\Media\MediaDestroyRequest;
+use App\Http\Requests\Media\MediaReorderRequest;
+use App\Http\Requests\Media\MediaUploadRequest;
+use App\Services\App\MediaService;
+use Illuminate\Http\Request;
 
 class MediaController extends BaseController
 {
@@ -17,7 +16,8 @@ class MediaController extends BaseController
     public function upload(MediaUploadRequest $r)
     {
         $v = $r->validated();
-        return response()->json(MediaService::upload($v["module"], $v["id"], $v["media_files"], $v["media_collection_name"]), 200);
+
+        return response()->json(MediaService::upload($v['module'], $v['id'], $v['media_files'], $v['media_collection_name']), 200);
     }
 
     /**
@@ -26,7 +26,8 @@ class MediaController extends BaseController
     public function reorder(MediaReorderRequest $r)
     {
         $v = $r->validated();
-        return response()->json(MediaService::reorder($v["module"], $v["module_id"], $v["ordered_media_ids"]), 200);
+
+        return response()->json(MediaService::reorder($v['module'], $v['module_id'], $v['ordered_media_ids']), 200);
     }
 
     /**
@@ -35,7 +36,8 @@ class MediaController extends BaseController
     public function destroy(MediaDestroyRequest $r)
     {
         $v = $r->validated();
-        return response()->json(MediaService::destroy($v["media_id"], $v["module"], $v["module_id"], 200));
+
+        return response()->json(MediaService::destroy($v['media_id'], $v['module'], $v['module_id'], 200));
     }
 
     /**

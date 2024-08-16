@@ -14,8 +14,8 @@ class RuleStringIntOrBool implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (!is_int($value) && !is_string($value) && !is_bool(($value))) {
-            $fail($attribute . " Must be a string or an integer");
+        if (! is_int($value) && ! is_string($value) && ! is_bool(($value))) {
+            $fail($attribute.' Must be a string or an integer');
         }
     }
 }

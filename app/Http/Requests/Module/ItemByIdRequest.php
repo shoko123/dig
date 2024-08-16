@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests\Module;
 
-use App\Http\Requests\Module\ModuleRequest;
-
 class ItemByIdRequest extends ModuleRequest
 {
     public function authorize(): bool

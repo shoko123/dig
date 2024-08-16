@@ -6,7 +6,6 @@ use App\Http\Requests\Module\ModuleRequest;
 use App\Services\App\MediaService;
 use Illuminate\Validation\Rules\File;
 
-
 class MediaUploadRequest extends ModuleRequest
 {
     public function authorize(): bool
@@ -17,7 +16,7 @@ class MediaUploadRequest extends ModuleRequest
     public function rules(): array
     {
         $media_collections = MediaService::collection_names();
-        $media_collection_rule = 'nullable|in:' . $media_collections->implode(',');
+        $media_collection_rule = 'nullable|in:'.$media_collections->implode(',');
 
         return [
             'module' => $this->rule_module_name_is_valid(),

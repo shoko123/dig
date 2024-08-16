@@ -19,9 +19,9 @@ class PermissionsSeeder extends Seeder
         $models = ['Locus', 'Stone', 'Ceramic'];
 
         foreach ($models as $m) {
-            $role = Role::create(['name' => $m . ' manager']);
+            $role = Role::create(['name' => $m.' manager']);
             foreach ($permissions as $p) {
-                $p_name = $m . '-' . $p;
+                $p_name = $m.'-'.$p;
                 Permission::create(['name' => $p_name]);
                 $role->givePermissionTo($p_name);
             }
