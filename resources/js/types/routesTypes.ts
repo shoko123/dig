@@ -30,7 +30,6 @@ type TPlanAction =
   | 'collection.item.load'
   | 'collection.load'
   | 'collection.clear'
-  | 'filters.clear'
   | 'item.load'
   | 'item.setIndexInCollection'
   | 'item.clear'

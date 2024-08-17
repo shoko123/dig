@@ -60,7 +60,10 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
           case 'filter':
           case 'index':
             if (changed.module) {
-              return { success: true, data: ['module.load', 'item.clear', 'collection.clear'] }
+              return {
+                success: true,
+                data: ['module.load', 'item.clear', 'collection.clear'],
+              }
             } else {
               console.log("routes - 'filter' or 'index' -> 'welcome' with the same module")
               return { success: true, data: [] }

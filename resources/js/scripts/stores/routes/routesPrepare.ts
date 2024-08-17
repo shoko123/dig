@@ -55,6 +55,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       switch (x) {
         case 'module.load':
           {
+            trioReset()
             n.showSpinner('Loading module data ...')
             const res = await loadModule(module)
             n.showSpinner(false)

@@ -56,7 +56,7 @@ export const useTrioStore = defineStore('trio', () => {
 
   //returns groups that are available and belong to the currently selected category.
   const visibleGroups = computed(() => {
-    if (trio.value.categories.length === 0) {
+    if (visibleCategories.value.length === 0) {
       return []
     }
 
@@ -296,7 +296,7 @@ export const useTrioStore = defineStore('trio', () => {
   }
 
   const visibleParams = computed(() => {
-    if (trio.value.categories.length === 0) {
+    if (currentGroup.value === undefined) {
       return []
     }
     const paramKeys = (<TGroupBase>currentGroup.value).paramKeys
@@ -385,7 +385,7 @@ export const useTrioStore = defineStore('trio', () => {
   /////////// Debug only - end ///////////////
 
   const currentGroup = computed(() => {
-    if (trio.value.categories.length === 0) {
+    if (visibleGroups.value.length === 0) {
       return undefined
     }
     return trio.value.groupsObj[visibleGroups.value[groupIndex.value].groupKey]
