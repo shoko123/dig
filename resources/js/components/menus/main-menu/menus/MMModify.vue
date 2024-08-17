@@ -5,13 +5,13 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
-import appConfig from '../../../../scripts/app.config'
+import { useMainStore } from '../../../../scripts/stores/main'
 import { useItemStore } from '../../../../scripts/stores/item'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 
 const { current } = storeToRefs(useRoutesMainStore())
 const { tag } = storeToRefs(useItemStore())
-const { appName } = appConfig()
+const { appName } = storeToRefs(useMainStore())
 
 const modifyText = computed(() => {
   switch (current.value.name) {
@@ -33,6 +33,6 @@ const modifyText = computed(() => {
 })
 
 const title = computed(() => {
-  return `${appName}: ${modifyText.value}`
+  return `${appName.value}: ${modifyText.value}`
 })
 </script>

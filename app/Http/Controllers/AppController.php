@@ -19,6 +19,13 @@ class AppController extends BaseController
                 'authenticatedUsersOnly' => env('ACCESSIBILITY_AUTHENTICATED_ONLY'),
             ],
             'media_collections' => MediaService::collection_names(),
+            'app_name' => config('app.name'),
+            'modules' =>
+            [
+                'Locus' => 'loci',
+                'Stone' => 'stones',
+                'Ceramic' => 'ceramics'
+            ],
         ], 200);
     }
 

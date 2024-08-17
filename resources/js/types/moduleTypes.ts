@@ -14,6 +14,7 @@ type TModuleInfo = {
 type SwapDatesWithStrings<T> = {
   [k in keyof T]: T[k] extends Date ? string : T[k]
 }
+
 type TAllModules<T extends TModuleInfo = TModuleInfo> = {
   Stone: TStone<T>
   Locus: TLocus<T>
@@ -21,9 +22,14 @@ type TAllModules<T extends TModuleInfo = TModuleInfo> = {
 }
 
 type AddTagAndSlugProperties<M> = M & { tag: string; slug: string }
-type AddModuleProperty<T extends object> = {
+
+type AddModuleProperty<T extends TAllModules> = {
   [k in keyof T]: T[k] & { module: k }
 }[keyof T]
+
+type ModuleToUrlName<T extends TAllModules> = {
+  [Property in keyof T]: T[Property] extends TModuleInfo ? T[Property]['url_name'] : never
+}
 
 type ModuleUnion = AddModuleProperty<TAllModules>
 type TModule = keyof TAllModules
@@ -38,6 +44,8 @@ type TDiscreteColumnsByModule<ModuleName extends TModule> = TAllByName<ModuleNam
 
 type TApiFieldsUnion = SwapDatesWithStrings<TFieldsUnion>
 type TApiPageMainTabularUnion = ModuleUnion['TabularViewFields'] & { slug: string }
+
+type TModuleToUrlName = ModuleToUrlName<TAllModules>
 
 type FieldsAsBooleans<T> = {
   [k in keyof T]: boolean
@@ -68,6 +76,7 @@ export {
   TModuleInfo,
   TModule,
   TUrlModule,
+  TModuleToUrlName,
   TFieldsUnion,
   TDiscreteColumnUnion,
   TApiFieldsUnion,

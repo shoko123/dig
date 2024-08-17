@@ -22,10 +22,10 @@ import { computed, ref } from 'vue'
 import { useMediaStore } from '../../scripts/stores/media'
 import { TMediaOfItem } from '../../types/mediaTypes'
 import { storeToRefs } from 'pinia'
-import appConfig from '../../scripts/app.config'
+import { useMainStore } from '../../scripts/stores/main'
 
 let { bucketUrl } = storeToRefs(useMediaStore())
-let { appName } = appConfig()
+let { appName } = storeToRefs(useMainStore())
 
 
 const model = ref<number>(0)
@@ -38,8 +38,8 @@ const images = computed(() => {
             media: {
                 hasMedia: true,
                 urls: {
-                    full: `${bucketUrl.value}app/carousel/${appName}${i}.jpg`,
-                    tn: `${bucketUrl.value}app/carousel/${appName}${i}-tn.jpg`,
+                    full: `${bucketUrl.value}app/carousel/${appName.value}${i}.jpg`,
+                    tn: `${bucketUrl.value}app/carousel/${appName.value}${i}-tn.jpg`,
                 },
             }
         })
@@ -48,7 +48,6 @@ const images = computed(() => {
 })
 
 const current = computed(() => {
-
     return images.value[model.value]
 })
 
