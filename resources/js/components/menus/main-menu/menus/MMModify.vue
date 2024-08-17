@@ -1,10 +1,38 @@
 <template>
-  <v-btn>{{ title }}</v-btn>
+  <div class="ml-4 font-weight-bold">{{ title }}</div>
 </template>
 
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import { useMenusStore } from '../../../../scripts/stores/menus'
+import { computed } from 'vue'
+import appConfig from '../../../../scripts/app.config'
+import { useItemStore } from '../../../../scripts/stores/item'
+import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 
-const { title } = storeToRefs(useMenusStore())
+const { current } = storeToRefs(useRoutesMainStore())
+const { tag } = storeToRefs(useItemStore())
+const { appName } = appConfig()
+
+const modifyText = computed(() => {
+  switch (current.value.name) {
+    case 'create':
+      return `Create a new ${current.value.module} item`
+
+    case 'update':
+      return `Update item "${current.value.module} ${tag.value}"`
+
+    case 'media':
+      return `Manipulate media of item "${current.value.module} ${tag.value}"`
+
+    case 'tag':
+      return `Edit tags of item "${current.value.module} ${tag.value}"`
+
+    default:
+      return ``
+  }
+})
+
+const title = computed(() => {
+  return `${appName}: ${modifyText.value}`
+})
 </script>

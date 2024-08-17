@@ -4,11 +4,10 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import { useRoutesMainStore } from './routes/routesMain'
-import appConfig from '../../scripts/app.config'
 
 export const useMenusStore = defineStore('menus', () => {
   const { current } = storeToRefs(useRoutesMainStore())
-  const { appName } = appConfig()
+
   const hasSubMenu = computed(() => {
     return ![
       'home',
@@ -49,29 +48,5 @@ export const useMenusStore = defineStore('menus', () => {
     }
   })
 
-  const title = computed(() => {
-    let pageTxt = ''
-    switch (current.value.name) {
-      case 'home':
-        pageTxt = ''
-        break
-      case 'show':
-        pageTxt = ': Item Details'
-        break
-      case 'index':
-        pageTxt = ': Collection Page'
-        break
-      case 'welcome':
-        pageTxt = ': Welcome Page'
-        break
-      case 'filter':
-        pageTxt = ': Filter Page'
-        break
-      default:
-        pageTxt = `: ${current.value.name} Page`
-        break
-    }
-    return `${appName}${current.value.module === undefined ? `` : `( ${current.value.module} )`}${pageTxt}`
-  })
-  return { hasSubMenu, mainMenuType, title }
+  return { hasSubMenu, mainMenuType }
 })
