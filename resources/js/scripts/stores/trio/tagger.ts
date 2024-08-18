@@ -23,7 +23,7 @@ export const useTaggerStore = defineStore('tagger', () => {
     Object.entries(discreteColumnNameToGroupKey.value).forEach(([key, value]) => {
       const group = trio.value.groupsObj[value]
 
-      if (group.code === 'CV' && (<TGroupColumn>group).show_in_tagger) {
+      if (group.code === 'FD' && (<TGroupColumn>group).show_in_tagger) {
         const val = fields.value![key as keyof TFieldsUnion]
         const paramKey = group.paramKeys.find(
           // ** weak comparison because param.extra is either string, number or boolean
@@ -51,10 +51,10 @@ export const useTaggerStore = defineStore('tagger', () => {
     for (const x in discreteColumnNameToGroupKey.value) {
       const group = trio.value.groupsObj[discreteColumnNameToGroupKey.value[x]]
 
-      if (group.code === 'CV' && (<TGroupColumn>group).show_in_tagger) {
+      if (group.code === 'FD' && (<TGroupColumn>group).show_in_tagger) {
         selectedNewItemParams.value.push(group.paramKeys[0])
       }
-      console.log(`Add Column Tag: ${group.label} => "${x}`)
+      console.log(`Add Field Tag: ${group.label} => "${x}`)
     }
   }
 
@@ -81,7 +81,7 @@ export const useTaggerStore = defineStore('tagger', () => {
           payload.module_tag_ids.push(<number>trio.value.paramsObj[paramKey].extra)
           break
 
-        case 'CV':
+        case 'FD':
           {
             const param = trio.value.paramsObj[paramKey]
             payload.columns.push({

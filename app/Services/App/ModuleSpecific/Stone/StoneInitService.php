@@ -32,7 +32,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
     {
         return [
             'Year' => [
-                'code' => 'CV',
+                'code' => 'FD',
                 'text_source' => 'Manipulated',
                 'table_name' => 'stones',
                 'column_name' => 'id_year',
@@ -47,7 +47,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'allow_dependents' => false,
             ],
             'Material' => [
-                'code' => 'CV',
+                'code' => 'FD',
                 'text_source' => 'Lookup',
                 'column_name' => 'material_id',
                 'lookup_table_name' => 'stone_materials',
@@ -58,7 +58,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'show_in_tagger' => true,
             ],
             'Whole' => [
-                'code' => 'CV',
+                'code' => 'FD',
                 'text_source' => 'Manipulated',
                 'table_name' => 'stones',
                 'column_name' => 'whole',
@@ -71,7 +71,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'params' => [['text' => 'Yes', 'extra' => true], ['text' => 'No', 'extra' => false]],
             ],
             'Basic Typology' => [
-                'code' => 'CV',
+                'code' => 'FD',
                 'text_source' => 'Lookup',
                 'table_name' => 'stones',
                 'column_name' => 'base_type_id',
@@ -83,7 +83,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'show_in_tagger' => true,
             ],
             'Cataloger' => [
-                'code' => 'CV',
+                'code' => 'FD',
                 'text_source' => 'Lookup',
                 'table_name' => 'stones',
                 'column_name' => 'cataloger_id',
@@ -160,7 +160,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'multiple' => true,
             ],
             'Search-ID' => [
-                'code' => 'CS',
+                'code' => 'FS',
                 'column_name' => 'id',
             ],
             'Order By' => [

@@ -13,7 +13,7 @@ type TLocus<T extends TModuleInfo> = {
     published_date: string
     updated_date: string
   }
-  CV: Pick<TLocus<T>['fields'], 'category'>
+  FD: Pick<TLocus<T>['fields'], 'category'>
   TabularViewFields: TLocus<T>['fields']
 }
 

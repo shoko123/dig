@@ -52,25 +52,30 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
         const grpKey = pad(grpCnt, 3)
         categories[catCnt].groupKeys.push(grpKey)
         switch (grp.code) {
-          case 'CV':
-            handleCV(grp as TApiGroupByCode<'CV'>)
+          case 'FD':
+            handleFD(grp as TApiGroupByCode<'FD'>)
             break
 
-          case 'CS':
-            handleCS(grp as TApiGroupByCode<'CS'>)
+          case 'FS':
+            handleFS(grp as TApiGroupByCode<'FS'>)
             break
+
           case 'TM':
             handleTag(grp as TApiGroupByCode<'TM'>)
             break
+
           case 'TG':
             handleTag(grp as TApiGroupByCode<'TG'>)
             break
+
           case 'MD':
             handleMD(grp as TApiGroupByCode<'MD'>)
             break
+
           case 'OB':
             handleOB(grp as TApiGroupByCode<'OB'>)
             break
+
           default:
         }
         saveGroupAndParams(grpKey)
@@ -106,7 +111,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     groupsObj[grpKey] = grpToSave
     groupLabelToKey[grpToSave.label] = grpKey
 
-    if ('CV' === grpToSave.code) {
+    if ('FD' === grpToSave.code) {
       discreteColumnNameToGroupKey[(<TGroupColumn>grpToSave).column_name] = grpKey
     }
   }
@@ -121,7 +126,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     })
   }
 
-  function handleCV(grp: TApiGroupByCode<'CV'>) {
+  function handleFD(grp: TApiGroupByCode<'FD'>) {
     tmpParams = grp.params
 
     tmpGroup = {
@@ -139,7 +144,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     }
   }
 
-  function handleCS(grp: TApiGroupByCode<'CS'>) {
+  function handleFS(grp: TApiGroupByCode<'FS'>) {
     tmpParams = Array(6).fill({ text: '', extra: null })
     tmpGroup = {
       label: grp.label,

@@ -71,7 +71,7 @@ export const useTrioStore = defineStore('trio', () => {
       let required = false
       let multiple = false
       switch (group.code) {
-        case 'CV':
+        case 'FD':
           required = true
           multiple = false
           break
@@ -102,7 +102,7 @@ export const useTrioStore = defineStore('trio', () => {
     const g = trio.value.groupsObj[groupKey]
 
     switch (g.code) {
-      case 'CV':
+      case 'FD':
         switch (source.value) {
           case 'filter':
             if (!(<TGroupColumn>g).show_in_filters) {
@@ -189,7 +189,7 @@ export const useTrioStore = defineStore('trio', () => {
         }
         break
 
-      case 'CV':
+      case 'FD':
         if (isSelected) {
           //do nothing
         } else {
@@ -203,7 +203,7 @@ export const useTrioStore = defineStore('trio', () => {
             )
             return
           }
-          console.log(`newItemParams(CL or CV).clicked select: ${prmKey}, unSelect: ${currentKey}`)
+          console.log(`newItemParams(CL or FD).clicked select: ${prmKey}, unSelect: ${currentKey}`)
           unSelectParam(currentKey)
           selectParam(prmKey)
         }
@@ -273,7 +273,7 @@ export const useTrioStore = defineStore('trio', () => {
       } else {
         const param = trio.value.paramsObj[x]
         const group = trio.value.groupsObj[param.groupKey]
-        if (current.value.name === 'tag' && group.code === 'CV') {
+        if (current.value.name === 'tag' && group.code === 'FD') {
           //unselect required, single selection - replace with default (first entry in group.params[])
           selected.value[i] = group.paramKeys[0]
         } else {
@@ -392,7 +392,7 @@ export const useTrioStore = defineStore('trio', () => {
   })
 
   const textSearchValues = computed(() => {
-    if (currentGroup.value === undefined || currentGroup.value.code !== 'CS') {
+    if (currentGroup.value === undefined || currentGroup.value.code !== 'FS') {
       return []
     }
     const vals: string[] = []

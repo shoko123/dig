@@ -62,7 +62,7 @@ export const useFilterStore = defineStore('filter', () => {
       const group = trio.value.groupsObj[trio.value.paramsObj[key].groupKey]
 
       switch (group.code) {
-        case 'CV':
+        case 'FD':
           {
             const i = all.column_value.findIndex((x) => {
               return x.column_name === (<TGroupColumn>group).column_name
@@ -82,7 +82,7 @@ export const useFilterStore = defineStore('filter', () => {
           }
           break
 
-        case 'CS':
+        case 'FS':
           {
             const i = all.column_search.findIndex((x) => {
               return x.column_name === (<TGroupColumn>group).column_name
@@ -130,7 +130,7 @@ export const useFilterStore = defineStore('filter', () => {
   function clearSelectedFilters() {
     console.log(`filter.clearSelectedFilters()`)
     for (const value of Object.values(groupLabelToKey.value)) {
-      if (trio.value.groupsObj[value].code === 'CS') {
+      if (trio.value.groupsObj[value].code === 'FS') {
         trio.value.groupsObj[value].paramKeys.forEach((x) => {
           trio.value.paramsObj[x].text = ''
           trio.value.paramsObj[x].extra = ''

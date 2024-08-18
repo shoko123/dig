@@ -16,7 +16,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
     public function __construct(string $module)
     {
         parent::__construct($module);
-        $tagGroupName = 'App\Models\DigModule\Specific\\'.$module.'\\'.$module.'TagGroup';
+        $tagGroupName = 'App\Models\DigModule\Specific\\' . $module . '\\' . $module . 'TagGroup';
         $this->moduleTagGroup = new $tagGroupName;
     }
 
@@ -57,7 +57,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
     public function getGroupDetails($label): array
     {
         $group = $this->allGroups()[$label] ?? null;
-        throw_if(is_null($group), new GeneralJsonException('***MODEL INIT() ERROR*** getGroupDetails() invalid label: '.$label, 500));
+        throw_if(is_null($group), new GeneralJsonException('***MODEL INIT() ERROR*** getGroupDetails() invalid label: ' . $label, 500));
 
         switch ($group['code']) {
             case 'TG': //global tags
@@ -66,10 +66,10 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
             case 'TM': //module tags
                 return $this->getModelTagsGroupDetails($label, $group);
 
-            case 'CV': //column values (and its "dependencies")
-                return $this->getColumnGroupDetails($label, $group);
+            case 'FD': //field values (and its "dependencies")
+                return $this->getFieldOneToOneGroupDetails($label, $group);
 
-            case 'CS': //column search
+            case 'FS': //field search
                 return $this->getTextualSearchGroupDetails($label, $group);
 
             case 'OB': //order by
@@ -81,20 +81,20 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
                     'params' => [],
                 ]);
 
-            case 'DP': //dependency group (bespoke filter)
-                return $this->getDependencyGroupDetails($label, $group);
+            case 'RD': //dependency group (bespoke filter)
+                return $this->getRecordDependentGroupDetails($label, $group);
 
             default:
-                throw new GeneralJsonException('***MODEL INIT() ERROR*** getGroupDetails() invalid code: '.$group['code'], 500);
+                throw new GeneralJsonException('***MODEL INIT() ERROR*** getGroupDetails() invalid code: ' . $group['code'], 500);
         }
 
         return [];
     }
 
-    private function getColumnGroupDetails($label, $group)
+    private function getFieldOneToOneGroupDetails($label, $group)
     {
         switch ($group['text_source']) {
-            case 'Column':
+            case 'Field':
                 return $this->getCVColumnDetails($label, $group);
 
             case 'Manipulated':
@@ -104,7 +104,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
                 return $this->getCVLookupDetails($label, $group);
 
             default:
-                throw new GeneralJsonException('***MODEL INIT() ERROR*** invalid text_source: '.$group['text_source'], 500);
+                throw new GeneralJsonException('***MODEL INIT() ERROR*** invalid text_source: ' . $group['text_source'], 500);
         }
     }
 
@@ -160,7 +160,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
             ->where('name', $label)
             ->first();
 
-        throw_if(is_null($tg), new GeneralJsonException('***MODEL INIT() ERROR*** Group * '.$label.' * NOT FOUND', 500));
+        throw_if(is_null($tg), new GeneralJsonException('***MODEL INIT() ERROR*** Group * ' . $label . ' * NOT FOUND', 500));
 
         return array_merge($group, [
             'label' => $label,
@@ -201,17 +201,17 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
     private function getTextualSearchGroupDetails($label, $group)
     {
         $group = $this->modelGroups($label)[$label] ?? null;
-        throw_if(is_null($group), new GeneralJsonException('***MODEL INIT() ERROR*** Group * '.$label.' * NOT FOUND', 500));
+        throw_if(is_null($group), new GeneralJsonException('***MODEL INIT() ERROR*** Group * ' . $label . ' * NOT FOUND', 500));
 
         return [
-            'code' => 'CS',
+            'code' => 'FS',
             'label' => $label,
             'column_name' => $group['column_name'],
             'params' => [],
         ];
     }
 
-    private function getDependencyGroupDetails($label, $group)
+    private function getRecordDependentGroupDetails($label, $group)
     {
         $paramsFormatted = collect($group['params'])->map(function ($y, $key) {
             return ['id' => $key, 'name' => $y];

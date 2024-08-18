@@ -10,7 +10,7 @@ type TCeramic<T extends TModuleInfo> = {
     specialist_description: string
     base_type_id: number
   }
-  CV: Pick<TCeramic<T>['fields'], 'id_object_no' | 'id_year'>
+  FD: Pick<TCeramic<T>['fields'], 'id_object_no' | 'id_year'>
   TabularViewFields: TCeramic<T>['fields']
 }
 

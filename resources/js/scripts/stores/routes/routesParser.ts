@@ -101,7 +101,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
           }
           break
 
-        case 'CS':
+        case 'FS':
           {
             const res = processUrlCS(group, paramTexts, selectedFilters)
             if (!res.success) {

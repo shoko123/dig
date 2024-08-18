@@ -7,7 +7,7 @@ import type { TCeramic } from '@/js/types/modules/Ceramic'
 type TModuleInfo = {
   url_name: string
   fields: object
-  CV: object
+  FD: object
   TabularViewFields: object
 }
 
@@ -44,8 +44,8 @@ type TAllByName<TModuleName extends TModule> = TAllModules[TModuleName]
 type TUrlModule = ModuleUnion['url_name']
 type TFieldsUnion = ModuleUnion['fields']
 type TFieldsByModule<ModuleName extends TModule> = TAllByName<ModuleName>['fields']
-type TDiscreteColumnUnion = ModuleUnion['CV']
-type TDiscreteColumnsByModule<ModuleName extends TModule> = TAllByName<ModuleName>['CV']
+type TDiscreteColumnUnion = ModuleUnion['FD']
+type TDiscreteColumnsByModule<ModuleName extends TModule> = TAllByName<ModuleName>['FD']
 
 type TApiFieldsUnion = SwapDatesWithStrings<TFieldsUnion>
 type TApiPageMainTabularUnion = ModuleUnion['TabularViewFields'] & { slug: string }

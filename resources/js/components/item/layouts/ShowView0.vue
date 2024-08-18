@@ -21,7 +21,6 @@ import TagsForm2 from '../../trio/TrioSelectedForm.vue'
 const { smAndDown } = useDisplay()
 
 const widths = computed(() => {
-
   return smAndDown.value ? [12, 12] : [9, 3]
 })
 </script>

@@ -32,8 +32,8 @@ class CeramicInitService extends InitService implements InitSpecificServiceInter
     {
         return [
             'Year' => [
-                'code' => 'CV',
-                'text_source' => 'Column',
+                'code' => 'FD',
+                'text_source' => 'Field',
                 'table_name' => 'ceramics',
                 'column_name' => 'id_year',
                 'column_type' => 'number',
@@ -44,8 +44,8 @@ class CeramicInitService extends InitService implements InitSpecificServiceInter
                 'allow_dependents' => false,
             ],
             'Object Number' => [
-                'code' => 'CV',
-                'text_source' => 'Column',
+                'code' => 'FD',
+                'text_source' => 'Field',
                 'table_name' => 'ceramics',
                 'column_name' => 'id_object_no',
                 'column_type' => 'number',
@@ -56,15 +56,15 @@ class CeramicInitService extends InitService implements InitSpecificServiceInter
                 'allow_dependents' => false,
             ],
             'Search-Field-Description' => [
-                'code' => 'CS',
+                'code' => 'FS',
                 'column_name' => 'field_description',
             ],
             'Search-Specialist-Description' => [
-                'code' => 'CS',
+                'code' => 'FS',
                 'column_name' => 'specialist_description',
             ],
             'Search-Notes' => [
-                'code' => 'CS',
+                'code' => 'FS',
                 'column_name' => 'notes',
             ],
             'Order By' => [

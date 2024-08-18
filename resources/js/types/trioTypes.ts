@@ -1,11 +1,11 @@
 type TrioSourceName = 'Item' | 'New' | 'Filter'
 
 type TAllGroups = {
-  CV: {
+  FD: {
     apiGroup: TApiGroupColumn
     group: TGroupColumnTmp
   }
-  CS: {
+  FS: {
     apiGroup: TApiGroupColumn
     group: TGroupColumnTmp
   }
@@ -37,13 +37,13 @@ type TApiGroupBase = {
   params: TApiParam[]
 }
 
-type TColumnTextSource =
-  | 'Column' // exact table value
+type TFieldValueSource =
+  | 'Field' // exact table value
   | 'Manipulated' // A one-to-one conversion of the field values
   | 'Lookup' // lookup table
 
 type TApiGroupColumn = TApiGroupBase & {
-  text_source: TColumnTextSource
+  text_source: TFieldValueSource
   table_name: string
   column_name: string
   column_type: 'boolean' | 'string' | 'number'
@@ -88,7 +88,7 @@ type TGroupTagTmp = TGroupBaseTmp & {
 }
 
 type TGroupColumnTmp = TGroupBaseTmp & {
-  text_source: TColumnTextSource
+  text_source: TFieldValueSource
   table_name: string
   column_name: string
   column_type: 'boolean' | 'number' | 'string'

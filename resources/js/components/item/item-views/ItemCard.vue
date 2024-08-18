@@ -30,18 +30,20 @@ import { storeToRefs } from 'pinia'
 import { useDisplay } from 'vuetify'
 import { useItemStore } from '../../../scripts/stores/item'
 import { useCollectionMediaStore } from '../../../scripts/stores/collections/collectionMedia'
-
 import MediaSquare from '../../media/MediaSquare.vue'
 import CeramicForm from '../../modules/Ceramic/CeramicForm.vue'
 import StoneForm from '../../modules/Stone/StoneForm.vue'
 
+const { smAndDown } = useDisplay()
 let { array } = storeToRefs(useCollectionMediaStore())
 let { derived } = storeToRefs(useItemStore())
+
 
 const itemForm = computed<Component | null>(() => {
   switch (derived.value.module) {
     case 'Ceramic':
       return CeramicForm
+
     case 'Stone':
       return StoneForm
 
@@ -59,7 +61,6 @@ const hasMedia = computed(() => {
 })
 
 const widths = computed(() => {
-  const { smAndDown } = useDisplay()
   return smAndDown.value ? [12, 12] : [9, 3]
 })
 </script>

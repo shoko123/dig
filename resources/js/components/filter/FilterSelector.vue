@@ -5,22 +5,14 @@
     </v-card-title>
     <v-card-text>
       <v-tabs v-model="catIndex" class="primary">
-        <v-tab
-          v-for="(cat, index) in visibleCategories"
-          :key="index"
-          color="purple"
-          :class="cat.hasSelected ? 'has-selected' : ''"
-        >
+        <v-tab v-for="(cat, index) in visibleCategories" :key="index" color="purple"
+          :class="cat.hasSelected ? 'has-selected' : ''">
           {{ cat.hasSelected ? `${cat.catName}(*)` : cat.catName }}
         </v-tab>
       </v-tabs>
       <v-tabs v-model="grpIndex">
-        <v-tab
-          v-for="(group, index) in visibleGroups"
-          :key="index"
-          color="purple"
-          :class="[group.selectedCount > 0 ? 'has-selected' : '', 'text-capitalize']"
-        >
+        <v-tab v-for="(group, index) in visibleGroups" :key="index" color="purple"
+          :class="[group.selectedCount > 0 ? 'has-selected' : '', 'text-capitalize']">
           {{ group.selectedCount === 0 ? group.name : `${group.name}(${group.selectedCount})` }}
         </v-tab>
       </v-tabs>
@@ -76,7 +68,7 @@ const grpIndex = computed({
 
 const isColumnSearch = computed(() => {
   if (visibleGroups.value.length === 0) return false
-  return visibleGroups.value[groupIndex.value].groupType === 'CS'
+  return visibleGroups.value[groupIndex.value].groupType === 'FS'
 })
 
 const isOrderBy = computed(() => {
