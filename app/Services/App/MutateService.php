@@ -32,7 +32,7 @@ class MutateService extends DigModuleService
         //If JSON field is a "date", use Carbon to format to mysql Date field.
 
         foreach ($fields as $key => $value) {
-            //very awkward way to construct dates by checking whether column name contains '_date'
+            //very awkward way to construct dates by checking whether field name contains '_date'
             //Note: the date format is already validated at the formRequest.
             if (str_contains($key, '_date') /* && strtotime($value) !== false */) {
                 $this->model[$key] = Carbon::parse($value)->format('Y-m-d');
@@ -42,12 +42,12 @@ class MutateService extends DigModuleService
         }
 
         if ($this->model->derivedId !== $this->model->id) {
-            throw new GeneralJsonException('Unable to save d/t inconsistency between id: "'.$this->model->id.'" and derived id: '.$this->model->derivedId, 422);
+            throw new GeneralJsonException('Unable to save d/t inconsistency between id: "' . $this->model->id . '" and derived id: ' . $this->model->derivedId, 422);
         }
         try {
             $this->model->save();
         } catch (Exception $e) {
-            throw new GeneralJsonException($e->getMessage().$e->getCode());
+            throw new GeneralJsonException($e->getMessage() . $e->getCode());
         }
 
         return [

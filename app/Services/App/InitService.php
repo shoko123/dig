@@ -95,41 +95,41 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
     {
         switch ($group['text_source']) {
             case 'Field':
-                return $this->getCVColumnDetails($label, $group);
+                return $this->getFDFieldDetails($label, $group);
 
             case 'Manipulated':
-                return $this->getCVManipulatedDetails($label, $group);
+                return $this->getFDManipulatedDetails($label, $group);
 
             case 'Lookup':
-                return $this->getCVLookupDetails($label, $group);
+                return $this->getFDLookupDetails($label, $group);
 
             default:
                 throw new GeneralJsonException('***MODEL INIT() ERROR*** invalid text_source: ' . $group['text_source'], 500);
         }
     }
 
-    private function getCVColumnDetails($label, $group)
+    private function getFDFieldDetails($label, $group)
     {
-        $column_name = $group['column_name'];
-        $params = DB::table($group['table_name'])->select($column_name)->distinct()->orderBy($column_name)->get();
+        $field_name = $group['field_name'];
+        $params = DB::table($group['table_name'])->select($field_name)->distinct()->orderBy($field_name)->get();
 
         return array_merge($group, [
             'label' => $label,
-            'column_type' => 'integer',
-            'params' => $params->map(function ($y, $key) use ($column_name) {
-                return ['text' => $y->$column_name, 'extra' => $y->$column_name];
+            'field_type' => 'integer',
+            'params' => $params->map(function ($y, $key) use ($field_name) {
+                return ['text' => $y->$field_name, 'extra' => $y->$field_name];
             }),
         ]);
     }
 
-    private function getCVManipulatedDetails($label, $group)
+    private function getFDManipulatedDetails($label, $group)
     {
-        $column_name = $group['column_name'];
-        $res = DB::table($group['table_name'])->select($column_name)->distinct()->orderBy($column_name)->get();
+        $field_name = $group['field_name'];
+        $res = DB::table($group['table_name'])->select($field_name)->distinct()->orderBy($field_name)->get();
 
-        $params = $group['column_type'] === 'boolean' ? $group['params'] :
-            $res->map(function ($y, $key) use ($group, $column_name) {
-                return ['text' => $group['manipulator']($y->$column_name), 'extra' => $y->$column_name];
+        $params = $group['field_type'] === 'boolean' ? $group['params'] :
+            $res->map(function ($y, $key) use ($group, $field_name) {
+                return ['text' => $group['manipulator']($y->$field_name), 'extra' => $y->$field_name];
             });
         unset($group['manipulator']);
 
@@ -139,7 +139,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
         ]);
     }
 
-    private function getCVLookupDetails($label, $group)
+    private function getFDLookupDetails($label, $group)
     {
         $params = DB::table($group['lookup_table_name'])->get();
 
@@ -206,7 +206,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
         return [
             'code' => 'FS',
             'label' => $label,
-            'column_name' => $group['column_name'],
+            'field_name' => $group['field_name'],
             'params' => [],
         ];
     }

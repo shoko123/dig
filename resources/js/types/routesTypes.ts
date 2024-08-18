@@ -59,11 +59,11 @@ type TSelectedFilterFromQuery = {
 type TApiFilters = {
   model_tag_ids: number[]
   global_tag_ids: number[]
-  column_value: { column_name: string; vals: (string | number | boolean)[] }[]
-  column_search: { column_name: string; vals: string[] }[]
+  field_value: { field_name: string; vals: (string | number | boolean)[] }[]
+  field_search: { field_name: string; vals: string[] }[]
   media: string[]
   bespoke: { name: string; vals: string[] }[]
-  order_by: { column_name: string; asc: boolean }[]
+  order_by: { field_name: string; asc: boolean }[]
 }
 
 type TParseQuery = {

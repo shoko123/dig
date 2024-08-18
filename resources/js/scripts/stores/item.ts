@@ -15,14 +15,14 @@ import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
 import { useModuleStore } from './module'
 import { useTrioStore } from './trio/trio'
-import { TGroupColumn } from '@/js/types/trioTypes'
+import { TGroupField } from '@/js/types/trioTypes'
 
 export const useItemStore = defineStore('item', () => {
   const { current } = storeToRefs(useRoutesMainStore())
   const { collection, itemByIndex } = useCollectionsStore()
   const { tagAndSlugFromId } = useModuleStore()
   const { send } = useXhrStore()
-  const { trio, discreteColumnNameToGroupKey, groupLabelToKey } = storeToRefs(useTrioStore())
+  const { trio, discreteFieldNameToGroupKey, groupLabelToKey } = storeToRefs(useTrioStore())
 
   const fields = ref<TFieldsUnion | undefined>(undefined)
   const slug = ref<string | undefined>(undefined)
@@ -56,10 +56,10 @@ export const useItemStore = defineStore('item', () => {
     }
   })
 
-  const discreteColumns = computed<TDiscreteColumnUnion>(() => {
+  const discreteFields = computed<TDiscreteColumnUnion>(() => {
     const tmpMap = new Map()
-    Object.entries(discreteColumnNameToGroupKey.value).forEach(([key, value]) => {
-      // console.log(`discreteColumns() Item[key: ${key}] => ${value}`)
+    Object.entries(discreteFieldNameToGroupKey.value).forEach(([key, value]) => {
+      // console.log(`discreteFields() Item[key: ${key}] => ${value}`)
       const group = trio.value.groupsObj[value]
       const val = fields.value![key as keyof TFieldsUnion]
 
@@ -72,7 +72,7 @@ export const useItemStore = defineStore('item', () => {
       )
       if (paramKey === undefined) {
         throw new Error(
-          `discreteColumns() - Can't find value ${val} in group ${group.label} column ${key}`,
+          `discreteFields() - Can't find value ${val} in group ${group.label} field ${key}`,
         )
       }
       tmpMap.set(key, trio.value.paramsObj[paramKey].text)
@@ -95,7 +95,7 @@ export const useItemStore = defineStore('item', () => {
   }
 
   function saveItemFields<F extends TApiFieldsUnion>(apiFields: F) {
-    // If column_name contains '_date' and value is a string in YYYY-MM-DD format, assume that we deal with a date column, and make a new Date
+    // If field_name contains '_date' and value is a string in YYYY-MM-DD format, assume that we deal with a date field, and make a new Date
     const isoDateRegex = /^\d{4}-\d{2}-\d{2}$/
     const tmpMap = new Map()
 
@@ -111,9 +111,9 @@ export const useItemStore = defineStore('item', () => {
   }
 
   function addColumnTags() {
-    Object.entries(discreteColumnNameToGroupKey.value).forEach(([key, value]) => {
+    Object.entries(discreteFieldNameToGroupKey.value).forEach(([key, value]) => {
       const group = trio.value.groupsObj[value]
-      if ((<TGroupColumn>group).show_in_item_tags) {
+      if ((<TGroupField>group).show_in_item_tags) {
         const val = fields.value![key as keyof TFieldsUnion]
         const paramKey = group.paramKeys.find(
           // ** weak comparison because param.extra is either string, number or boolean
@@ -121,7 +121,7 @@ export const useItemStore = defineStore('item', () => {
         )
         if (paramKey === undefined) {
           throw new Error(
-            `addColumnTags() - Can't find value ${val} in group ${group.label} column ${key}`,
+            `addColumnTags() - Can't find value ${val} in group ${group.label} field ${key}`,
           )
         }
         selectedItemParams.value.push(paramKey)
@@ -214,6 +214,6 @@ export const useItemStore = defineStore('item', () => {
     saveItemFields,
     saveitemFieldsPlus,
     itemRemove,
-    discreteColumns,
+    discreteFields,
   }
 })

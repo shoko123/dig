@@ -13,7 +13,7 @@ return new class extends Migration
     {
         $teams = config('permission.teams');
         $tableNames = config('permission.table_names');
-        $columnNames = config('permission.column_names');
+        $columnNames = config('permission.field_names');
         $pivotRole = $columnNames['role_pivot_key'] ?? 'role_id';
         $pivotPermission = $columnNames['permission_pivot_key'] ?? 'permission_id';
 

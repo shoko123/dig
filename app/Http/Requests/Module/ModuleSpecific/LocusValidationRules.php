@@ -14,22 +14,22 @@ class LocusValidationRules extends ValidationRules
         return 'locus_tags';
     }
 
-    public function allowed_value_column_names(): array
+    public function allowed_value_field_names(): array
     {
         return ['category'];
     }
 
-    public function allowed_search_column_names(): array
+    public function allowed_search_field_names(): array
     {
         return ['id', 'oc_label'];
     }
 
-    public function allowed_order_by_column_names(): array
+    public function allowed_order_by_field_names(): array
     {
         return ['category', 'a', 'b', 'published_date'];
     }
 
-    public function allowed_tagger_column_names(): array
+    public function allowed_tagger_field_names(): array
     {
         return [];
     }

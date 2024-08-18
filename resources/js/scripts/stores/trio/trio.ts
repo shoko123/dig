@@ -8,7 +8,7 @@ import type {
   TGroupTag,
   TApiParam,
   TGroupBase,
-  TGroupColumn,
+  TGroupField,
 } from '../../../types/trioTypes'
 
 import { useTrioNormalizerStore } from './trioNormalizer'
@@ -23,7 +23,7 @@ export const useTrioStore = defineStore('trio', () => {
   const trio = ref<TTrio>({ categories: [], groupsObj: {}, paramsObj: {} })
   const groupLabelToKey = ref<TGroupLabelToKey>({})
   const orderByOptions = ref<TApiParam[]>([])
-  const discreteColumnNameToGroupKey = ref<TGroupLabelToKey>({})
+  const discreteFieldNameToGroupKey = ref<TGroupLabelToKey>({})
   //current index of visible categories/groups
   const categoryIndex = ref<number>(0)
   const groupIndex = ref<number>(0)
@@ -105,13 +105,13 @@ export const useTrioStore = defineStore('trio', () => {
       case 'FD':
         switch (source.value) {
           case 'filter':
-            if (!(<TGroupColumn>g).show_in_filters) {
+            if (!(<TGroupField>g).show_in_filters) {
               return false
             }
             break
 
           case 'tagger':
-            if (!(<TGroupColumn>g).show_in_tagger) {
+            if (!(<TGroupField>g).show_in_tagger) {
               return false
             }
             break
@@ -350,7 +350,7 @@ export const useTrioStore = defineStore('trio', () => {
     trio.value = res.trio
     groupLabelToKey.value = res.groupLabelToKey
     orderByOptions.value = res.orderByOptions
-    discreteColumnNameToGroupKey.value = res.discreteColumnNameToGroupKey
+    discreteFieldNameToGroupKey.value = res.discreteFieldNameToGroupKey
   }
 
   function assert(condition: unknown, msg?: string): asserts condition {
@@ -443,7 +443,7 @@ export const useTrioStore = defineStore('trio', () => {
   return {
     trio,
     groupLabelToKey,
-    discreteColumnNameToGroupKey,
+    discreteFieldNameToGroupKey,
     orderByOptions,
     orderByGroup,
     orderByAvailable,

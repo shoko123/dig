@@ -36,8 +36,8 @@ class LocusInitService extends InitService implements InitSpecificServiceInterfa
                 'code' => 'FD',
                 'text_source' => 'Field',
                 'table_name' => 'loci',
-                'column_name' => 'category',
-                'column_type' => 'string',
+                'field_name' => 'category',
+                'field_type' => 'string',
                 'dependency' => [],
                 'show_in_item_tags' => true,
                 'show_in_filters' => true,
@@ -46,11 +46,11 @@ class LocusInitService extends InitService implements InitSpecificServiceInterfa
             ],
             'Search-ID' => [
                 'code' => 'FS',
-                'column_name' => 'id',
+                'field_name' => 'id',
             ],
             'Search-OC-Label' => [
                 'code' => 'FS',
-                'column_name' => 'oc_label',
+                'field_name' => 'oc_label',
             ],
             'Order By' => [
                 'code' => 'OB',

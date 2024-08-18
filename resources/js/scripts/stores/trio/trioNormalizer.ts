@@ -11,7 +11,7 @@ import type {
   TGroupObj,
   TCategoriesArray,
   TGroupLabelToKey,
-  TGroupColumn,
+  TGroupField,
   TParamTmp,
 } from '@/js/types/trioTypes'
 
@@ -22,7 +22,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   let groupsObj: TGroupObj = {}
   let paramsObj: TParamObj = {}
   let groupLabelToKey: TGroupLabelToKey = {}
-  let discreteColumnNameToGroupKey: TGroupLabelToKey = {}
+  let discreteFieldNameToGroupKey: TGroupLabelToKey = {}
   let orderByOptions: TApiParam[] = []
   let catCnt = 0
   let grpCnt = 0
@@ -35,7 +35,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     groupsObj = {}
     paramsObj = {}
     groupLabelToKey = {}
-    discreteColumnNameToGroupKey = {}
+    discreteFieldNameToGroupKey = {}
     catCnt = 0
     grpCnt = 0
     prmCnt = 0
@@ -87,7 +87,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     return {
       trio: { categories, groupsObj, paramsObj },
       groupLabelToKey,
-      discreteColumnNameToGroupKey,
+      discreteFieldNameToGroupKey,
       orderByOptions,
     }
   }
@@ -112,7 +112,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     groupLabelToKey[grpToSave.label] = grpKey
 
     if ('FD' === grpToSave.code) {
-      discreteColumnNameToGroupKey[(<TGroupColumn>grpToSave).column_name] = grpKey
+      discreteFieldNameToGroupKey[(<TGroupField>grpToSave).field_name] = grpKey
     }
   }
 
@@ -132,10 +132,10 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     tmpGroup = {
       label: grp.label,
       code: grp.code,
-      column_name: grp.column_name,
+      field_name: grp.field_name,
       text_source: grp.text_source,
       table_name: grp.table_name,
-      column_type: grp.column_type,
+      field_type: grp.field_type,
       dependency: grp.dependency,
       show_in_item_tags: grp.show_in_item_tags,
       show_in_filters: grp.show_in_filters,
@@ -149,7 +149,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     tmpGroup = {
       label: grp.label,
       code: grp.code,
-      column_name: grp.column_name,
+      field_name: grp.field_name,
     }
   }
 

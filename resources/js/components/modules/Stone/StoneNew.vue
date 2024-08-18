@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts" setup>
-import { TFieldsByModule, TDiscreteColumnsByModule } from '@/js/types/moduleTypes'
+import { TFieldsByModule, TDiscreteFieldsByModule } from '@/js/types/moduleTypes'
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useVuelidate } from '@vuelidate/core'
@@ -69,7 +69,7 @@ const props = defineProps<{
 }>()
 
 const { newFields, rules, inOC } = storeToRefs(useStoneStore())
-let { discreteColumns } = storeToRefs(useItemStore())
+let { discreteFields } = storeToRefs(useItemStore())
 
 const v = useVuelidate(rules, newFields.value as TFieldsByModule<'Stone'>)
 
@@ -102,7 +102,7 @@ const specialist_descriptionErrors = computed(() => {
 // })
 
 const cvColumnsTyped = computed(() => {
-  return discreteColumns.value as TDiscreteColumnsByModule<'Stone'>
+  return discreteFields.value as TDiscreteFieldsByModule<'Stone'>
 })
 
 const cataloger = computed(() => {

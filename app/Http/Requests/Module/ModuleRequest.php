@@ -17,10 +17,10 @@ class ModuleRequest extends FormRequest
     {
         //Verify that the module is valid as it used as a key for other validations using $moduleTable[] above.
         if (is_null($this->input('module')) || ! in_array($this->input('module'), ['Locus', 'Stone', 'Ceramic'])) {
-            throw new GeneralJsonException('Absent or invalid module name: `'.$this->input('module').'`', 422);
+            throw new GeneralJsonException('Absent or invalid module name: `' . $this->input('module') . '`', 422);
         }
 
-        $full_class = 'App\Http\Requests\Module\ModuleSpecific\\'.$this->input('module').'ValidationRules';
+        $full_class = 'App\Http\Requests\Module\ModuleSpecific\\' . $this->input('module') . 'ValidationRules';
         $this->rules = new $full_class;
     }
 
@@ -39,24 +39,24 @@ class ModuleRequest extends FormRequest
         return $this->rules->rule_id_exists_in_module_tags_table();
     }
 
-    protected function rule_value_column_name_is_valid(): string
+    protected function rule_value_field_name_is_valid(): string
     {
-        return $this->rules->rule_value_column_name_is_valid();
+        return $this->rules->rule_value_field_name_is_valid();
     }
 
-    protected function rule_search_column_name_is_valid(): string
+    protected function rule_search_field_name_is_valid(): string
     {
-        return $this->rules->rule_search_column_name_is_valid();
+        return $this->rules->rule_search_field_name_is_valid();
     }
 
-    protected function rule_order_by_column_name_is_valid(): string
+    protected function rule_order_by_field_name_is_valid(): string
     {
-        return $this->rules->rule_order_by_column_name_is_valid();
+        return $this->rules->rule_order_by_field_name_is_valid();
     }
 
-    protected function rule_tagger_column_name_is_valid(): string
+    protected function rule_tagger_field_name_is_valid(): string
     {
-        return $this->rules->rule_tagger_column_name_is_valid();
+        return $this->rules->rule_tagger_field_name_is_valid();
     }
 
     protected function create_rules(): array

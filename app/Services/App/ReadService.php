@@ -19,7 +19,7 @@ abstract class ReadService extends DigModuleService implements ReadSpecificServi
     public function __construct(string $module)
     {
         parent::__construct($module);
-        $tagModelName = get_class($this->model).'Tag';
+        $tagModelName = get_class($this->model) . 'Tag';
         $this->tagModel = new $tagModelName;
     }
 
@@ -55,12 +55,12 @@ abstract class ReadService extends DigModuleService implements ReadSpecificServi
             $this->applyGlobalTagFilters($query['global_tag_ids']);
         }
 
-        if (! empty($query['column_value'])) {
-            $this->applyColumnValueFilters($query['column_value']);
+        if (! empty($query['field_value'])) {
+            $this->applyFieldValueFilters($query['field_value']);
         }
 
-        if (! empty($query['column_search'])) {
-            $this->applyColumnSearchFilters($query['column_search']);
+        if (! empty($query['field_search'])) {
+            $this->applyFieldSearchFilters($query['field_search']);
         }
 
         if (! empty($query['media'])) {
@@ -108,19 +108,19 @@ abstract class ReadService extends DigModuleService implements ReadSpecificServi
         }
     }
 
-    public function applyColumnValueFilters(array $cols)
+    public function applyFieldValueFilters(array $cols)
     {
         foreach ($cols as $key => $col) {
-            $this->builder->whereIn($col['column_name'], $col['vals']);
+            $this->builder->whereIn($col['field_name'], $col['vals']);
         }
     }
 
-    public function applyColumnSearchFilters(array $cols)
+    public function applyFieldSearchFilters(array $cols)
     {
         foreach ($cols as $key => $col) {
             $this->builder->Where(function ($query) use ($col) {
                 foreach ($col['vals'] as $key1 => $term) {
-                    $query->orWhere($col['column_name'], 'LIKE', '%'.$term.'%');
+                    $query->orWhere($col['field_name'], 'LIKE', '%' . $term . '%');
                 }
             });
         }
@@ -136,7 +136,7 @@ abstract class ReadService extends DigModuleService implements ReadSpecificServi
     public function builderIndexOrder(array $order_by)
     {
         foreach ($order_by as $key => $data) {
-            $this->builder->orderBy($data['column_name'], $data['asc'] ? 'asc' : 'desc');
+            $this->builder->orderBy($data['field_name'], $data['asc'] ? 'asc' : 'desc');
         }
     }
 
@@ -159,7 +159,7 @@ abstract class ReadService extends DigModuleService implements ReadSpecificServi
         $this->builder = $this->builder->whereIn('id', $ids);
 
         //order by given (string) ids
-        $sortedIds = "'".implode("', '", $ids)."'";
+        $sortedIds = "'" . implode("', '", $ids) . "'";
 
         $res = $this->builder->orderByRaw("FIELD(id, {$sortedIds})")
             ->get();

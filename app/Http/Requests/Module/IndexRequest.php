@@ -24,15 +24,15 @@ class IndexRequest extends ModuleRequest
             'query.global_tag_ids.*' => 'exists:tags,id',
             //
             //TODO validate that vals exist in the other tables' values (awkward)
-            'query.column_value' => ['array'],
-            'query.column_value.*.column_name' => ['required', $this->rule_value_column_name_is_valid()],
-            'query.column_value.*.vals' => ['array'],
-            'query.column_value.*.vals.*' => ['required', new RuleStringIntOrBool()],
+            'query.field_value' => ['array'],
+            'query.field_value.*.field_name' => ['required', $this->rule_value_field_name_is_valid()],
+            'query.field_value.*.vals' => ['array'],
+            'query.field_value.*.vals.*' => ['required', new RuleStringIntOrBool()],
             //
-            'query.column_search' => ['array'],
-            'query.column_search.*.column_name' => [$this->rule_search_column_name_is_valid()],
-            'query.column_search.*.vals' => ['array'],
-            'query.column_search.*.vals.*' => ['string'],
+            'query.field_search' => ['array'],
+            'query.field_search.*.field_name' => [$this->rule_search_field_name_is_valid()],
+            'query.field_search.*.vals' => ['array'],
+            'query.field_search.*.vals.*' => ['string'],
             //
             'query.media' => ['array'],
             'query.media.*' => ['string'],
@@ -41,7 +41,7 @@ class IndexRequest extends ModuleRequest
             'query.bespoke.*' => ['string'],
             //
             'query.order_by.*' => ['array'],
-            'query.order_by.*.column_name' => [$this->rule_order_by_column_name_is_valid()],
+            'query.order_by.*.field_name' => [$this->rule_order_by_field_name_is_valid()],
             'query.order_by.*.asc' => ['boolean'],
         ];
     }

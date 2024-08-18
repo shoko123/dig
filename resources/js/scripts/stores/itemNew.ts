@@ -12,7 +12,7 @@ export const useItemNewStore = defineStore('itemNew', () => {
   const { current } = storeToRefs(useRoutesMainStore())
   const { getStore } = useModuleStore()
   const { send } = useXhrStore()
-  const { trio, discreteColumnNameToGroupKey } = storeToRefs(useTrioStore())
+  const { trio, discreteFieldNameToGroupKey } = storeToRefs(useTrioStore())
 
   const slug = ref<string | undefined>(undefined)
   const tag = ref<string | undefined>(undefined)
@@ -38,9 +38,9 @@ export const useItemNewStore = defineStore('itemNew', () => {
     return newFields.value.id
   })
 
-  const discreteColumns = computed(() => {
+  const discreteFields = computed(() => {
     const tmpMap = new Map()
-    Object.entries(discreteColumnNameToGroupKey.value).forEach(([key, value]) => {
+    Object.entries(discreteFieldNameToGroupKey.value).forEach(([key, value]) => {
       const group = trio.value.groupsObj[value]
       const val = newFields.value![key as keyof TFieldsUnion]
       const paramKey = group.paramKeys.find(
@@ -49,7 +49,7 @@ export const useItemNewStore = defineStore('itemNew', () => {
       )
       if (paramKey === undefined) {
         throw new Error(
-          `discreteColumns() - Can't find value ${val} in group ${group.label} column ${key}`,
+          `discreteFields() - Can't find value ${val} in group ${group.label} field ${key}`,
         )
       }
       tmpMap.set(key, trio.value.paramsObj[paramKey].text)
@@ -111,7 +111,7 @@ export const useItemNewStore = defineStore('itemNew', () => {
     id,
     isCreate,
     isUpdate,
-    discreteColumns,
+    discreteFields,
     selectedItemParams,
     openIdSelectorModal,
     itemClear,

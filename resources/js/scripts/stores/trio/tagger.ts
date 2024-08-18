@@ -2,14 +2,14 @@
 import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import type { TFieldsUnion } from '@/js/types/moduleTypes'
-import type { TGroupColumn } from '@/js/types/trioTypes'
+import type { TGroupField } from '@/js/types/trioTypes'
 import { useXhrStore } from '../xhr'
 import { useItemStore } from '../item'
 import { useTrioStore } from './trio'
 import { useRoutesMainStore } from '../routes/routesMain'
 
 export const useTaggerStore = defineStore('tagger', () => {
-  const { trio, discreteColumnNameToGroupKey } = storeToRefs(useTrioStore())
+  const { trio, discreteFieldNameToGroupKey } = storeToRefs(useTrioStore())
   const { fields, selectedItemParams } = storeToRefs(useItemStore())
 
   const selectedNewItemParams = ref<string[]>([])
@@ -20,10 +20,10 @@ export const useTaggerStore = defineStore('tagger', () => {
       return code === 'TG' || code === 'TM'
     })
     const tmpMap = new Map()
-    Object.entries(discreteColumnNameToGroupKey.value).forEach(([key, value]) => {
+    Object.entries(discreteFieldNameToGroupKey.value).forEach(([key, value]) => {
       const group = trio.value.groupsObj[value]
 
-      if (group.code === 'FD' && (<TGroupColumn>group).show_in_tagger) {
+      if (group.code === 'FD' && (<TGroupField>group).show_in_tagger) {
         const val = fields.value![key as keyof TFieldsUnion]
         const paramKey = group.paramKeys.find(
           // ** weak comparison because param.extra is either string, number or boolean
@@ -31,7 +31,7 @@ export const useTaggerStore = defineStore('tagger', () => {
         )
         if (paramKey === undefined) {
           throw new Error(
-            `prepareTagger() - Can't find value ${val} in group ${group.label} column ${key}`,
+            `prepareTagger() - Can't find value ${val} in group ${group.label} field ${key}`,
           )
         }
         selectedNewItemParams.value.push(paramKey)
@@ -45,13 +45,13 @@ export const useTaggerStore = defineStore('tagger', () => {
     selectedNewItemParams.value = []
   }
 
-  //When clearing params, set column values to default (index 0)
+  //When clearing params, set field values to default (index 0)
   function resetParams() {
     selectedNewItemParams.value = []
-    for (const x in discreteColumnNameToGroupKey.value) {
-      const group = trio.value.groupsObj[discreteColumnNameToGroupKey.value[x]]
+    for (const x in discreteFieldNameToGroupKey.value) {
+      const group = trio.value.groupsObj[discreteFieldNameToGroupKey.value[x]]
 
-      if (group.code === 'FD' && (<TGroupColumn>group).show_in_tagger) {
+      if (group.code === 'FD' && (<TGroupField>group).show_in_tagger) {
         selectedNewItemParams.value.push(group.paramKeys[0])
       }
       console.log(`Add Field Tag: ${group.label} => "${x}`)
@@ -67,11 +67,11 @@ export const useTaggerStore = defineStore('tagger', () => {
       module_id: (<TFieldsUnion>fields.value).id,
       global_tag_ids: <number[]>[],
       module_tag_ids: <number[]>[],
-      columns: <{ column_name: string; val: number | string | boolean }[]>[],
+      fields: <{ field_name: string; val: number | string | boolean }[]>[],
     }
 
     selectedNewItemParams.value.forEach((paramKey) => {
-      const group = <TGroupColumn>trio.value.groupsObj[trio.value.paramsObj[paramKey].groupKey]
+      const group = <TGroupField>trio.value.groupsObj[trio.value.paramsObj[paramKey].groupKey]
       switch (group.code) {
         case 'TG':
           payload.global_tag_ids.push(<number>trio.value.paramsObj[paramKey].extra)
@@ -84,8 +84,8 @@ export const useTaggerStore = defineStore('tagger', () => {
         case 'FD':
           {
             const param = trio.value.paramsObj[paramKey]
-            payload.columns.push({
-              column_name: group.column_name,
+            payload.fields.push({
+              field_name: group.field_name,
               val: param.extra,
             })
           }

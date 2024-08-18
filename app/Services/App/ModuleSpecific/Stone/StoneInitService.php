@@ -35,8 +35,8 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'code' => 'FD',
                 'text_source' => 'Manipulated',
                 'table_name' => 'stones',
-                'column_name' => 'id_year',
-                'column_type' => 'integer',
+                'field_name' => 'id_year',
+                'field_type' => 'integer',
                 'manipulator' => function ($val) {
                     return (string) ($val + 2000);
                 },
@@ -49,7 +49,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
             'Material' => [
                 'code' => 'FD',
                 'text_source' => 'Lookup',
-                'column_name' => 'material_id',
+                'field_name' => 'material_id',
                 'lookup_table_name' => 'stone_materials',
                 'dependency' => [],
                 'allow_dependents' => false,
@@ -61,8 +61,8 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'code' => 'FD',
                 'text_source' => 'Manipulated',
                 'table_name' => 'stones',
-                'column_name' => 'whole',
-                'column_type' => 'boolean',
+                'field_name' => 'whole',
+                'field_type' => 'boolean',
                 'dependency' => [],
                 'allow_dependents' => false,
                 'show_in_item_tags' => true,
@@ -74,7 +74,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'code' => 'FD',
                 'text_source' => 'Lookup',
                 'table_name' => 'stones',
-                'column_name' => 'base_type_id',
+                'field_name' => 'base_type_id',
                 'lookup_table_name' => 'stone_base_types',
                 'dependency' => [],
                 'allow_dependents' => true,
@@ -86,7 +86,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'code' => 'FD',
                 'text_source' => 'Lookup',
                 'table_name' => 'stones',
-                'column_name' => 'cataloger_id',
+                'field_name' => 'cataloger_id',
                 'lookup_table_name' => 'stone_catalogers',
                 'dependency' => [],
                 'allow_dependents' => false,
@@ -161,7 +161,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
             ],
             'Search-ID' => [
                 'code' => 'FS',
-                'column_name' => 'id',
+                'field_name' => 'id',
             ],
             'Order By' => [
                 'code' => 'OB',

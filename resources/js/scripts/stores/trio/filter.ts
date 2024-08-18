@@ -1,7 +1,7 @@
 // stores/trio.jsTGroupBase
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type { TGroupBase, TGroupColumn } from '@/js/types/trioTypes'
+import type { TGroupBase, TGroupField } from '@/js/types/trioTypes'
 import type { TApiFilters } from '@/js/types/routesTypes'
 import type { TApiArray } from '@/js/types/collectionTypes'
 import { useTrioStore } from './trio'
@@ -45,8 +45,8 @@ export const useFilterStore = defineStore('filter', () => {
     const all: TApiFilters = {
       model_tag_ids: [],
       global_tag_ids: [],
-      column_value: [],
-      column_search: [],
+      field_value: [],
+      field_search: [],
       media: [],
       bespoke: [],
       order_by: [],
@@ -64,38 +64,38 @@ export const useFilterStore = defineStore('filter', () => {
       switch (group.code) {
         case 'FD':
           {
-            const i = all.column_value.findIndex((x) => {
-              return x.column_name === (<TGroupColumn>group).column_name
+            const i = all.field_value.findIndex((x) => {
+              return x.field_name === (<TGroupField>group).field_name
             })
 
             if (i === -1) {
               //if new group, push the param's group into the groups array with itself as the first param
-              all.column_value.push({
-                column_name: (<TGroupColumn>group).column_name,
-                vals: [param.extra], //(<TGroupColumn>group).text_source ===
+              all.field_value.push({
+                field_name: (<TGroupField>group).field_name,
+                vals: [param.extra], //(<TGroupField>group).text_source ===
               })
             } else {
               //if the group is already selected, add param's text to the group's params array
-              //all.column_value[i].vals.push(param.text)
-              all.column_value[i].vals.push(param.extra)
+              //all.field_value[i].vals.push(param.text)
+              all.field_value[i].vals.push(param.extra)
             }
           }
           break
 
         case 'FS':
           {
-            const i = all.column_search.findIndex((x) => {
-              return x.column_name === (<TGroupColumn>group).column_name
+            const i = all.field_search.findIndex((x) => {
+              return x.field_name === (<TGroupField>group).field_name
             })
             if (i === -1) {
               //if new group, push the param's group into the groups array with itself as the first param
-              all.column_search.push({
-                column_name: (<TGroupColumn>group).column_name,
+              all.field_search.push({
+                field_name: (<TGroupField>group).field_name,
                 vals: [param.text],
               })
             } else {
               //if the group is already selected, add param's text to the group's params array
-              all.column_search[i].vals.push(param.text)
+              all.field_search[i].vals.push(param.text)
             }
           }
           break
@@ -117,7 +117,7 @@ export const useFilterStore = defineStore('filter', () => {
             const ordeByItem = orderByOptions.value.find((x) => x.text === param.text.slice(0, -2))
             assert(ordeByItem !== undefined, `Selected OrderBy param "${param.text} not found`)
             all.order_by.push({
-              column_name: <string>ordeByItem.extra,
+              field_name: <string>ordeByItem.extra,
               asc: param.text.slice(-1) === 'A',
             })
           }

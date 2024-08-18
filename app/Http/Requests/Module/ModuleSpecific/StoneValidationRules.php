@@ -14,22 +14,22 @@ class StoneValidationRules extends ValidationRules
         return 'stone_tags';
     }
 
-    public function allowed_value_column_names(): array
+    public function allowed_value_field_names(): array
     {
         return ['base_type_id', 'material_id', 'cataloger_id', 'whole', 'id_year', 'id_object_no'];
     }
 
-    public function allowed_search_column_names(): array
+    public function allowed_search_field_names(): array
     {
         return ['id'];
     }
 
-    public function allowed_order_by_column_names(): array
+    public function allowed_order_by_field_names(): array
     {
         return ['id_year', 'id_object_no', 'excavation_date', 'catalog_date'];
     }
 
-    public function allowed_tagger_column_names(): array
+    public function allowed_tagger_field_names(): array
     {
         return ['base_type_id', 'material_id', 'cataloger_id', 'whole'];
     }

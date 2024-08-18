@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\DB;
 
 class TagService extends BaseService
 {
-    public static function sync(string $module, string $id, array $module_tag_ids, array $global_tag_ids, array $columns): void
+    public static function sync(string $module, string $id, array $module_tag_ids, array $global_tag_ids, array $fields): void
     {
         //get item with tags
         $model = static::makeModel($module);
@@ -42,10 +42,10 @@ class TagService extends BaseService
         $attach_global_ids = $new_global_ids->diff($current_global_ids)->values()->all();
         $detach_global_ids = $current_global_ids->diff($new_global_ids)->values()->all();
 
-        //update column values
-        if (isset($columns)) {
-            foreach ($columns as $col) {
-                $item[$col['column_name']] = $col['val'];
+        //update field values
+        if (isset($fields)) {
+            foreach ($fields as $col) {
+                $item[$col['field_name']] = $col['val'];
             }
         }
 

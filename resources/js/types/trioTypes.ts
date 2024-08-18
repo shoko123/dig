@@ -3,11 +3,11 @@ type TrioSourceName = 'Item' | 'New' | 'Filter'
 type TAllGroups = {
   FD: {
     apiGroup: TApiGroupColumn
-    group: TGroupColumnTmp
+    group: TGroupFieldTmp
   }
   FS: {
     apiGroup: TApiGroupColumn
-    group: TGroupColumnTmp
+    group: TGroupFieldTmp
   }
   TM: {
     apiGroup: TApiGroupTag
@@ -23,7 +23,7 @@ type TAllGroups = {
   }
   OB: {
     apiGroup: TApiGroupBase
-    group: TGroupColumnTmp
+    group: TGroupFieldTmp
   }
 }
 
@@ -45,8 +45,8 @@ type TFieldValueSource =
 type TApiGroupColumn = TApiGroupBase & {
   text_source: TFieldValueSource
   table_name: string
-  column_name: string
-  column_type: 'boolean' | 'string' | 'number'
+  field_name: string
+  field_type: 'boolean' | 'string' | 'number'
   dependency: string[]
   allow_dependents: boolean
   show_in_item_tags: boolean
@@ -87,11 +87,11 @@ type TGroupTagTmp = TGroupBaseTmp & {
   group_id: number
 }
 
-type TGroupColumnTmp = TGroupBaseTmp & {
+type TGroupFieldTmp = TGroupBaseTmp & {
   text_source: TFieldValueSource
   table_name: string
-  column_name: string
-  column_type: 'boolean' | 'number' | 'string'
+  field_name: string
+  field_type: 'boolean' | 'number' | 'string'
   show_in_item_tags: boolean
   show_in_filters: boolean
   show_in_tagger: boolean
@@ -106,7 +106,7 @@ type AddTrioFields<T> = T & {
 
 type TGroupBase = AddTrioFields<TGroupBaseTmp>
 type TGroupTag = AddTrioFields<TGroupTagTmp>
-type TGroupColumn = AddTrioFields<TGroupColumnTmp>
+type TGroupField = AddTrioFields<TGroupFieldTmp>
 
 type AddCode<T, V> = T & { code: V }
 type AddGroupTypeCode<T, V> = T & { code: V }
@@ -145,6 +145,6 @@ export {
   TCategoriesArray,
   TGroupLabelToKey,
   TGroupBase,
-  TGroupColumn,
+  TGroupField,
   TGroupTag,
 }

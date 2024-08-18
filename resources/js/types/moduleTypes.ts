@@ -45,7 +45,7 @@ type TUrlModule = ModuleUnion['url_name']
 type TFieldsUnion = ModuleUnion['fields']
 type TFieldsByModule<ModuleName extends TModule> = TAllByName<ModuleName>['fields']
 type TDiscreteColumnUnion = ModuleUnion['FD']
-type TDiscreteColumnsByModule<ModuleName extends TModule> = TAllByName<ModuleName>['FD']
+type TDiscreteFieldsByModule<ModuleName extends TModule> = TAllByName<ModuleName>['FD']
 
 type TApiFieldsUnion = SwapDatesWithStrings<TFieldsUnion>
 type TApiPageMainTabularUnion = ModuleUnion['TabularViewFields'] & { slug: string }
@@ -94,5 +94,5 @@ export {
   TApiModuleInit,
   FuncSlugToId,
   FieldsAsBooleans,
-  TDiscreteColumnsByModule,
+  TDiscreteFieldsByModule,
 }
