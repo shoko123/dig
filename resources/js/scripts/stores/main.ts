@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type { TModuleToUrlName } from '@/js/types/moduleTypes'
+import type { TModuleToUrlName, TUrlModuleNameToModule } from '@/js/types/moduleTypes'
 import { useXhrStore } from './xhr'
 import { useAuthStore } from './auth'
 import { useMediaStore } from './media'
@@ -24,7 +24,8 @@ export const useMainStore = defineStore('main', () => {
 
   const initialized = ref(false)
   const appName = ref('')
-  const moduleNames = ref<TModuleToUrlName | null>(null) //ref<Partial<{ [key in TModule]: string }>>({})
+  const moduleToUrlModuleName = ref<Partial<TModuleToUrlName>>({})
+  const urlModuleNameToModule = ref<Partial<TUrlModuleNameToModule>>({})
 
   async function appInit() {
     const res = await send<sendApiAppInit>('app/init', 'get')
@@ -35,13 +36,23 @@ export const useMainStore = defineStore('main', () => {
       initialized.value = true
 
       appName.value = data.app_name
-      moduleNames.value = data.modules
-      //saveModuleUrlNames(data.modules)
+      moduleToUrlModuleName.value = data.modules
+      urlModuleNameToModule.value = inverse(data.modules)
     } else {
       console.log(`app/init failed status: ${res.status} message: ${res.message}`)
       throw 'app.init() failed'
     }
   }
 
-  return { initialized, appInit, appName, moduleNames }
+  function inverse<T extends TModuleToUrlName>(obj: Readonly<T>): TUrlModuleNameToModule {
+    const tmpMap = new Map()
+    let res: Partial<TUrlModuleNameToModule> = {}
+    Object.entries(obj).forEach(([key, value]) => {
+      tmpMap.set(value, key)
+    })
+    res = Object.fromEntries(tmpMap.entries())
+    return res as TUrlModuleNameToModule
+  }
+
+  return { initialized, appInit, appName, moduleToUrlModuleName, urlModuleNameToModule }
 })

@@ -9,34 +9,33 @@ import { useLocusStore } from '../modules/Locus'
 import { useCeramicStore } from '../modules/Ceramic'
 import { useStoneStore } from '../modules/Stone'
 import { useTrioStore } from '../trio/trio'
+import { useMainStore } from '../main'
 import { useFilterStore } from '../trio/filter'
 
-const moduleConversion: Record<TUrlModule, TModule> = {
-  loci: 'Locus',
-  ceramics: 'Ceramic',
-  stones: 'Stone',
-}
-
 export const useRoutesParserStore = defineStore('routesParser', () => {
-  function parseModule(module: string) {
-    //console.log(`parseModule() module: "${module}"`)
-    switch (module) {
+  const { urlModuleNameToModule } = storeToRefs(useMainStore())
+
+  function parseModule(
+    urlModule: string,
+  ):
+    | { success: true; module: TModule; url_module: TUrlModule }
+    | { success: false; data: null; message: string } {
+    switch (urlModule) {
       case 'loci':
       case 'ceramics':
       case 'stones':
         return {
           success: true,
-          module: moduleConversion[module],
-          url_module: module,
-          message: '',
+          module: <TModule>urlModuleNameToModule.value[urlModule],
+          url_module: urlModule,
         }
 
       default:
-        console.log(`******* URL Parser error: Unsupported module name "${module}" *********`)
+        console.log(`******* URL Parser error: Unsupported urlModule name "${urlModule}" *********`)
         return {
           success: false,
-          data: {},
-          message: `Error: unknown url module "${module}"`,
+          data: null,
+          message: `Error: unknown url module "${urlModule}"`,
         }
     }
   }

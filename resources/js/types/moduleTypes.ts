@@ -31,6 +31,10 @@ type ModuleToUrlName<T extends TAllModules> = {
   [Property in keyof T]: T[Property] extends TModuleInfo ? T[Property]['url_name'] : never
 }
 
+type UrlModuleToModule<T extends TModuleToUrlName> = {
+  [Key in keyof T as T[Key] extends string ? T[Key] : never]: Key
+}
+
 type ModuleUnion = AddModuleProperty<TAllModules>
 type TModule = keyof TAllModules
 
@@ -46,7 +50,7 @@ type TApiFieldsUnion = SwapDatesWithStrings<TFieldsUnion>
 type TApiPageMainTabularUnion = ModuleUnion['TabularViewFields'] & { slug: string }
 
 type TModuleToUrlName = ModuleToUrlName<TAllModules>
-
+type TUrlModuleNameToModule = UrlModuleToModule<TModuleToUrlName>
 type FieldsAsBooleans<T> = {
   [k in keyof T]: boolean
 }
@@ -77,6 +81,7 @@ export {
   TModule,
   TUrlModule,
   TModuleToUrlName,
+  TUrlModuleNameToModule,
   TFieldsUnion,
   TDiscreteColumnUnion,
   TApiFieldsUnion,

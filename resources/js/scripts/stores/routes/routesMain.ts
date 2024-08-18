@@ -9,13 +9,14 @@ import {
   type RouteLocationNormalized,
   type RouteLocationRaw,
 } from 'vue-router'
-import type { TModule } from '@/js/types/moduleTypes'
+import type { TModule, TUrlModule } from '@/js/types/moduleTypes'
 import type { TRouteInfo, TPageName, TPlanAction } from '@/js/types/routesTypes'
 
 import { useRoutesParserStore } from './routesParser'
 import { useRoutesPlanTransitionStore } from './routesPlanTransition'
 import { useRoutesPrepareStore } from './routesPrepare'
 import { useAuthStore } from '../auth'
+import { useMainStore } from '../main'
 import { useNotificationsStore } from '../notifications'
 import { useCollectionMainStore } from '../collections/collectionMain'
 import { useFilterStore } from '../trio/filter'
@@ -25,12 +26,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
   const { parseModule } = useRoutesParserStore()
   const { planTransition } = useRoutesPlanTransitionStore()
   const { showSnackbar, showSpinner } = useNotificationsStore()
-
-  const urlModuleNameFromModule: { [key in TModule]: string } = {
-    Locus: 'loci',
-    Ceramic: 'ceramics',
-    Stone: 'stones',
-  }
+  const { moduleToUrlModuleName } = storeToRefs(useMainStore())
 
   const current = ref<TRouteInfo>({
     url_module: undefined,
@@ -83,7 +79,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     //parse module
     //console.log(`A.current: ${JSON.stringify(current.value, null, 2)}\nto: ${JSON.stringify(to.value, null, 2)})`)
     if (Object.prototype.hasOwnProperty.call(handle_to.params, 'module')) {
-      const res = parseModule(<string>handle_to.params.module)
+      const res = parseModule(<TUrlModule>handle_to.params.module)
       if (res.success) {
         to.value.module = <TModule>res.module
         to.value.url_module = res.url_module
@@ -218,13 +214,13 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
       case 'filter':
       case 'create':
         urlModule =
-          module === 'current' ? current.value.url_module : urlModuleNameFromModule[module]
+          module === 'current' ? current.value.url_module : moduleToUrlModuleName.value[module]
         router.push({ name: routeName, params: { module: urlModule } })
         break
 
       case 'index':
         urlModule =
-          module === 'current' ? current.value.url_module : urlModuleNameFromModule[module]
+          module === 'current' ? current.value.url_module : moduleToUrlModuleName.value[module]
         query = keepQuery ? current.value.queryParams : ''
         router.push({
           name: 'index',
@@ -235,7 +231,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
 
       case 'show':
         urlModule =
-          module === 'current' ? current.value.url_module : urlModuleNameFromModule[module]
+          module === 'current' ? current.value.url_module : moduleToUrlModuleName.value[module]
         query = keepQuery ? current.value.queryParams : ''
         router.push({
           name: 'show',
