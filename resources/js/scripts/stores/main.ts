@@ -1,6 +1,11 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type { TModuleToUrlName, TUrlModuleNameToModule } from '@/js/types/moduleTypes'
+import type {
+  TModuleToUrlName,
+  TUrlModuleNameToModule,
+  TModuleBtnsInfo,
+  TModule,
+} from '@/js/types/moduleTypes'
 import { useXhrStore } from './xhr'
 import { useAuthStore } from './auth'
 import { useMediaStore } from './media'
@@ -54,5 +59,25 @@ export const useMainStore = defineStore('main', () => {
     return res as TUrlModuleNameToModule
   }
 
-  return { initialized, appInit, appName, moduleToUrlModuleName, urlModuleNameToModule }
+  const moduleBtnsInfo = computed<TModuleBtnsInfo[]>(() => {
+    const arr: TModuleBtnsInfo[] = []
+    Object.entries(moduleToUrlModuleName.value).forEach(([k, v]) => {
+      arr.push({
+        title: k,
+        url_module: v,
+        module: <TModule>k,
+      })
+    })
+
+    return arr
+  })
+
+  return {
+    initialized,
+    appInit,
+    appName,
+    moduleToUrlModuleName,
+    urlModuleNameToModule,
+    moduleBtnsInfo,
+  }
 })

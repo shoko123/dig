@@ -35,6 +35,7 @@ type UrlModuleToModule<T extends TModuleToUrlName> = {
   [Key in keyof T as T[Key] extends string ? T[Key] : never]: Key
 }
 
+type TModuleBtnsInfo = { title: string; module: TModule; url_module: TUrlModule }
 type ModuleUnion = AddModuleProperty<TAllModules>
 type TModule = keyof TAllModules
 
@@ -82,6 +83,7 @@ export {
   TUrlModule,
   TModuleToUrlName,
   TUrlModuleNameToModule,
+  TModuleBtnsInfo,
   TFieldsUnion,
   TDiscreteColumnUnion,
   TApiFieldsUnion,

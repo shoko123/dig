@@ -2,14 +2,18 @@
   <div class="hidden-sm-and-down">
     <v-btn icon="mdi-home-circle" :to="{ name: 'home' }" rounded="0" />
   </div>
+
   <v-divider inset vertical />
-  <div v-for="(item, index) in moduleBtns" :key='index' class="hidden-sm-and-down">
+
+  <div v-for="(item, index) in moduleBtnsInfo" :key='index' class="hidden-sm-and-down">
     <v-btn :disabled="disableLinks" :class="selectedModuleIndex === index ? 'bg-light-blue-darken-2' : ''"
       :to="{ name: 'welcome', params: { module: item.url_module } }">
       {{ item.title }}
     </v-btn>
   </div>
+
   <v-spacer />
+
   <LoginOrUser />
 </template>
 
@@ -17,24 +21,19 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '../../../../scripts/stores/auth'
+import { useMainStore } from '../../../../scripts/stores/main'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 import LoginOrUser from '../elements/LoginOrUser.vue'
 
 const { authenticated, accessibility } = storeToRefs(useAuthStore())
-
 const { current } = storeToRefs(useRoutesMainStore())
-
-const moduleBtns = [
-  { title: `Loci`, url_module: `loci`, module: `Locus` },
-  { title: `Stones`, url_module: `stones`, module: `Stone` },
-  { title: `Ceramics`, url_module: `ceramics`, module: `Ceramic` },
-]
+const { moduleBtnsInfo } = storeToRefs(useMainStore())
 
 const disableLinks = computed(() => {
   return accessibility.value.authenticatedUsersOnly && !authenticated.value
 })
 
 const selectedModuleIndex = computed(() => {
-  return moduleBtns.findIndex(x => current.value.module === x.module)
+  return moduleBtnsInfo.value.findIndex(x => current.value.module === x.module)
 })
 </script>
