@@ -70,6 +70,12 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'show_in_tagger' => true,
                 'params' => [['text' => 'Yes', 'extra' => true], ['text' => 'No', 'extra' => false]],
             ],
+            'Has Old Museum ID' => [
+                'code' => 'RD',
+                'data_type' => 'boolean',
+                'params' => [['text' => 'Yes', 'extra' => 'yes'], ['text' => 'No', 'extra' => 'no']],
+            ],
+
             'Basic Typology' => [
                 'code' => 'FD',
                 'text_source' => 'Lookup',
@@ -178,14 +184,16 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
     public static function categories(): array
     {
         return [
-            'Search' => [
-                'Search-ID',
-            ],
             'Registration' => [
+                'Has Old Museum ID',
                 'Year',
                 'Media',
                 'Cataloger',
                 'Whole',
+
+            ],
+            'Search' => [
+                'Search-ID',
             ],
             'Periods' => [
                 'Periods (Top-Level)',

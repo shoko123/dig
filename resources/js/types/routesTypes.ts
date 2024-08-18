@@ -62,7 +62,7 @@ type TApiFilters = {
   field_value: { field_name: string; vals: (string | number | boolean)[] }[]
   field_search: { field_name: string; vals: string[] }[]
   media: string[]
-  bespoke: { name: string; vals: string[] }[]
+  bespoke: { group_name: string; vals: string[] }[]
   order_by: { field_name: string; asc: boolean }[]
 }
 

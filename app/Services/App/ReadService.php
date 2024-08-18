@@ -66,6 +66,9 @@ abstract class ReadService extends DigModuleService implements ReadSpecificServi
         if (! empty($query['media'])) {
             $this->applyMediaFilter($query['media']);
         }
+        if (! empty($query['bespoke'])) {
+            $this->applyBespokeFilters($query['bespoke']);
+        }
     }
 
     public function applyModelTagFilters(array $tag_ids)

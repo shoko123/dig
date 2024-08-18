@@ -38,7 +38,9 @@ class IndexRequest extends ModuleRequest
             'query.media.*' => ['string'],
             //
             'query.bespoke' => ['array'],
-            'query.bespoke.*' => ['string'],
+            'query.bespoke.*.group_name' => ['required', $this->rule_bespoke_filter_group_name_is_valid()],
+            'query.bespoke.*.vals' => ['array'],
+            'query.bespoke.*.vals.*' => ['required', 'string'],
             //
             'query.order_by.*' => ['array'],
             'query.order_by.*.field_name' => [$this->rule_order_by_field_name_is_valid()],

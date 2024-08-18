@@ -2,9 +2,11 @@
 
 namespace App\Services\App\ModuleSpecific;
 
+use Illuminate\Database\Eloquent\Builder;
+
 interface ReadSpecificServiceInterface
 {
-    public function applyBespokeFilters(array $params): void;
+    public function applyBespokeFilters(array $filters): void;
 
     public function applyDefaultOrder(): void;
 

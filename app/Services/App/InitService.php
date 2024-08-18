@@ -87,8 +87,6 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
             default:
                 throw new GeneralJsonException('***MODEL INIT() ERROR*** getGroupDetails() invalid code: ' . $group['code'], 500);
         }
-
-        return [];
     }
 
     private function getFieldOneToOneGroupDetails($label, $group)
@@ -213,20 +211,15 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
 
     private function getRecordDependentGroupDetails($label, $group)
     {
-        $paramsFormatted = collect($group['params'])->map(function ($y, $key) {
-            return ['id' => $key, 'name' => $y];
-        });
-        $group['params'] = $paramsFormatted;
         $group['label'] = $label;
-
         return $group;
     }
 
+
     private function getOrderByDetails($label, $group)
     {
-        return array_merge($group, [
-            'label' => $label,
-        ]);
+        $group['label'] = $label;
+        return $group;
     }
 
     protected static $globalGroups = [

@@ -21,6 +21,10 @@ type TAllGroups = {
     apiGroup: TApiGroupBase
     group: TGroupBaseTmp
   }
+  RD: {
+    apiGroup: TApiGroupBase
+    group: TGroupBaseTmp
+  }
   OB: {
     apiGroup: TApiGroupBase
     group: TGroupFieldTmp

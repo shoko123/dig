@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Module\ModuleSpecific;
 
+use App\Services\App\ModuleSpecific\Stone\StoneInitService;
+
 class StoneValidationRules extends ValidationRules
 {
     public function table_name(): string
@@ -32,6 +34,11 @@ class StoneValidationRules extends ValidationRules
     public function allowed_tagger_field_names(): array
     {
         return ['base_type_id', 'material_id', 'cataloger_id', 'whole'];
+    }
+
+    public function allowed_bespoke_filter_names(): array
+    {
+        return ['Has Old Museum ID'];
     }
 
     public function create_rules(): array

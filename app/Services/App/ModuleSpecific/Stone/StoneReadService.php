@@ -15,7 +15,24 @@ class StoneReadService extends ReadService implements ReadSpecificServiceInterfa
     public function applyBespokeFilters(array $bespoke_filter): void
     {
         foreach ($bespoke_filter as $key => $item) {
-            // $this->builder->applyFilter();
+            switch ($item['group_name']) {
+                case 'Has Old Museum ID':
+                    $this->filterHasOldMuseumId($item['vals']);
+                default:
+                    return;
+            }
+        }
+    }
+
+    public function filterHasOldMuseumId(array $vals)
+    {
+        if (count($vals) !== 1) {
+            return;
+        }
+        if ($vals[0] === 'yes') {
+            $this->builder->whereNotNull('old_museum_id');
+        } else {
+            $this->builder->whereNull('old_museum_id');
         }
     }
 

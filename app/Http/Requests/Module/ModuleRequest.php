@@ -59,6 +59,11 @@ class ModuleRequest extends FormRequest
         return $this->rules->rule_tagger_field_name_is_valid();
     }
 
+    protected function rule_bespoke_filter_group_name_is_valid(): string
+    {
+        return $this->rules->rule_bespoke_filter_group_name_is_valid();
+    }
+
     protected function create_rules(): array
     {
         return $this->rules->create_rules();
