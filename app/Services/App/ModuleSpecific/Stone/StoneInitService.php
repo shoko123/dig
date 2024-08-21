@@ -33,22 +33,36 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
         return [
             'Year' => [
                 'code' => 'FD',
-                'text_source' => 'Manipulated',
+                'tag_source' => 'Value',
                 'table_name' => 'stones',
                 'field_name' => 'id_year',
                 'field_type' => 'integer',
                 'manipulator' => function ($val) {
                     return (string) ($val + 2000);
                 },
-                'dependency' => [],
                 'show_in_item_tags' => false,
                 'show_in_filters' => true,
                 'show_in_tagger' => false,
+            ],
+            'Whole' => [
+                'code' => 'FD',
+                'tag_source' => 'Value',
+                'table_name' => 'stones',
+                'field_name' => 'whole',
+                'field_type' => 'boolean',
+                'true_first' => true,
+                'manipulator' => function ($val) {
+                    return $val ? 'Yes' : 'No';
+                },
+                'dependency' => [],
                 'allow_dependents' => false,
+                'show_in_item_tags' => true,
+                'show_in_filters' => true,
+                'show_in_tagger' => true,
             ],
             'Material' => [
                 'code' => 'FD',
-                'text_source' => 'Lookup',
+                'tag_source' => 'Lookup',
                 'field_name' => 'material_id',
                 'lookup_table_name' => 'stone_materials',
                 'dependency' => [],
@@ -57,28 +71,23 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'show_in_filters' => true,
                 'show_in_tagger' => true,
             ],
-            'Whole' => [
-                'code' => 'FD',
-                'text_source' => 'Manipulated',
-                'table_name' => 'stones',
-                'field_name' => 'whole',
-                'field_type' => 'boolean',
-                'dependency' => [],
-                'allow_dependents' => false,
-                'show_in_item_tags' => true,
-                'show_in_filters' => true,
-                'show_in_tagger' => true,
-                'params' => [['text' => 'Yes', 'extra' => true], ['text' => 'No', 'extra' => false]],
-            ],
             'Has Old Museum ID' => [
-                'code' => 'RD',
-                'data_type' => 'boolean',
-                'params' => [['text' => 'Yes', 'extra' => 'yes'], ['text' => 'No', 'extra' => 'no']],
+                'code' => 'FD',
+                'tag_source' => 'Bespoke',
+                'table_name' => 'stones',
+                'field_name' => 'old_museum_id',
+                'field_type' => 'string',
+                'dependency' => [],
+                'allow_dependents' => true,
+                'show_in_item_tags' => false,
+                'show_in_filters' => true,
+                'show_in_tagger' => false,
+                'params' => ['Yes' => true, 'No' => false],
             ],
 
             'Basic Typology' => [
                 'code' => 'FD',
-                'text_source' => 'Lookup',
+                'tag_source' => 'Lookup',
                 'table_name' => 'stones',
                 'field_name' => 'base_type_id',
                 'lookup_table_name' => 'stone_base_types',
@@ -90,7 +99,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
             ],
             'Cataloger' => [
                 'code' => 'FD',
-                'text_source' => 'Lookup',
+                'tag_source' => 'Lookup',
                 'table_name' => 'stones',
                 'field_name' => 'cataloger_id',
                 'lookup_table_name' => 'stone_catalogers',
@@ -186,11 +195,10 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
         return [
             'Registration' => [
                 'Has Old Museum ID',
-                'Year',
+                'Whole',
+                // 'Year',
                 'Media',
                 'Cataloger',
-                'Whole',
-
             ],
             'Search' => [
                 'Search-ID',

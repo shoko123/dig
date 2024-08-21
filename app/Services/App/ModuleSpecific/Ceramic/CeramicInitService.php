@@ -33,10 +33,13 @@ class CeramicInitService extends InitService implements InitSpecificServiceInter
         return [
             'Year' => [
                 'code' => 'FD',
-                'text_source' => 'Field',
+                'tag_source' => 'Value',
                 'table_name' => 'ceramics',
                 'field_name' => 'id_year',
                 'field_type' => 'number',
+                'manipulator' => function ($val) {
+                    return (string) ($val + 2000);
+                },
                 'dependency' => [],
                 'show_in_item_tags' => true,
                 'show_in_filters' => true,
@@ -45,10 +48,13 @@ class CeramicInitService extends InitService implements InitSpecificServiceInter
             ],
             'Object Number' => [
                 'code' => 'FD',
-                'text_source' => 'Field',
+                'tag_source' => 'Value',
                 'table_name' => 'ceramics',
                 'field_name' => 'id_object_no',
                 'field_type' => 'number',
+                'manipulator' => function ($val) {
+                    return (string) ($val);
+                },
                 'dependency' => [],
                 'show_in_item_tags' => true,
                 'show_in_filters' => true,

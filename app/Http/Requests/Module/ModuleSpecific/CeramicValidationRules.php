@@ -29,10 +29,6 @@ class CeramicValidationRules extends ValidationRules
         return ['id_year', 'id_object_no'];
     }
 
-    public function allowed_bespoke_filter_names(): array
-    {
-        return [];
-    }
     public function allowed_tagger_field_names(): array
     {
         return [];

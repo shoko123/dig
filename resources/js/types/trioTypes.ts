@@ -21,10 +21,6 @@ type TAllGroups = {
     apiGroup: TApiGroupBase
     group: TGroupBaseTmp
   }
-  RD: {
-    apiGroup: TApiGroupBase
-    group: TGroupBaseTmp
-  }
   OB: {
     apiGroup: TApiGroupBase
     group: TGroupFieldTmp
@@ -42,12 +38,12 @@ type TApiGroupBase = {
 }
 
 type TFieldValueSource =
-  | 'Field' // exact table value
-  | 'Manipulated' // A one-to-one conversion of the field values
+  | 'Value' // exact table value with a text that is a one-to-one conversion of the field values
   | 'Lookup' // lookup table
+  | 'Bespoke' // reduce all possible value to a limit discrete group
 
 type TApiGroupColumn = TApiGroupBase & {
-  text_source: TFieldValueSource
+  tag_source: TFieldValueSource
   table_name: string
   field_name: string
   field_type: 'boolean' | 'string' | 'number'
@@ -92,7 +88,7 @@ type TGroupTagTmp = TGroupBaseTmp & {
 }
 
 type TGroupFieldTmp = TGroupBaseTmp & {
-  text_source: TFieldValueSource
+  tag_source: TFieldValueSource
   table_name: string
   field_name: string
   field_type: 'boolean' | 'number' | 'string'
@@ -151,4 +147,5 @@ export {
   TGroupBase,
   TGroupField,
   TGroupTag,
+  TFieldValueSource,
 }

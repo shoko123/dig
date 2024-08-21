@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Module\ModuleSpecific;
 
-use App\Services\App\ModuleSpecific\Stone\StoneInitService;
+use App\Models\DigModule\Specific\Stone\Stone;
 
 class StoneValidationRules extends ValidationRules
 {
@@ -18,7 +18,7 @@ class StoneValidationRules extends ValidationRules
 
     public function allowed_value_field_names(): array
     {
-        return ['base_type_id', 'material_id', 'cataloger_id', 'whole', 'id_year', 'id_object_no'];
+        return ['base_type_id', 'material_id', 'cataloger_id', 'whole', 'id_year', 'id_object_no', 'old_museum_id'];
     }
 
     public function allowed_search_field_names(): array
@@ -36,17 +36,15 @@ class StoneValidationRules extends ValidationRules
         return ['base_type_id', 'material_id', 'cataloger_id', 'whole'];
     }
 
-    public function allowed_bespoke_filter_names(): array
-    {
-        return ['Has Old Museum ID'];
-    }
-
     public function create_rules(): array
     {
+        $id_year_rule = 'required|numeric|in:' . implode(',', Stone::allowedValues('id_year'));
+        $id_access_no_rule = 'required|numeric|in:' . implode(',', Stone::allowedValues('id_access_no'));
+
         return [
             'fields.id' => 'max:250',
-            'fields.id_year' => 'required|numeric|between:9,30',
-            'fields.id_access_no' => 'required|numeric|between:1,5',
+            'fields.id_year' => $id_year_rule,
+            'fields.id_access_no' => $id_access_no_rule,
             'fields.id_object_no' => 'required|numeric|between:1,9999',
             'fields.square' => 'max:250',
             'fields.context' => 'max:250',

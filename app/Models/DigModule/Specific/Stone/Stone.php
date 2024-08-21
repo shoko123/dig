@@ -8,7 +8,13 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Stone extends DigModuleModel
 {
-    //protected $table = 'stones';
+    static protected function specificRestrictedFields(): array
+    {
+        return [
+            'id_year' => [9, 10, 11, 13, 20, 24],
+            'id_access_no' => [1, 2],
+        ];
+    }
 
     public function model_tags()
     {
@@ -45,14 +51,14 @@ class Stone extends DigModuleModel
     protected function derivedId(): Attribute
     {
         return Attribute::make(
-            get: fn (mixed $value, array $attributes) => 'B'.(string) $attributes['id_year'] + 2000 .'.'.$attributes['id_access_no'].'.'.$attributes['id_object_no']
+            get: fn(mixed $value, array $attributes) => 'B' . (string) $attributes['id_year'] + 2000 . '.' . $attributes['id_access_no'] . '.' . $attributes['id_object_no']
         );
     }
 
     protected function short(): Attribute
     {
         return Attribute::make(
-            get: fn (mixed $value, array $attributes) => $attributes['cataloger_description'] ?? '[No description]'
+            get: fn(mixed $value, array $attributes) => $attributes['cataloger_description'] ?? '[No description]'
         );
     }
 }

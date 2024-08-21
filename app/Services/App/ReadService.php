@@ -66,8 +66,17 @@ abstract class ReadService extends DigModuleService implements ReadSpecificServi
         if (! empty($query['media'])) {
             $this->applyMediaFilter($query['media']);
         }
-        if (! empty($query['bespoke'])) {
-            $this->applyBespokeFilters($query['bespoke']);
+    }
+
+    public function applyFieldValueFilters(array $cols)
+    {
+        // dump($cols);
+        foreach ($cols as $key => $col) {
+            if ($col['source'] === 'Bespoke') {
+                $this->applyBespokeFilter($col);
+            } else {
+                $this->builder->whereIn($col['field_name'], $col['vals']);
+            }
         }
     }
 
@@ -108,13 +117,6 @@ abstract class ReadService extends DigModuleService implements ReadSpecificServi
             $this->builder->whereHas('global_tags', function (Builder $q) use ($tag_ids_for_group) {
                 $q->whereIn('id', $tag_ids_for_group);
             });
-        }
-    }
-
-    public function applyFieldValueFilters(array $cols)
-    {
-        foreach ($cols as $key => $col) {
-            $this->builder->whereIn($col['field_name'], $col['vals']);
         }
     }
 

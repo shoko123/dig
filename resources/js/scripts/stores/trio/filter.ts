@@ -48,7 +48,6 @@ export const useFilterStore = defineStore('filter', () => {
       field_value: [],
       field_search: [],
       media: [],
-      bespoke: [],
       order_by: [],
     }
 
@@ -72,7 +71,8 @@ export const useFilterStore = defineStore('filter', () => {
               //if new group, push the param's group into the groups array with itself as the first param
               all.field_value.push({
                 field_name: (<TGroupField>group).field_name,
-                vals: [param.extra], //(<TGroupField>group).text_source ===
+                vals: [param.extra],
+                source: (<TGroupField>group).tag_source,
               })
             } else {
               //if the group is already selected, add param's text to the group's params array
@@ -110,26 +110,6 @@ export const useFilterStore = defineStore('filter', () => {
 
         case 'MD':
           all.media.push(param.text)
-          break
-
-        case 'RD':
-          {
-            const i = all.bespoke.findIndex((x) => {
-              return x.group_name === group.label
-            })
-
-            if (i === -1) {
-              //if new group, push the param's group into the groups array with itself as the first param
-              all.bespoke.push({
-                group_name: group.label,
-                vals: [<string>param.extra], //(<TGroupField>group).text_source ===
-              })
-            } else {
-              //if the group is already selected, add param's text to the group's params array
-              //all.field_value[i].vals.push(param.text)
-              all.bespoke[i].vals.push(<string>param.extra)
-            }
-          }
           break
 
         case 'OB':

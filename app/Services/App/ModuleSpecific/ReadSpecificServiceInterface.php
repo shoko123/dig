@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 interface ReadSpecificServiceInterface
 {
-    public function applyBespokeFilters(array $filters): void;
+    public function applyBespokeFilter(array $filters): void;
 
     public function applyDefaultOrder(): void;
 

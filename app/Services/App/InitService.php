@@ -7,6 +7,7 @@ use App\Models\Tag\TagGroup;
 use App\Services\App\ModuleSpecific\InitSpecificServiceInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 abstract class InitService extends DigModuleService implements InitSpecificServiceInterface
@@ -67,7 +68,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
                 return $this->getModelTagsGroupDetails($label, $group);
 
             case 'FD': //field values (and its "dependencies")
-                return $this->getFieldOneToOneGroupDetails($label, $group);
+                return $this->getFieldDependenciesGroupDetails($label, $group);
 
             case 'FS': //field search
                 return $this->getTextualSearchGroupDetails($label, $group);
@@ -81,59 +82,47 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
                     'params' => [],
                 ]);
 
-            case 'RD': //dependency group (bespoke filter)
-                return $this->getRecordDependentGroupDetails($label, $group);
-
             default:
                 throw new GeneralJsonException('***MODEL INIT() ERROR*** getGroupDetails() invalid code: ' . $group['code'], 500);
         }
     }
 
-    private function getFieldOneToOneGroupDetails($label, $group)
+    private function getFieldDependenciesGroupDetails($label, $group)
     {
-        switch ($group['text_source']) {
-            case 'Field':
-                return $this->getFDFieldDetails($label, $group);
-
-            case 'Manipulated':
-                return $this->getFDManipulatedDetails($label, $group);
+        switch ($group['tag_source']) {
+            case 'Value':
+                return $this->getFDValueDetails($label, $group);
 
             case 'Lookup':
                 return $this->getFDLookupDetails($label, $group);
 
+            case 'Bespoke':
+                return $this->getFDBespokeDetails($label, $group);
+
             default:
-                throw new GeneralJsonException('***MODEL INIT() ERROR*** invalid text_source: ' . $group['text_source'], 500);
+                throw new GeneralJsonException('***MODEL INIT() ERROR*** invalid tag_source: ' . $group['tag_source'], 500);
         }
     }
 
-    private function getFDFieldDetails($label, $group)
+    private function getFDValueDetails($label, $group)
     {
-        $field_name = $group['field_name'];
-        $params = DB::table($group['table_name'])->select($field_name)->distinct()->orderBy($field_name)->get();
+        $collection = collect([]);
+        if ($group['field_type'] === 'boolean') {
+            $collection = collect($group['true_first'] ? [true, false] : [false, true]);
+        } else {
+            $collection = collect($this->model::allowedValues($group['field_name']));
+        }
 
-        return array_merge($group, [
-            'label' => $label,
-            'field_type' => 'integer',
-            'params' => $params->map(function ($y, $key) use ($field_name) {
-                return ['text' => $y->$field_name, 'extra' => $y->$field_name];
-            }),
-        ]);
-    }
+        $params = $collection->map(function ($y, $key) use ($group) {
+            return ['text' => $group['manipulator']($y), 'extra' => $y];
+        });
 
-    private function getFDManipulatedDetails($label, $group)
-    {
-        $field_name = $group['field_name'];
-        $res = DB::table($group['table_name'])->select($field_name)->distinct()->orderBy($field_name)->get();
-
-        $params = $group['field_type'] === 'boolean' ? $group['params'] :
-            $res->map(function ($y, $key) use ($group, $field_name) {
-                return ['text' => $group['manipulator']($y->$field_name), 'extra' => $y->$field_name];
-            });
         unset($group['manipulator']);
 
         return array_merge($group, [
+            'collection' => $collection,
             'label' => $label,
-            'params' => $params,
+            'params' => $params->toArray()
         ]);
     }
 
@@ -147,6 +136,14 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
                 return ['text' => $y->name, 'extra' => $y->id];
             }),
         ]);
+    }
+    private function getFDBespokeDetails($label, $group)
+    {
+        $group['label'] = $label;
+        $group['params'] = collect($group['params'])->map(function ($y, $key) {
+            return ['text' => $key, 'extra' => $y];
+        })->values()->toArray();
+        return $group;
     }
 
     private function getModelTagsGroupDetails($label, $group)
@@ -209,11 +206,11 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
         ];
     }
 
-    private function getRecordDependentGroupDetails($label, $group)
-    {
-        $group['label'] = $label;
-        return $group;
-    }
+    // private function getRecordDependentGroupDetails($label, $group)
+    // {
+    //     $group['label'] = $label;
+    //     return $group;
+    // }
 
 
     private function getOrderByDetails($label, $group)

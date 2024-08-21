@@ -1,7 +1,7 @@
 // routesStore.js
 import type { TCollectionView } from '@/js/types/collectionTypes'
 import type { TModule, TUrlModule } from '@/js/types/moduleTypes'
-
+import type { TFieldValueSource } from '@/js/types/trioTypes'
 type TRoutes =
   | { name: 'home' }
   | { name: 'welcome'; params: { module: TUrlModule } }
@@ -59,10 +59,13 @@ type TSelectedFilterFromQuery = {
 type TApiFilters = {
   model_tag_ids: number[]
   global_tag_ids: number[]
-  field_value: { field_name: string; vals: (string | number | boolean)[] }[]
+  field_value: {
+    field_name: string
+    source: TFieldValueSource
+    vals: (string | number | boolean)[]
+  }[]
   field_search: { field_name: string; vals: string[] }[]
   media: string[]
-  bespoke: { group_name: string; vals: string[] }[]
   order_by: { field_name: string; asc: boolean }[]
 }
 

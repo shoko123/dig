@@ -32,12 +32,15 @@ class LocusInitService extends InitService implements InitSpecificServiceInterfa
     public static function modelGroups(): array
     {
         return [
-            'Basic Typology' => [
+            'Category' => [
                 'code' => 'FD',
-                'text_source' => 'Field',
+                'tag_source' => 'Value',
                 'table_name' => 'loci',
                 'field_name' => 'category',
                 'field_type' => 'string',
+                'manipulator' => function ($val) {
+                    return $val;
+                },
                 'dependency' => [],
                 'show_in_item_tags' => true,
                 'show_in_filters' => true,
@@ -73,10 +76,7 @@ class LocusInitService extends InitService implements InitSpecificServiceInterfa
             ],
             'Registration' => [
                 'Media',
-            ],
-
-            'Basic Characteristics' => [
-                'Basic Typology',
+                'Category'
             ],
             'Order By' => [
                 'Order By',

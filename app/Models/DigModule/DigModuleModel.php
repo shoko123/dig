@@ -25,6 +25,18 @@ abstract class DigModuleModel extends Model implements HasMedia
 
     abstract protected function derivedId(): Attribute;
 
+    abstract static protected function specificRestrictedFields(): array;
+
+    static public function restrictedFields(): array
+    {
+        return array_keys(static::specificRestrictedFields());
+    }
+
+    static public function allowedValues(string $field_name): array
+    {
+        return static::specificRestrictedFields()[$field_name];
+    }
+
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('tn')

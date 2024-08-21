@@ -20,8 +20,6 @@ abstract class ValidationRules
 
     abstract public function allowed_tagger_field_names(): array;
 
-    abstract  public function allowed_bespoke_filter_names(): array;
-
     public function rule_id_exists_in_module_table(): string
     {
         return 'exists:' . $this->table_name() . ',id';
@@ -50,10 +48,5 @@ abstract class ValidationRules
     public function rule_tagger_field_name_is_valid(): string
     {
         return 'in:' . implode(',', $this->allowed_tagger_field_names());
-    }
-
-    public function rule_bespoke_filter_group_name_is_valid(): string
-    {
-        return 'in:' . implode(',', $this->allowed_bespoke_filter_names());
     }
 }

@@ -26,6 +26,7 @@ class IndexRequest extends ModuleRequest
             //TODO validate that vals exist in the other tables' values (awkward)
             'query.field_value' => ['array'],
             'query.field_value.*.field_name' => ['required', $this->rule_value_field_name_is_valid()],
+            'query.field_value.*.source' => 'in:Value,Lookup,Bespoke',
             'query.field_value.*.vals' => ['array'],
             'query.field_value.*.vals.*' => ['required', new RuleStringIntOrBool()],
             //
@@ -36,11 +37,6 @@ class IndexRequest extends ModuleRequest
             //
             'query.media' => ['array'],
             'query.media.*' => ['string'],
-            //
-            'query.bespoke' => ['array'],
-            'query.bespoke.*.group_name' => ['required', $this->rule_bespoke_filter_group_name_is_valid()],
-            'query.bespoke.*.vals' => ['array'],
-            'query.bespoke.*.vals.*' => ['required', 'string'],
             //
             'query.order_by.*' => ['array'],
             'query.order_by.*.field_name' => [$this->rule_order_by_field_name_is_valid()],

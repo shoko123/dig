@@ -68,10 +68,6 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
             handleTag(grp as TApiGroupByCode<'TG'>)
             break
 
-          case 'RD':
-            handleRD(grp as TApiGroupByCode<'RD'>)
-            break
-
           case 'MD':
             handleMD(grp as TApiGroupByCode<'MD'>)
             break
@@ -137,7 +133,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
       label: grp.label,
       code: grp.code,
       field_name: grp.field_name,
-      text_source: grp.text_source,
+      tag_source: grp.tag_source,
       table_name: grp.table_name,
       field_type: grp.field_type,
       dependency: grp.dependency,
@@ -182,16 +178,6 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     }
   }
 
-  function handleRD(grp: TApiGroupByCode<'RD'>) {
-    tmpParams = grp.params.map((x) => {
-      return { text: x.text, extra: x.extra }
-    })
-
-    tmpGroup = {
-      label: grp.label,
-      code: grp.code,
-    }
-  }
   function handleOB(grp: TApiGroupByCode<'OB'>) {
     orderByOptions = grp.params
 

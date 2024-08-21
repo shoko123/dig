@@ -34,11 +34,6 @@ class LocusValidationRules extends ValidationRules
         return [];
     }
 
-    public function allowed_bespoke_filter_names(): array
-    {
-        return [];
-    }
-
     public function create_rules(): array
     {
         return [

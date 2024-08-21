@@ -12,15 +12,14 @@ class StoneReadService extends ReadService implements ReadSpecificServiceInterfa
         parent::__construct('Stone');
     }
 
-    public function applyBespokeFilters(array $bespoke_filter): void
+    public function applyBespokeFilter(array $bespoke_filter): void
     {
-        foreach ($bespoke_filter as $key => $item) {
-            switch ($item['group_name']) {
-                case 'Has Old Museum ID':
-                    $this->filterHasOldMuseumId($item['vals']);
-                default:
-                    return;
-            }
+
+        switch ($bespoke_filter['field_name']) {
+            case 'old_museum_id':
+                $this->filterHasOldMuseumId($bespoke_filter['vals']);
+            default:
+                return;
         }
     }
 
@@ -29,7 +28,7 @@ class StoneReadService extends ReadService implements ReadSpecificServiceInterfa
         if (count($vals) !== 1) {
             return;
         }
-        if ($vals[0] === 'yes') {
+        if ($vals[0]) {
             $this->builder->whereNotNull('old_museum_id');
         } else {
             $this->builder->whereNull('old_museum_id');
