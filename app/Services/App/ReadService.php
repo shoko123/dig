@@ -72,8 +72,8 @@ abstract class ReadService extends DigModuleService implements ReadSpecificServi
     {
         // dump($cols);
         foreach ($cols as $key => $col) {
-            if ($col['source'] === 'Bespoke') {
-                $this->applyBespokeFilter($col);
+            if ($col['source'] === 'Categorized') {
+                $this->applyCategorizedFilter($col);
             } else {
                 $this->builder->whereIn($col['field_name'], $col['vals']);
             }

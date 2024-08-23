@@ -8,6 +8,7 @@ type TModuleInfo = {
   url_name: string
   fields: object
   FD: object
+  categorizedFields: object
   TabularViewFields: object
 }
 
@@ -28,7 +29,7 @@ type AddModuleProperty<T extends TAllModules> = {
 }[keyof T]
 
 type ModuleToUrlName<T extends TAllModules> = {
-  [Property in keyof T]: T[Property] extends TModuleInfo ? T[Property]['url_name'] : never
+  [Key in keyof T]: T[Key] extends TModuleInfo ? T[Key]['url_name'] : never
 }
 
 type UrlModuleToModule<T extends TModuleToUrlName> = {
@@ -43,6 +44,8 @@ type TAllByName<TModuleName extends TModule> = TAllModules[TModuleName]
 
 type TUrlModule = ModuleUnion['url_name']
 type TFieldsUnion = ModuleUnion['fields']
+type TCategorizedFields = ModuleUnion['categorizedFields']
+
 type TFieldsByModule<ModuleName extends TModule> = TAllByName<ModuleName>['fields']
 type TDiscreteColumnUnion = ModuleUnion['FD']
 type TDiscreteFieldsByModule<ModuleName extends TModule> = TAllByName<ModuleName>['FD']
@@ -52,9 +55,34 @@ type TApiPageMainTabularUnion = ModuleUnion['TabularViewFields'] & { slug: strin
 
 type TModuleToUrlName = ModuleToUrlName<TAllModules>
 type TUrlModuleNameToModule = UrlModuleToModule<TModuleToUrlName>
+
 type FieldsAsBooleans<T> = {
   [k in keyof T]: boolean
 }
+
+type TCategorizedFieldsByModule<M extends TModule> = TAllByName<M>['categorizedFields']
+
+// type TCategorizerByFieldName<M extends TModule> = {
+//   [Key in keyof TCategorizedFieldsByModule<M> as TCategorizedFieldsByModule<M>[Key] extends string
+//     ? TCategorizedFieldsByModule<M>[Key]
+//     : never]: (val:string) => number
+// }
+
+////////work RO
+type TCategorizerByFieldName<M extends TModule> = {
+  [Key in keyof TCategorizedFieldsByModule<M> as TCategorizedFieldsByModule<M>[Key] extends string
+    ? TCategorizedFieldsByModule<M>[Key]
+    : never]: (val: TCategorizedFieldsByModule<M>[Key]) => number
+}
+
+type CategorizerByModuleAndFieldName<
+  M extends TModule,
+  F extends keyof TCategorizedFieldsByModule<M>,
+> = {
+  [K in keyof F]: F[K] extends (val: F[K]) => number ? F[K] : never
+}
+
+type TAllTCategorizerByFieldName = TCategorizerByFieldName<TModule>
 
 type TTabularByModule<ModuleName extends TModule> = TAllByName<ModuleName>['TabularViewFields']
 type TApiTabularByModule<ModuleName extends TModule> = AddTagAndSlugProperties<
@@ -95,4 +123,11 @@ export {
   FuncSlugToId,
   FieldsAsBooleans,
   TDiscreteFieldsByModule,
+  ////
+  TCategorizerByFieldName,
+  TAllTCategorizerByFieldName,
+  TCategorizedFieldsByModule,
+  TCategorizedFields,
+  ////
+  CategorizerByModuleAndFieldName,
 }

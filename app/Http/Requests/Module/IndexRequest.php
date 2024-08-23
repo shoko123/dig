@@ -26,7 +26,7 @@ class IndexRequest extends ModuleRequest
             //TODO validate that vals exist in the other tables' values (awkward)
             'query.field_value' => ['array'],
             'query.field_value.*.field_name' => ['required', $this->rule_value_field_name_is_valid()],
-            'query.field_value.*.source' => 'in:Value,Lookup,Bespoke',
+            'query.field_value.*.source' => 'in:Value,Lookup,Categorized',
             'query.field_value.*.vals' => ['array'],
             'query.field_value.*.vals.*' => ['required', new RuleStringIntOrBool()],
             //

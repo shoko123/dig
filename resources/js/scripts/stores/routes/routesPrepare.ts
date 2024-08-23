@@ -184,7 +184,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       i.itemViews = res.data.display_options.item_views
       c.clear(['main', 'media', 'related'])
 
-      setTrio(res.data.trio)
+      setTrio(res.data.trio, module)
 
       c.setCollectionViews('main', res.data.display_options.main_collection_views)
       c.setCollectionViews('related', res.data.display_options.related_collection_views)

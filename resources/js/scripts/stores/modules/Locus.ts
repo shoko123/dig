@@ -1,6 +1,12 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { TFieldsByModule, TFieldsUnion, FuncSlugToId } from '@/js/types/moduleTypes'
+import {
+  TFieldsByModule,
+  TFieldsUnion,
+  FuncSlugToId,
+  TCategorizerByFieldName,
+  TCategorizedFields,
+} from '@/js/types/moduleTypes'
 import { useItemStore } from '../../../scripts/stores/item'
 import { useItemNewStore } from '../../../scripts/stores/itemNew'
 
@@ -8,6 +14,12 @@ export const useLocusStore = defineStore('locus', () => {
   const newFields = ref<Partial<TFieldsByModule<'Locus'>>>({})
   const { fields } = storeToRefs(useItemStore())
   const { openIdSelectorModal } = storeToRefs(useItemNewStore())
+
+  const categorizer: TCategorizerByFieldName<'Locus'> = {}
+
+  function categorizerByFieldName<key extends keyof TCategorizedFields>(field: key) {
+    return categorizer[field]
+  }
 
   const slugToId: FuncSlugToId = function (slug: string) {
     const arr = slug.split('.')
@@ -29,6 +41,11 @@ export const useLocusStore = defineStore('locus', () => {
     //console.log(`Stone.tagAndSlugFromId()`)
     return { tag: id, slug: id }
   }
+
+  // function bespokeFiltersByModule() {
+  //   const bespoke: TCategorizerByFieldName<'Locus'> = {}
+  //   return bespoke
+  // }
 
   const currentIds = ref<string[]>([])
 
@@ -70,6 +87,8 @@ export const useLocusStore = defineStore('locus', () => {
     beforeStore,
     slugToId,
     tagAndSlugFromId,
+    // bespokeFiltersByModule,
     headers,
+    categorizerByFieldName,
   }
 })

@@ -1,6 +1,6 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { useMediaStore } from '../media'
-
+import type { TModule } from '@/js/types/moduleTypes'
 import type {
   TApiTrio,
   TApiParam,
@@ -14,9 +14,11 @@ import type {
   TGroupField,
   TParamTmp,
 } from '@/js/types/trioTypes'
+import { useModuleStore } from '../module'
 
 export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   const { mediaCollectionNames } = storeToRefs(useMediaStore())
+  const { categorizerByFieldName } = useModuleStore()
 
   let categories: TCategoriesArray = []
   let groupsObj: TGroupObj = {}
@@ -29,6 +31,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   let prmCnt = 0
   let tmpGroup: TGroupTmpUnion | null = null
   let tmpParams: TParamTmp[] = []
+  let tmpModule: TModule | null = null
 
   function reset() {
     categories = []
@@ -43,9 +46,9 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     tmpParams = []
   }
 
-  function normalizetrio(apiTrio: TApiTrio) {
+  function normalizetrio(apiTrio: TApiTrio, module: TModule) {
     reset()
-
+    tmpModule = module
     apiTrio.forEach((cat) => {
       categories.push({ name: cat.name, groupKeys: [] })
       cat.groups.forEach((grp) => {
@@ -141,6 +144,9 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
       show_in_filters: grp.show_in_filters,
       show_in_tagger: grp.show_in_tagger,
       allow_dependents: grp.allow_dependents,
+    }
+    if (grp.tag_source === 'Categorized') {
+      tmpGroup.categorizer = categorizerByFieldName(tmpModule!, grp.field_name)
     }
   }
 

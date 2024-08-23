@@ -14,6 +14,7 @@ type TLocus<T extends TModuleInfo> = {
     updated_date: string
   }
   FD: Pick<TLocus<T>['fields'], 'category'>
+  categorizedFields: Pick<TLocus<T>['FD'], never>
   TabularViewFields: TLocus<T>['fields']
 }
 

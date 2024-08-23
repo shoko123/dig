@@ -96,8 +96,8 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
             case 'Lookup':
                 return $this->getFDLookupDetails($label, $group);
 
-            case 'Bespoke':
-                return $this->getFDBespokeDetails($label, $group);
+            case 'Categorized':
+                return $this->getFDCategorizedDetails($label, $group);
 
             default:
                 throw new GeneralJsonException('***MODEL INIT() ERROR*** invalid tag_source: ' . $group['tag_source'], 500);
@@ -137,7 +137,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
             }),
         ]);
     }
-    private function getFDBespokeDetails($label, $group)
+    private function getFDCategorizedDetails($label, $group)
     {
         $group['label'] = $label;
         $group['params'] = collect($group['params'])->map(function ($y, $key) {

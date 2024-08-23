@@ -53,7 +53,7 @@ import { dateStringFromDate } from '../../../scripts/utils/utils'
 
 
 
-let { fields, tag, discreteFields } = storeToRefs(useItemStore())
+let { fields, tag, dfs } = storeToRefs(useItemStore())
 
 const item = computed(() => {
   return <TFieldsByModule<'Stone'>>fields.value
@@ -72,7 +72,7 @@ const catalog_date = computed(() => {
 })
 
 const cvColumnsTyped = computed(() => {
-  return discreteFields.value as TDiscreteFieldsByModule<'Stone'>
+  return dfs.value as TDiscreteFieldsByModule<'Stone'>
 })
 
 const cataloger = computed(() => {

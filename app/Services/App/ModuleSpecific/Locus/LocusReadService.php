@@ -12,7 +12,7 @@ class LocusReadService extends ReadService implements ReadSpecificServiceInterfa
         parent::__construct('Locus');
     }
 
-    public function applyBespokeFilter(array $bespoke_filter): void
+    public function applyCategorizedFilter(array $bespoke_filter): void
     {
         foreach ($bespoke_filter as $key => $item) {
             // $this->builder->applyFilter();

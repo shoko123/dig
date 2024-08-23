@@ -10,6 +10,7 @@ import type {
   TGroupBase,
   TGroupField,
 } from '../../../types/trioTypes'
+import type { TModule, TFieldsUnion } from '@/js/types/moduleTypes'
 
 import { useTrioNormalizerStore } from './trioNormalizer'
 import { useRoutesMainStore } from '../routes/routesMain'
@@ -27,6 +28,62 @@ export const useTrioStore = defineStore('trio', () => {
   //current index of visible categories/groups
   const categoryIndex = ref<number>(0)
   const groupIndex = ref<number>(0)
+
+  function fieldsRelatedTags(fields: TFieldsUnion) {
+    const paramKeys: string[] = []
+    const all: {
+      fieldName: string
+      fieldValue: string | number | boolean
+      paramKey: string
+      paramLabel: string
+      paramExtra: string | number | boolean
+    }[] = []
+    let paramKey: string | undefined
+    let val: string | number | boolean = 0
+
+    Object.entries(discreteFieldNameToGroupKey.value).forEach(([key, value]) => {
+      const group = <TGroupField>trio.value.groupsObj[value]
+      if (group.tag_source === 'Categorized') {
+        console.log(`fieldsRelatedTags.CategorizedField group: ${JSON.stringify(group, null, 2)}`)
+
+        const fieldValue = fields[group.field_name as keyof TFieldsUnion]
+        console.log(`Item : ${JSON.stringify(fields, null, 2)}`)
+        console.log(`Item['${group.field_name}'] : ${fieldValue}`)
+        const index = group.categorizer!(fieldValue)
+        console.log(
+          `categorizer(${group.field_name}) (${fieldValue}) => (${index}): ${trio.value.paramsObj[group.paramKeys[index]].text}`,
+        )
+
+        paramKey = group.paramKeys[index]
+      } else {
+        val = fields[key as keyof TFieldsUnion]
+
+        // console.log(
+        //   `group: ${JSON.stringify(group, null, 2)} fields: ${JSON.stringify(fields, null, 2)} val: ${val}`,
+        // )
+        paramKey = group.paramKeys.find(
+          // ** weak comparison because param.extra is either string, number or boolean
+          (y) => trio.value.paramsObj[y].extra == val,
+        )
+        if (paramKey === undefined) {
+          throw new Error(
+            `fieldsRelatedTags() - Can't find value ${val} in group ${group.label} field ${key}`,
+          )
+        }
+      }
+      all.push({
+        fieldName: group.field_name,
+        fieldValue: fields[group.field_name as keyof TFieldsUnion],
+        paramKey: paramKey,
+        paramLabel: trio.value.paramsObj[paramKey].text,
+        paramExtra: trio.value.paramsObj[paramKey].extra,
+      })
+      paramKeys.push(paramKey)
+    })
+
+    console.log(`fieldsRelatedTags() params: ${JSON.stringify(all, null, 2)}`)
+    return all
+  }
 
   //A category is visible if at least one of its groups is available
   const visibleCategories = computed(() => {
@@ -342,11 +399,11 @@ export const useTrioStore = defineStore('trio', () => {
     orderByOptions.value = []
   }
 
-  function setTrio(apiTrio: TApiTrio) {
+  function setTrio(apiTrio: TApiTrio, module: TModule) {
     trioReset()
 
     //const res = normalizeTrio(apiTrio)
-    const res = normalizetrio(apiTrio)
+    const res = normalizetrio(apiTrio, module)
     trio.value = res.trio
     groupLabelToKey.value = res.groupLabelToKey
     orderByOptions.value = res.orderByOptions
@@ -460,5 +517,6 @@ export const useTrioStore = defineStore('trio', () => {
     visibleParams,
     paramClicked,
     resetCategoryAndGroupIndices,
+    fieldsRelatedTags,
   }
 })

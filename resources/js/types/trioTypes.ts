@@ -40,7 +40,7 @@ type TApiGroupBase = {
 type TFieldValueSource =
   | 'Value' // exact table value with a text that is a one-to-one conversion of the field values
   | 'Lookup' // lookup table
-  | 'Bespoke' // reduce all possible value to a limit discrete group
+  | 'Categorized' // categorize all possible value to a list oflimited choices
 
 type TApiGroupColumn = TApiGroupBase & {
   tag_source: TFieldValueSource
@@ -97,6 +97,7 @@ type TGroupFieldTmp = TGroupBaseTmp & {
   show_in_tagger: boolean
   allow_dependents: boolean
   dependency: string[]
+  categorizer?: (val: boolean | number | string) => number
 }
 
 type AddTrioFields<T> = T & {

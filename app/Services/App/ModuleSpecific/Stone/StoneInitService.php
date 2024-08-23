@@ -73,7 +73,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
             ],
             'Has Old Museum ID' => [
                 'code' => 'FD',
-                'tag_source' => 'Bespoke',
+                'tag_source' => 'Categorized',
                 'table_name' => 'stones',
                 'field_name' => 'old_museum_id',
                 'field_type' => 'string',

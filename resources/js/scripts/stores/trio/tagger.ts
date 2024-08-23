@@ -19,6 +19,7 @@ export const useTaggerStore = defineStore('tagger', () => {
       const code = trio.value.groupsObj[trio.value.paramsObj[x].groupKey].code
       return code === 'TG' || code === 'TM'
     })
+
     const tmpMap = new Map()
     Object.entries(discreteFieldNameToGroupKey.value).forEach(([key, value]) => {
       const group = trio.value.groupsObj[value]

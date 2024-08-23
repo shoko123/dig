@@ -1,7 +1,14 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { maxLength } from '@vuelidate/validators'
-import { TFieldsByModule, TFieldsUnion, FuncSlugToId } from '@/js/types/moduleTypes'
+import {
+  // TModule,
+  TFieldsByModule,
+  TFieldsUnion,
+  FuncSlugToId,
+  TCategorizerByFieldName,
+  TCategorizedFields,
+} from '@/js/types/moduleTypes'
 import { useItemStore } from '../../../scripts/stores/item'
 import { useItemNewStore } from '../../../scripts/stores/itemNew'
 
@@ -9,6 +16,26 @@ export const useStoneStore = defineStore('stone', () => {
   const { fields } = storeToRefs(useItemStore())
   const { openIdSelectorModal, isCreate, isUpdate } = storeToRefs(useItemNewStore())
   const newFields = ref<Partial<TFieldsByModule<'Stone'>>>({})
+
+  const categorizer: TCategorizerByFieldName<'Stone'> = {
+    old_museum_id: (val) => {
+      console.log(`old_museum_idCategorizer(${val})`)
+      return val === null || (typeof val === 'string' && val.length === 0) ? 1 : 0
+    },
+  }
+
+  function categorizerByFieldName<key extends keyof TCategorizedFields>(field: key) {
+    return categorizer[field]
+  }
+
+  // function bespokeFiltersByModule() {
+  //   const bespoke: TCategorizerByFieldName<'Stone'> = {
+  //     old_museum_id: (val) => {
+  //       return val === null ? 0 : 1
+  //     },
+  //   }
+  //   return bespoke
+  // }
 
   const rules = computed(() => {
     return inOC.value
@@ -182,7 +209,9 @@ export const useStoneStore = defineStore('stone', () => {
     beforeStore,
     slugToId,
     tagAndSlugFromId,
+    // bespokeFiltersByModule,
     headers,
     currentIds,
+    categorizerByFieldName,
   }
 })

@@ -1,7 +1,7 @@
 // stores/module.ts
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
-import type { TModule } from '../../types/moduleTypes'
+import type { TModule, TCategorizedFields } from '../../types/moduleTypes'
 import { useMediaStore } from './media'
 import { useRoutesMainStore } from './routes/routesMain'
 import { useLocusStore } from './modules/Locus'
@@ -41,6 +41,11 @@ export const useModuleStore = defineStore('module', () => {
     return store.tagAndSlugFromId(id)
   }
 
+  function categorizerByFieldName(module: TModule, field: string) {
+    const store = getStore(module)
+    return store.categorizerByFieldName(field as keyof TCategorizedFields)
+  }
+
   function setModuleInfo(initData: {
     counts: { items: number; media: number }
     welcomeText: string
@@ -77,5 +82,6 @@ export const useModuleStore = defineStore('module', () => {
     getStore,
     tagAndSlugFromId,
     setModuleInfo,
+    categorizerByFieldName,
   }
 })

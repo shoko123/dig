@@ -12,7 +12,7 @@ class CeramicReadService extends ReadService implements ReadSpecificServiceInter
         parent::__construct('Ceramic');
     }
 
-    public function applyBespokeFilter(array $bespoke_filters): void
+    public function applyCategorizedFilter(array $bespoke_filters): void
     {
         foreach ($bespoke_filters as $key => $item) {
             // $this->builder->applyFilter();

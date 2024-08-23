@@ -1,6 +1,12 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { TFieldsByModule, TFieldsUnion, FuncSlugToId } from '@/js/types/moduleTypes'
+import {
+  TFieldsByModule,
+  TFieldsUnion,
+  FuncSlugToId,
+  TCategorizerByFieldName,
+  TCategorizedFields,
+} from '@/js/types/moduleTypes'
 import { useItemStore } from '../item'
 import { useItemNewStore } from '../itemNew'
 
@@ -8,6 +14,12 @@ export const useCeramicStore = defineStore('ceramic', () => {
   const { fields } = storeToRefs(useItemStore())
   const { openIdSelectorModal } = storeToRefs(useItemNewStore())
   const newFields = ref<Partial<TFieldsByModule<'Ceramic'>>>({})
+
+  const categorizer: TCategorizerByFieldName<'Ceramic'> = {}
+
+  function categorizerByFieldName<key extends keyof TCategorizedFields>(field: key) {
+    return categorizer[field]
+  }
 
   const slugToId: FuncSlugToId = function (slug: string) {
     const arr = slug.split('.')
@@ -24,6 +36,11 @@ export const useCeramicStore = defineStore('ceramic', () => {
   function tagAndSlugFromId(id: string) {
     return { tag: id, slug: id }
   }
+
+  // function bespokeFiltersByModule() {
+  //   const bespoke: TCategorizerByFieldName<'Ceramic'> = {}
+  //   return bespoke
+  // }
 
   const currentIds = ref<string[]>([])
 
@@ -64,6 +81,8 @@ export const useCeramicStore = defineStore('ceramic', () => {
     beforeStore,
     tagAndSlugFromId,
     slugToId,
+    // bespokeFiltersByModule,
     headers,
+    categorizerByFieldName,
   }
 })
