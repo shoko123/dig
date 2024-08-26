@@ -15,27 +15,35 @@ import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
 import { useModuleStore } from './module'
 import { useTrioStore } from './trio/trio'
-// import { TGroupField } from '@/js/types/trioTypes'
 
 export const useItemStore = defineStore('item', () => {
   const { current } = storeToRefs(useRoutesMainStore())
   const { collection, itemByIndex } = useCollectionsStore()
   const { tagAndSlugFromId } = useModuleStore()
   const { send } = useXhrStore()
-  const { fieldsRelatedTags } = useTrioStore()
-  const { trio, groupLabelToKey } = storeToRefs(useTrioStore())
+  const { trio, groupLabelToGroupKeyObj } = storeToRefs(useTrioStore())
+  const { getFieldsParams } = useTrioStore()
 
   const fields = ref<TFieldsUnion | undefined>(undefined)
   const slug = ref<string | undefined>(undefined)
   const tag = ref<string | undefined>(undefined)
   const short = ref<string | undefined>(undefined)
-  const selectedItemParams = ref<string[]>([])
 
   const ready = ref<boolean>(false)
   const itemViews = ref<string[]>([])
   const itemViewIndex = ref<number>(0)
   const itemIndex = ref<number>(-1)
-  const dfs = ref<Partial<TDiscreteColumnUnion>>({})
+
+  //item's fields params - start
+  const itemTagParams = ref<string[]>([])
+  const itemFieldsParams = ref<string[]>([])
+  const itemAllParams = computed(() => {
+    return [...itemFieldsParams.value, ...itemTagParams.value].sort((a, b) => {
+      return a > b ? 1 : -1
+    })
+  })
+  const itemFieldsToParamsObj = ref<Partial<TDiscreteColumnUnion>>({})
+  //item's fields params - end
 
   const id = computed(() => {
     return typeof fields.value === 'undefined' ? -1 : (<TFieldsUnion>fields.value).id
@@ -58,54 +66,28 @@ export const useItemStore = defineStore('item', () => {
     }
   })
 
-  // const discreteFields = computed<TDiscreteColumnUnion>(() => {
-  //   const tmpMap = new Map()
-  //   Object.entries(discreteFieldNameToGroupKey.value).forEach(([key, value]) => {
-  //     // console.log(`discreteFields() Item[key: ${key}] => ${value}`)
-  //     const group = trio.value.groupsObj[value]
-  //     const val = fields.value![key as keyof TFieldsUnion]
-
-  //     // console.log(
-  //     //   `group: ${JSON.stringify(group, null, 2)} fields: ${JSON.stringify(fields.value, null, 2)} val: ${val}`,
-  //     // )
-  //     const paramKey = group.paramKeys.find(
-  //       // ** weak comparison because param.extra is either string, number or boolean
-  //       (y) => trio.value.paramsObj[y].extra == val,
-  //     )
-  //     if (paramKey === undefined) {
-  //       throw new Error(
-  //         `discreteFields() - Can't find value ${val} in group ${group.label} field ${key}`,
-  //       )
-  //     }
-  //     tmpMap.set(key, trio.value.paramsObj[paramKey].text)
-  //   })
-  //   const res = Object.fromEntries(tmpMap.entries())
-  //   // console.log(`result: ${JSON.stringify(res, null, 2)}`)
-  //   return res
-  // })
-
   function saveitemFieldsPlus<F extends TApiFieldsUnion>(apiItem: TApiItemShow<F>) {
     saveItemFields(apiItem.fields)
 
     const res = tagAndSlugFromId(<TModule>current.value.module, apiItem.fields.id)
     tag.value = res.tag
     slug.value = res.slug
-    selectedItemParams.value = []
 
-    const fd = fieldsRelatedTags(apiItem.fields)
-    selectedItemParams.value = fd.map((x) => x.paramKey)
+    //get fields related params
+    const fd = getFieldsParams(apiItem.fields)
+    itemFieldsParams.value = fd.map((x) => x.paramKey)
 
-    //build object [field_name] : tag.text
+    //build itemFieldsToParamsObj [field_name] : tag.text
     const tmp = ref<Record<string, string>>({})
     fd.forEach((x) => (tmp.value[x.fieldName] = x.paramLabel))
-    dfs.value = tmp.value
-
-    // addColumnTags()
-    addExternalTags(apiItem.model_tags.concat(apiItem.global_tags))
+    itemFieldsToParamsObj.value = tmp.value
+    addTagParams(apiItem.model_tags.concat(apiItem.global_tags))
   }
 
   function saveItemFields<F extends TApiFieldsUnion>(apiFields: F) {
     // If field_name contains '_date' and value is a string in YYYY-MM-DD format, assume that we deal with a date field, and make a new Date
+    // TODO implement above
+
     const isoDateRegex = /^\d{4}-\d{2}-\d{2}$/
     const tmpMap = new Map()
 
@@ -120,36 +102,18 @@ export const useItemStore = defineStore('item', () => {
     fields.value = Object.fromEntries(tmpMap.entries())
   }
 
-  // function addColumnTags() {
-  //   Object.entries(discreteFieldNameToGroupKey.value).forEach(([key, value]) => {
-  //     const group = trio.value.groupsObj[value]
-  //     if ((<TGroupField>group).show_in_item_tags) {
-  //       const val = fields.value![key as keyof TFieldsUnion]
-  //       const paramKey = group.paramKeys.find(
-  //         // ** weak comparison because param.extra is either string, number or boolean
-  //         (y) => trio.value.paramsObj[y].extra == val,
-  //       )
-  //       if (paramKey === undefined) {
-  //         throw new Error(
-  //           `addColumnTags() - Can't find value ${val} in group ${group.label} field ${key}`,
-  //         )
-  //       }
-  //       selectedItemParams.value.push(paramKey)
-  //     }
-  //   })
-  // }
-
-  function addExternalTags(apiTags: TApiTag[]) {
+  function addTagParams(apiTags: TApiTag[]) {
     // console.log(`SaveItem - Add extrnal (module and global) tags`)
+    itemTagParams.value = []
     for (const x of apiTags) {
-      const group = trio.value.groupsObj[groupLabelToKey.value[x.group_label]]
+      const group = trio.value.groupsObj[groupLabelToGroupKeyObj.value[x.group_label]]
       // console.log(`Add Tag:  ${x.group_label} => "${x.tag_text}"`)
 
       const paramKey = group.paramKeys.find((y) => trio.value.paramsObj[y].text === x.tag_text)
       if (paramKey === undefined) {
-        throw new Error(`addExternalTags() - Can't find tag ${x.tag_text} in group ${group.label}`)
+        throw new Error(`addTagParams() - Can't find tag ${x.tag_text} in group ${group.label}`)
       }
-      selectedItemParams.value.push(paramKey)
+      itemTagParams.value.push(paramKey)
     }
   }
 
@@ -159,8 +123,9 @@ export const useItemStore = defineStore('item', () => {
     slug.value = undefined
     short.value = undefined
     tag.value = undefined
-    dfs.value = {}
-    selectedItemParams.value = []
+    itemFieldsToParamsObj.value = {}
+    itemFieldsParams.value = []
+    itemTagParams.value = []
   }
 
   function nextSlug(isRight: boolean) {
@@ -173,7 +138,7 @@ export const useItemStore = defineStore('item', () => {
     }
 
     const tagAndSlug = tagAndSlugFromId(
-      <TModule>current.value.module,
+      current.value.module!,
       <TApiArray>itemByIndex('main', newIndex),
     )
     return tagAndSlug.slug
@@ -214,7 +179,6 @@ export const useItemStore = defineStore('item', () => {
     fields,
     id,
     derived,
-    selectedItemParams,
     itemIndex,
     nextSlug,
     itemClear,
@@ -225,7 +189,9 @@ export const useItemStore = defineStore('item', () => {
     saveItemFields,
     saveitemFieldsPlus,
     itemRemove,
-    // discreteFields,
-    dfs,
+    itemFieldsToParamsObj,
+    itemTagParams,
+    itemFieldsParams,
+    itemAllParams,
   }
 })

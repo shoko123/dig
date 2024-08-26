@@ -2,7 +2,6 @@ import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { maxLength } from '@vuelidate/validators'
 import {
-  // TModule,
   TFieldsByModule,
   TFieldsUnion,
   FuncSlugToId,
@@ -15,11 +14,10 @@ import { useItemNewStore } from '../../../scripts/stores/itemNew'
 export const useStoneStore = defineStore('stone', () => {
   const { fields } = storeToRefs(useItemStore())
   const { openIdSelectorModal, isCreate, isUpdate } = storeToRefs(useItemNewStore())
-  const newFields = ref<Partial<TFieldsByModule<'Stone'>>>({})
 
   const categorizer: TCategorizerByFieldName<'Stone'> = {
     old_museum_id: (val) => {
-      console.log(`old_museum_idCategorizer(${val})`)
+      // console.log(`old_museum_idCategorizer(${val})`)
       return val === null || (typeof val === 'string' && val.length === 0) ? 1 : 0
     },
   }
@@ -28,14 +26,126 @@ export const useStoneStore = defineStore('stone', () => {
     return categorizer[field]
   }
 
-  // function bespokeFiltersByModule() {
-  //   const bespoke: TCategorizerByFieldName<'Stone'> = {
-  //     old_museum_id: (val) => {
-  //       return val === null ? 0 : 1
-  //     },
-  //   }
-  //   return bespoke
-  // }
+  const defaultFields: TFieldsByModule<'Stone'> = {
+    id: 'change me',
+    id_year: 7,
+    id_access_no: 1,
+    id_object_no: 1,
+    square: '',
+    context: '',
+    excavation_date: null,
+    occupation_level: '',
+    cataloger_material: '',
+    whole: true,
+    cataloger_typology: '',
+    cataloger_description: '',
+    conservation_notes: '',
+    weight: '',
+    length: '',
+    width: '',
+    height: '',
+    diameter: '',
+    dimension_notes: '',
+    cultural_period: '',
+    excavation_object_id: '',
+    old_museum_id: '',
+    cataloger_id: 10,
+    catalog_date: null,
+    specialist_description: '',
+    specialist_date: null,
+    thumbnail: '',
+    uri: null,
+    base_type_id: 1,
+    material_id: 1,
+  }
+
+  const newFields = ref<TFieldsByModule<'Stone'>>(defaultFields)
+
+  const currentIds = ref<string[]>([])
+
+  function prepareForNew(isCreate: boolean, ids?: string[]): void {
+    console.log(
+      `prepNew(Stone) create(${isCreate}) fields: ${JSON.stringify(fields.value, null, 2)}`,
+    )
+    if (isCreate) {
+      currentIds.value = ids!
+      openIdSelectorModal.value = true
+      prepareDefaultNewFields()
+      console.log(`isCreate. current ids: ${currentIds.value}`)
+    } else {
+      newFields.value = fields.value as TFieldsByModule<'Stone'>
+    }
+  }
+
+  const availableItemNumbers = computed(() => {
+    const itemNos = currentIds.value
+      .filter((x) => {
+        const sections = x.split('.')
+        return sections[0] === 'B2024'
+      })
+      .map((x) => {
+        const sections = x.split('.')
+        return parseInt(sections[2])
+      })
+
+    const all = [...Array(200).keys()].map((i) => i + 1)
+
+    return all.filter((x) => {
+      return !itemNos.includes(x)
+    })
+  })
+
+  function beforeStore(isCreate: boolean): Partial<TFieldsUnion> | false {
+    //console.log(`stone.beforStore() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
+    if (inOC.value) {
+      return {
+        id: newFields.value.id,
+        id_year: newFields.value.id_year,
+        id_access_no: newFields.value.id_access_no,
+        id_object_no: newFields.value.id_object_no,
+        specialist_description: newFields.value.specialist_description,
+        specialist_date: new Date(),
+      }
+    } else {
+      const fieldsToSend: Partial<TFieldsByModule<'Stone'>> = {}
+      Object.assign(fieldsToSend, newFields.value)
+      fieldsToSend.specialist_date = new Date()
+      fieldsToSend.catalog_date = new Date()
+      if (isCreate) {
+        // do something e.g. fieldsToSend.cataloger_id = 10
+      }
+      return fieldsToSend
+    }
+  }
+
+  function prepareDefaultNewFields() {
+    newFields.value = { ...defaultFields }
+    newFields.value.id = 'B2024.1.' + availableItemNumbers.value[0]
+    newFields.value.id_year = 24
+    newFields.value.id_access_no = 1
+    newFields.value.id_object_no = availableItemNumbers.value[0]
+  }
+
+  const slugToId: FuncSlugToId = function (slug: string) {
+    const sections = slug.split('.')
+
+    if (sections.length !== 3) {
+      return {
+        success: false,
+        message: `Unsupported slug format detected: ${slug}`,
+      }
+    }
+
+    return {
+      success: true,
+      id: slug,
+    }
+  }
+
+  function tagAndSlugFromId(id: string) {
+    //console.log(`Stone.tagAndSlugFromId()`)
+    return { tag: id, slug: id }
+  }
 
   const rules = computed(() => {
     return inOC.value
@@ -75,120 +185,6 @@ export const useStoneStore = defineStore('stone', () => {
     return typeof newFields.value.uri === 'string'
   })
 
-  const slugToId: FuncSlugToId = function (slug: string) {
-    const sections = slug.split('.')
-
-    if (sections.length !== 3) {
-      return {
-        success: false,
-        message: `Unsupported slug format detected: ${slug}`,
-      }
-    }
-
-    return {
-      success: true,
-      id: slug,
-    }
-  }
-
-  function tagAndSlugFromId(id: string) {
-    //console.log(`Stone.tagAndSlugFromId()`)
-    return { tag: id, slug: id }
-  }
-
-  const currentIds = ref<string[]>([])
-
-  function prepareForNew(isCreate: boolean, ids?: string[]): void {
-    console.log(
-      `prepNew(Stone) create(${isCreate}) fields: ${JSON.stringify(fields.value, null, 2)}`,
-    )
-    if (isCreate) {
-      currentIds.value = ids!
-      openIdSelectorModal.value = true
-      prepareDefaultNewFields()
-      console.log(`isCreate. current ids: ${currentIds.value}`)
-    } else {
-      Object.assign(newFields.value, fields.value as TFieldsByModule<'Stone'>)
-    }
-  }
-
-  const availableItemNumbers = computed(() => {
-    const itemNos = currentIds.value
-      .filter((x) => {
-        const sections = x.split('.')
-        return sections[0] === 'B2024'
-      })
-      .map((x) => {
-        const sections = x.split('.')
-        return parseInt(sections[2])
-      })
-
-    const all = [...Array(200).keys()].map((i) => i + 1)
-
-    return all.filter((x) => {
-      return !itemNos.includes(x)
-    })
-
-    // console.log(`current ids: ${itemNos}`)
-    // console.log(`all ids: ${all}`)
-    // console.log(`diff: ${diff}`)
-  })
-
-  function beforeStore(isCreate: boolean): Partial<TFieldsUnion> | false {
-    //console.log(`stone.beforStore() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
-    if (inOC.value) {
-      return {
-        id: newFields.value.id,
-        id_year: newFields.value.id_year,
-        id_access_no: newFields.value.id_access_no,
-        id_object_no: newFields.value.id_object_no,
-        specialist_description: newFields.value.specialist_description,
-        specialist_date: new Date(),
-      }
-    } else {
-      const fieldsToSend: Partial<TFieldsByModule<'Stone'>> = {}
-      Object.assign(fieldsToSend, newFields.value)
-      fieldsToSend.specialist_date = new Date()
-      fieldsToSend.catalog_date = new Date()
-      if (isCreate) {
-        fieldsToSend.cataloger_id = 10
-      }
-      return fieldsToSend
-    }
-  }
-
-  function prepareDefaultNewFields() {
-    newFields.value.id = 'B2024.1.' + availableItemNumbers.value[0]
-    newFields.value.id_year = 24
-    newFields.value.id_access_no = 1
-    newFields.value.id_object_no = availableItemNumbers.value[0]
-    newFields.value.square = ''
-    newFields.value.context = ''
-    newFields.value.excavation_date = null
-    newFields.value.occupation_level = ''
-    newFields.value.excavation_object_id = ''
-    newFields.value.whole = false
-    newFields.value.cataloger_typology = ''
-    newFields.value.cataloger_description = ''
-    newFields.value.conservation_notes = ''
-    newFields.value.weight = ''
-    newFields.value.length = ''
-    newFields.value.width = ''
-    newFields.value.height = ''
-    newFields.value.diameter = ''
-    newFields.value.dimension_notes = ''
-    newFields.value.cultural_period = ''
-    newFields.value.old_museum_id = ''
-    newFields.value.cataloger_id = 1
-    newFields.value.catalog_date = null
-    newFields.value.specialist_description = ''
-    newFields.value.specialist_date = null
-    newFields.value.thumbnail = ''
-    newFields.value.uri = null
-    newFields.value.base_type_id = 1
-    newFields.value.material_id = 1
-  }
-
   const headers = computed(() => {
     return [
       { title: 'Label', align: 'start', key: 'tag' },
@@ -201,17 +197,16 @@ export const useStoneStore = defineStore('stone', () => {
   })
 
   return {
+    headers,
+    currentIds,
     newFields,
     rules,
     inOC,
-    prepareForNew,
     availableItemNumbers,
-    beforeStore,
+    categorizerByFieldName,
     slugToId,
     tagAndSlugFromId,
-    // bespokeFiltersByModule,
-    headers,
-    currentIds,
-    categorizerByFieldName,
+    prepareForNew,
+    beforeStore,
   }
 })

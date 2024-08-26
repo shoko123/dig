@@ -10,9 +10,10 @@ import type {
   TParamObj,
   TGroupObj,
   TCategoriesArray,
-  TGroupLabelToKey,
+  TGroupOrFieldToKeyObj,
   TGroupField,
   TParamTmp,
+  TCategorizerFunc,
 } from '@/js/types/trioTypes'
 import { useModuleStore } from '../module'
 
@@ -23,8 +24,8 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   let categories: TCategoriesArray = []
   let groupsObj: TGroupObj = {}
   let paramsObj: TParamObj = {}
-  let groupLabelToKey: TGroupLabelToKey = {}
-  let discreteFieldNameToGroupKey: TGroupLabelToKey = {}
+  let groupLabelToGroupKeyObj: TGroupOrFieldToKeyObj = {}
+  let fieldsToGroupKeyObj: TGroupOrFieldToKeyObj = {}
   let orderByOptions: TApiParam[] = []
   let catCnt = 0
   let grpCnt = 0
@@ -37,8 +38,8 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     categories = []
     groupsObj = {}
     paramsObj = {}
-    groupLabelToKey = {}
-    discreteFieldNameToGroupKey = {}
+    groupLabelToGroupKeyObj = {}
+    fieldsToGroupKeyObj = {}
     catCnt = 0
     grpCnt = 0
     prmCnt = 0
@@ -89,8 +90,8 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
 
     return {
       trio: { categories, groupsObj, paramsObj },
-      groupLabelToKey,
-      discreteFieldNameToGroupKey,
+      groupLabelToGroupKeyObj,
+      fieldsToGroupKeyObj,
       orderByOptions,
     }
   }
@@ -112,18 +113,18 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
       prmCnt++
     })
     groupsObj[grpKey] = grpToSave
-    groupLabelToKey[grpToSave.label] = grpKey
+    groupLabelToGroupKeyObj[grpToSave.label] = grpKey
 
     if ('FD' === grpToSave.code) {
-      discreteFieldNameToGroupKey[(<TGroupField>grpToSave).field_name] = grpKey
+      fieldsToGroupKeyObj[(<TGroupField>grpToSave).field_name] = grpKey
     }
   }
 
   function processDependency(dependency: string[]) {
     return dependency.map((x) => {
       const pieces = x.split('.')
-      const group = groupsObj[groupLabelToKey[pieces[0]]]
-      //console.log(`groupLabel: ${pieces[0]}. key: ${groupLabelToKey[pieces[0]]}  `);
+      const group = groupsObj[groupLabelToGroupKeyObj[pieces[0]]]
+      //console.log(`groupLabel: ${pieces[0]}. key: ${groupLabelToGroupKeyObj[pieces[0]]}  `);
       const res = group.paramKeys.find((x) => paramsObj[x].text === pieces[1])
       return res!
     })
@@ -146,7 +147,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
       allow_dependents: grp.allow_dependents,
     }
     if (grp.tag_source === 'Categorized') {
-      tmpGroup.categorizer = categorizerByFieldName(tmpModule!, grp.field_name)
+      tmpGroup.categorizer = categorizerByFieldName(tmpModule!, grp.field_name) as TCategorizerFunc
     }
   }
 

@@ -1,6 +1,6 @@
 // routesStore.js
 import type { TCollectionView } from '@/js/types/collectionTypes'
-import type { TModule, TUrlModule } from '@/js/types/moduleTypes'
+import type { TModule, TUrlModule, TFieldValue } from '@/js/types/moduleTypes'
 import type { TFieldValueSource } from '@/js/types/trioTypes'
 type TRoutes =
   | { name: 'home' }
@@ -62,7 +62,7 @@ type TApiFilters = {
   field_value: {
     field_name: string
     source: TFieldValueSource
-    vals: (string | number | boolean)[]
+    vals: TFieldValue[]
   }[]
   field_search: { field_name: string; vals: string[] }[]
   media: string[]

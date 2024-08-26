@@ -9,19 +9,19 @@ import { useTrioStore } from './trio'
 import { useRoutesMainStore } from '../routes/routesMain'
 
 export const useTaggerStore = defineStore('tagger', () => {
-  const { trio, discreteFieldNameToGroupKey } = storeToRefs(useTrioStore())
-  const { fields, selectedItemParams } = storeToRefs(useItemStore())
+  const { trio, fieldsToGroupKeyObj } = storeToRefs(useTrioStore())
+  const { fields, itemAllParams } = storeToRefs(useItemStore())
 
   const selectedNewItemParams = ref<string[]>([])
 
   function prepareTagger() {
-    selectedNewItemParams.value = selectedItemParams.value.filter((x) => {
+    selectedNewItemParams.value = itemAllParams.value.filter((x) => {
       const code = trio.value.groupsObj[trio.value.paramsObj[x].groupKey].code
       return code === 'TG' || code === 'TM'
     })
 
     const tmpMap = new Map()
-    Object.entries(discreteFieldNameToGroupKey.value).forEach(([key, value]) => {
+    Object.entries(fieldsToGroupKeyObj.value).forEach(([key, value]) => {
       const group = trio.value.groupsObj[value]
 
       if (group.code === 'FD' && (<TGroupField>group).show_in_tagger) {
@@ -49,8 +49,8 @@ export const useTaggerStore = defineStore('tagger', () => {
   //When clearing params, set field values to default (index 0)
   function resetParams() {
     selectedNewItemParams.value = []
-    for (const x in discreteFieldNameToGroupKey.value) {
-      const group = trio.value.groupsObj[discreteFieldNameToGroupKey.value[x]]
+    for (const x in fieldsToGroupKeyObj.value) {
+      const group = trio.value.groupsObj[fieldsToGroupKeyObj.value[x]]
 
       if (group.code === 'FD' && (<TGroupField>group).show_in_tagger) {
         selectedNewItemParams.value.push(group.paramKeys[0])

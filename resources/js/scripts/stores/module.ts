@@ -35,7 +35,7 @@ export const useModuleStore = defineStore('module', () => {
     }
   })
 
-  function tagAndSlugFromId(module: TModule, id: string): { tag: string; slug: string } {
+  function tagAndSlugFromId(module: TModule, id: string) {
     //console.log(`module.tagAndSlugFromId()`)
     const store = getStore(module)
     return store.tagAndSlugFromId(id)
@@ -45,6 +45,16 @@ export const useModuleStore = defineStore('module', () => {
     const store = getStore(module)
     return store.categorizerByFieldName(field as keyof TCategorizedFields)
   }
+
+  function modulePrepareForNew(isCreate: boolean, ids?: string[]) {
+    const store = getStore(current.value.module!)
+    return store.prepareForNew(isCreate, ids)
+  }
+
+  const moduleNewFields = computed(() => {
+    const store = getStore(<TModule>current.value.module)
+    return store.newFields
+  })
 
   function setModuleInfo(initData: {
     counts: { items: number; media: number }
@@ -79,9 +89,10 @@ export const useModuleStore = defineStore('module', () => {
     firstSlug,
     backgroundImage,
     getCurrentModuleStore,
-    getStore,
     tagAndSlugFromId,
     setModuleInfo,
     categorizerByFieldName,
+    modulePrepareForNew,
+    moduleNewFields,
   }
 })

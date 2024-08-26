@@ -12,8 +12,14 @@ import { assert } from '../../utils/utils'
 export const useFilterStore = defineStore('filter', () => {
   const { send } = useXhrStore()
   const { current } = storeToRefs(useRoutesMainStore())
-  const { trio, groupLabelToKey, orderByAvailable, orderByGroup, orderByOptions, currentGroup } =
-    storeToRefs(useTrioStore())
+  const {
+    trio,
+    groupLabelToGroupKeyObj,
+    orderByAvailable,
+    orderByGroup,
+    orderByOptions,
+    currentGroup,
+  } = storeToRefs(useTrioStore())
   const selectedFilterParams = ref<string[]>([])
 
   function filtersToQueryObject() {
@@ -129,7 +135,7 @@ export const useFilterStore = defineStore('filter', () => {
 
   function clearSelectedFilters() {
     console.log(`filter.clearSelectedFilters()`)
-    for (const value of Object.values(groupLabelToKey.value)) {
+    for (const value of Object.values(groupLabelToGroupKeyObj.value)) {
       if (trio.value.groupsObj[value].code === 'FS') {
         trio.value.groupsObj[value].paramKeys.forEach((x) => {
           trio.value.paramsObj[x].text = ''

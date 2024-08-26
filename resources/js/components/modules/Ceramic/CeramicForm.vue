@@ -17,12 +17,13 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
 import { TFieldsByModule } from '@/js/types/moduleTypes'
 import { useItemStore } from '../../../scripts/stores/item'
 
-let { fields } = useItemStore()
+let { fields } = storeToRefs(useItemStore())
 
 const item = computed(() => {
-  return fields as TFieldsByModule<'Ceramic'>
+  return fields.value as TFieldsByModule<'Ceramic'>
 })
 </script>

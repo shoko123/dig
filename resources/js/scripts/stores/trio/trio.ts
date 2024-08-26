@@ -4,13 +4,14 @@ import { ref, computed } from 'vue'
 import type {
   TApiTrio,
   TTrio,
-  TGroupLabelToKey,
+  TGroupOrFieldToKeyObj,
   TGroupTag,
   TApiParam,
+  // TParam,
   TGroupBase,
   TGroupField,
 } from '../../../types/trioTypes'
-import type { TModule, TFieldsUnion } from '@/js/types/moduleTypes'
+import type { TModule, TFieldsUnion, TFieldInfo, TFieldValue } from '@/js/types/moduleTypes'
 
 import { useTrioNormalizerStore } from './trioNormalizer'
 import { useRoutesMainStore } from '../routes/routesMain'
@@ -22,66 +23,57 @@ export const useTrioStore = defineStore('trio', () => {
   const { current } = storeToRefs(useRoutesMainStore())
 
   const trio = ref<TTrio>({ categories: [], groupsObj: {}, paramsObj: {} })
-  const groupLabelToKey = ref<TGroupLabelToKey>({})
+  const groupLabelToGroupKeyObj = ref<TGroupOrFieldToKeyObj>({})
+  const fieldsToGroupKeyObj = ref<TGroupOrFieldToKeyObj>({})
+
   const orderByOptions = ref<TApiParam[]>([])
-  const discreteFieldNameToGroupKey = ref<TGroupLabelToKey>({})
   //current index of visible categories/groups
   const categoryIndex = ref<number>(0)
   const groupIndex = ref<number>(0)
 
-  function fieldsRelatedTags(fields: TFieldsUnion) {
+  function getFieldsParams(fields: TFieldsUnion) {
     const paramKeys: string[] = []
-    const all: {
-      fieldName: string
-      fieldValue: string | number | boolean
-      paramKey: string
-      paramLabel: string
-      paramExtra: string | number | boolean
-    }[] = []
+    const all: TFieldInfo[] = []
     let paramKey: string | undefined
-    let val: string | number | boolean = 0
+    let val: TFieldValue = 0
 
-    Object.entries(discreteFieldNameToGroupKey.value).forEach(([key, value]) => {
+    Object.entries(fieldsToGroupKeyObj.value).forEach(([key, value]) => {
       const group = <TGroupField>trio.value.groupsObj[value]
+      val = fields[key as keyof TFieldsUnion]
+      let index = -1
       if (group.tag_source === 'Categorized') {
-        console.log(`fieldsRelatedTags.CategorizedField group: ${JSON.stringify(group, null, 2)}`)
-
-        const fieldValue = fields[group.field_name as keyof TFieldsUnion]
-        console.log(`Item : ${JSON.stringify(fields, null, 2)}`)
-        console.log(`Item['${group.field_name}'] : ${fieldValue}`)
-        const index = group.categorizer!(fieldValue)
-        console.log(
-          `categorizer(${group.field_name}) (${fieldValue}) => (${index}): ${trio.value.paramsObj[group.paramKeys[index]].text}`,
-        )
-
+        index = group.categorizer!(val)
         paramKey = group.paramKeys[index]
       } else {
-        val = fields[key as keyof TFieldsUnion]
-
-        // console.log(
-        //   `group: ${JSON.stringify(group, null, 2)} fields: ${JSON.stringify(fields, null, 2)} val: ${val}`,
-        // )
-        paramKey = group.paramKeys.find(
+        index = group.paramKeys.findIndex(
           // ** weak comparison because param.extra is either string, number or boolean
           (y) => trio.value.paramsObj[y].extra == val,
         )
-        if (paramKey === undefined) {
+
+        if (index === -1) {
           throw new Error(
-            `fieldsRelatedTags() - Can't find value ${val} in group ${group.label} field ${key}`,
+            `getFieldsParams() - Can't find value ${val} in ${group.label} field ${key}`,
           )
         }
+        paramKey = group.paramKeys[index]
       }
+
       all.push({
         fieldName: group.field_name,
-        fieldValue: fields[group.field_name as keyof TFieldsUnion],
+        fieldValue: val,
         paramKey: paramKey,
         paramLabel: trio.value.paramsObj[paramKey].text,
         paramExtra: trio.value.paramsObj[paramKey].extra,
+        options: group.paramKeys.map((x) => {
+          const param = { ...trio.value.paramsObj[x] }
+          return param
+        }),
+        index,
       })
       paramKeys.push(paramKey)
     })
 
-    console.log(`fieldsRelatedTags() params: ${JSON.stringify(all, null, 2)}`)
+    //console.log(`getFieldsParams() params: ${JSON.stringify(all, null, 2)}`)
     return all
   }
 
@@ -291,7 +283,7 @@ export const useTrioStore = defineStore('trio', () => {
     //step 1 - collect all groups affected by unselecting this param
     const groupsToUnselect: { grpKey: string; label: string; paramKeys: string[] }[] = []
 
-    for (const value of Object.values(groupLabelToKey.value)) {
+    for (const value of Object.values(groupLabelToGroupKeyObj.value)) {
       const group = trio.value.groupsObj[value]
 
       //if a group has a dependency that includes this param and will be unselected if param is unselected,
@@ -395,7 +387,7 @@ export const useTrioStore = defineStore('trio', () => {
     groupIndex.value = 0
     categoryIndex.value = 0
     trio.value = { categories: [], groupsObj: {}, paramsObj: {} }
-    groupLabelToKey.value = {}
+    groupLabelToGroupKeyObj.value = {}
     orderByOptions.value = []
   }
 
@@ -405,9 +397,9 @@ export const useTrioStore = defineStore('trio', () => {
     //const res = normalizeTrio(apiTrio)
     const res = normalizetrio(apiTrio, module)
     trio.value = res.trio
-    groupLabelToKey.value = res.groupLabelToKey
+    groupLabelToGroupKeyObj.value = res.groupLabelToGroupKeyObj
     orderByOptions.value = res.orderByOptions
-    discreteFieldNameToGroupKey.value = res.discreteFieldNameToGroupKey
+    fieldsToGroupKeyObj.value = res.fieldsToGroupKeyObj
   }
 
   function assert(condition: unknown, msg?: string): asserts condition {
@@ -460,11 +452,11 @@ export const useTrioStore = defineStore('trio', () => {
   })
 
   const orderByGroup = computed(() => {
-    // if (!groupLabelToKey.value.hasOwnProperty('Order By')) {
-    if (!Object.prototype.hasOwnProperty.call(groupLabelToKey.value, 'Order By')) {
+    // if (!groupLabelToGroupKeyObj.value.hasOwnProperty('Order By')) {
+    if (!Object.prototype.hasOwnProperty.call(groupLabelToGroupKeyObj.value, 'Order By')) {
       return undefined
     }
-    return trio.value.groupsObj[groupLabelToKey.value['Order By']]
+    return trio.value.groupsObj[groupLabelToGroupKeyObj.value['Order By']]
   })
 
   const orderBySelected = computed(() => {
@@ -499,8 +491,8 @@ export const useTrioStore = defineStore('trio', () => {
 
   return {
     trio,
-    groupLabelToKey,
-    discreteFieldNameToGroupKey,
+    groupLabelToGroupKeyObj,
+    fieldsToGroupKeyObj,
     orderByOptions,
     orderByGroup,
     orderByAvailable,
@@ -517,6 +509,6 @@ export const useTrioStore = defineStore('trio', () => {
     visibleParams,
     paramClicked,
     resetCategoryAndGroupIndices,
-    fieldsRelatedTags,
+    getFieldsParams,
   }
 })

@@ -1,3 +1,4 @@
+import type { TFieldValue } from '@/js/types/moduleTypes'
 type TrioSourceName = 'Item' | 'New' | 'Filter'
 
 type TAllGroups = {
@@ -29,7 +30,7 @@ type TAllGroups = {
 
 //////////// Backend types /////////////////
 
-type TApiParam = { text: string; extra: boolean | number | string }
+type TApiParam = { text: string; extra: TFieldValue }
 
 type TApiGroupBase = {
   code: TCodeUnion
@@ -87,6 +88,8 @@ type TGroupTagTmp = TGroupBaseTmp & {
   group_id: number
 }
 
+type TCategorizerFunc = (val: TFieldValue) => number
+
 type TGroupFieldTmp = TGroupBaseTmp & {
   tag_source: TFieldValueSource
   table_name: string
@@ -97,7 +100,7 @@ type TGroupFieldTmp = TGroupBaseTmp & {
   show_in_tagger: boolean
   allow_dependents: boolean
   dependency: string[]
-  categorizer?: (val: boolean | number | string) => number
+  categorizer?: TCategorizerFunc
 }
 
 type AddTrioFields<T> = T & {
@@ -127,7 +130,7 @@ type TApiGroupByCode<Code extends TCodeUnion> = TAllByCode<Code>['apiGroup']
 type TParamObj = { [key: string]: TParam }
 type TGroupObj = { [key: string]: TGroupUnion }
 type TCategoriesArray = { name: string; groupKeys: string[] }[]
-type TGroupLabelToKey = { [key: string]: string }
+type TGroupOrFieldToKeyObj = { [key: string]: string }
 
 type TTrio = { categories: TCategoriesArray; groupsObj: TGroupObj; paramsObj: TParamObj }
 
@@ -139,14 +142,16 @@ export {
   TGroupApiUnion,
   TGroupTmpUnion,
   TParamTmp,
+  TParam,
   TGroupUnion,
   TApiGroupByCode,
   TParamObj,
   TGroupObj,
   TCategoriesArray,
-  TGroupLabelToKey,
+  TGroupOrFieldToKeyObj,
   TGroupBase,
   TGroupField,
   TGroupTag,
   TFieldValueSource,
+  TCategorizerFunc,
 }

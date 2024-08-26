@@ -10,8 +10,8 @@ type TGroup = { label: string; params: string[] }
 type TCat = { label: string; groups: TGroup[] }
 
 export const useTrioSelectedStore = defineStore('trioSelected2', () => {
-  const { trio, groupLabelToKey } = storeToRefs(useTrioStore())
-  const { selectedItemParams } = storeToRefs(useItemStore())
+  const { trio, groupLabelToGroupKeyObj } = storeToRefs(useTrioStore())
+  const { itemAllParams } = storeToRefs(useItemStore())
   const { selectedFilterParams } = storeToRefs(useFilterStore())
   const { selectedNewItemParams } = storeToRefs(useTaggerStore())
 
@@ -30,9 +30,7 @@ export const useTrioSelectedStore = defineStore('trioSelected2', () => {
         params = selectedFilterParams.value
         break
       case 'Item':
-        params = selectedItemParams.value.filter(
-          (x) => trio.value.paramsObj[x].text !== 'Unassigned',
-        )
+        params = itemAllParams.value.filter((x) => trio.value.paramsObj[x].text !== 'Unassigned')
         break
       case 'New':
         params = selectedNewItemParams.value
@@ -63,7 +61,7 @@ export const useTrioSelectedStore = defineStore('trioSelected2', () => {
 
     //Now all the groups are organized in a sorted array, find their categories.
     groups.forEach((g) => {
-      const group = trio.value.groupsObj[groupLabelToKey.value[g.label]]
+      const group = trio.value.groupsObj[groupLabelToGroupKeyObj.value[g.label]]
       const cat = trio.value.categories[group.categoryIndex]
 
       const i = cats.findIndex((c) => {

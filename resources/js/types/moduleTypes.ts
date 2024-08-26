@@ -1,4 +1,4 @@
-import type { TApiTrio } from '@/js/types/trioTypes'
+import type { TApiTrio, TParam } from '@/js/types/trioTypes'
 import type { TCollectionView } from '@/js/types/collectionTypes'
 import type { TLocus } from '@/js/types/modules/Locus'
 import type { TStone } from '@/js/types/modules/Stone'
@@ -56,17 +56,23 @@ type TApiPageMainTabularUnion = ModuleUnion['TabularViewFields'] & { slug: strin
 type TModuleToUrlName = ModuleToUrlName<TAllModules>
 type TUrlModuleNameToModule = UrlModuleToModule<TModuleToUrlName>
 
-type FieldsAsBooleans<T> = {
-  [k in keyof T]: boolean
+type TFieldValue = string | number | boolean
+
+type TFieldInfo = {
+  fieldName: string
+  fieldValue: TFieldValue
+  paramKey: string
+  paramLabel: string
+  paramExtra: TFieldValue
+  options: TParam[]
+  index: number
+}
+
+type TFieldsToFieldInfo<T extends TDiscreteColumnUnion> = {
+  [k in keyof T]: TFieldInfo
 }
 
 type TCategorizedFieldsByModule<M extends TModule> = TAllByName<M>['categorizedFields']
-
-// type TCategorizerByFieldName<M extends TModule> = {
-//   [Key in keyof TCategorizedFieldsByModule<M> as TCategorizedFieldsByModule<M>[Key] extends string
-//     ? TCategorizedFieldsByModule<M>[Key]
-//     : never]: (val:string) => number
-// }
 
 ////////work RO
 type TCategorizerByFieldName<M extends TModule> = {
@@ -121,13 +127,13 @@ export {
   TTabularByModule,
   TApiModuleInit,
   FuncSlugToId,
-  FieldsAsBooleans,
+  TFieldInfo,
+  TFieldsToFieldInfo,
   TDiscreteFieldsByModule,
-  ////
+  TFieldValue,
   TCategorizerByFieldName,
   TAllTCategorizerByFieldName,
   TCategorizedFieldsByModule,
   TCategorizedFields,
-  ////
   CategorizerByModuleAndFieldName,
 }

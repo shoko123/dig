@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type { TApiFieldsUnion, TFieldsUnion, TModule } from '@/js/types/moduleTypes'
+import type { TApiFieldsUnion, TFieldsUnion, TFieldInfo } from '@/js/types/moduleTypes'
 import type { TApiItemShow } from '@/js/types/itemTypes'
 import { useCollectionMainStore } from './collections/collectionMain'
 import { useRoutesMainStore } from './routes/routesMain'
@@ -10,20 +10,22 @@ import { useTrioStore } from './trio/trio'
 
 export const useItemNewStore = defineStore('itemNew', () => {
   const { current } = storeToRefs(useRoutesMainStore())
-  const { getStore } = useModuleStore()
+  const { moduleNewFields } = storeToRefs(useModuleStore())
+  const { modulePrepareForNew, tagAndSlugFromId } = useModuleStore()
+
   const { send } = useXhrStore()
-  const { trio, discreteFieldNameToGroupKey } = storeToRefs(useTrioStore())
+  const { getFieldsParams } = useTrioStore()
 
   const slug = ref<string | undefined>(undefined)
   const tag = ref<string | undefined>(undefined)
   const selectedItemParams = ref<string[]>([])
+  const itemNewAllParams = ref<string[]>([])
   const ready = ref<boolean>(false)
 
   const openIdSelectorModal = ref<boolean>(false)
 
   const newFields = computed(() => {
-    const store = getStore(<TModule>current.value.module)
-    return store.newFields
+    return moduleNewFields.value
   })
 
   const isCreate = computed(() => {
@@ -35,35 +37,24 @@ export const useItemNewStore = defineStore('itemNew', () => {
   })
 
   const id = computed(() => {
-    return newFields.value.id
+    return newFields.value!.id
   })
 
-  const discreteFields = computed(() => {
-    const tmpMap = new Map()
-    Object.entries(discreteFieldNameToGroupKey.value).forEach(([key, value]) => {
-      const group = trio.value.groupsObj[value]
-      const val = newFields.value![key as keyof TFieldsUnion]
-      const paramKey = group.paramKeys.find(
-        // ** weak comparison because param.extra is either string, number or boolean
-        (y) => trio.value.paramsObj[y].extra == val,
-      )
-      if (paramKey === undefined) {
-        throw new Error(
-          `discreteFields() - Can't find value ${val} in group ${group.label} field ${key}`,
-        )
-      }
-      tmpMap.set(key, trio.value.paramsObj[paramKey].text)
-    })
-    const res = Object.fromEntries(tmpMap.entries())
-    return res
-  })
+  const itemNewFieldsToParamsObj = ref<Record<string, TFieldInfo>>({})
 
   function prepareForNew(isCreate: boolean, ids?: string[]): void {
-    const store = getStore(<TModule>current.value.module)
-    return store.prepareForNew(isCreate, ids)
+    modulePrepareForNew(isCreate, ids)
+
+    const fd = getFieldsParams(newFields.value! as TFieldsUnion)
+    selectedItemParams.value = fd.map((x) => x.paramKey)
+    itemNewAllParams.value = fd.map((x) => x.paramKey)
+
+    //build object [field_name] : fieldInfo
+    const tmp = ref<Record<string, TFieldInfo>>({})
+    fd.forEach((x) => (tmp.value[x.fieldName] = x))
+    itemNewFieldsToParamsObj.value = tmp.value
   }
 
-  //return the newly created/update item's slug (need it only for create())
   async function upload(
     isCreate: boolean,
     newFields: Partial<TFieldsUnion>,
@@ -83,9 +74,8 @@ export const useItemNewStore = defineStore('itemNew', () => {
     if (!res.success) {
       return res
     }
-    const store = getStore(<TModule>current.value.module)
 
-    const tagAndSlug = store.tagAndSlugFromId(res.data.fields.id)
+    const tagAndSlug = tagAndSlugFromId(current.value.module!, res.data.fields.id)
 
     if (isCreate) {
       //push newly created id into the 'main' collection
@@ -111,9 +101,10 @@ export const useItemNewStore = defineStore('itemNew', () => {
     id,
     isCreate,
     isUpdate,
-    discreteFields,
     selectedItemParams,
+    itemNewAllParams,
     openIdSelectorModal,
+    itemNewFieldsToParamsObj,
     itemClear,
     prepareForNew,
     upload,

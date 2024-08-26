@@ -42,15 +42,9 @@ export const useLocusStore = defineStore('locus', () => {
     return { tag: id, slug: id }
   }
 
-  // function bespokeFiltersByModule() {
-  //   const bespoke: TCategorizerByFieldName<'Locus'> = {}
-  //   return bespoke
-  // }
-
   const currentIds = ref<string[]>([])
 
   function prepareForNew(isCreate: boolean, ids?: string[]): void {
-    //console.log(`stone.beforStore() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
     Object.assign(newFields.value, fields.value as TFieldsByModule<'Stone'>)
 
     if (isCreate) {
@@ -83,12 +77,11 @@ export const useLocusStore = defineStore('locus', () => {
 
   return {
     newFields,
+    headers,
     prepareForNew,
     beforeStore,
     slugToId,
     tagAndSlugFromId,
-    // bespokeFiltersByModule,
-    headers,
     categorizerByFieldName,
   }
 })

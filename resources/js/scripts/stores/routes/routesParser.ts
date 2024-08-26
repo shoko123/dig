@@ -63,7 +63,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
     qp: LocationQuery,
   ): { success: true } | { success: false; message: string } {
     //console.log(`urlQueryToApiFilters().urlQuery: ${JSON.stringify(qp, null, 2)}`);
-    const { trio, groupLabelToKey } = storeToRefs(useTrioStore())
+    const { trio, groupLabelToGroupKeyObj } = storeToRefs(useTrioStore())
     const { selectedFilterParams } = storeToRefs(useFilterStore())
 
     if (qp === null) {
@@ -82,10 +82,10 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
       // )
 
       const undoUnderKey = key.replace(/_/g, ' ')
-      if (undoUnderKey in groupLabelToKey.value === false) {
+      if (undoUnderKey in groupLabelToGroupKeyObj.value === false) {
         return { success: false, message: `Unrecognized Url query parameter "${undoUnderKey}"` }
       }
-      const group = trio.value.groupsObj[groupLabelToKey.value[undoUnderKey]]
+      const group = trio.value.groupsObj[groupLabelToGroupKeyObj.value[undoUnderKey]]
       const paramTexts = (<string>value).split(',')
       switch (group.code) {
         case 'OB':

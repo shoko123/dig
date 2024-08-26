@@ -37,11 +37,6 @@ export const useCeramicStore = defineStore('ceramic', () => {
     return { tag: id, slug: id }
   }
 
-  // function bespokeFiltersByModule() {
-  //   const bespoke: TCategorizerByFieldName<'Ceramic'> = {}
-  //   return bespoke
-  // }
-
   const currentIds = ref<string[]>([])
 
   function prepareForNew(isCreate: boolean, ids?: string[]): void {
@@ -77,12 +72,11 @@ export const useCeramicStore = defineStore('ceramic', () => {
 
   return {
     newFields,
+    headers,
     prepareForNew,
     beforeStore,
     tagAndSlugFromId,
     slugToId,
-    // bespokeFiltersByModule,
-    headers,
     categorizerByFieldName,
   }
 })

@@ -20,6 +20,17 @@
     </v-row>
 
     <v-row wrap no-gutters>
+      <v-select v-model="newFields.cataloger_id" label="Select" item-title="text" item-value="extra"
+        :items="catalogerInfo.options"></v-select>
+
+      <v-select v-model="newFields.material_id" label="Select" item-title="text" item-value="extra"
+        :items="materialInfo.options"></v-select>
+
+      <v-select v-model="newFields.base_type_id" label="Select" item-title="text" item-value="extra"
+        :items="typologyInfo.options"></v-select>
+    </v-row>
+
+    <v-row wrap no-gutters>
       <v-textarea v-model="newFields.cataloger_description" label="Cataloger Description" class="mr-1" filled
         :disabled="inOC" />
       <v-textarea v-model="newFields.conservation_notes" label="Conservation Notes" class="mr-1" filled
@@ -40,12 +51,11 @@
       <v-date-input v-model="newFields.excavation_date" label="Excavation Date" clearable :disabled="inOC"
         max-width="368" @click:clear="clearDate('Excavation')"></v-date-input>
       <template v-if="inOC">
-        <v-text-field v-model="cataloger" label="Cataloger" class="mx-1" filled :disabled="inOC" />
+        <!-- <v-text-field v-model="catalogerInfo." label="Cataloger" class="mx-1" filled :disabled="inOC" /> -->
         <v-date-input v-model="newFields.catalog_date" label="Catalog Date" clearable :disabled="inOC" max-width="368"
           @click:clear="clearDate('Catalog')"></v-date-input>
       </template>
     </v-row>
-
     <v-row wrap no-gutters>
       <v-textarea v-model="newFields.specialist_description" label="Specialist Description"
         :error-messages="specialist_descriptionErrors" class="mr-1" filled />
@@ -55,13 +65,13 @@
 </template>
 
 <script lang="ts" setup>
-import { TFieldsByModule, TDiscreteFieldsByModule } from '@/js/types/moduleTypes'
+import { TFieldsByModule } from '@/js/types/moduleTypes'
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useVuelidate } from '@vuelidate/core'
 import { VDateInput } from 'vuetify/labs/VDateInput'
 import { useStoneStore } from '../../../scripts/stores/modules/Stone'
-import { useItemStore } from '../../../scripts/stores/item'
+import { useItemNewStore } from '../../../scripts/stores/itemNew'
 import IdSelector from '../../form-elements/IdSelector.vue'
 
 const props = defineProps<{
@@ -69,7 +79,7 @@ const props = defineProps<{
 }>()
 
 const { newFields, rules, inOC } = storeToRefs(useStoneStore())
-let { discreteFields } = storeToRefs(useItemStore())
+let { itemNewFieldsToParamsObj } = storeToRefs(useItemNewStore())
 
 const v = useVuelidate(rules, newFields.value as TFieldsByModule<'Stone'>)
 
@@ -101,13 +111,20 @@ const specialist_descriptionErrors = computed(() => {
 //   return <string>(v.value.specialist_date?.$error ? v.value.specialist_date.$errors[0].$message : undefined)
 // })
 
-const cvColumnsTyped = computed(() => {
-  return discreteFields.value as TDiscreteFieldsByModule<'Stone'>
+
+
+
+const catalogerInfo = computed(() => {
+  return itemNewFieldsToParamsObj.value['cataloger_id']
 })
 
-const cataloger = computed(() => {
-  return cvColumnsTyped.value['cataloger_id']
+const materialInfo = computed(() => {
+  return itemNewFieldsToParamsObj.value['material_id']
 })
+const typologyInfo = computed(() => {
+  return itemNewFieldsToParamsObj.value['base_type_id']
+})
+
 
 function clearDate(field: string) {
   switch (field) {
