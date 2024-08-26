@@ -31,7 +31,7 @@ import CeramicNew from '../modules/Ceramic/CeramicNew.vue'
 
 let { showSpinner, showSnackbar } = useNotificationsStore()
 let { upload } = useItemNewStore()
-let { getCurrentModuleStore } = storeToRefs(useModuleStore())
+let { beforeStore } = useModuleStore()
 let { routerPush } = useRoutesMainStore()
 let { to } = storeToRefs(useRoutesMainStore())
 let { current } = storeToRefs(useRoutesMainStore())
@@ -56,11 +56,6 @@ const formNew = computed<Component>(() => {
   }
 })
 
-function beforeStore() {
-  let store = getCurrentModuleStore.value
-  return store.beforeStore(isCreate.value)
-}
-
 async function submit(v: Validation) {
   //console.log(`CreateUpdate.submit() data: ${JSON.stringify(data, null, 2)}`)
 
@@ -76,7 +71,7 @@ async function submit(v: Validation) {
 
   // let newReq = child.value!.beforeStore()
   //alert("Form Successfully Submitted!")
-  let fieldsToSend = beforeStore()
+  let fieldsToSend = beforeStore(isCreate.value)
 
   if (fieldsToSend === false) {
     alert(`problem with data`)

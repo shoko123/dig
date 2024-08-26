@@ -40,7 +40,13 @@ type TStone<T extends TModuleInfo> = {
   categorizedFields: Pick<TStone<T>['FD'], 'old_museum_id'>
   TabularViewFields: Pick<
     TStone<T>['fields'],
-    'id' | 'cataloger_description' | 'specialist_description'
+    | 'id'
+    | 'square'
+    | 'context'
+    | 'excavation_date'
+    | 'cataloger_description'
+    | 'specialist_description'
+    | 'conservation_notes'
   >
 }
 

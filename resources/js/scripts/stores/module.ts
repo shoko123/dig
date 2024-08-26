@@ -51,6 +51,10 @@ export const useModuleStore = defineStore('module', () => {
     return store.prepareForNew(isCreate, ids)
   }
 
+  function beforeStore(isCreate: boolean) {
+    const store = getStore(current.value.module!)
+    return store.beforeStore(isCreate)
+  }
   const moduleNewFields = computed(() => {
     const store = getStore(<TModule>current.value.module)
     return store.newFields
@@ -93,6 +97,7 @@ export const useModuleStore = defineStore('module', () => {
     setModuleInfo,
     categorizerByFieldName,
     modulePrepareForNew,
+    beforeStore,
     moduleNewFields,
   }
 })
