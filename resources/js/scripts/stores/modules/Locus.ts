@@ -62,22 +62,18 @@ export const useLocusStore = defineStore('locus', () => {
     }
   }
 
-  const headers = computed(() => {
+  const mainTableHeaders = computed(() => {
     return [
       { title: 'Label', align: 'start', key: 'tag' },
       { title: 'OC Label', align: 'start', key: 'oc_label' },
-      { title: 'Basic Typology', align: 'start', key: 'basic_typology' },
-      { title: 'Number', align: 'start', key: 'number' },
-      { title: 'Subnumber', align: 'start', key: 'sub_number' },
       { title: 'Square', align: 'start', key: 'square' },
       { title: 'Published Date', align: 'start', key: 'published_date' },
-      { title: 'Updated Date', align: 'start', key: 'updated_date' },
     ]
   })
 
   return {
     newFields,
-    headers,
+    mainTableHeaders,
     prepareForNew,
     beforeStore,
     slugToId,

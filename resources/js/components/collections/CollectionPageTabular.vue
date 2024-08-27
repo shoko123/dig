@@ -1,13 +1,6 @@
 <template>
-  <v-data-table-virtual
-    v-if="collectionIsNotEmpty"
-    :headers="heads as any"
-    :items="page"
-    class="elevation-1"
-    height="80vh"
-    item-value="slug"
-    fixed-header
-  >
+  <v-data-table-virtual v-if="collectionIsNotEmpty" :headers="headers" :items="page" class="elevation-1" height="80vh"
+    item-value="slug" fixed-header>
     <template #[`item.tag`]="{ item }">
       <v-btn @click="btnClicked(item)">
         {{ item.tag }}
@@ -25,7 +18,6 @@ import { TCollectionName, TPage } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 import { useCollectionRelatedStore } from '../../scripts/stores/collections/collectionRelated'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
-
 import { useModuleStore } from '../../scripts/stores/module'
 
 const props = defineProps<{
@@ -34,16 +26,17 @@ const props = defineProps<{
 }>()
 
 let { collection } = useCollectionsStore()
-let { getCurrentModuleStore } = storeToRefs(useModuleStore())
+let { mainTableHeaders } = storeToRefs(useModuleStore())
+const { relatedTableHeaders } = storeToRefs(useCollectionRelatedStore())
 let { routerPush, moveFromItemToItem } = useRoutesMainStore()
-const { headers } = storeToRefs(useCollectionRelatedStore())
 
-const heads = computed(() => {
+type THeader = { title: string, align: 'start' | 'end', key: string }
+
+const headers = computed(() => {
   if (props.source === 'main') {
-    const store = getCurrentModuleStore
-    return store.value.headers
+    return mainTableHeaders.value as THeader[]
   } else {
-    return headers.value
+    return relatedTableHeaders.value as THeader[]
   }
 })
 

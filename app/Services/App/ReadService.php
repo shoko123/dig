@@ -70,7 +70,6 @@ abstract class ReadService extends DigModuleService implements ReadSpecificServi
 
     public function applyFieldValueFilters(array $cols)
     {
-        // dump($cols);
         foreach ($cols as $key => $col) {
             if ($col['source'] === 'Categorized') {
                 $this->applyCategorizedFilter($col);

@@ -12,9 +12,9 @@ class CeramicReadService extends ReadService implements ReadSpecificServiceInter
         parent::__construct('Ceramic');
     }
 
-    public function applyCategorizedFilter(array $bespoke_filters): void
+    public function applyCategorizedFilter(array $categorized_fields): void
     {
-        foreach ($bespoke_filters as $key => $item) {
+        foreach ($categorized_fields as $key => $item) {
             // $this->builder->applyFilter();
         }
     }
@@ -26,7 +26,7 @@ class CeramicReadService extends ReadService implements ReadSpecificServiceInter
 
     public function fieldsForTabularPage(): array
     {
-        return ['id', 'field_description', 'specialist_description', 'notes'];
+        return ['id', 'id_year', 'field_description', 'specialist_description', 'notes'];
     }
 
     public function fieldsForGalleryPage(): array

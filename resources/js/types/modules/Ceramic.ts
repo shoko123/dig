@@ -12,7 +12,10 @@ type TCeramic<T extends TModuleInfo> = {
   }
   FD: Pick<TCeramic<T>['fields'], 'id_object_no' | 'id_year'>
   categorizedFields: Pick<TCeramic<T>['FD'], never>
-  TabularViewFields: TCeramic<T>['fields']
+  TabularViewFields: Pick<
+    TCeramic<T>['fields'],
+    'id' | 'field_description' | 'specialist_description' | 'base_type_id'
+  >
 }
 
 export { TCeramic }

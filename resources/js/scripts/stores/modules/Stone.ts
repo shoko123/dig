@@ -185,10 +185,9 @@ export const useStoneStore = defineStore('stone', () => {
     return typeof newFields.value.uri === 'string'
   })
 
-  const headers = computed(() => {
+  const mainTableHeaders = computed(() => {
     return [
       { title: 'Label', align: 'start', key: 'tag' },
-      { title: 'Square', align: 'start', key: 'square' },
       { title: 'Context', align: 'start', key: 'context' },
       { title: 'Excavation Date', align: 'start', key: 'excavation_date' },
       { title: 'Cataloger Description', align: 'start', key: 'cataloger_description' },
@@ -197,7 +196,7 @@ export const useStoneStore = defineStore('stone', () => {
   })
 
   return {
-    headers,
+    mainTableHeaders,
     currentIds,
     newFields,
     rules,

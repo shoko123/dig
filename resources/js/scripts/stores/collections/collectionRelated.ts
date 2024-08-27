@@ -35,8 +35,8 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     return extra.value.views[extra.value.viewIndex].ipp
   })
 
-  //headers for the related.Tabular view
-  const headers = computed(() => {
+  //relatedTableHeaders for the related.Tabular view
+  const relatedTableHeaders = computed(() => {
     return [
       { title: 'Tag', align: 'start', key: 'tag' },
       { title: 'Relation', align: 'start', key: 'relation_name' },
@@ -134,7 +134,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     ipp,
     array,
     page,
-    headers,
+    relatedTableHeaders,
     loadPage,
     itemIndexById,
     setCollectionViews,

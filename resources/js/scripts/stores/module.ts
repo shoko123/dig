@@ -36,7 +36,6 @@ export const useModuleStore = defineStore('module', () => {
   })
 
   function tagAndSlugFromId(module: TModule, id: string) {
-    //console.log(`module.tagAndSlugFromId()`)
     const store = getStore(module)
     return store.tagAndSlugFromId(id)
   }
@@ -56,8 +55,13 @@ export const useModuleStore = defineStore('module', () => {
     return store.beforeStore(isCreate)
   }
   const moduleNewFields = computed(() => {
-    const store = getStore(<TModule>current.value.module)
+    const store = getStore(current.value.module!)
     return store.newFields
+  })
+
+  const mainTableHeaders = computed(() => {
+    const store = getStore(current.value.module!)
+    return store.mainTableHeaders
   })
 
   function setModuleInfo(initData: {
@@ -67,7 +71,7 @@ export const useModuleStore = defineStore('module', () => {
   }): void {
     counts.value = initData.counts
     welcomeText.value = initData.welcomeText
-    firstSlug.value = tagAndSlugFromId(<TModule>to.value.module, initData.firstId).slug
+    firstSlug.value = tagAndSlugFromId(to.value.module!, initData.firstId).slug
   }
 
   function getStore(module: TModule) {
@@ -83,21 +87,17 @@ export const useModuleStore = defineStore('module', () => {
     }
   }
 
-  const getCurrentModuleStore = computed(() => {
-    return getStore(<TModule>current.value.module)
-  })
-
   return {
+    setModuleInfo,
+    categorizerByFieldName,
     counts,
     welcomeText,
     firstSlug,
     backgroundImage,
-    getCurrentModuleStore,
     tagAndSlugFromId,
-    setModuleInfo,
-    categorizerByFieldName,
     modulePrepareForNew,
     beforeStore,
     moduleNewFields,
+    mainTableHeaders,
   }
 })

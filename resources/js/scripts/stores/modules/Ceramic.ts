@@ -57,22 +57,18 @@ export const useCeramicStore = defineStore('ceramic', () => {
     return newFields.value as TFieldsByModule<'Ceramic'>
   }
 
-  const headers = computed(() => {
+  const mainTableHeaders = computed(() => {
     return [
       { title: 'Name', align: 'start', key: 'tag' },
-      { title: 'Year', align: 'end', key: 'year' },
-      { title: 'Type', align: 'start', key: 'type' },
-      { title: 'Cross Reference', align: 'start', key: 'cross_ref' },
-      { title: 'Description', align: 'start', key: 'description' },
-      { title: 'Stratum', align: 'start', key: 'stratum' },
-      { title: 'Square', align: 'start', key: 'square' },
-      { title: 'Elevation', align: 'start', key: 'elevation' },
+      { title: 'Year', align: 'start', key: 'id_year' },
+      { title: 'Field Description', align: 'start', key: 'field_description' },
+      { title: 'Specialist Description', align: 'start', key: 'specialist_description' },
     ]
   })
 
   return {
     newFields,
-    headers,
+    mainTableHeaders,
     prepareForNew,
     beforeStore,
     tagAndSlugFromId,

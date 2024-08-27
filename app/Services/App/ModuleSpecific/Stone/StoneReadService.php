@@ -12,11 +12,11 @@ class StoneReadService extends ReadService implements ReadSpecificServiceInterfa
         parent::__construct('Stone');
     }
 
-    public function applyCategorizedFilter(array $bespoke_filter): void
+    public function applyCategorizedFilter(array $categorized_fields): void
     {
-        switch ($bespoke_filter['field_name']) {
+        switch ($categorized_fields['field_name']) {
             case 'old_museum_id':
-                $this->filterHasOldMuseumId($bespoke_filter['vals']);
+                $this->filterHasOldMuseumId($categorized_fields['vals']);
             default:
                 return;
         }
