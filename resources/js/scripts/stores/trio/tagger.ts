@@ -14,48 +14,31 @@ export const useTaggerStore = defineStore('tagger', () => {
   const { send } = useXhrStore()
   const { module } = storeToRefs(useModuleStore())
 
-  const selectedNewItemParams = ref<string[]>([])
+  const taggerAllParams = ref<string[]>([])
 
   function prepareTagger() {
-    selectedNewItemParams.value = itemAllParams.value.filter((x) => {
-      const code = trio.value.groupsObj[trio.value.paramsObj[x].groupKey].code
-      return code === 'TG' || code === 'TM'
-    })
-
-    const tmpMap = new Map()
-    Object.entries(fieldsToGroupKeyObj.value).forEach(([key, value]) => {
-      const group = trio.value.groupsObj[value]
-
-      if (group.code === 'FD' && (<TGroupField>group).show_in_tagger) {
-        const val = fields.value![key as keyof TFieldsUnion]
-        const paramKey = group.paramKeys.find(
-          // ** weak comparison because param.extra is either string, number or boolean
-          (y) => trio.value.paramsObj[y].extra == val,
-        )
-        if (paramKey === undefined) {
-          throw new Error(
-            `prepareTagger() - Can't find value ${val} in group ${group.label} field ${key}`,
-          )
-        }
-        selectedNewItemParams.value.push(paramKey)
-      }
-    })
-    const res = Object.fromEntries(tmpMap.entries())
-    return res
+    taggerAllParams.value = itemAllParams.value
   }
 
-  function truncateNewItemParams() {
-    selectedNewItemParams.value = []
+  function clearParams() {
+    taggerAllParams.value = []
   }
 
-  //When clearing params, set field values to default (index 0)
-  function resetParams() {
-    selectedNewItemParams.value = []
+  function setDefaultParams() {
+    //copy all the params from item
+    taggerAllParams.value = itemAllParams.value
+
+    //keep only 'Categorized'
+    taggerAllParams.value = taggerAllParams.value.filter((x) => {
+      const group = <TGroupField>trio.value.groupsObj[trio.value.paramsObj[x].groupKey]
+      return group.tag_source === 'Categorized'
+    })
+
+    // add fields dependent params (except 'Categorized') with default group.paramKeys[0]
     for (const x in fieldsToGroupKeyObj.value) {
       const group = trio.value.groupsObj[fieldsToGroupKeyObj.value[x]]
-
-      if (group.code === 'FD' && (<TGroupField>group).show_in_tagger) {
-        selectedNewItemParams.value.push(group.paramKeys[0])
+      if (group.code === 'FD' && (<TGroupField>group).tag_source !== 'Categorized') {
+        taggerAllParams.value.push(group.paramKeys[0])
       }
       console.log(`Add Field Tag: ${group.label} => "${x}`)
     }
@@ -70,7 +53,7 @@ export const useTaggerStore = defineStore('tagger', () => {
       fields: <{ field_name: string; val: number | string | boolean }[]>[],
     }
 
-    selectedNewItemParams.value.forEach((paramKey) => {
+    taggerAllParams.value.forEach((paramKey) => {
       const group = <TGroupField>trio.value.groupsObj[trio.value.paramsObj[paramKey].groupKey]
       switch (group.code) {
         case 'TG':
@@ -83,11 +66,13 @@ export const useTaggerStore = defineStore('tagger', () => {
 
         case 'FD':
           {
-            const param = trio.value.paramsObj[paramKey]
-            payload.fields.push({
-              field_name: group.field_name,
-              val: param.extra,
-            })
+            if (group.tag_source !== 'Categorized') {
+              const param = trio.value.paramsObj[paramKey]
+              payload.fields.push({
+                field_name: group.field_name,
+                val: param.extra,
+              })
+            }
           }
           break
       }
@@ -103,10 +88,10 @@ export const useTaggerStore = defineStore('tagger', () => {
   }
 
   return {
-    selectedNewItemParams,
-    truncateNewItemParams,
+    taggerAllParams,
+    clearParams,
     prepareTagger,
-    resetParams,
+    setDefaultParams,
     sync,
   }
 })

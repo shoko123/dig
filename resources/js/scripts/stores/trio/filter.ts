@@ -20,18 +20,18 @@ export const useFilterStore = defineStore('filter', () => {
     orderByOptions,
     currentGroup,
   } = storeToRefs(useTrioStore())
-  const selectedFilterParams = ref<string[]>([])
+  const filterAllParams = ref<string[]>([])
 
   function filtersToQueryObject() {
     const q2: {
       [key: string]: string
     } = {}
 
-    selectedFilterParams.value.sort((a, b) => {
+    filterAllParams.value.sort((a, b) => {
       return a > b ? 1 : -1
     })
 
-    selectedFilterParams.value.forEach((k) => {
+    filterAllParams.value.forEach((k) => {
       const paramUlined = trio.value.paramsObj[k].text.replace(/ /g, '_')
       const groupUlined = trio.value.groupsObj[trio.value.paramsObj[k].groupKey].label.replace(
         / /g,
@@ -62,7 +62,7 @@ export const useFilterStore = defineStore('filter', () => {
     }
 
     //push params into their correct arrays, according to group type
-    selectedFilterParams.value.forEach((key) => {
+    filterAllParams.value.forEach((key) => {
       const param = trio.value.paramsObj[key]
       const group = trio.value.groupsObj[trio.value.paramsObj[key].groupKey]
 
@@ -144,7 +144,7 @@ export const useFilterStore = defineStore('filter', () => {
       }
     }
     orderByClear()
-    selectedFilterParams.value = []
+    filterAllParams.value = []
   }
 
   async function getCount() {
@@ -165,13 +165,13 @@ export const useFilterStore = defineStore('filter', () => {
     trio.value.paramsObj[paramKey].text = val
 
     //add/remove from selected filters
-    const inSelected = selectedFilterParams.value.includes(paramKey)
+    const inSelected = filterAllParams.value.includes(paramKey)
     if (inSelected && val === '') {
-      const i = selectedFilterParams.value.indexOf(paramKey)
-      selectedFilterParams.value.splice(i, 1)
+      const i = filterAllParams.value.indexOf(paramKey)
+      filterAllParams.value.splice(i, 1)
     }
     if (!inSelected && val !== '') {
-      selectedFilterParams.value.push(paramKey)
+      filterAllParams.value.push(paramKey)
     }
   }
 
@@ -181,9 +181,9 @@ export const useFilterStore = defineStore('filter', () => {
       trio.value.paramsObj[x].text = ''
 
       //if currently in selectedFilters, then remove.
-      if (selectedFilterParams.value.includes(x)) {
-        const i = selectedFilterParams.value.indexOf(x)
-        selectedFilterParams.value.splice(i, 1)
+      if (filterAllParams.value.includes(x)) {
+        const i = filterAllParams.value.indexOf(x)
+        filterAllParams.value.splice(i, 1)
       }
     })
   }
@@ -211,22 +211,22 @@ export const useFilterStore = defineStore('filter', () => {
     // console.log(`paramClicked(${index}) asc: ${asc} params:  ${JSON.stringify(orderByParams, null, 2)} key: ${firstEmptyParam.key} label: ${label}`)
 
     trio.value.paramsObj[firstEmptyParam.key].text = label
-    selectedFilterParams.value.push(firstEmptyParam.key)
+    filterAllParams.value.push(firstEmptyParam.key)
   }
 
   function orderByClear() {
     console.log(`orderClear`)
     orderByGroup.value?.paramKeys.forEach((x) => {
       trio.value.paramsObj[x].text = ''
-      if (selectedFilterParams.value.includes(x)) {
-        const i = selectedFilterParams.value.indexOf(x)
-        selectedFilterParams.value.splice(i, 1)
+      if (filterAllParams.value.includes(x)) {
+        const i = filterAllParams.value.indexOf(x)
+        filterAllParams.value.splice(i, 1)
       }
     })
   }
 
   return {
-    selectedFilterParams,
+    filterAllParams,
     apiQueryPayload,
     orderParamClicked,
     orderByClear,

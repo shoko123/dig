@@ -49,7 +49,7 @@ const { routerPush } = useRoutesMainStore()
 const { visibleCategories, visibleGroups, visibleParams, categoryIndex, groupIndex } =
   storeToRefs(useTrioStore())
 const { resetCategoryAndGroupIndices, paramClicked } = useTrioStore()
-const { sync, prepareTagger, truncateNewItemParams, resetParams } = useTaggerStore()
+const { sync, prepareTagger, clearParams, setDefaultParams } = useTaggerStore()
 const { showSpinner, showSnackbar } = useNotificationsStore()
 
 const header = computed(() => {
@@ -104,7 +104,7 @@ async function submit() {
 
   if (res.success) {
     resetCategoryAndGroupIndices()
-    truncateNewItemParams()
+    clearParams()
     routerPush('back1')
   } else {
     showSnackbar(`Syncing of tags failed. Error: ${res.message}`)
@@ -114,7 +114,7 @@ async function submit() {
 function cancel() {
   console.log(`cancelClicked`)
   resetCategoryAndGroupIndices()
-  truncateNewItemParams()
+  clearParams()
   routerPush('back1')
 }
 
@@ -127,7 +127,7 @@ function resetToItem() {
 function clear() {
   console.log(`clear`)
   resetCategoryAndGroupIndices()
-  resetParams()
+  setDefaultParams()
 }
 
 </script>

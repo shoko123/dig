@@ -278,7 +278,7 @@ export const useTrioStore = defineStore('trio', () => {
     console.log(
       `*** trio clearDependecies param: ${paramKey} currently selected: ${selected.value} ***`,
     )
-    //We assume that this param was already removed from paramClickedSource (selectedFilterParams/selectedNewItemParams).
+    //We assume that this param was already removed from paramClickedSource (filterAllParams/taggerAllParams).
 
     //step 1 - collect all groups affected by unselecting this param
     const groupsToUnselect: { grpKey: string; label: string; paramKeys: string[] }[] = []
@@ -355,13 +355,13 @@ export const useTrioStore = defineStore('trio', () => {
   })
 
   const selected = computed(() => {
-    const { selectedFilterParams } = storeToRefs(useFilterStore())
-    const { selectedNewItemParams } = storeToRefs(useTaggerStore())
+    const { filterAllParams } = storeToRefs(useFilterStore())
+    const { taggerAllParams } = storeToRefs(useTaggerStore())
     switch (current.value.name) {
       case 'filter':
-        return selectedFilterParams.value
+        return filterAllParams.value
       case 'tag':
-        return selectedNewItemParams.value
+        return taggerAllParams.value
       default:
         return []
     }
@@ -380,8 +380,8 @@ export const useTrioStore = defineStore('trio', () => {
 
   function trioReset() {
     const { clearSelectedFilters } = useFilterStore()
-    const { truncateNewItemParams } = useTaggerStore()
-    truncateNewItemParams()
+    const { clearParams } = useTaggerStore()
+    clearParams()
     clearSelectedFilters()
 
     groupIndex.value = 0

@@ -1,5 +1,5 @@
 import { defineStore, storeToRefs } from 'pinia'
-import { TrioSourceName } from '../../../types/trioTypes'
+import { TrioSourceName, TGroupField } from '../../../types/trioTypes'
 
 import { useTrioStore } from './trio'
 import { useItemStore } from '../item'
@@ -12,8 +12,8 @@ type TCat = { label: string; groups: TGroup[] }
 export const useTrioSelectedStore = defineStore('trioSelected2', () => {
   const { trio, groupLabelToGroupKeyObj } = storeToRefs(useTrioStore())
   const { itemAllParams } = storeToRefs(useItemStore())
-  const { selectedFilterParams } = storeToRefs(useFilterStore())
-  const { selectedNewItemParams } = storeToRefs(useTaggerStore())
+  const { filterAllParams } = storeToRefs(useFilterStore())
+  const { taggerAllParams } = storeToRefs(useTaggerStore())
 
   function selectedTrio(sourceName: TrioSourceName) {
     if (trio.value.categories.length === 0) {
@@ -27,13 +27,23 @@ export const useTrioSelectedStore = defineStore('trioSelected2', () => {
     //choose source
     switch (sourceName) {
       case 'Filter':
-        params = selectedFilterParams.value
+        params = filterAllParams.value
         break
       case 'Item':
-        params = itemAllParams.value.filter((x) => trio.value.paramsObj[x].text !== 'Unassigned')
+        params = itemAllParams.value.filter((x) => {
+          const group = trio.value.groupsObj[trio.value.paramsObj[x].groupKey]
+          if (group.code === 'FD') {
+            return (
+              (<TGroupField>group).show_in_item_tags &&
+              trio.value.paramsObj[x].text !== 'Unassigned'
+            )
+          } else {
+            return true
+          }
+        })
         break
       case 'New':
-        params = selectedNewItemParams.value
+        params = taggerAllParams.value
         break
     }
 

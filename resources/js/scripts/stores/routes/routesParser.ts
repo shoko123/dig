@@ -64,7 +64,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
   ): { success: true } | { success: false; message: string } {
     //console.log(`urlQueryToApiFilters().urlQuery: ${JSON.stringify(qp, null, 2)}`);
     const { trio, groupLabelToGroupKeyObj } = storeToRefs(useTrioStore())
-    const { selectedFilterParams } = storeToRefs(useFilterStore())
+    const { filterAllParams } = storeToRefs(useFilterStore())
 
     if (qp === null) {
       return { success: true }
@@ -124,7 +124,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
           break
       }
     }
-    selectedFilterParams.value = selectedFilters
+    filterAllParams.value = selectedFilters
     return { success: true }
   }
 
@@ -150,7 +150,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
   function processUrlOB(
     group: TGroupBase,
     paramTexts: string[],
-    selectedFilterParams: string[],
+    filterAllParams: string[],
   ): { success: true } | { success: false; message: string } {
     const { trio, orderByOptions } = storeToRefs(useTrioStore())
     const selected: string[] = []
@@ -174,7 +174,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
         return { success: false, message: `Problem with url Order By parameter "${x}".` }
       }
       trio.value.paramsObj[firstEmptyParamKey].text = x
-      selectedFilterParams.push(firstEmptyParamKey)
+      filterAllParams.push(firstEmptyParamKey)
       selected.push(nameOnly)
     }
     return { success: true }
@@ -183,7 +183,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
   function processUrlCS(
     group: TGroupBase,
     paramTexts: string[],
-    selectedFilterParams: string[],
+    filterAllParams: string[],
   ): { success: true } | { success: false; message: string } {
     const { trio } = storeToRefs(useTrioStore())
     if (paramTexts.length > 6) {
@@ -198,7 +198,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
         return { success: false, message: `Problem with url search parameter "${x}".` }
       }
       trio.value.paramsObj[firstEmptyParamKey].text = x
-      selectedFilterParams.push(firstEmptyParamKey)
+      filterAllParams.push(firstEmptyParamKey)
     }
     return { success: true }
   }
