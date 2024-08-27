@@ -6,12 +6,12 @@ import type { TApiFilters } from '@/js/types/routesTypes'
 import type { TApiArray } from '@/js/types/collectionTypes'
 import { useTrioStore } from './trio'
 import { useXhrStore } from '../xhr'
-import { useRoutesMainStore } from '../routes/routesMain'
+import { useModuleStore } from '../module'
 import { assert } from '../../utils/utils'
 
 export const useFilterStore = defineStore('filter', () => {
   const { send } = useXhrStore()
-  const { current } = storeToRefs(useRoutesMainStore())
+  const { module } = storeToRefs(useModuleStore())
   const {
     trio,
     groupLabelToGroupKeyObj,
@@ -149,7 +149,7 @@ export const useFilterStore = defineStore('filter', () => {
 
   async function getCount() {
     const res = await send<TApiArray[]>('module/index', 'post', {
-      module: current.value.module,
+      module: module.value,
       query: apiQueryPayload.value,
     })
     return res.success ? res.data.length : -1

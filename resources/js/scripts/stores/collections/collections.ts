@@ -10,13 +10,13 @@ import type {
   TApiArray,
 } from '@/js/types/collectionTypes'
 import type { TModule } from '@/js/types/moduleTypes'
-import { useRoutesMainStore } from '../routes/routesMain'
+import { useModuleStore } from '../module'
 import { useCollectionMainStore } from './collectionMain'
 import { useCollectionMediaStore } from './collectionMedia'
 import { useCollectionRelatedStore } from './collectionRelated'
 
 export const useCollectionsStore = defineStore('collections', () => {
-  const { current } = storeToRefs(useRoutesMainStore())
+  const { module } = storeToRefs(useModuleStore())
 
   function getCollection(source: TCollectionName) {
     switch (source) {
@@ -88,9 +88,9 @@ export const useCollectionsStore = defineStore('collections', () => {
     const newView = meta.views[newViewIndex]
     const index = meta.firstItemNo - 1
     console.log(
-      `toggleCollectionView() collection: ${name}  module: ${current.value.module} views: ${meta.itemsPerPage}  current view: ${currentView.name}  new view: ${newView.name} index: ${index}`,
+      `toggleCollectionView() collection: ${name}  module: ${module.value} views: ${meta.itemsPerPage}  current view: ${currentView.name}  new view: ${newView.name} index: ${index}`,
     )
-    await loadPageByItemIndex(name, newView, index, <TModule>current.value.module)
+    await loadPageByItemIndex(name, newView, index, module.value)
     const c = getCollection(name)
     c.extra.viewIndex = newViewIndex
   }

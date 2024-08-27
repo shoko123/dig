@@ -15,6 +15,7 @@ export const useItemStore = defineStore('item', () => {
   const { current } = storeToRefs(useRoutesMainStore())
   const { collection, itemByIndex } = useCollectionsStore()
   const { tagAndSlugFromId } = useModuleStore()
+  const { module } = storeToRefs(useModuleStore())
   const { send } = useXhrStore()
   const { trio, groupLabelToGroupKeyObj } = storeToRefs(useTrioStore())
   const { getFieldsParams } = useTrioStore()
@@ -143,7 +144,7 @@ export const useItemStore = defineStore('item', () => {
     //const prev = next('main', itemIndexById((<TFieldsUnion>fields.value).id), false)
 
     const res = await send<TApiItemShow<TApiFieldsUnion>>('module/destroy', 'post', {
-      module: current.value.module,
+      module: module.value,
       id: fields.value?.id,
     })
 
@@ -151,7 +152,6 @@ export const useItemStore = defineStore('item', () => {
       return res
     }
 
-    // console.log(`${current.value.module}item.itemRemove() success!`)
     const prevSlug = nextSlug(false)
     const newLength = removeItemIdFromMainArray((<TFieldsUnion>fields.value).id)
 

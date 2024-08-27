@@ -6,11 +6,13 @@ import type { TGroupField } from '@/js/types/trioTypes'
 import { useXhrStore } from '../xhr'
 import { useItemStore } from '../item'
 import { useTrioStore } from './trio'
-import { useRoutesMainStore } from '../routes/routesMain'
+import { useModuleStore } from '../module'
 
 export const useTaggerStore = defineStore('tagger', () => {
   const { trio, fieldsToGroupKeyObj } = storeToRefs(useTrioStore())
   const { fields, itemAllParams } = storeToRefs(useItemStore())
+  const { send } = useXhrStore()
+  const { module } = storeToRefs(useModuleStore())
 
   const selectedNewItemParams = ref<string[]>([])
 
@@ -60,11 +62,8 @@ export const useTaggerStore = defineStore('tagger', () => {
   }
 
   async function sync() {
-    const { send } = useXhrStore()
-    const { current } = storeToRefs(useRoutesMainStore())
-
     const payload = {
-      module: current.value.module,
+      module: module.value,
       module_id: (<TFieldsUnion>fields.value).id,
       global_tag_ids: <number[]>[],
       module_tag_ids: <number[]>[],

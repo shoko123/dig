@@ -10,7 +10,7 @@ import { useTrioStore } from './trio/trio'
 
 export const useItemNewStore = defineStore('itemNew', () => {
   const { current } = storeToRefs(useRoutesMainStore())
-  const { moduleNewFields } = storeToRefs(useModuleStore())
+  const { moduleNewFields, module } = storeToRefs(useModuleStore())
   const { modulePrepareForNew, tagAndSlugFromId } = useModuleStore()
 
   const { send } = useXhrStore()
@@ -18,7 +18,6 @@ export const useItemNewStore = defineStore('itemNew', () => {
 
   const slug = ref<string | undefined>(undefined)
   const tag = ref<string | undefined>(undefined)
-  const selectedItemParams = ref<string[]>([])
   const itemNewAllParams = ref<string[]>([])
   const ready = ref<boolean>(false)
 
@@ -46,7 +45,6 @@ export const useItemNewStore = defineStore('itemNew', () => {
     modulePrepareForNew(isCreate, ids)
 
     const fd = getFieldsParams(newFields.value! as TFieldsUnion)
-    selectedItemParams.value = fd.map((x) => x.paramKey)
     itemNewAllParams.value = fd.map((x) => x.paramKey)
 
     //build object [field_name] : fieldInfo
@@ -60,14 +58,14 @@ export const useItemNewStore = defineStore('itemNew', () => {
     newFields: Partial<TFieldsUnion>,
   ): Promise<{ success: true; slug: string } | { success: false; message: string }> {
     console.log(
-      `item.upload isCreate: ${isCreate}, module: ${current.value.module}, fields: ${JSON.stringify(newFields, null, 2)}`,
+      `item.upload isCreate: ${isCreate}, module: ${module.value}, fields: ${JSON.stringify(newFields, null, 2)}`,
     )
 
     const res = await send<TApiItemShow<TApiFieldsUnion>>(
       'module/store',
       isCreate ? 'post' : 'put',
       {
-        module: current.value.module,
+        module: module.value,
         fields: newFields,
       },
     )
@@ -90,7 +88,7 @@ export const useItemNewStore = defineStore('itemNew', () => {
     slug.value = undefined
 
     tag.value = undefined
-    selectedItemParams.value = []
+    itemNewAllParams.value = []
   }
 
   return {
@@ -101,7 +99,6 @@ export const useItemNewStore = defineStore('itemNew', () => {
     id,
     isCreate,
     isUpdate,
-    selectedItemParams,
     itemNewAllParams,
     openIdSelectorModal,
     itemNewFieldsToParamsObj,
