@@ -49,7 +49,7 @@ const module = computed(() => {
 })
 
 function isAllowed(action: string) {
-  const term = current.value.module + '-' + action
+  const term = `${current.value.module}-${action}`
   return permissions.value.includes(term)
 }
 

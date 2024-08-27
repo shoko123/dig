@@ -22,11 +22,11 @@ import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '../../../../scripts/stores/auth'
 import { useMainStore } from '../../../../scripts/stores/main'
-import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
+import { useModuleStore } from '../../../../scripts/stores/module'
 import LoginOrUser from '../elements/LoginOrUser.vue'
 
 const { authenticated, accessibility } = storeToRefs(useAuthStore())
-const { current } = storeToRefs(useRoutesMainStore())
+const { module } = storeToRefs(useModuleStore())
 const { moduleBtnsInfo } = storeToRefs(useMainStore())
 
 const disableLinks = computed(() => {
@@ -34,6 +34,6 @@ const disableLinks = computed(() => {
 })
 
 const selectedModuleIndex = computed(() => {
-  return moduleBtnsInfo.value.findIndex(x => current.value.module === x.module)
+  return moduleBtnsInfo.value.findIndex(x => module.value === x.module)
 })
 </script>

@@ -32,12 +32,12 @@ import CeramicNew from '../modules/Ceramic/CeramicNew.vue'
 let { showSpinner, showSnackbar } = useNotificationsStore()
 let { upload } = useItemNewStore()
 let { beforeStore } = useModuleStore()
+const { module } = storeToRefs(useModuleStore())
 let { routerPush } = useRoutesMainStore()
-let { to } = storeToRefs(useRoutesMainStore())
 let { current } = storeToRefs(useRoutesMainStore())
 
 const isCreate = computed(() => {
-  return to.value.name === 'create'
+  return current.value.name === 'create'
 })
 
 const title = computed(() => {
@@ -45,13 +45,13 @@ const title = computed(() => {
 })
 
 const formNew = computed<Component>(() => {
-  switch (current.value.module) {
+  switch (module.value) {
     case 'Ceramic':
       return CeramicNew
     case 'Stone':
       return StoneNew
     default:
-      console.log(`Update.vue invalid module ${current.value.module}`)
+      console.log(`Update.vue invalid module ${module.value}`)
       return CeramicNew
   }
 })
@@ -78,17 +78,17 @@ async function submit(v: Validation) {
     return
   }
 
-  showSpinner(`${isCreate.value ? 'Creating' : 'Updating'} ${current.value.module} item...`)
+  showSpinner(`${isCreate.value ? 'Creating' : 'Updating'} ${module.value} item...`)
   const res = await upload(isCreate.value, fieldsToSend)
   showSpinner(false)
 
   if (!res.success) {
-    showSnackbar(`Failed to ${isCreate.value ? 'create' : 'update'} item. ${res.message}`, 'red')
+    showSnackbar(`Failed current ${isCreate.value ? 'create' : 'update'} item. ${res.message}`, 'red')
     return
   }
 
   showSnackbar(
-    `${current.value.module} item ${isCreate.value ? 'created' : 'updated'} successfully!`,
+    `${module.value} item ${isCreate.value ? 'created' : 'updated'} successfully!`,
   )
   console.log(`CreateUpdate. success! res: ${JSON.stringify(res, null, 2)}`)
 

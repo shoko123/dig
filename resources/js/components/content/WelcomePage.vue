@@ -20,15 +20,9 @@ import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useDisplay } from 'vuetify'
 import { useModuleStore } from '../../scripts/stores/module'
-import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 
-let { current } = storeToRefs(useRoutesMainStore())
 const { smAndDown } = useDisplay()
-const { backgroundImage, counts, welcomeText } = storeToRefs(useModuleStore())
-
-const module = computed(() => {
-  return current.value.module
-})
+const { backgroundImage, counts, welcomeText, module } = storeToRefs(useModuleStore())
 
 const overlayWidth = computed(() => {
   return smAndDown.value ? 100 : 30
