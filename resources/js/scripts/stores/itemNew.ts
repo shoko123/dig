@@ -75,7 +75,7 @@ export const useItemNewStore = defineStore('itemNew', () => {
       return res
     }
 
-    const tagAndSlug = tagAndSlugFromId(current.value.module!, res.data.fields.id)
+    const tagAndSlug = tagAndSlugFromId(res.data.fields.id)
 
     if (isCreate) {
       //push newly created id into the 'main' collection

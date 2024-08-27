@@ -74,7 +74,7 @@ export const useCarouselStore = defineStore('carousel', () => {
           if (res.success) {
             carouselItemDetails.value = {
               ...res.data,
-              ...tagAndSlugFromId(<TModule>derived.value.module, res.data.id),
+              ...tagAndSlugFromId(res.data.id),
               media: buildMedia(res.data.urls, derived.value.module),
             }
           } else {
@@ -114,7 +114,7 @@ export const useCarouselStore = defineStore('carousel', () => {
           const tmp = <TApiArray<'related'>>item
           carouselItemDetails.value = {
             ...tmp,
-            ...tagAndSlugFromId(tmp.module, tmp.id),
+            ...tagAndSlugFromId(tmp.id, tmp.module),
             media: buildMedia(tmp.media, tmp.module),
           }
         }

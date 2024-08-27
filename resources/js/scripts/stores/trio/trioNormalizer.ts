@@ -1,6 +1,5 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { useMediaStore } from '../media'
-import type { TModule } from '@/js/types/moduleTypes'
 import type {
   TApiTrio,
   TApiParam,
@@ -32,7 +31,6 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   let prmCnt = 0
   let tmpGroup: TGroupTmpUnion | null = null
   let tmpParams: TParamTmp[] = []
-  let tmpModule: TModule | null = null
 
   function reset() {
     categories = []
@@ -47,9 +45,8 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     tmpParams = []
   }
 
-  function normalizetrio(apiTrio: TApiTrio, module: TModule) {
+  function normalizetrio(apiTrio: TApiTrio) {
     reset()
-    tmpModule = module
     apiTrio.forEach((cat) => {
       categories.push({ name: cat.name, groupKeys: [] })
       cat.groups.forEach((grp) => {
@@ -147,7 +144,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
       allow_dependents: grp.allow_dependents,
     }
     if (grp.tag_source === 'Categorized') {
-      tmpGroup.categorizer = categorizerByFieldName(tmpModule!, grp.field_name) as TCategorizerFunc
+      tmpGroup.categorizer = categorizerByFieldName(grp.field_name) as TCategorizerFunc
     }
   }
 

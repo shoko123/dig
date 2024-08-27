@@ -27,11 +27,14 @@ class StoneReadService extends ReadService implements ReadSpecificServiceInterfa
         if (count($vals) !== 1) {
             return;
         }
-        if ($vals[0]) {
-            $this->builder->whereNotNull('old_museum_id')->where('old_museum_id', '!=', '');
-        } else {
-            $this->builder->whereNull('old_museum_id')->orWhere('old_museum_id', '=', '');
-        }
+
+        $this->builder->Where(function ($query) use ($vals) {
+            if ($vals[0]) {
+                $query->WhereNotNull('old_museum_id')->where('old_museum_id', '!=', '');
+            } else {
+                $query->whereNull('old_museum_id')->orWhere('old_museum_id', '=', '');
+            }
+        });
     }
 
     public function applyDefaultOrder(): void

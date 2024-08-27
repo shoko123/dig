@@ -1,12 +1,7 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type {
-  TApiFieldsUnion,
-  TFieldsUnion,
-  TDiscreteColumnUnion,
-  TModule,
-} from '@/js/types/moduleTypes'
+import type { TApiFieldsUnion, TFieldsUnion, TDiscreteColumnUnion } from '@/js/types/moduleTypes'
 import type { TApiItemShow, TApiTag } from '@/js/types/itemTypes'
 import type { TApiArray } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from './collections/collections'
@@ -69,7 +64,7 @@ export const useItemStore = defineStore('item', () => {
   function saveitemFieldsPlus<F extends TApiFieldsUnion>(apiItem: TApiItemShow<F>) {
     saveItemFields(apiItem.fields)
 
-    const res = tagAndSlugFromId(<TModule>current.value.module, apiItem.fields.id)
+    const res = tagAndSlugFromId(apiItem.fields.id)
     tag.value = res.tag
     slug.value = res.slug
 
@@ -137,10 +132,7 @@ export const useItemStore = defineStore('item', () => {
       newIndex = itemIndex.value === 0 ? length - 1 : itemIndex.value - 1
     }
 
-    const tagAndSlug = tagAndSlugFromId(
-      current.value.module!,
-      <TApiArray>itemByIndex('main', newIndex),
-    )
+    const tagAndSlug = tagAndSlugFromId(<TApiArray>itemByIndex('main', newIndex))
     return tagAndSlug.slug
   }
 

@@ -175,6 +175,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     const res = await send<TApiModuleInit>('module/init', 'post', { module: module })
     if (res.success) {
       setModuleInfo({
+        module: res.data.module,
         counts: res.data.counts,
         welcomeText: res.data.welcome_text,
         firstId: res.data.first_id,
@@ -184,7 +185,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       i.itemViews = res.data.display_options.item_views
       c.clear(['main', 'media', 'related'])
 
-      setTrio(res.data.trio, module)
+      setTrio(res.data.trio)
 
       c.setCollectionViews('main', res.data.display_options.main_collection_views)
       c.setCollectionViews('related', res.data.display_options.related_collection_views)
@@ -263,7 +264,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     }
 
     // console.log(`loadItem() success! res: ${JSON.stringify(res, null, 2)}`)
-    r.to.slug = tagAndSlugFromId(module, res.data.fields.id).slug
+    r.to.slug = tagAndSlugFromId(res.data.fields.id, module).slug
     setItemMedia(res.data.media)
     array.value = res.data.related
     i.saveitemFieldsPlus(res.data)

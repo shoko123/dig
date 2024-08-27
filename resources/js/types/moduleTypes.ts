@@ -100,6 +100,7 @@ type FuncSlugToId = (
 ) => { success: true; id: string } | { success: false; message: string }
 
 type TApiModuleInit = {
+  module: TModule
   counts: { items: number; media: number }
   first_id: string
   display_options: {

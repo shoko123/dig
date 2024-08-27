@@ -11,7 +11,7 @@ import type {
   TGroupBase,
   TGroupField,
 } from '../../../types/trioTypes'
-import type { TModule, TFieldsUnion, TFieldInfo, TFieldValue } from '@/js/types/moduleTypes'
+import type { TFieldsUnion, TFieldInfo, TFieldValue } from '@/js/types/moduleTypes'
 
 import { useTrioNormalizerStore } from './trioNormalizer'
 import { useRoutesMainStore } from '../routes/routesMain'
@@ -391,11 +391,11 @@ export const useTrioStore = defineStore('trio', () => {
     orderByOptions.value = []
   }
 
-  function setTrio(apiTrio: TApiTrio, module: TModule) {
+  function setTrio(apiTrio: TApiTrio) {
     trioReset()
 
     //const res = normalizeTrio(apiTrio)
-    const res = normalizetrio(apiTrio, module)
+    const res = normalizetrio(apiTrio)
     trio.value = res.trio
     groupLabelToGroupKeyObj.value = res.groupLabelToGroupKeyObj
     orderByOptions.value = res.orderByOptions

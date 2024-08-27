@@ -118,7 +118,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         typed = apiPage as TApiPage<'main', 'Gallery', M>[]
         toSave = typed.map((x) => {
           const media = buildMedia(x.media, module)
-          return { ...x, ...tagAndSlugFromId(module, x.id), media }
+          return { ...x, ...tagAndSlugFromId(x.id), media }
         })
         page.value = toSave
         break
@@ -126,7 +126,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
       case 'Tabular':
         typed = apiPage as TApiPageMainTabularUnion[]
         toSave = typed.map((x) => {
-          return { ...x, ...tagAndSlugFromId(module, x.id) }
+          return { ...x, ...tagAndSlugFromId(x.id) }
         })
         page.value = toSave
         break
@@ -134,7 +134,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
       case 'Chips':
         typed = apiPage as string[]
         toSave = typed.map((x) => {
-          return { id: x, ...tagAndSlugFromId(module, x) }
+          return { id: x, ...tagAndSlugFromId(x) }
         })
         page.value = toSave
         break

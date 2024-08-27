@@ -10,7 +10,8 @@ import { useStoneStore } from './modules/Stone'
 
 export const useModuleStore = defineStore('module', () => {
   const { bucketUrl } = storeToRefs(useMediaStore())
-  const { current, to } = storeToRefs(useRoutesMainStore())
+  const { current } = storeToRefs(useRoutesMainStore())
+  const module = ref<TModule>('Locus')
   const counts = ref({ items: 0, media: 0 })
   const welcomeText = ref<string>('')
   const firstSlug = ref<string>('')
@@ -19,8 +20,8 @@ export const useModuleStore = defineStore('module', () => {
     switch (current.value.name) {
       case 'welcome':
         return {
-          fullUrl: `${bucketUrl.value}app/background/${current.value.module}.jpg`,
-          tnUrl: `${bucketUrl.value}app/background/${current.value.module}-tn.jpg`,
+          fullUrl: `${bucketUrl.value}app/background/${module.value}.jpg`,
+          tnUrl: `${bucketUrl.value}app/background/${module.value}-tn.jpg`,
         }
       case 'login':
       case 'register':
@@ -35,43 +36,48 @@ export const useModuleStore = defineStore('module', () => {
     }
   })
 
-  function tagAndSlugFromId(module: TModule, id: string) {
-    const store = getStore(module)
+  /*
+   * if module is not included, use current (we include it when we want tags of related item)
+   */
+  function tagAndSlugFromId(id: string, m?: TModule) {
+    const store = getStore(typeof m === 'undefined' ? module.value : m)
     return store.tagAndSlugFromId(id)
   }
 
-  function categorizerByFieldName(module: TModule, field: string) {
-    const store = getStore(module)
+  function categorizerByFieldName(field: string) {
+    const store = getStore(module.value)
     return store.categorizerByFieldName(field as keyof TCategorizedFields)
   }
 
   function modulePrepareForNew(isCreate: boolean, ids?: string[]) {
-    const store = getStore(current.value.module!)
+    const store = getStore(module.value)
     return store.prepareForNew(isCreate, ids)
   }
 
   function beforeStore(isCreate: boolean) {
-    const store = getStore(current.value.module!)
+    const store = getStore(module.value)
     return store.beforeStore(isCreate)
   }
   const moduleNewFields = computed(() => {
-    const store = getStore(current.value.module!)
+    const store = getStore(module.value)
     return store.newFields
   })
 
   const mainTableHeaders = computed(() => {
-    const store = getStore(current.value.module!)
+    const store = getStore(module.value)
     return store.mainTableHeaders
   })
 
   function setModuleInfo(initData: {
+    module: TModule
     counts: { items: number; media: number }
     welcomeText: string
     firstId: string
   }): void {
+    module.value = initData.module
     counts.value = initData.counts
     welcomeText.value = initData.welcomeText
-    firstSlug.value = tagAndSlugFromId(to.value.module!, initData.firstId).slug
+    firstSlug.value = tagAndSlugFromId(initData.firstId, initData.module).slug
   }
 
   function getStore(module: TModule) {
@@ -90,6 +96,7 @@ export const useModuleStore = defineStore('module', () => {
   return {
     setModuleInfo,
     categorizerByFieldName,
+    module,
     counts,
     welcomeText,
     firstSlug,

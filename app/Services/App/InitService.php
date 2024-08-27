@@ -24,6 +24,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
     public function init(): array
     {
         return [
+            'module' => self::$module,
             'welcome_text' => static::welcomeText(),
             'counts' => [
                 'items' => $this->model->count(),

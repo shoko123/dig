@@ -55,8 +55,8 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
         res = slice.map((x) => {
           return {
             ...x,
-            ...tagAndSlugFromId(x.module, x.id),
-            tag: `${x.module} ${tagAndSlugFromId(x.module, x.id)}`,
+            ...tagAndSlugFromId(x.id, x.module),
+            tag: `${x.module} ${tagAndSlugFromId(x.id, x.module)}`,
           }
         })
         break
@@ -70,7 +70,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
 
       case 'Chips':
         res = slice.map((x) => {
-          const res = tagAndSlugFromId(x.module, x.id)
+          const res = tagAndSlugFromId(x.id, x.module)
           return {
             relation_name: x.relation_name,
             module: x.module,
