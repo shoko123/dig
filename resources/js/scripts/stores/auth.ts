@@ -17,7 +17,6 @@ import { useRoutesMainStore } from './routes/routesMain'
 
 export const useAuthStore = defineStore('auth', () => {
   const { send } = useXhrStore()
-  const { routerPush } = useRoutesMainStore()
 
   const user = ref<TUser | null>(null)
   const accessibility = ref({ authenticatedUsersOnly: true, readOnly: false })
@@ -84,6 +83,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   function resetAndGoTo(routeName: TPageName | null = null) {
+    const { routerPush } = useRoutesMainStore()
     dialog.value = { open: false, message: '' }
     if (routeName !== null) {
       routerPush(routeName)
