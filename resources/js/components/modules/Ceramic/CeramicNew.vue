@@ -27,8 +27,8 @@ const { newFields } = storeToRefs(useCeramicStore())
 const { trio, groupLabelToGroupKeyObj } = storeToRefs(useTrioStore())
 
 const areas = computed(() => {
-  let paramKeys = trio.value.groupsObj[groupLabelToGroupKeyObj.value['Area']].paramKeys
-  return paramKeys.map((x) => trio.value.paramsObj[x].text)
+  let optionKeys = trio.value.groupsObj[groupLabelToGroupKeyObj.value['Area']].optionKeys
+  return optionKeys.map((x) => trio.value.optionsObj[x].text)
 })
 
 const rules = computed(() => {

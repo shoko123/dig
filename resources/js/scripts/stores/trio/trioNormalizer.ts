@@ -2,16 +2,16 @@ import { defineStore, storeToRefs } from 'pinia'
 import { useMediaStore } from '../media'
 import type {
   TApiTrio,
-  TApiParam,
+  TApiOption,
   TGroupTmpUnion,
   TGroupUnion,
   TApiGroupByCode,
-  TParamObj,
+  TOptionObj,
   TGroupObj,
   TCategoriesArray,
   TGroupOrFieldToKeyObj,
   TGroupField,
-  TParamTmp,
+  TOptionTmp,
   TCategorizerFunc,
 } from '@/js/types/trioTypes'
 import { useModuleStore } from '../module'
@@ -22,27 +22,27 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
 
   let categories: TCategoriesArray = []
   let groupsObj: TGroupObj = {}
-  let paramsObj: TParamObj = {}
+  let optionsObj: TOptionObj = {}
   let groupLabelToGroupKeyObj: TGroupOrFieldToKeyObj = {}
   let fieldsToGroupKeyObj: TGroupOrFieldToKeyObj = {}
-  let orderByOptions: TApiParam[] = []
+  let orderByOptions: TApiOption[] = []
   let catCnt = 0
   let grpCnt = 0
   let prmCnt = 0
   let tmpGroup: TGroupTmpUnion | null = null
-  let tmpParams: TParamTmp[] = []
+  let tmpOptions: TOptionTmp[] = []
 
   function reset() {
     categories = []
     groupsObj = {}
-    paramsObj = {}
+    optionsObj = {}
     groupLabelToGroupKeyObj = {}
     fieldsToGroupKeyObj = {}
     catCnt = 0
     grpCnt = 0
     prmCnt = 0
     tmpGroup = null
-    tmpParams = []
+    tmpOptions = []
   }
 
   function normalizetrio(apiTrio: TApiTrio) {
@@ -79,34 +79,34 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
 
           default:
         }
-        saveGroupAndParams(grpKey)
+        saveGroupAndOptions(grpKey)
         grpCnt++
       })
       catCnt++
     })
 
     return {
-      trio: { categories, groupsObj, paramsObj },
+      trio: { categories, groupsObj, optionsObj },
       groupLabelToGroupKeyObj,
       fieldsToGroupKeyObj,
       orderByOptions,
     }
   }
 
-  function saveGroupAndParams(grpKey: string) {
+  function saveGroupAndOptions(grpKey: string) {
     // console.log(
-    //   `saveGroup() group: ${JSON.stringify(tmpGroup, null, 2)} params: ${JSON.stringify(tmpParams, null, 2)}`,
+    //   `saveGroup() group: ${JSON.stringify(tmpGroup, null, 2)} options: ${JSON.stringify(tmpOptions, null, 2)}`,
     // )
     const grpToSave: TGroupUnion = {
       ...(tmpGroup as TGroupTmpUnion),
-      paramKeys: <string[]>[],
+      optionKeys: <string[]>[],
       categoryIndex: catCnt,
     }
 
-    tmpParams.forEach((p) => {
+    tmpOptions.forEach((p) => {
       const prmKey = pad(prmCnt, 3)
-      grpToSave.paramKeys.push(prmKey)
-      paramsObj[prmKey] = { ...p, groupKey: pad(grpCnt, 3) }
+      grpToSave.optionKeys.push(prmKey)
+      optionsObj[prmKey] = { ...p, groupKey: pad(grpCnt, 3) }
       prmCnt++
     })
     groupsObj[grpKey] = grpToSave
@@ -122,13 +122,13 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
       const pieces = x.split('.')
       const group = groupsObj[groupLabelToGroupKeyObj[pieces[0]]]
       //console.log(`groupLabel: ${pieces[0]}. key: ${groupLabelToGroupKeyObj[pieces[0]]}  `);
-      const res = group.paramKeys.find((x) => paramsObj[x].text === pieces[1])
+      const res = group.optionKeys.find((x) => optionsObj[x].text === pieces[1])
       return res!
     })
   }
 
   function handleFD(grp: TApiGroupByCode<'FD'>) {
-    tmpParams = grp.params
+    tmpOptions = grp.options
 
     tmpGroup = {
       label: grp.label,
@@ -149,7 +149,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   }
 
   function handleFS(grp: TApiGroupByCode<'FS'>) {
-    tmpParams = Array(6).fill({ text: '', extra: null })
+    tmpOptions = Array(6).fill({ text: '', extra: null })
     tmpGroup = {
       label: grp.label,
       code: grp.code,
@@ -158,7 +158,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   }
 
   function handleTag(grp: TApiGroupByCode<'TM' | 'TG'>) {
-    tmpParams = grp.params.map((x) => {
+    tmpOptions = grp.options.map((x) => {
       return { text: x.text, extra: x.extra }
     })
 
@@ -172,7 +172,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   }
 
   function handleMD(grp: TApiGroupByCode<'MD'>) {
-    tmpParams = mediaCollectionNames.value.map((x) => {
+    tmpOptions = mediaCollectionNames.value.map((x) => {
       return { text: x, extra: '' }
     })
 
@@ -183,9 +183,9 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   }
 
   function handleOB(grp: TApiGroupByCode<'OB'>) {
-    orderByOptions = grp.params
+    orderByOptions = grp.options
 
-    tmpParams = Array(grp.params.length).fill({ text: '', extra: null })
+    tmpOptions = Array(grp.options.length).fill({ text: '', extra: null })
 
     tmpGroup = {
       label: grp.label,

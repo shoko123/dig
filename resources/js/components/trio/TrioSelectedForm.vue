@@ -17,8 +17,8 @@
               <v-container fluid class="pa-0 ma-0">
                 <v-row class="pa-2 ma-2">
                   <div>{{ group.label }}:</div>
-                  <v-chip v-for="(param, keyP) in group.params" :key="keyP" class="ml-2 mb-2">
-                    {{ param }}
+                  <v-chip v-for="(option, keyP) in group.options" :key="keyP" class="ml-2 mb-2">
+                    {{ option }}
                   </v-chip>
                 </v-row>
               </v-container>
@@ -35,7 +35,7 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import type { TrioSourceName } from '../../types/trioTypes'
-import { useTrioSelectedStore } from '../../scripts/stores/trio/selectedParams'
+import { useTrioSelectedStore } from '../../scripts/stores/trio/selectedOptions'
 import { useItemStore } from '../../scripts/stores/item'
 let { selectedTrio } = useTrioSelectedStore()
 let { derived } = storeToRefs(useItemStore())

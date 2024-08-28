@@ -6,8 +6,8 @@ import type {
   TTrio,
   TGroupOrFieldToKeyObj,
   TGroupTag,
-  TApiParam,
-  // TParam,
+  TApiOption,
+  // TOption,
   TGroupBase,
   TGroupField,
 } from '../../../types/trioTypes'
@@ -22,19 +22,19 @@ export const useTrioStore = defineStore('trio', () => {
   const { normalizetrio } = useTrioNormalizerStore()
   const { current } = storeToRefs(useRoutesMainStore())
 
-  const trio = ref<TTrio>({ categories: [], groupsObj: {}, paramsObj: {} })
+  const trio = ref<TTrio>({ categories: [], groupsObj: {}, optionsObj: {} })
   const groupLabelToGroupKeyObj = ref<TGroupOrFieldToKeyObj>({})
   const fieldsToGroupKeyObj = ref<TGroupOrFieldToKeyObj>({})
 
-  const orderByOptions = ref<TApiParam[]>([])
+  const orderByOptions = ref<TApiOption[]>([])
   //current index of visible categories/groups
   const categoryIndex = ref<number>(0)
   const groupIndex = ref<number>(0)
 
-  function getFieldsParams(fields: TFieldsUnion) {
-    const paramKeys: string[] = []
+  function getFieldsOptions(fields: TFieldsUnion) {
+    const optionKeys: string[] = []
     const all: TFieldInfo[] = []
-    let paramKey: string | undefined
+    let optionKey: string | undefined
     let val: TFieldValue = 0
 
     Object.entries(fieldsToGroupKeyObj.value).forEach(([key, value]) => {
@@ -43,37 +43,37 @@ export const useTrioStore = defineStore('trio', () => {
       let index = -1
       if (group.tag_source === 'Categorized') {
         index = group.categorizer!(val)
-        paramKey = group.paramKeys[index]
+        optionKey = group.optionKeys[index]
       } else {
-        index = group.paramKeys.findIndex(
-          // ** weak comparison because param.extra is either string, number or boolean
-          (y) => trio.value.paramsObj[y].extra == val,
+        index = group.optionKeys.findIndex(
+          // ** weak comparison because option.extra is either string, number or boolean
+          (y) => trio.value.optionsObj[y].extra == val,
         )
 
         if (index === -1) {
           throw new Error(
-            `getFieldsParams() - Can't find value ${val} in ${group.label} field ${key}`,
+            `getFieldsOptions() - Can't find value ${val} in ${group.label} field ${key}`,
           )
         }
-        paramKey = group.paramKeys[index]
+        optionKey = group.optionKeys[index]
       }
 
       all.push({
         fieldName: group.field_name,
         fieldValue: val,
-        paramKey: paramKey,
-        paramLabel: trio.value.paramsObj[paramKey].text,
-        paramExtra: trio.value.paramsObj[paramKey].extra,
-        options: group.paramKeys.map((x) => {
-          const param = { ...trio.value.paramsObj[x] }
-          return param
+        optionKey: optionKey,
+        optionLabel: trio.value.optionsObj[optionKey].text,
+        optionExtra: trio.value.optionsObj[optionKey].extra,
+        options: group.optionKeys.map((x) => {
+          const option = { ...trio.value.optionsObj[x] }
+          return option
         }),
         index,
       })
-      paramKeys.push(paramKey)
+      optionKeys.push(optionKey)
     })
 
-    //console.log(`getFieldsParams() params: ${JSON.stringify(all, null, 2)}`)
+    //console.log(`getFieldsOptions() options: ${JSON.stringify(all, null, 2)}`)
     return all
   }
 
@@ -88,7 +88,7 @@ export const useTrioStore = defineStore('trio', () => {
       for (const grpKey of cat.groupKeys) {
         if (groupIsAvailable(grpKey)) {
           available = true
-          if (trio.value.groupsObj[grpKey].paramKeys.some((r) => selected.value.includes(r))) {
+          if (trio.value.groupsObj[grpKey].optionKeys.some((r) => selected.value.includes(r))) {
             hasSelected = true
           }
         }
@@ -137,11 +137,11 @@ export const useTrioStore = defineStore('trio', () => {
         name: group.label,
         groupKey: x,
         visible: true,
-        selectedCount: groupSelectedParamsCnt(x),
+        selectedCount: groupSelectedOptionsCnt(x),
         groupType: group.code,
         required,
         multiple,
-        params: group.paramKeys,
+        options: group.optionKeys,
       }
     })
   })
@@ -192,18 +192,18 @@ export const useTrioStore = defineStore('trio', () => {
     )
   }
 
-  function paramClicked(prmKey: string) {
-    const param = trio.value.paramsObj[prmKey]
-    const group = trio.value.groupsObj[param.groupKey]
+  function optionClicked(prmKey: string) {
+    const option = trio.value.optionsObj[prmKey]
+    const group = trio.value.groupsObj[option.groupKey]
 
     const isSelected = selected.value.includes(prmKey)
-    console.log(`TRIO.click(${prmKey}) "${param.text}" selected: ${isSelected}`)
+    console.log(`TRIO.click(${prmKey}) "${option.text}" selected: ${isSelected}`)
 
     if (current.value.name === 'filter') {
       if (isSelected) {
-        unSelectParam(prmKey)
+        unSelectOption(prmKey)
       } else {
-        selectParam(prmKey)
+        selectOption(prmKey)
       }
       return
     }
@@ -214,25 +214,25 @@ export const useTrioStore = defineStore('trio', () => {
       case 'TM':
         if ((<TGroupTag>group).multiple) {
           if (isSelected) {
-            unSelectParam(prmKey)
+            unSelectOption(prmKey)
           } else {
-            selectParam(prmKey)
+            selectOption(prmKey)
           }
         } else {
           if (isSelected) {
-            unSelectParam(prmKey)
+            unSelectOption(prmKey)
           } else {
             //if there is currently  a  selected one - unselect the currently selected and select the new one.
             //if there isn't, select the new one.
             const currentKey = selected.value.find((x) => {
-              return trio.value.groupsObj[trio.value.paramsObj[x].groupKey].label === group.label
+              return trio.value.groupsObj[trio.value.optionsObj[x].groupKey].label === group.label
             })
             if (currentKey !== undefined) {
-              unSelectParam(currentKey)
-              selectParam(prmKey)
+              unSelectOption(currentKey)
+              selectOption(prmKey)
             } else {
-              console.log('No param currently selected - selecting clicked')
-              selectParam(prmKey)
+              console.log('No option currently selected - selecting clicked')
+              selectOption(prmKey)
             }
           }
         }
@@ -244,87 +244,87 @@ export const useTrioStore = defineStore('trio', () => {
         } else {
           //unselect the currently selected and select the new one
           const currentKey = selected.value.find((x) => {
-            return trio.value.groupsObj[trio.value.paramsObj[x].groupKey].label === group.label
+            return trio.value.groupsObj[trio.value.optionsObj[x].groupKey].label === group.label
           })
           if (currentKey === undefined) {
             console.log(
-              "Error in paramNewClicked - can't find a selected param in current group, wrong code",
+              "Error in optionNewClicked - can't find a selected option in current group, wrong code",
             )
             return
           }
-          console.log(`newItemParams(CL or FD).clicked select: ${prmKey}, unSelect: ${currentKey}`)
-          unSelectParam(currentKey)
-          selectParam(prmKey)
+          console.log(`newItemOptions(CL or FD).clicked select: ${prmKey}, unSelect: ${currentKey}`)
+          unSelectOption(currentKey)
+          selectOption(prmKey)
         }
         break
       default:
-        console.log('Error in paramNewClicked - wrong code')
+        console.log('Error in optionNewClicked - wrong code')
     }
   }
 
-  function selectParam(prmKey: string) {
-    console.log(`selectParam(${prmKey})`)
+  function selectOption(prmKey: string) {
+    console.log(`selectOption(${prmKey})`)
     selected.value.push(prmKey)
   }
 
-  function unSelectParam(paramKey: string) {
-    const i = selected.value.indexOf(paramKey)
+  function unSelectOption(optionKey: string) {
+    const i = selected.value.indexOf(optionKey)
     selected.value.splice(i, 1)
-    clearDependecies(paramKey)
+    clearDependecies(optionKey)
   }
 
-  //When unselecting a param, unselect dependencies.
-  function clearDependecies(paramKey: string) {
+  //When unselecting a option, unselect dependencies.
+  function clearDependecies(optionKey: string) {
     console.log(
-      `*** trio clearDependecies param: ${paramKey} currently selected: ${selected.value} ***`,
+      `*** trio clearDependecies option: ${optionKey} currently selected: ${selected.value} ***`,
     )
-    //We assume that this param was already removed from paramClickedSource (filterAllParams/taggerAllParams).
+    //We assume that this option was already removed from optionClickedSource (filterAllOptions/taggerAllOptions).
 
-    //step 1 - collect all groups affected by unselecting this param
-    const groupsToUnselect: { grpKey: string; label: string; paramKeys: string[] }[] = []
+    //step 1 - collect all groups affected by unselecting this option
+    const groupsToUnselect: { grpKey: string; label: string; optionKeys: string[] }[] = []
 
     for (const value of Object.values(groupLabelToGroupKeyObj.value)) {
       const group = trio.value.groupsObj[value]
 
-      //if a group has a dependency that includes this param and will be unselected if param is unselected,
+      //if a group has a dependency that includes this option and will be unselected if option is unselected,
       // add it to the groupsToUnselect array
       if (
         'dependency' in group &&
-        group.dependency.includes(paramKey) &&
+        group.dependency.includes(optionKey) &&
         !group.dependency.some((x) => {
           return selected.value.includes(x)
         })
       ) {
         console.log(`group ${group.label} is dependent on "${value}"`)
-        groupsToUnselect.push({ grpKey: value, label: group.label, paramKeys: group.paramKeys })
+        groupsToUnselect.push({ grpKey: value, label: group.label, optionKeys: group.optionKeys })
       }
     }
 
     console.log(`Extra Groups to be unselectable: ${JSON.stringify(groupsToUnselect, null, 2)}`)
 
-    //step 2 - collect all params to be unselected
-    const paramsToBeUnselected: string[] = []
+    //step 2 - collect all options to be unselected
+    const optionsToBeUnselected: string[] = []
     groupsToUnselect.forEach((x) => {
-      x.paramKeys.forEach((y) => {
+      x.optionKeys.forEach((y) => {
         if (selected.value.includes(y)) {
-          paramsToBeUnselected.push(y)
+          optionsToBeUnselected.push(y)
         }
       })
     })
 
-    console.log(`Extra Params to be unselected: ${paramsToBeUnselected}`)
+    console.log(`Extra Options to be unselected: ${optionsToBeUnselected}`)
 
-    //step 3 - for each paramsToBeUnselected - remove from selected, call clearDependecies() recuresively
-    paramsToBeUnselected.forEach((x) => {
+    //step 3 - for each optionsToBeUnselected - remove from selected, call clearDependecies() recuresively
+    optionsToBeUnselected.forEach((x) => {
       const i = selected.value.findIndex((y) => y === x)
       if (i === -1) {
-        console.log(`ERRRRR - trying to remove param ${x} which is NOT selected`)
+        console.log(`ERRRRR - trying to remove option ${x} which is NOT selected`)
       } else {
-        const param = trio.value.paramsObj[x]
-        const group = trio.value.groupsObj[param.groupKey]
+        const option = trio.value.optionsObj[x]
+        const group = trio.value.groupsObj[option.groupKey]
         if (current.value.name === 'tag' && group.code === 'FD') {
-          //unselect required, single selection - replace with default (first entry in group.params[])
-          selected.value[i] = group.paramKeys[0]
+          //unselect required, single selection - replace with default (first entry in group.options[])
+          selected.value[i] = group.optionKeys[0]
         } else {
           selected.value.splice(i, 1)
         }
@@ -335,33 +335,33 @@ export const useTrioStore = defineStore('trio', () => {
     })
   }
 
-  function groupSelectedParamsCnt(groupKey: string) {
-    const paramKeys = trio.value.groupsObj[groupKey].paramKeys
-    const selectedCount = paramKeys.reduce((accumulator, param) => {
-      const toAdd = selected.value.includes(param) ? 1 : 0
+  function groupSelectedOptionsCnt(groupKey: string) {
+    const optionKeys = trio.value.groupsObj[groupKey].optionKeys
+    const selectedCount = optionKeys.reduce((accumulator, option) => {
+      const toAdd = selected.value.includes(option) ? 1 : 0
       return accumulator + toAdd
     }, 0)
     return selectedCount
   }
 
-  const visibleParams = computed(() => {
+  const visibleOptions = computed(() => {
     if (currentGroup.value === undefined) {
       return []
     }
-    const paramKeys = (<TGroupBase>currentGroup.value).paramKeys
-    return paramKeys.map((x) => {
-      return { ...trio.value.paramsObj[x], selected: selected.value.includes(x), key: x }
+    const optionKeys = (<TGroupBase>currentGroup.value).optionKeys
+    return optionKeys.map((x) => {
+      return { ...trio.value.optionsObj[x], selected: selected.value.includes(x), key: x }
     })
   })
 
   const selected = computed(() => {
-    const { filterAllParams } = storeToRefs(useFilterStore())
-    const { taggerAllParams } = storeToRefs(useTaggerStore())
+    const { filterAllOptions } = storeToRefs(useFilterStore())
+    const { taggerAllOptions } = storeToRefs(useTaggerStore())
     switch (current.value.name) {
       case 'filter':
-        return filterAllParams.value
+        return filterAllOptions.value
       case 'tag':
-        return taggerAllParams.value
+        return taggerAllOptions.value
       default:
         return []
     }
@@ -380,13 +380,13 @@ export const useTrioStore = defineStore('trio', () => {
 
   function trioReset() {
     const { clearSelectedFilters } = useFilterStore()
-    const { clearParams } = useTaggerStore()
-    clearParams()
+    const { clearOptions } = useTaggerStore()
+    clearOptions()
     clearSelectedFilters()
 
     groupIndex.value = 0
     categoryIndex.value = 0
-    trio.value = { categories: [], groupsObj: {}, paramsObj: {} }
+    trio.value = { categories: [], groupsObj: {}, optionsObj: {} }
     groupLabelToGroupKeyObj.value = {}
     orderByOptions.value = []
   }
@@ -411,16 +411,17 @@ export const useTrioStore = defineStore('trio', () => {
     assert(groupKey in trio.value.groupsObj, `groupObj[${groupKey}] doesn't exist!`)
 
     const grp = trio.value.groupsObj[groupKey]
-    //console.log(`paramDetails(${groupKey}) =>  ${JSON.stringify(paramsObj.value[groupKey], null, 2)}. grp:  ${JSON.stringify(grp, null, 2)}`)
+    //console.log(`optionDetails(${groupKey}) =>  ${JSON.stringify(optionsObj.value[groupKey], null, 2)}. grp:  ${JSON.stringify(grp, null, 2)}`)
     return {
       label: grp.label,
       groupCode: grp.code,
-      params: grp.paramKeys.reduce(
-        (accumulator, currentValue) => accumulator + trio.value.paramsObj[currentValue].text + ', ',
+      options: grp.optionKeys.reduce(
+        (accumulator, currentValue) =>
+          accumulator + trio.value.optionsObj[currentValue].text + ', ',
         '',
       ),
       available: groupIsAvailable(groupKey),
-      cnt: groupSelectedParamsCnt(groupKey),
+      cnt: groupSelectedOptionsCnt(groupKey),
     }
   }
 
@@ -445,8 +446,8 @@ export const useTrioStore = defineStore('trio', () => {
       return []
     }
     const vals: string[] = []
-    currentGroup.value.paramKeys.forEach((x) => {
-      vals.push(trio.value.paramsObj[x].text)
+    currentGroup.value.optionKeys.forEach((x) => {
+      vals.push(trio.value.optionsObj[x].text)
     })
     return vals
   })
@@ -464,13 +465,13 @@ export const useTrioStore = defineStore('trio', () => {
       return []
     }
 
-    return orderByGroup.value.paramKeys
+    return orderByGroup.value.optionKeys
       .filter((x) => {
-        const label = trio.value.paramsObj[x].text
+        const label = trio.value.optionsObj[x].text
         return label !== ''
       })
       .map((x) => {
-        return { label: trio.value.paramsObj[x].text, key: x }
+        return { label: trio.value.optionsObj[x].text, key: x }
       })
   })
 
@@ -506,9 +507,9 @@ export const useTrioStore = defineStore('trio', () => {
     currentGroup,
     visibleCategories,
     visibleGroups,
-    visibleParams,
-    paramClicked,
+    visibleOptions,
+    optionClicked,
     resetCategoryAndGroupIndices,
-    getFieldsParams,
+    getFieldsOptions,
   }
 })

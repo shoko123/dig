@@ -20,27 +20,27 @@ export const useFilterStore = defineStore('filter', () => {
     orderByOptions,
     currentGroup,
   } = storeToRefs(useTrioStore())
-  const filterAllParams = ref<string[]>([])
+  const filterAllOptions = ref<string[]>([])
 
   function filtersToQueryObject() {
     const q: {
       [key: string]: string
     } = {}
 
-    filterAllParams.value.sort((a, b) => {
+    filterAllOptions.value.sort((a, b) => {
       return a > b ? 1 : -1
     })
 
-    filterAllParams.value.forEach((k) => {
-      const paramUlined = trio.value.paramsObj[k].text.replace(/ /g, '_')
-      const groupUlined = trio.value.groupsObj[trio.value.paramsObj[k].groupKey].label.replace(
+    filterAllOptions.value.forEach((k) => {
+      const optionUlined = trio.value.optionsObj[k].text.replace(/ /g, '_')
+      const groupUlined = trio.value.groupsObj[trio.value.optionsObj[k].groupKey].label.replace(
         / /g,
         '_',
       )
       if (Object.prototype.hasOwnProperty.call(q, groupUlined)) {
-        q[groupUlined] += ',' + paramUlined
+        q[groupUlined] += ',' + optionUlined
       } else {
-        q[groupUlined] = paramUlined
+        q[groupUlined] = optionUlined
       }
     })
     console.log(`filtersToQueryObject().q: ${JSON.stringify(q, null, 2)}`)
@@ -61,10 +61,10 @@ export const useFilterStore = defineStore('filter', () => {
       return all
     }
 
-    //push params into their correct arrays, according to group type
-    filterAllParams.value.forEach((key) => {
-      const param = trio.value.paramsObj[key]
-      const group = trio.value.groupsObj[trio.value.paramsObj[key].groupKey]
+    //push options into their correct arrays, according to group type
+    filterAllOptions.value.forEach((key) => {
+      const option = trio.value.optionsObj[key]
+      const group = trio.value.groupsObj[trio.value.optionsObj[key].groupKey]
 
       switch (group.code) {
         case 'FD':
@@ -74,16 +74,16 @@ export const useFilterStore = defineStore('filter', () => {
             })
 
             if (i === -1) {
-              //if new group, push the param's group into the groups array with itself as the first param
+              //if new group, push the option's group into the groups array with itself as the first option
               all.field_value.push({
                 field_name: (<TGroupField>group).field_name,
-                vals: [param.extra],
+                vals: [option.extra],
                 source: (<TGroupField>group).tag_source,
               })
             } else {
-              //if the group is already selected, add param's text to the group's params array
-              //all.field_value[i].vals.push(param.text)
-              all.field_value[i].vals.push(param.extra)
+              //if the group is already selected, add option's text to the group's options array
+              //all.field_value[i].vals.push(option.text)
+              all.field_value[i].vals.push(option.extra)
             }
           }
           break
@@ -94,38 +94,38 @@ export const useFilterStore = defineStore('filter', () => {
               return x.field_name === (<TGroupField>group).field_name
             })
             if (i === -1) {
-              //if new group, push the param's group into the groups array with itself as the first param
+              //if new group, push the option's group into the groups array with itself as the first option
               all.field_search.push({
                 field_name: (<TGroupField>group).field_name,
-                vals: [param.text],
+                vals: [option.text],
               })
             } else {
-              //if the group is already selected, add param's text to the group's params array
-              all.field_search[i].vals.push(param.text)
+              //if the group is already selected, add option's text to the group's options array
+              all.field_search[i].vals.push(option.text)
             }
           }
           break
 
         case 'TM':
-          all.model_tag_ids.push(<number>param.extra)
+          all.model_tag_ids.push(<number>option.extra)
           break
 
         case 'TG':
-          all.global_tag_ids.push(<number>param.extra)
+          all.global_tag_ids.push(<number>option.extra)
           break
 
         case 'MD':
-          all.media.push(param.text)
+          all.media.push(option.text)
           break
 
         case 'OB':
           {
-            const ordeByItem = orderByOptions.value.find((x) => x.text === param.text.slice(0, -2))
-            assert(ordeByItem !== undefined, `Selected OrderBy param "${param.text} not found`)
+            const ordeByItem = orderByOptions.value.find((x) => x.text === option.text.slice(0, -2))
+            assert(ordeByItem !== undefined, `Selected OrderBy option "${option.text} not found`)
 
             all.order_by.push({
               field_name: <string>ordeByItem.extra,
-              asc: param.text.slice(-1) === 'A',
+              asc: option.text.slice(-1) === 'A',
             })
           }
           break
@@ -138,14 +138,14 @@ export const useFilterStore = defineStore('filter', () => {
     console.log(`filter.clearSelectedFilters()`)
     for (const value of Object.values(groupLabelToGroupKeyObj.value)) {
       if (trio.value.groupsObj[value].code === 'FS') {
-        trio.value.groupsObj[value].paramKeys.forEach((x) => {
-          trio.value.paramsObj[x].text = ''
-          trio.value.paramsObj[x].extra = ''
+        trio.value.groupsObj[value].optionKeys.forEach((x) => {
+          trio.value.optionsObj[x].text = ''
+          trio.value.optionsObj[x].extra = ''
         })
       }
     }
     orderByClear()
-    filterAllParams.value = []
+    filterAllOptions.value = []
   }
 
   async function getCount() {
@@ -156,35 +156,35 @@ export const useFilterStore = defineStore('filter', () => {
     return res.success ? res.data.length : -1
   }
 
-  const textSearchParamKeys = computed(() => {
-    return (<TGroupBase>currentGroup.value).paramKeys
+  const textSearchOptionKeys = computed(() => {
+    return (<TGroupBase>currentGroup.value).optionKeys
   })
 
   function searchTextChanged(index: number, val: string) {
-    const paramKey = textSearchParamKeys.value[index]
-    //console.log(`changeOccured() index: ${index} setting param with key ${paramKey} to: ${val}`)
-    trio.value.paramsObj[paramKey].text = val
+    const optionKey = textSearchOptionKeys.value[index]
+    //console.log(`changeOccured() index: ${index} setting option with key ${optionKey} to: ${val}`)
+    trio.value.optionsObj[optionKey].text = val
 
     //add/remove from selected filters
-    const inSelected = filterAllParams.value.includes(paramKey)
+    const inSelected = filterAllOptions.value.includes(optionKey)
     if (inSelected && val === '') {
-      const i = filterAllParams.value.indexOf(paramKey)
-      filterAllParams.value.splice(i, 1)
+      const i = filterAllOptions.value.indexOf(optionKey)
+      filterAllOptions.value.splice(i, 1)
     }
     if (!inSelected && val !== '') {
-      filterAllParams.value.push(paramKey)
+      filterAllOptions.value.push(optionKey)
     }
   }
 
   function searchTextClearCurrent() {
     console.log(`clear()`)
-    textSearchParamKeys.value.forEach((x) => {
-      trio.value.paramsObj[x].text = ''
+    textSearchOptionKeys.value.forEach((x) => {
+      trio.value.optionsObj[x].text = ''
 
       //if currently in selectedFilters, then remove.
-      if (filterAllParams.value.includes(x)) {
-        const i = filterAllParams.value.indexOf(x)
-        filterAllParams.value.splice(i, 1)
+      if (filterAllOptions.value.includes(x)) {
+        const i = filterAllOptions.value.indexOf(x)
+        filterAllOptions.value.splice(i, 1)
       }
     })
   }
@@ -192,44 +192,44 @@ export const useFilterStore = defineStore('filter', () => {
   //order by
   ///////////
 
-  function orderParamClicked(index: number, asc: boolean) {
-    const orderByParams = orderByGroup.value?.paramKeys.map((x) => {
-      return { ...trio.value.paramsObj[x], key: x }
+  function orderOptionClicked(index: number, asc: boolean) {
+    const orderByOptions = orderByGroup.value?.optionKeys.map((x) => {
+      return { ...trio.value.optionsObj[x], key: x }
     })
 
-    if (orderByParams === undefined) {
+    if (orderByOptions === undefined) {
       console.log(`serious error - abort *********`)
       return
     }
 
-    const firstEmptyParam = orderByParams.find((x) => x.text === '')
-    if (firstEmptyParam === undefined) {
+    const firstEmptyOption = orderByOptions.find((x) => x.text === '')
+    if (firstEmptyOption === undefined) {
       console.log(`serious error - abort *********`)
       return
     }
 
     const label = `${orderByAvailable.value[index].text}.${asc ? 'A' : 'D'}`
-    // console.log(`paramClicked(${index}) asc: ${asc} params:  ${JSON.stringify(orderByParams, null, 2)} key: ${firstEmptyParam.key} label: ${label}`)
+    // console.log(`optionClicked(${index}) asc: ${asc} options:  ${JSON.stringify(orderByOptions, null, 2)} key: ${firstEmptyOption.key} label: ${label}`)
 
-    trio.value.paramsObj[firstEmptyParam.key].text = label
-    filterAllParams.value.push(firstEmptyParam.key)
+    trio.value.optionsObj[firstEmptyOption.key].text = label
+    filterAllOptions.value.push(firstEmptyOption.key)
   }
 
   function orderByClear() {
     console.log(`orderClear`)
-    orderByGroup.value?.paramKeys.forEach((x) => {
-      trio.value.paramsObj[x].text = ''
-      if (filterAllParams.value.includes(x)) {
-        const i = filterAllParams.value.indexOf(x)
-        filterAllParams.value.splice(i, 1)
+    orderByGroup.value?.optionKeys.forEach((x) => {
+      trio.value.optionsObj[x].text = ''
+      if (filterAllOptions.value.includes(x)) {
+        const i = filterAllOptions.value.indexOf(x)
+        filterAllOptions.value.splice(i, 1)
       }
     })
   }
 
   return {
-    filterAllParams,
+    filterAllOptions,
     apiQueryPayload,
-    orderParamClicked,
+    orderOptionClicked,
     orderByClear,
     filtersToQueryObject,
     clearSelectedFilters,

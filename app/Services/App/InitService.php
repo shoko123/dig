@@ -80,7 +80,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
             case 'MD': //media
                 return array_merge($group, [
                     'label' => $label,
-                    'params' => [],
+                    'options' => [],
                 ]);
 
             default:
@@ -114,7 +114,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
             $collection = collect($this->model::allowedValues($group['field_name']));
         }
 
-        $params = $collection->map(function ($y, $key) use ($group) {
+        $options = $collection->map(function ($y, $key) use ($group) {
             return ['text' => $group['manipulator']($y), 'extra' => $y];
         });
 
@@ -123,17 +123,17 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
         return array_merge($group, [
             'collection' => $collection,
             'label' => $label,
-            'params' => $params->toArray()
+            'options' => $options->toArray()
         ]);
     }
 
     private function getFDLookupDetails($label, $group)
     {
-        $params = DB::table($group['lookup_table_name'])->get();
+        $options = DB::table($group['lookup_table_name'])->get();
 
         return array_merge($group, [
             'label' => $label,
-            'params' => $params->map(function ($y, $key) {
+            'options' => $options->map(function ($y, $key) {
                 return ['text' => $y->name, 'extra' => $y->id];
             }),
         ]);
@@ -141,7 +141,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
     private function getFDCategorizedDetails($label, $group)
     {
         $group['label'] = $label;
-        $group['params'] = collect($group['params'])->map(function ($y, $key) {
+        $group['options'] = collect($group['options'])->map(function ($y, $key) {
             return ['text' => $key, 'extra' => $y];
         })->values()->toArray();
         return $group;
@@ -162,7 +162,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
             'label' => $label,
             'group_id' => $tg->id,
             'multiple' => $tg->multiple,
-            'params' => $tg->tags->map(function ($y) {
+            'options' => $tg->tags->map(function ($y) {
                 return [
                     'text' => $y->name,
                     'extra' => $y->id,
@@ -185,7 +185,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
             'label' => $label,
             'group_id' => $gtg->id,
             'multiple' => true,
-            'params' => $gtg->tags->map(function ($y) {
+            'options' => $gtg->tags->map(function ($y) {
                 return [
                     'text' => $y->name,
                     'extra' => $y->id,
@@ -203,7 +203,7 @@ abstract class InitService extends DigModuleService implements InitSpecificServi
             'code' => 'FS',
             'label' => $label,
             'field_name' => $group['field_name'],
-            'params' => [],
+            'options' => [],
         ];
     }
 

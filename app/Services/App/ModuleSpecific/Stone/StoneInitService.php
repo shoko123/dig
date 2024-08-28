@@ -82,7 +82,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 'show_in_item_tags' => false,
                 'show_in_filters' => true,
                 'show_in_tagger' => false,
-                'params' => ['Yes' => true, 'No' => false],
+                'options' => ['Yes' => true, 'No' => false],
             ],
 
             'Basic Typology' => [
@@ -180,7 +180,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
             ],
             'Order By' => [
                 'code' => 'OB',
-                'params' => [
+                'options' => [
                     ['text' => 'Excavation Date', 'extra' => 'excavation_date'],
                     ['text' => 'Catalog Date', 'extra' => 'catalog_date'],
                     ['text' => 'Year', 'extra' => 'id_year'],

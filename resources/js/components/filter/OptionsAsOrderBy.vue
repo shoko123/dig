@@ -17,12 +17,12 @@
                 <tr v-for="(item, index) in orderByAvailable" :key="index">
                   <td>{{ item.text }}</td>
                   <td>
-                    <v-btn prepend-icon="mdi-arrow-up" @click="orderParamClicked(index, true)">
+                    <v-btn prepend-icon="mdi-arrow-up" @click="orderOptionClicked(index, true)">
                       Add
                     </v-btn>
                   </td>
                   <td>
-                    <v-btn prepend-icon="mdi-arrow-down" @click="orderParamClicked(index, false)">
+                    <v-btn prepend-icon="mdi-arrow-down" @click="orderOptionClicked(index, false)">
                       Add
                     </v-btn>
                   </td>
@@ -72,7 +72,7 @@ import { storeToRefs } from 'pinia'
 import { useFilterStore } from '../../scripts/stores/trio/filter'
 import { useTrioStore } from '../../scripts/stores/trio/trio'
 let { orderByAvailable, orderBySelected } = storeToRefs(useTrioStore())
-let { orderParamClicked, orderByClear } = useFilterStore()
+let { orderOptionClicked, orderByClear } = useFilterStore()
 
 const selected = computed(() => {
   // return orderBySelected

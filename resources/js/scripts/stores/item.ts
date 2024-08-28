@@ -18,7 +18,7 @@ export const useItemStore = defineStore('item', () => {
   const { module } = storeToRefs(useModuleStore())
   const { send } = useXhrStore()
   const { trio, groupLabelToGroupKeyObj } = storeToRefs(useTrioStore())
-  const { getFieldsParams } = useTrioStore()
+  const { getFieldsOptions } = useTrioStore()
 
   const fields = ref<TFieldsUnion | undefined>(undefined)
   const slug = ref<string | undefined>(undefined)
@@ -30,16 +30,16 @@ export const useItemStore = defineStore('item', () => {
   const itemViewIndex = ref<number>(0)
   const itemIndex = ref<number>(-1)
 
-  //item's fields params - start
-  const itemTagParams = ref<string[]>([])
-  const itemFieldsParams = ref<string[]>([])
-  const itemAllParams = computed(() => {
-    return [...itemFieldsParams.value, ...itemTagParams.value].sort((a, b) => {
+  //item's fields options - start
+  const itemTagOptions = ref<string[]>([])
+  const itemFieldsOptions = ref<string[]>([])
+  const itemAllOptions = computed(() => {
+    return [...itemFieldsOptions.value, ...itemTagOptions.value].sort((a, b) => {
       return a > b ? 1 : -1
     })
   })
-  const itemFieldsToParamsObj = ref<Partial<TBespokeFieldsUnion>>({})
-  //item's fields params - end
+  const itemFieldsToOptionsObj = ref<Partial<TBespokeFieldsUnion>>({})
+  //item's fields options - end
 
   const id = computed(() => {
     return typeof fields.value === 'undefined' ? -1 : (<TFieldsUnion>fields.value).id
@@ -69,15 +69,15 @@ export const useItemStore = defineStore('item', () => {
     tag.value = res.tag
     slug.value = res.slug
 
-    //get fields related params
-    const fd = getFieldsParams(apiItem.fields)
-    itemFieldsParams.value = fd.map((x) => x.paramKey)
+    //get fields related options
+    const fd = getFieldsOptions(apiItem.fields)
+    itemFieldsOptions.value = fd.map((x) => x.optionKey)
 
-    //build itemFieldsToParamsObj [field_name] : tag.text
+    //build itemFieldsToOptionsObj [field_name] : tag.text
     const tmp = ref<Record<string, string>>({})
-    fd.forEach((x) => (tmp.value[x.fieldName] = x.paramLabel))
-    itemFieldsToParamsObj.value = tmp.value
-    addTagParams(apiItem.model_tags.concat(apiItem.global_tags))
+    fd.forEach((x) => (tmp.value[x.fieldName] = x.optionLabel))
+    itemFieldsToOptionsObj.value = tmp.value
+    addTagOptions(apiItem.model_tags.concat(apiItem.global_tags))
   }
 
   function saveItemFields<F extends TApiFieldsUnion>(apiFields: F) {
@@ -98,18 +98,18 @@ export const useItemStore = defineStore('item', () => {
     fields.value = Object.fromEntries(tmpMap.entries())
   }
 
-  function addTagParams(apiTags: TApiTag[]) {
+  function addTagOptions(apiTags: TApiTag[]) {
     // console.log(`SaveItem - Add extrnal (module and global) tags`)
-    itemTagParams.value = []
+    itemTagOptions.value = []
     for (const x of apiTags) {
       const group = trio.value.groupsObj[groupLabelToGroupKeyObj.value[x.group_label]]
       // console.log(`Add Tag:  ${x.group_label} => "${x.tag_text}"`)
 
-      const paramKey = group.paramKeys.find((y) => trio.value.paramsObj[y].text === x.tag_text)
-      if (paramKey === undefined) {
-        throw new Error(`addTagParams() - Can't find tag ${x.tag_text} in group ${group.label}`)
+      const optionKey = group.optionKeys.find((y) => trio.value.optionsObj[y].text === x.tag_text)
+      if (optionKey === undefined) {
+        throw new Error(`addTagOptions() - Can't find tag ${x.tag_text} in group ${group.label}`)
       }
-      itemTagParams.value.push(paramKey)
+      itemTagOptions.value.push(optionKey)
     }
   }
 
@@ -119,9 +119,9 @@ export const useItemStore = defineStore('item', () => {
     slug.value = undefined
     short.value = undefined
     tag.value = undefined
-    itemFieldsToParamsObj.value = {}
-    itemFieldsParams.value = []
-    itemTagParams.value = []
+    itemFieldsToOptionsObj.value = {}
+    itemFieldsOptions.value = []
+    itemTagOptions.value = []
   }
 
   function nextSlug(isRight: boolean) {
@@ -181,9 +181,9 @@ export const useItemStore = defineStore('item', () => {
     saveItemFields,
     saveitemFieldsPlus,
     itemRemove,
-    itemFieldsToParamsObj,
-    itemTagParams,
-    itemFieldsParams,
-    itemAllParams,
+    itemFieldsToOptionsObj,
+    itemTagOptions,
+    itemFieldsOptions,
+    itemAllOptions,
   }
 })

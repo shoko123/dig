@@ -30,12 +30,12 @@ type TAllGroups = {
 
 //////////// Backend types /////////////////
 
-type TApiParam = { text: string; extra: TFieldValue }
+type TApiOption = { text: string; extra: TFieldValue }
 
 type TApiGroupBase = {
   code: TCodeUnion
   label: string
-  params: TApiParam[]
+  options: TApiOption[]
 }
 
 type TFieldValueSource =
@@ -65,21 +65,21 @@ type TApiTrio = { name: string; groups: TGroupApiUnion[] }[]
 
 //////////// Frontend types /////////////////
 
-type TParamTmp = {
+type TOptionTmp = {
   text: string
   extra: TFieldValue
 }
 
-type TParam = TParamTmp & {
+type TOption = TOptionTmp & {
   groupKey: string
 }
 
-//"Tmp" ending is for group fields prior to adding the trio "keep track" mechanisms (categoryIndex & paramKeys).
+//"Tmp" ending is for group fields prior to adding the trio "keep track" mechanisms (categoryIndex & optionKeys).
 
 type TGroupBaseTmp = {
   label: string
   code: TCodeUnion
-  params?: TParamTmp[]
+  options?: TOptionTmp[]
 }
 
 type TGroupTagTmp = TGroupBaseTmp & {
@@ -105,7 +105,7 @@ type TGroupFieldTmp = TGroupBaseTmp & {
 
 type AddTrioFields<T> = T & {
   categoryIndex: number
-  paramKeys: string[]
+  optionKeys: string[]
 }
 
 type TGroupBase = AddTrioFields<TGroupBaseTmp>
@@ -127,25 +127,25 @@ type TGroupUnion = AddTrioFields<TGroupTmpUnion>
 type TAllByCode<Code extends TCodeUnion> = TAllGroups[Code]
 type TApiGroupByCode<Code extends TCodeUnion> = TAllByCode<Code>['apiGroup']
 
-type TParamObj = { [key: string]: TParam }
+type TOptionObj = { [key: string]: TOption }
 type TGroupObj = { [key: string]: TGroupUnion }
 type TCategoriesArray = { name: string; groupKeys: string[] }[]
 type TGroupOrFieldToKeyObj = { [key: string]: string }
 
-type TTrio = { categories: TCategoriesArray; groupsObj: TGroupObj; paramsObj: TParamObj }
+type TTrio = { categories: TCategoriesArray; groupsObj: TGroupObj; optionsObj: TOptionObj }
 
 export {
   TrioSourceName,
   TTrio,
   TApiTrio,
-  TApiParam,
+  TApiOption,
   TGroupApiUnion,
   TGroupTmpUnion,
-  TParamTmp,
-  TParam,
+  TOptionTmp,
+  TOption,
   TGroupUnion,
   TApiGroupByCode,
-  TParamObj,
+  TOptionObj,
   TGroupObj,
   TCategoriesArray,
   TGroupOrFieldToKeyObj,

@@ -85,7 +85,9 @@ export const useAuthStore = defineStore('auth', () => {
 
   function resetAndGoTo(routeName: TPageName | null = null) {
     dialog.value = { open: false, message: '' }
-    if (routeName !== null) routerPush(routeName)
+    if (routeName !== null) {
+      routerPush(routeName)
+    }
   }
 
   return {

@@ -14,11 +14,11 @@ export const useItemNewStore = defineStore('itemNew', () => {
   const { modulePrepareForNew, tagAndSlugFromId } = useModuleStore()
 
   const { send } = useXhrStore()
-  const { getFieldsParams } = useTrioStore()
+  const { getFieldsOptions } = useTrioStore()
 
   const slug = ref<string | undefined>(undefined)
   const tag = ref<string | undefined>(undefined)
-  const itemNewAllParams = ref<string[]>([])
+  const itemNewAllOptions = ref<string[]>([])
   const ready = ref<boolean>(false)
 
   const openIdSelectorModal = ref<boolean>(false)
@@ -39,18 +39,18 @@ export const useItemNewStore = defineStore('itemNew', () => {
     return newFields.value!.id
   })
 
-  const itemNewFieldsToParamsObj = ref<Record<string, TFieldInfo>>({})
+  const itemNewFieldsToOptionsObj = ref<Record<string, TFieldInfo>>({})
 
   function prepareForNew(isCreate: boolean, ids?: string[]): void {
     modulePrepareForNew(isCreate, ids)
 
-    const fd = getFieldsParams(newFields.value! as TFieldsUnion)
-    itemNewAllParams.value = fd.map((x) => x.paramKey)
+    const fd = getFieldsOptions(newFields.value! as TFieldsUnion)
+    itemNewAllOptions.value = fd.map((x) => x.optionKey)
 
     //build object [field_name] : fieldInfo
     const tmp = ref<Record<string, TFieldInfo>>({})
     fd.forEach((x) => (tmp.value[x.fieldName] = x))
-    itemNewFieldsToParamsObj.value = tmp.value
+    itemNewFieldsToOptionsObj.value = tmp.value
   }
 
   async function upload(
@@ -88,7 +88,7 @@ export const useItemNewStore = defineStore('itemNew', () => {
     slug.value = undefined
 
     tag.value = undefined
-    itemNewAllParams.value = []
+    itemNewAllOptions.value = []
   }
 
   return {
@@ -99,9 +99,9 @@ export const useItemNewStore = defineStore('itemNew', () => {
     id,
     isCreate,
     isUpdate,
-    itemNewAllParams,
+    itemNewAllOptions,
     openIdSelectorModal,
-    itemNewFieldsToParamsObj,
+    itemNewFieldsToOptionsObj,
     itemClear,
     prepareForNew,
     upload,

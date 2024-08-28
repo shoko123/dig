@@ -19,13 +19,13 @@
 
       <v-sheet elevation="10" class="ma-2">
         <div v-if="isColumnSearch">
-          <ParamsAsTextSearch />
+          <OptionsAsTextSearch />
         </div>
         <div v-else-if="isOrderBy">
-          <ParamsAsOrderBy />
+          <OptionsAsOrderBy />
         </div>
         <div v-else>
-          <ParamsAsChips />
+          <OptionsAsChips />
         </div>
       </v-sheet>
     </v-card-text>
@@ -36,9 +36,9 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useTrioStore } from '../../scripts/stores/trio/trio'
-import ParamsAsChips from './ParamsAsChips.vue'
-import ParamsAsTextSearch from './ParamsAsTextSearch.vue'
-import ParamsAsOrderBy from './ParamsAsOrderBy.vue'
+import OptionsAsChips from './OptionsAsChips.vue'
+import OptionsAsTextSearch from './OptionsAsTextSearch.vue'
+import OptionsAsOrderBy from './OptionsAsOrderBy.vue'
 let { visibleCategories, visibleGroups, categoryIndex, groupIndex } = storeToRefs(useTrioStore())
 
 const header = computed(() => {

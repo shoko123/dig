@@ -75,7 +75,7 @@ class CeramicInitService extends InitService implements InitSpecificServiceInter
             ],
             'Order By' => [
                 'code' => 'OB',
-                'params' => [
+                'options' => [
                     ['text' => 'Year', 'extra' => 'id_year'],
                     ['text' => 'Object No.', 'extra' => 'id_object_no'],
                 ],

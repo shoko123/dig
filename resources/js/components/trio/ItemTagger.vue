@@ -26,10 +26,10 @@
 
       <v-sheet elevation="10" class="mt-2 pa-4">
         <div>{{ groupHeader }}</div>
-        <v-chip-group v-model="selectedParams" multiple column active-class="primary">
-          <v-chip v-for="(param, index) in visibleParams" :key="index" color="blue" large
-            @click="paramClicked(param.key)">
-            {{ param.text }}
+        <v-chip-group v-model="selectedOptions" multiple column active-class="primary">
+          <v-chip v-for="(option, index) in visibleOptions" :key="index" color="blue" large
+            @click="optionClicked(option.key)">
+            {{ option.text }}
           </v-chip>
         </v-chip-group>
       </v-sheet>
@@ -46,10 +46,10 @@ import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
 
 const { routerPush } = useRoutesMainStore()
-const { visibleCategories, visibleGroups, visibleParams, categoryIndex, groupIndex } =
+const { visibleCategories, visibleGroups, visibleOptions, categoryIndex, groupIndex } =
   storeToRefs(useTrioStore())
-const { resetCategoryAndGroupIndices, paramClicked } = useTrioStore()
-const { sync, prepareTagger, clearParams, setDefaultParams } = useTaggerStore()
+const { resetCategoryAndGroupIndices, optionClicked } = useTrioStore()
+const { sync, prepareTagger, clearOptions, setDefaultOptions } = useTaggerStore()
 const { showSpinner, showSnackbar } = useNotificationsStore()
 
 const header = computed(() => {
@@ -82,10 +82,10 @@ const grpIndex = computed({
   },
 })
 
-const selectedParams = computed({
+const selectedOptions = computed({
   get: () => {
     let selected: number[] = []
-    visibleParams.value.forEach((x, index) => {
+    visibleOptions.value.forEach((x, index) => {
       if (x.selected === true) {
         selected.push(index)
       }
@@ -104,7 +104,7 @@ async function submit() {
 
   if (res.success) {
     resetCategoryAndGroupIndices()
-    clearParams()
+    clearOptions()
     routerPush('back1')
   } else {
     showSnackbar(`Syncing of tags failed. Error: ${res.message}`)
@@ -114,7 +114,7 @@ async function submit() {
 function cancel() {
   console.log(`cancelClicked`)
   resetCategoryAndGroupIndices()
-  clearParams()
+  clearOptions()
   routerPush('back1')
 }
 
@@ -127,7 +127,7 @@ function resetToItem() {
 function clear() {
   console.log(`clear`)
   resetCategoryAndGroupIndices()
-  setDefaultParams()
+  setDefaultOptions()
 }
 
 </script>

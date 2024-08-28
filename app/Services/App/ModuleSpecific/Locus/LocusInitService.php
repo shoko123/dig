@@ -57,7 +57,7 @@ class LocusInitService extends InitService implements InitSpecificServiceInterfa
             ],
             'Order By' => [
                 'code' => 'OB',
-                'params' => [
+                'options' => [
                     ['text' => 'Basic Typology', 'extra' => 'category'],
                     ['text' => 'Number', 'extra' => 'a'],
                     ['text' => 'Subnumber', 'extra' => 'b'],

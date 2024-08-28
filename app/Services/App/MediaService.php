@@ -21,7 +21,7 @@ class MediaService extends BaseService
                 return ! $ordered->has($value);
             });
 
-            throw_unless($res, 'MediaService.collection_names(): Collection name "'.$res."\" doesn't exist in the the ordered collection names");
+            throw_unless($res, 'MediaService.collection_names(): Collection name "' . $res . "\" doesn't exist in the the ordered collection names");
         }
 
         return $ordered;
@@ -57,7 +57,7 @@ class MediaService extends BaseService
 
             return static::media_by_module_and_id($module, $id);
         } catch (Exception $e) {
-            throw new Exception($e->getMessage().$e->getCode());
+            throw new Exception($e->getMessage() . $e->getCode());
         }
     }
 
@@ -92,7 +92,7 @@ class MediaService extends BaseService
         return static::media_by_module_and_id($module, $module_id);
     }
 
-    public static function edit(array $params): array
+    public static function edit(array $options): array
     {
         return [];
     }

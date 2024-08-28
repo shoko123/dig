@@ -53,7 +53,7 @@ import { dateStringFromDate } from '../../../scripts/utils/utils'
 
 
 
-let { fields, tag, itemFieldsToParamsObj } = storeToRefs(useItemStore())
+let { fields, tag, itemFieldsToOptionsObj } = storeToRefs(useItemStore())
 
 const item = computed(() => {
   return <TFieldsByModule<'Stone'>>fields.value
@@ -72,7 +72,7 @@ const catalog_date = computed(() => {
 })
 
 const cvColumnsTyped = computed(() => {
-  return itemFieldsToParamsObj.value as TBespokeFieldsByModule<'Stone'>
+  return itemFieldsToOptionsObj.value as TBespokeFieldsByModule<'Stone'>
 })
 
 const cataloger = computed(() => {

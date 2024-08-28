@@ -79,7 +79,7 @@ const props = defineProps<{
 }>()
 
 const { newFields, rules, inOC } = storeToRefs(useStoneStore())
-let { itemNewFieldsToParamsObj } = storeToRefs(useItemNewStore())
+let { itemNewFieldsToOptionsObj } = storeToRefs(useItemNewStore())
 
 const v = useVuelidate(rules, newFields.value as TFieldsByModule<'Stone'>)
 
@@ -115,14 +115,14 @@ const specialist_descriptionErrors = computed(() => {
 
 
 const catalogerInfo = computed(() => {
-  return itemNewFieldsToParamsObj.value['cataloger_id']
+  return itemNewFieldsToOptionsObj.value['cataloger_id']
 })
 
 const materialInfo = computed(() => {
-  return itemNewFieldsToParamsObj.value['material_id']
+  return itemNewFieldsToOptionsObj.value['material_id']
 })
 const typologyInfo = computed(() => {
-  return itemNewFieldsToParamsObj.value['base_type_id']
+  return itemNewFieldsToOptionsObj.value['base_type_id']
 })
 
 

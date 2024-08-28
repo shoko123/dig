@@ -1,4 +1,4 @@
-import type { TApiTrio, TParam } from '@/js/types/trioTypes'
+import type { TApiTrio, TOption } from '@/js/types/trioTypes'
 import type { TCollectionView } from '@/js/types/collectionTypes'
 import type { TLocus } from '@/js/types/modules/Locus'
 import type { TStone } from '@/js/types/modules/Stone'
@@ -61,10 +61,10 @@ type TFieldValue = string | number | boolean
 type TFieldInfo = {
   fieldName: string
   fieldValue: TFieldValue
-  paramKey: string
-  paramLabel: string
-  paramExtra: TFieldValue
-  options: TParam[]
+  optionKey: string
+  optionLabel: string
+  optionExtra: TFieldValue
+  options: TOption[]
   index: number
 }
 

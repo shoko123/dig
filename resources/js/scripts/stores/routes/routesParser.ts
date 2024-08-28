@@ -64,7 +64,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
   ): { success: true } | { success: false; message: string } {
     //console.log(`urlQueryToApiFilters().urlQuery: ${JSON.stringify(qp, null, 2)}`);
     const { trio, groupLabelToGroupKeyObj } = storeToRefs(useTrioStore())
-    const { filterAllParams } = storeToRefs(useFilterStore())
+    const { filterAllOptions } = storeToRefs(useFilterStore())
 
     if (qp === null) {
       return { success: true }
@@ -83,16 +83,16 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
 
       const undoUnderKey = key.replace(/_/g, ' ')
       if (undoUnderKey in groupLabelToGroupKeyObj.value === false) {
-        return { success: false, message: `Unrecognized Url query parameter "${undoUnderKey}"` }
+        return { success: false, message: `Unrecognized Url query optioneter "${undoUnderKey}"` }
       }
       const group = trio.value.groupsObj[groupLabelToGroupKeyObj.value[undoUnderKey]]
-      const paramTexts = (<string>value).split(',')
+      const optionTexts = (<string>value).split(',')
       switch (group.code) {
         case 'OB':
           {
             const res = processUrlOB(
               group,
-              paramTexts.map((x) => x.replace(/_/g, ' ')),
+              optionTexts.map((x) => x.replace(/_/g, ' ')),
               selectedFilters,
             )
             if (!res.success) {
@@ -103,7 +103,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
 
         case 'FS':
           {
-            const res = processUrlCS(group, paramTexts, selectedFilters)
+            const res = processUrlCS(group, optionTexts, selectedFilters)
             if (!res.success) {
               return res
             }
@@ -114,7 +114,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
           {
             const res = processUrlDefault(
               group,
-              paramTexts.map((x) => x.replace(/_/g, ' ')),
+              optionTexts.map((x) => x.replace(/_/g, ' ')),
               selectedFilters,
             )
             if (!res.success) {
@@ -124,57 +124,57 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
           break
       }
     }
-    filterAllParams.value = selectedFilters
+    filterAllOptions.value = selectedFilters
     return { success: true }
   }
 
   function processUrlDefault(
     group: TGroupBase,
-    paramTexts: string[],
+    optionTexts: string[],
     selectedFilters: string[],
   ): { success: true } | { success: false; message: string } {
     const { trio } = storeToRefs(useTrioStore())
-    for (const x of paramTexts) {
-      const i = group.paramKeys.findIndex((y) => trio.value.paramsObj[y].text === x)
+    for (const x of optionTexts) {
+      const i = group.optionKeys.findIndex((y) => trio.value.optionsObj[y].text === x)
       if (i === -1) {
         return {
           success: false,
-          message: `*** Url option "${x}" is illegal for parameter "${group.label}".`,
+          message: `*** Url option "${x}" is illegal for optioneter "${group.label}".`,
         }
       }
-      selectedFilters.push(group.paramKeys[i])
+      selectedFilters.push(group.optionKeys[i])
     }
     return { success: true }
   }
 
   function processUrlOB(
     group: TGroupBase,
-    paramTexts: string[],
-    filterAllParams: string[],
+    optionTexts: string[],
+    filterAllOptions: string[],
   ): { success: true } | { success: false; message: string } {
     const { trio, orderByOptions } = storeToRefs(useTrioStore())
     const selected: string[] = []
 
-    for (const x of paramTexts) {
+    for (const x of optionTexts) {
       const nameOnly = x.slice(0, -2)
       const lastTwo = x.substring(x.length - 2)
 
       if (selected.some((y) => y === nameOnly)) {
-        return { success: false, message: `Duplicate url Order By parameter "${nameOnly}".` }
+        return { success: false, message: `Duplicate url Order By optioneter "${nameOnly}".` }
       }
 
       const ordeByIndex = orderByOptions.value.findIndex((y) => y.text === nameOnly)
 
       if (ordeByIndex === undefined || (lastTwo !== '.A' && lastTwo !== '.D')) {
-        return { success: false, message: `Unrecognized url Order By parameter "${x}".` }
+        return { success: false, message: `Unrecognized url Order By optioneter "${x}".` }
       }
 
-      const firstEmptyParamKey = group.paramKeys.find((x) => trio.value.paramsObj[x].text === '')
-      if (firstEmptyParamKey === undefined) {
-        return { success: false, message: `Problem with url Order By parameter "${x}".` }
+      const firstEmptyOptionKey = group.optionKeys.find((x) => trio.value.optionsObj[x].text === '')
+      if (firstEmptyOptionKey === undefined) {
+        return { success: false, message: `Problem with url Order By optioneter "${x}".` }
       }
-      trio.value.paramsObj[firstEmptyParamKey].text = x
-      filterAllParams.push(firstEmptyParamKey)
+      trio.value.optionsObj[firstEmptyOptionKey].text = x
+      filterAllOptions.push(firstEmptyOptionKey)
       selected.push(nameOnly)
     }
     return { success: true }
@@ -182,23 +182,23 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
 
   function processUrlCS(
     group: TGroupBase,
-    paramTexts: string[],
-    filterAllParams: string[],
+    optionTexts: string[],
+    filterAllOptions: string[],
   ): { success: true } | { success: false; message: string } {
     const { trio } = storeToRefs(useTrioStore())
-    if (paramTexts.length > 6) {
+    if (optionTexts.length > 6) {
       return {
         success: false,
-        message: `Url query problem: Too many search terms for parameter "${group.label}".`,
+        message: `Url query problem: Too many search terms for optioneter "${group.label}".`,
       }
     }
-    for (const x of paramTexts) {
-      const firstEmptyParamKey = group.paramKeys.find((x) => trio.value.paramsObj[x].text === '')
-      if (firstEmptyParamKey === undefined) {
-        return { success: false, message: `Problem with url search parameter "${x}".` }
+    for (const x of optionTexts) {
+      const firstEmptyOptionKey = group.optionKeys.find((x) => trio.value.optionsObj[x].text === '')
+      if (firstEmptyOptionKey === undefined) {
+        return { success: false, message: `Problem with url search optioneter "${x}".` }
       }
-      trio.value.paramsObj[firstEmptyParamKey].text = x
-      filterAllParams.push(firstEmptyParamKey)
+      trio.value.optionsObj[firstEmptyOptionKey].text = x
+      filterAllOptions.push(firstEmptyOptionKey)
     }
     return { success: true }
   }

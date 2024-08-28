@@ -10,35 +10,35 @@ import { useModuleStore } from '../module'
 
 export const useTaggerStore = defineStore('tagger', () => {
   const { trio, fieldsToGroupKeyObj } = storeToRefs(useTrioStore())
-  const { fields, itemAllParams } = storeToRefs(useItemStore())
+  const { fields, itemAllOptions } = storeToRefs(useItemStore())
   const { send } = useXhrStore()
   const { module } = storeToRefs(useModuleStore())
 
-  const taggerAllParams = ref<string[]>([])
+  const taggerAllOptions = ref<string[]>([])
 
   function prepareTagger() {
-    taggerAllParams.value = itemAllParams.value
+    taggerAllOptions.value = itemAllOptions.value
   }
 
-  function clearParams() {
-    taggerAllParams.value = []
+  function clearOptions() {
+    taggerAllOptions.value = []
   }
 
-  function setDefaultParams() {
-    //copy all the params from item
-    taggerAllParams.value = itemAllParams.value
+  function setDefaultOptions() {
+    //copy all the options from item
+    taggerAllOptions.value = itemAllOptions.value
 
     //keep only 'Categorized'
-    taggerAllParams.value = taggerAllParams.value.filter((x) => {
-      const group = <TGroupField>trio.value.groupsObj[trio.value.paramsObj[x].groupKey]
+    taggerAllOptions.value = taggerAllOptions.value.filter((x) => {
+      const group = <TGroupField>trio.value.groupsObj[trio.value.optionsObj[x].groupKey]
       return group.tag_source === 'Categorized'
     })
 
-    // add fields dependent params (except 'Categorized') with default group.paramKeys[0]
+    // add fields dependent options (except 'Categorized') with default group.optionKeys[0]
     for (const x in fieldsToGroupKeyObj.value) {
       const group = trio.value.groupsObj[fieldsToGroupKeyObj.value[x]]
       if (group.code === 'FD' && (<TGroupField>group).tag_source !== 'Categorized') {
-        taggerAllParams.value.push(group.paramKeys[0])
+        taggerAllOptions.value.push(group.optionKeys[0])
       }
       console.log(`Add Field Tag: ${group.label} => "${x}`)
     }
@@ -53,24 +53,24 @@ export const useTaggerStore = defineStore('tagger', () => {
       fields: <{ field_name: string; val: TFieldValue }[]>[],
     }
 
-    taggerAllParams.value.forEach((paramKey) => {
-      const group = <TGroupField>trio.value.groupsObj[trio.value.paramsObj[paramKey].groupKey]
+    taggerAllOptions.value.forEach((optionKey) => {
+      const group = <TGroupField>trio.value.groupsObj[trio.value.optionsObj[optionKey].groupKey]
       switch (group.code) {
         case 'TG':
-          payload.global_tag_ids.push(<number>trio.value.paramsObj[paramKey].extra)
+          payload.global_tag_ids.push(<number>trio.value.optionsObj[optionKey].extra)
           break
 
         case 'TM':
-          payload.module_tag_ids.push(<number>trio.value.paramsObj[paramKey].extra)
+          payload.module_tag_ids.push(<number>trio.value.optionsObj[optionKey].extra)
           break
 
         case 'FD':
           {
             if (group.tag_source !== 'Categorized') {
-              const param = trio.value.paramsObj[paramKey]
+              const option = trio.value.optionsObj[optionKey]
               payload.fields.push({
                 field_name: group.field_name,
-                val: param.extra,
+                val: option.extra,
               })
             }
           }
@@ -88,10 +88,10 @@ export const useTaggerStore = defineStore('tagger', () => {
   }
 
   return {
-    taggerAllParams,
-    clearParams,
+    taggerAllOptions,
+    clearOptions,
     prepareTagger,
-    setDefaultParams,
+    setDefaultOptions,
     sync,
   }
 })

@@ -6,39 +6,39 @@ import { useItemStore } from '../item'
 import { useFilterStore } from './filter'
 import { useTaggerStore } from './tagger'
 
-type TGroup = { label: string; params: string[] }
+type TGroup = { label: string; options: string[] }
 type TCat = { label: string; groups: TGroup[] }
 
 export const useTrioSelectedStore = defineStore('trioSelected', () => {
   const { trio, groupLabelToGroupKeyObj } = storeToRefs(useTrioStore())
-  const { itemAllParams } = storeToRefs(useItemStore())
-  const { filterAllParams } = storeToRefs(useFilterStore())
-  const { taggerAllParams } = storeToRefs(useTaggerStore())
+  const { itemAllOptions } = storeToRefs(useItemStore())
+  const { filterAllOptions } = storeToRefs(useFilterStore())
+  const { taggerAllOptions } = storeToRefs(useTaggerStore())
 
   function selectedTrio(sourceName: TrioSourceName) {
     if (trio.value.categories.length === 0) {
       return []
     }
 
-    let params: string[] = []
+    let options: string[] = []
     const groups = <TGroup[]>[]
     const cats = <TCat[]>[]
 
     //choose source
     switch (sourceName) {
       case 'Filter':
-        params = filterAllParams.value
+        options = filterAllOptions.value
         break
       case 'Item':
-        params = itemAllParams.value.filter((x) => {
-          const group = trio.value.groupsObj[trio.value.paramsObj[x].groupKey]
+        options = itemAllOptions.value.filter((x) => {
+          const group = trio.value.groupsObj[trio.value.optionsObj[x].groupKey]
           if (group.code === 'FD') {
             if (!(<TGroupField>group).show_in_item_tags) {
               return false
             } else {
               //on lookup fields we assume that the first item is always 'unassigned' and won't display it.
               return (<TGroupField>group).tag_source === 'Lookup' &&
-                group.paramKeys.indexOf(x) === 0
+                group.optionKeys.indexOf(x) === 0
                 ? false
                 : true
             }
@@ -48,29 +48,29 @@ export const useTrioSelectedStore = defineStore('trioSelected', () => {
         })
         break
       case 'Tagger':
-        params = taggerAllParams.value
+        options = taggerAllOptions.value
         break
     }
 
-    //order params by their keys
-    params.sort((a, b) => {
+    //order options by their keys
+    options.sort((a, b) => {
       return a > b ? 1 : -1
     })
 
-    //push params into "groups" objects array, each entry consisting of label and its params array
-    params.forEach((p) => {
-      const group = trio.value.groupsObj[trio.value.paramsObj[p].groupKey]
+    //push options into "groups" objects array, each entry consisting of label and its options array
+    options.forEach((p) => {
+      const group = trio.value.groupsObj[trio.value.optionsObj[p].groupKey]
 
       const i = groups.findIndex((g) => {
         return g.label === group.label
       })
 
       if (i === -1) {
-        //if new group, push the param's group into the groups array with itself as the first param
-        groups.push({ label: group.label, params: [trio.value.paramsObj[p].text] })
+        //if new group, push the option's group into the groups array with itself as the first option
+        groups.push({ label: group.label, options: [trio.value.optionsObj[p].text] })
       } else {
-        //if the group is already selected, add param's text to the group's params array
-        groups[i].params.push(trio.value.paramsObj[p].text)
+        //if the group is already selected, add option's text to the group's options array
+        groups[i].options.push(trio.value.optionsObj[p].text)
       }
     })
 

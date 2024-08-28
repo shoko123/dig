@@ -1,12 +1,6 @@
 <template>
-  <v-chip-group v-model="selectedParamIndexes" multiple column selected-class="primary">
-    <v-chip
-      v-for="(param, index) in params"
-      :key="index"
-      color="blue"
-      large
-      @click="paramClicked(param.key)"
-    >
+  <v-chip-group v-model="selectedOptionIndexes" multiple column selected-class="primary">
+    <v-chip v-for="(param, index) in options" :key="index" color="blue" large @click="paramClicked(param.key)">
       {{ param.text }}
     </v-chip>
   </v-chip-group>
@@ -18,14 +12,14 @@ import { useTrioStore } from '../../scripts/stores/trio/trio'
 
 let trio = useTrioStore()
 
-const params = computed(() => {
-  return trio.visibleParams
+const options = computed(() => {
+  return trio.visibleOptions
 })
 
-const selectedParamIndexes = computed({
+const selectedOptionIndexes = computed({
   get: () => {
     let selected: number[] = []
-    params.value.forEach((x, index) => {
+    options.value.forEach((x, index) => {
       if (x.selected === true) {
         selected.push(index)
       }
@@ -38,6 +32,6 @@ const selectedParamIndexes = computed({
 })
 
 function paramClicked(prmKey: string) {
-  trio.paramClicked(prmKey)
+  trio.optionClicked(prmKey)
 }
 </script>
