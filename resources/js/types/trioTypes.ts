@@ -1,5 +1,5 @@
 import type { TFieldValue } from '@/js/types/moduleTypes'
-type TrioSourceName = 'Item' | 'New' | 'Filter'
+type TrioSourceName = 'Item' | 'Tagger' | 'Filter'
 
 type TAllGroups = {
   FD: {
@@ -67,7 +67,7 @@ type TApiTrio = { name: string; groups: TGroupApiUnion[] }[]
 
 type TParamTmp = {
   text: string
-  extra: number | string | boolean
+  extra: TFieldValue
 }
 
 type TParam = TParamTmp & {

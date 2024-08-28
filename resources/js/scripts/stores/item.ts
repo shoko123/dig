@@ -1,7 +1,7 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type { TApiFieldsUnion, TFieldsUnion, TDiscreteColumnUnion } from '@/js/types/moduleTypes'
+import type { TApiFieldsUnion, TFieldsUnion, TBespokeFieldsUnion } from '@/js/types/moduleTypes'
 import type { TApiItemShow, TApiTag } from '@/js/types/itemTypes'
 import type { TApiArray } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from './collections/collections'
@@ -38,7 +38,7 @@ export const useItemStore = defineStore('item', () => {
       return a > b ? 1 : -1
     })
   })
-  const itemFieldsToParamsObj = ref<Partial<TDiscreteColumnUnion>>({})
+  const itemFieldsToParamsObj = ref<Partial<TBespokeFieldsUnion>>({})
   //item's fields params - end
 
   const id = computed(() => {

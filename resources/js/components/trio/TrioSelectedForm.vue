@@ -60,10 +60,10 @@ const d = computed(() => {
         emptyTitle: `[ Item has no tags ]`,
       }
 
-    case 'New':
+    case 'Tagger':
     default:
       return {
-        data: selectedTrio('New'),
+        data: selectedTrio('Tagger'),
         header: `Selected Tags`,
         emptyTitle: `[ No tags selected ]`,
       }

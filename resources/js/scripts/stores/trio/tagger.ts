@@ -1,7 +1,7 @@
 // stores/trio.js
 import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type { TFieldsUnion } from '@/js/types/moduleTypes'
+import type { TFieldsUnion, TFieldValue } from '@/js/types/moduleTypes'
 import type { TGroupField } from '@/js/types/trioTypes'
 import { useXhrStore } from '../xhr'
 import { useItemStore } from '../item'
@@ -50,7 +50,7 @@ export const useTaggerStore = defineStore('tagger', () => {
       module_id: (<TFieldsUnion>fields.value).id,
       global_tag_ids: <number[]>[],
       module_tag_ids: <number[]>[],
-      fields: <{ field_name: string; val: number | string | boolean }[]>[],
+      fields: <{ field_name: string; val: TFieldValue }[]>[],
     }
 
     taggerAllParams.value.forEach((paramKey) => {

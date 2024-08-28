@@ -23,7 +23,7 @@ export const useFilterStore = defineStore('filter', () => {
   const filterAllParams = ref<string[]>([])
 
   function filtersToQueryObject() {
-    const q2: {
+    const q: {
       [key: string]: string
     } = {}
 
@@ -37,14 +37,14 @@ export const useFilterStore = defineStore('filter', () => {
         / /g,
         '_',
       )
-      if (Object.prototype.hasOwnProperty.call(q2, groupUlined)) {
-        q2[groupUlined] += ',' + paramUlined
+      if (Object.prototype.hasOwnProperty.call(q, groupUlined)) {
+        q[groupUlined] += ',' + paramUlined
       } else {
-        q2[groupUlined] = paramUlined
+        q[groupUlined] = paramUlined
       }
     })
-    console.log(`filtersToQueryObject().q2: ${JSON.stringify(q2, null, 2)}`)
-    return q2
+    console.log(`filtersToQueryObject().q: ${JSON.stringify(q, null, 2)}`)
+    return q
   }
 
   const apiQueryPayload = computed<TApiFilters>(() => {
@@ -122,6 +122,7 @@ export const useFilterStore = defineStore('filter', () => {
           {
             const ordeByItem = orderByOptions.value.find((x) => x.text === param.text.slice(0, -2))
             assert(ordeByItem !== undefined, `Selected OrderBy param "${param.text} not found`)
+
             all.order_by.push({
               field_name: <string>ordeByItem.extra,
               asc: param.text.slice(-1) === 'A',

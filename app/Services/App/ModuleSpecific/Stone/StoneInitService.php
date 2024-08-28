@@ -56,7 +56,7 @@ class StoneInitService extends InitService implements InitSpecificServiceInterfa
                 },
                 'dependency' => [],
                 'allow_dependents' => false,
-                'show_in_item_tags' => true,
+                'show_in_item_tags' => false,
                 'show_in_filters' => true,
                 'show_in_tagger' => true,
             ],

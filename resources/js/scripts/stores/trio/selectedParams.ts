@@ -9,7 +9,7 @@ import { useTaggerStore } from './tagger'
 type TGroup = { label: string; params: string[] }
 type TCat = { label: string; groups: TGroup[] }
 
-export const useTrioSelectedStore = defineStore('trioSelected2', () => {
+export const useTrioSelectedStore = defineStore('trioSelected', () => {
   const { trio, groupLabelToGroupKeyObj } = storeToRefs(useTrioStore())
   const { itemAllParams } = storeToRefs(useItemStore())
   const { filterAllParams } = storeToRefs(useFilterStore())
@@ -33,16 +33,21 @@ export const useTrioSelectedStore = defineStore('trioSelected2', () => {
         params = itemAllParams.value.filter((x) => {
           const group = trio.value.groupsObj[trio.value.paramsObj[x].groupKey]
           if (group.code === 'FD') {
-            return (
-              (<TGroupField>group).show_in_item_tags &&
-              trio.value.paramsObj[x].text !== 'Unassigned'
-            )
+            if (!(<TGroupField>group).show_in_item_tags) {
+              return false
+            } else {
+              //on lookup fields we assume that the first item is always 'unassigned' and won't display it.
+              return (<TGroupField>group).tag_source === 'Lookup' &&
+                group.paramKeys.indexOf(x) === 0
+                ? false
+                : true
+            }
           } else {
             return true
           }
         })
         break
-      case 'New':
+      case 'Tagger':
         params = taggerAllParams.value
         break
     }
