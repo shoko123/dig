@@ -96,23 +96,30 @@ const contextErrors = computed(() => {
 })
 
 const occupation_levelErrors = computed(() => {
-  return <string>(v.value.occupation_level?.$error ? v.value.occupation_level.$errors[0].$message : undefined)
+  return <string>(
+    (v.value.occupation_level?.$error ? v.value.occupation_level.$errors[0].$message : undefined)
+  )
 })
 
 const excavation_object_idErrors = computed(() => {
-  return <string>(v.value.excavation_object_id?.$error ? v.value.excavation_object_id.$errors[0].$message : undefined)
+  return <string>(
+    (v.value.excavation_object_id?.$error
+      ? v.value.excavation_object_id.$errors[0].$message
+      : undefined)
+  )
 })
 
 const specialist_descriptionErrors = computed(() => {
-  return <string>(v.value.specialist_description?.$error ? v.value.specialist_description.$errors[0].$message : undefined)
+  return <string>(
+    (v.value.specialist_description?.$error
+      ? v.value.specialist_description.$errors[0].$message
+      : undefined)
+  )
 })
 
 // const specialist_dateErrors = computed(() => {
 //   return <string>(v.value.specialist_date?.$error ? v.value.specialist_date.$errors[0].$message : undefined)
 // })
-
-
-
 
 const catalogerInfo = computed(() => {
   return itemNewFieldsToOptionsObj.value['cataloger_id']
@@ -124,7 +131,6 @@ const materialInfo = computed(() => {
 const typologyInfo = computed(() => {
   return itemNewFieldsToOptionsObj.value['base_type_id']
 })
-
 
 function clearDate(field: string) {
   switch (field) {
@@ -140,8 +146,6 @@ function clearDate(field: string) {
       newFields.value.specialist_date = null
       break
     default:
-
   }
-
 }
 </script>

@@ -21,7 +21,6 @@ import { useItemStore } from '../../../scripts/stores/item'
 import { useCeramicStore } from '../../../scripts/stores/modules/Ceramic'
 import { useTrioStore } from '../../../scripts/stores/trio/trio'
 
-
 const { fields } = storeToRefs(useItemStore())
 const { newFields } = storeToRefs(useCeramicStore())
 const { trio, groupLabelToGroupKeyObj } = storeToRefs(useTrioStore())

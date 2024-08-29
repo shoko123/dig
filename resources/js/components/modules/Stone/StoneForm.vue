@@ -92,5 +92,4 @@ function openContextTab() {
   window.open(<string>item.value.uri, '_blank', 'noreferrer')
 }
 
-
 </script>

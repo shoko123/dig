@@ -13,7 +13,6 @@ import { computed } from 'vue'
 import { useDisplay } from 'vuetify'
 const { smAndDown } = useDisplay()
 const widths = computed(() => {
-
   return smAndDown.value ? [12, 0] : [8, 2]
 })
 </script>

@@ -6,7 +6,7 @@
           <v-card-item>
             <v-text-field v-for="(item, index) in textSearchValues" :key="index" v-model="textSearchValues[index]"
               :label="`term-${index + 1}`" :name="`search-${index + 1}`" filled
-              @update:model-value="(val) => searchTextChanged(index, val)" />
+              @update:model-value="(val: string) => searchTextChanged(index, val)" />
           </v-card-item>
         </v-card>
       </v-col>

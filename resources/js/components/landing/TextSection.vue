@@ -38,21 +38,9 @@ const section = computed(() => {
 
 const header = computed(() => {
   return section.value.title
-  // return `About this website`
 })
-
 
 const paragraphs = computed(() => {
   return section.value.paragraphs
-  // // return `This website is shows the details of a fictitious archaeological excavation and showcases some
-  // of the features
-  // // available when using the OpenDigReports software.
-  // // Navigation thru the site is self explanatory.
-  // // Please use the credentials given below to login as either a 'reader' or an 'editor' in order to view or
-  // edit the data
-  // // and pictures of this fake site.
-  // // All data will be reset to the original at unknown intervals. Enjoy!`
 })
-
-
 </script>

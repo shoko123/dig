@@ -13,6 +13,7 @@ import { useMediaStore } from './media'
 type sendApiAppInit = {
   appUrl: string
   bucketUrl: string
+  googleMapsApiKey: string
   accessibility: {
     readOnly: boolean
     authenticatedUsersOnly: boolean
@@ -29,6 +30,7 @@ export const useMainStore = defineStore('main', () => {
 
   const initialized = ref(false)
   const appName = ref('')
+  const googleMapsApiKey = ref('')
   const moduleToUrlModuleName = ref<Partial<TModuleToUrlName>>({})
   const urlModuleNameToModule = ref<Partial<TUrlModuleNameToModule>>({})
 
@@ -39,7 +41,7 @@ export const useMainStore = defineStore('main', () => {
       initMedia(data.bucketUrl, data.media_collections)
       accessibility.value = data.accessibility
       initialized.value = true
-
+      googleMapsApiKey.value = data.googleMapsApiKey
       appName.value = data.app_name
       moduleToUrlModuleName.value = data.modules
       urlModuleNameToModule.value = inverse(data.modules)
@@ -79,5 +81,6 @@ export const useMainStore = defineStore('main', () => {
     moduleToUrlModuleName,
     urlModuleNameToModule,
     moduleBtnsInfo,
+    googleMapsApiKey,
   }
 })

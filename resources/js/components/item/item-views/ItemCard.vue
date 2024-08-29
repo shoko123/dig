@@ -38,7 +38,6 @@ const { smAndDown } = useDisplay()
 let { array } = storeToRefs(useCollectionMediaStore())
 let { derived } = storeToRefs(useItemStore())
 
-
 const itemForm = computed<Component | null>(() => {
   switch (derived.value.module) {
     case 'Ceramic':
