@@ -13,7 +13,7 @@ import { useItemNewStore } from '../../../scripts/stores/itemNew'
 
 export const useStoneStore = defineStore('stone', () => {
   const { fields } = storeToRefs(useItemStore())
-  const { openIdSelectorModal, isCreate, isUpdate } = storeToRefs(useItemNewStore())
+  const { newFields, openIdSelectorModal, isCreate, isUpdate } = storeToRefs(useItemNewStore())
 
   const categorizer: TCategorizerByFieldName<'Stone'> = {
     old_museum_id: (val) => {
@@ -24,6 +24,49 @@ export const useStoneStore = defineStore('stone', () => {
 
   function categorizerByFieldName<key extends keyof TCategorizedFields>(field: key) {
     return categorizer[field]
+  }
+
+  const slugToId: FuncSlugToId = function (slug: string) {
+    const sections = slug.split('.')
+
+    if (sections.length !== 3) {
+      return {
+        success: false,
+        message: `Unsupported slug format detected: ${slug}`,
+      }
+    }
+
+    return {
+      success: true,
+      id: slug,
+    }
+  }
+
+  function tagAndSlugFromId(id: string) {
+    return { tag: id, slug: id }
+  }
+
+  const nf = computed(() => {
+    return newFields.value as TFieldsByModule<'Stone'>
+  })
+
+  function prepareForNew(isCreate: boolean, ids?: string[]): void {
+    console.log(
+      `prepNew(Stone) create(${isCreate}) fields: ${JSON.stringify(fields.value, null, 2)}`,
+    )
+
+    if (isCreate) {
+      currentIds.value = ids!
+      openIdSelectorModal.value = true
+      newFields.value = { ...defaultFields }
+      newFields.value.id = 'B2024.1.' + availableItemNumbers.value[0]
+      newFields.value.id_year = 24
+      newFields.value.id_access_no = 1
+      newFields.value.id_object_no = availableItemNumbers.value[0]
+      console.log(`isCreate. current ids: ${currentIds.value}`)
+    } else {
+      newFields.value = { ...fields.value }
+    }
   }
 
   const defaultFields: TFieldsByModule<'Stone'> = {
@@ -59,23 +102,7 @@ export const useStoneStore = defineStore('stone', () => {
     material_id: 1,
   }
 
-  const newFields = ref<TFieldsByModule<'Stone'>>(defaultFields)
-
   const currentIds = ref<string[]>([])
-
-  function prepareForNew(isCreate: boolean, ids?: string[]): void {
-    console.log(
-      `prepNew(Stone) create(${isCreate}) fields: ${JSON.stringify(fields.value, null, 2)}`,
-    )
-    if (isCreate) {
-      currentIds.value = ids!
-      openIdSelectorModal.value = true
-      prepareDefaultNewFields()
-      console.log(`isCreate. current ids: ${currentIds.value}`)
-    } else {
-      newFields.value = fields.value as TFieldsByModule<'Stone'>
-    }
-  }
 
   const availableItemNumbers = computed(() => {
     const itemNos = currentIds.value
@@ -99,16 +126,16 @@ export const useStoneStore = defineStore('stone', () => {
     //console.log(`stone.beforStore() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
     if (inOC.value) {
       return {
-        id: newFields.value.id,
-        id_year: newFields.value.id_year,
-        id_access_no: newFields.value.id_access_no,
-        id_object_no: newFields.value.id_object_no,
-        specialist_description: newFields.value.specialist_description,
+        id: nf.value.id,
+        id_year: nf.value.id_year,
+        id_access_no: nf.value.id_access_no,
+        id_object_no: nf.value.id_object_no,
+        specialist_description: nf.value.specialist_description,
         specialist_date: new Date(),
       }
     } else {
       const fieldsToSend: Partial<TFieldsByModule<'Stone'>> = {}
-      Object.assign(fieldsToSend, newFields.value)
+      Object.assign(fieldsToSend, nf.value)
       fieldsToSend.specialist_date = new Date()
       fieldsToSend.catalog_date = new Date()
       if (isCreate) {
@@ -116,35 +143,6 @@ export const useStoneStore = defineStore('stone', () => {
       }
       return fieldsToSend
     }
-  }
-
-  function prepareDefaultNewFields() {
-    newFields.value = { ...defaultFields }
-    newFields.value.id = 'B2024.1.' + availableItemNumbers.value[0]
-    newFields.value.id_year = 24
-    newFields.value.id_access_no = 1
-    newFields.value.id_object_no = availableItemNumbers.value[0]
-  }
-
-  const slugToId: FuncSlugToId = function (slug: string) {
-    const sections = slug.split('.')
-
-    if (sections.length !== 3) {
-      return {
-        success: false,
-        message: `Unsupported slug format detected: ${slug}`,
-      }
-    }
-
-    return {
-      success: true,
-      id: slug,
-    }
-  }
-
-  function tagAndSlugFromId(id: string) {
-    //console.log(`Stone.tagAndSlugFromId()`)
-    return { tag: id, slug: id }
   }
 
   const rules = computed(() => {
@@ -182,7 +180,7 @@ export const useStoneStore = defineStore('stone', () => {
     if (!isCreate.value && !isUpdate.value) {
       return undefined
     }
-    return typeof newFields.value.uri === 'string'
+    return typeof nf.value.uri === 'string'
   })
 
   const mainTableHeaders = computed(() => {

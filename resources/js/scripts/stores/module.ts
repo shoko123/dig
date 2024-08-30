@@ -46,7 +46,7 @@ export const useModuleStore = defineStore('module', () => {
 
   function slugToId(module: TModule, slug: string) {
     const store = getStore(module)
-    return store.tagAndSlugFromId(slug)
+    return store.slugToId(slug)
   }
 
   function categorizerByFieldName(field: string) {

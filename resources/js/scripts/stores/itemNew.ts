@@ -10,22 +10,18 @@ import { useTrioStore } from './trio/trio'
 
 export const useItemNewStore = defineStore('itemNew', () => {
   const { current } = storeToRefs(useRoutesMainStore())
-  const { moduleNewFields, module } = storeToRefs(useModuleStore())
+  const { module } = storeToRefs(useModuleStore())
   const { modulePrepareForNew, tagAndSlugFromId } = useModuleStore()
-
   const { send } = useXhrStore()
   const { getFieldsOptions } = useTrioStore()
 
+  const newFields = ref<Partial<TFieldsUnion>>({})
   const slug = ref<string | undefined>(undefined)
   const tag = ref<string | undefined>(undefined)
   const itemNewAllOptions = ref<string[]>([])
   const ready = ref<boolean>(false)
 
   const openIdSelectorModal = ref<boolean>(false)
-
-  const newFields = computed(() => {
-    return moduleNewFields.value
-  })
 
   const isCreate = computed(() => {
     return current.value.name === 'create'

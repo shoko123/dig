@@ -12,8 +12,7 @@ import { useItemNewStore } from '../itemNew'
 
 export const useCeramicStore = defineStore('ceramic', () => {
   const { fields } = storeToRefs(useItemStore())
-  const { openIdSelectorModal } = storeToRefs(useItemNewStore())
-  const newFields = ref<Partial<TFieldsByModule<'Ceramic'>>>({})
+  const { newFields, openIdSelectorModal } = storeToRefs(useItemNewStore())
 
   const categorizer: TCategorizerByFieldName<'Ceramic'> = {}
 

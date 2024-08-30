@@ -11,11 +11,14 @@ import { useItemStore } from '../../../scripts/stores/item'
 import { useItemNewStore } from '../../../scripts/stores/itemNew'
 
 export const useLocusStore = defineStore('locus', () => {
-  const newFields = ref<Partial<TFieldsByModule<'Locus'>>>({})
   const { fields } = storeToRefs(useItemStore())
-  const { openIdSelectorModal } = storeToRefs(useItemNewStore())
+  const { newFields, openIdSelectorModal } = storeToRefs(useItemNewStore())
 
   const categorizer: TCategorizerByFieldName<'Locus'> = {}
+
+  // const nf = computed(() => {
+  //   return newFields.value as TFieldsByModule<'Locus'>
+  // })
 
   function categorizerByFieldName<key extends keyof TCategorizedFields>(field: key) {
     return categorizer[field]
@@ -38,7 +41,6 @@ export const useLocusStore = defineStore('locus', () => {
   }
 
   function tagAndSlugFromId(id: string) {
-    //console.log(`Stone.tagAndSlugFromId()`)
     return { tag: id, slug: id }
   }
 
