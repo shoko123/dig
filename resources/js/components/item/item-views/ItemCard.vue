@@ -25,27 +25,32 @@
 </template>
 
 <script lang="ts" setup>
-import { type Component, computed } from 'vue'
+import { type Component, computed, defineAsyncComponent } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useDisplay } from 'vuetify'
 import { useItemStore } from '../../../scripts/stores/item'
 import { useCollectionMediaStore } from '../../../scripts/stores/collections/collectionMedia'
 import MediaSquare from '../../media/MediaSquare.vue'
-import CeramicForm from '../../modules/Ceramic/CeramicForm.vue'
-import StoneForm from '../../modules/Stone/StoneForm.vue'
+
+
 
 const { smAndDown } = useDisplay()
 let { array } = storeToRefs(useCollectionMediaStore())
 let { derived } = storeToRefs(useItemStore())
 
 const itemForm = computed<Component | null>(() => {
+
   switch (derived.value.module) {
     case 'Ceramic':
-      return CeramicForm
-
+      {
+        const CeramicForm = defineAsyncComponent(() => import('../../modules/Ceramic/CeramicForm.vue'))
+        return CeramicForm
+      }
     case 'Stone':
-      return StoneForm
-
+      {
+        const StoneForm = defineAsyncComponent(() => import('../../modules/Stone/StoneForm.vue'))
+        return StoneForm
+      }
     default:
       return null
   }

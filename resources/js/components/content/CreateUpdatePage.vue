@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, type Component } from 'vue'
+import { computed, type Component, defineAsyncComponent } from 'vue'
 import { storeToRefs } from 'pinia'
 import { type Validation } from '@vuelidate/core'
 
@@ -26,8 +26,8 @@ import { useItemNewStore } from '../../scripts/stores/itemNew'
 import { useModuleStore } from '../../scripts/stores/module'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
 
-import StoneNew from '../modules/Stone/StoneNew.vue'
-import CeramicNew from '../modules/Ceramic/CeramicNew.vue'
+const StoneNew = defineAsyncComponent(() => import('../modules/Stone/StoneNew.vue'))
+const CeramicNew = defineAsyncComponent(() => import('../modules/Ceramic/CeramicNew.vue'))
 
 let { showSpinner, showSnackbar } = useNotificationsStore()
 let { upload } = useItemNewStore()

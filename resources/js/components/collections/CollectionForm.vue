@@ -3,20 +3,11 @@
     <v-toolbar class="bg-grey text-black" density="compact" :height="50">
       <v-toolbar-title>{{ header }}</v-toolbar-title>
 
-      <v-pagination
-        v-if="paginator.show"
-        v-model="page"
-        :length="paginator.pages"
-        :total-visible="`${mdAndDown ? 4 : 10}`"
-      />
+      <v-pagination v-if="paginator.show" v-model="page" :length="paginator.pages"
+        :total-visible="`${mdAndDown ? 4 : 10}`" />
 
-      <v-btn
-        v-if="showBtnViewToggle"
-        :icon="ico"
-        size="small"
-        variant="tonal"
-        @click="toggleCollectionDisplayOption()"
-      />
+      <v-btn v-if="showBtnViewToggle" :icon="ico" size="small" variant="tonal"
+        @click="toggleCollectionDisplayOption()" />
     </v-toolbar>
     <v-card-text>
       <v-container fluid class="ma-0 pa-0">
@@ -27,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-import { type Component, computed } from 'vue'
+import { type Component, computed, defineAsyncComponent } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useDisplay } from 'vuetify'
 
@@ -37,9 +28,10 @@ import { useItemStore } from '../../scripts/stores/item'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
 import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
-import CollectionPageGallery from './CollectionPageGallery.vue'
-import CollectionPageChips from './CollectionPageChips.vue'
-import CollectionPageTabular from './CollectionPageTabular.vue'
+
+const CollectionPageGallery = defineAsyncComponent(() => import('./CollectionPageGallery.vue'))
+const CollectionPageChips = defineAsyncComponent(() => import('./CollectionPageChips.vue'))
+const CollectionPageTabular = defineAsyncComponent(() => import('./CollectionPageTabular.vue'))
 
 const props = defineProps<{
   source: TCollectionName
