@@ -5,9 +5,8 @@ import { defineStore, storeToRefs } from 'pinia'
 import type { TModule, TUrlModule } from '../../../types/moduleTypes'
 import type { LocationQuery } from 'vue-router'
 import type { TGroupBase } from '@/js/types/trioTypes'
-import { useLocusStore } from '../modules/Locus'
-import { useCeramicStore } from '../modules/Ceramic'
-import { useStoneStore } from '../modules/Stone'
+
+import { useModuleStore } from '../module'
 import { useTrioStore } from '../trio/trio'
 import { useMainStore } from '../main'
 import { useFilterStore } from '../trio/filter'
@@ -41,22 +40,8 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
   }
 
   function parseSlug(module: TModule, slug: string) {
-    //console.log(`parseSlug() module: ${module}, slug: ${slug}`);
-    let store
-    switch (module) {
-      case 'Locus':
-        store = useLocusStore()
-        break
-
-      case 'Ceramic':
-        store = useCeramicStore()
-        break
-
-      case 'Stone':
-        store = useStoneStore()
-        break
-    }
-    return store.slugToId(slug)
+    const { slugToId } = useModuleStore()
+    return slugToId(module, slug)
   }
 
   function parseUrlQuery(

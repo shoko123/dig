@@ -37,11 +37,16 @@ export const useModuleStore = defineStore('module', () => {
   })
 
   /*
-   * if module is not included, use current (we include it when we want tags of related item)
+   * if module is not included, use current (we include it e.g. when we want tags of related item)
    */
   function tagAndSlugFromId(id: string, m?: TModule) {
     const store = getStore(typeof m === 'undefined' ? module.value : m)
     return store.tagAndSlugFromId(id)
+  }
+
+  function slugToId(module: TModule, slug: string) {
+    const store = getStore(module)
+    return store.tagAndSlugFromId(slug)
   }
 
   function categorizerByFieldName(field: string) {
@@ -58,6 +63,7 @@ export const useModuleStore = defineStore('module', () => {
     const store = getStore(module.value)
     return store.beforeStore(isCreate)
   }
+
   const moduleNewFields = computed(() => {
     const store = getStore(module.value)
     return store.newFields
@@ -101,6 +107,7 @@ export const useModuleStore = defineStore('module', () => {
     welcomeText,
     firstSlug,
     backgroundImage,
+    slugToId,
     tagAndSlugFromId,
     modulePrepareForNew,
     beforeStore,
