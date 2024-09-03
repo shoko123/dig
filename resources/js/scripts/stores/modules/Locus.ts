@@ -1,52 +1,16 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import {
-  TFieldsByModule,
-  TFieldsUnion,
-  FuncSlugToId,
-  TCategorizerByFieldName,
-  TCategorizedFields,
-} from '@/js/types/moduleTypes'
+import { TFieldsByModule, TFieldsUnion, TObjCategorizerByFieldName } from '@/js/types/moduleTypes'
 import { useItemStore } from '../../../scripts/stores/item'
-import { useItemNewStore } from '../../../scripts/stores/itemNew'
 
 export const useLocusStore = defineStore('locus', () => {
   const { fields } = storeToRefs(useItemStore())
-  const { newFields, openIdSelectorModal } = storeToRefs(useItemNewStore())
-
-  const categorizer: TCategorizerByFieldName<'Locus'> = {}
-
-  // const nf = computed(() => {
-  //   return newFields.value as TFieldsByModule<'Locus'>
-  // })
-
-  function categorizerByFieldName<key extends keyof TCategorizedFields>(field: key) {
-    return categorizer[field]
-  }
-
-  const slugToId: FuncSlugToId = function (slug: string) {
-    const arr = slug.split('.')
-
-    if (arr.length !== 3) {
-      return {
-        success: false,
-        message: 'No . [dot] detected in slug',
-      }
-    } else {
-      return {
-        success: true,
-        id: slug,
-      }
-    }
-  }
-
-  function tagAndSlugFromId(id: string) {
-    return { tag: id, slug: id }
-  }
-
+  const categorizer: TObjCategorizerByFieldName<'Locus'> = {}
   const currentIds = ref<string[]>([])
 
-  function prepareForNew(isCreate: boolean, ids?: string[]): void {
+  async function prepareForNew(isCreate: boolean, ids?: string[]) {
+    const { useItemNewStore } = await import('../../../scripts/stores/itemNew')
+    const { newFields, openIdSelectorModal } = storeToRefs(useItemNewStore())
     Object.assign(newFields.value, fields.value as TFieldsByModule<'Stone'>)
 
     if (isCreate) {
@@ -55,8 +19,10 @@ export const useLocusStore = defineStore('locus', () => {
     }
   }
 
-  function beforeStore(isCreate: boolean): TFieldsUnion | false {
+  async function beforeStore(isCreate: boolean): Promise<TFieldsUnion | false> {
     //console.log(`stone.beforStore() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
+    const { useItemNewStore } = await import('../../../scripts/stores/itemNew')
+    const { newFields } = storeToRefs(useItemNewStore())
     if (isCreate) {
       return newFields.value as TFieldsByModule<'Locus'>
     } else {
@@ -74,12 +40,9 @@ export const useLocusStore = defineStore('locus', () => {
   })
 
   return {
-    newFields,
     mainTableHeaders,
     prepareForNew,
     beforeStore,
-    slugToId,
-    tagAndSlugFromId,
-    categorizerByFieldName,
+    categorizer,
   }
 })

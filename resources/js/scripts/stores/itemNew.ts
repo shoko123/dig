@@ -11,7 +11,7 @@ import { useTrioStore } from './trio/trio'
 export const useItemNewStore = defineStore('itemNew', () => {
   const { current } = storeToRefs(useRoutesMainStore())
   const { module } = storeToRefs(useModuleStore())
-  const { modulePrepareForNew, tagAndSlugFromId } = useModuleStore()
+  const { tagAndSlugFromId, getStore } = useModuleStore()
   const { send } = useXhrStore()
   const { getFieldsOptions } = useTrioStore()
 
@@ -37,8 +37,11 @@ export const useItemNewStore = defineStore('itemNew', () => {
 
   const itemNewFieldsToOptionsObj = ref<Record<string, TFieldInfo>>({})
 
-  function prepareForNew(isCreate: boolean, ids?: string[]): void {
-    modulePrepareForNew(isCreate, ids)
+  async function prepareForNew(isCreate: boolean, ids?: string[]) {
+    const store = await getStore(module.value)
+    return await store.prepareForNew(isCreate, ids)
+
+    // await modulePrepareForNew(isCreate, ids)
 
     const fd = getFieldsOptions(newFields.value! as TFieldsUnion)
     itemNewAllOptions.value = fd.map((x) => x.optionKey)

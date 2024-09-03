@@ -13,7 +13,7 @@ import type { TApiFieldsUnion, TApiModuleInit, TModule } from '@/js/types/module
 import type { TApiItemShow } from '@/js/types/itemTypes'
 import type { LocationQuery } from 'vue-router'
 import { useXhrStore } from '../xhr'
-import { useTrioStore } from '../trio/trio'
+
 import { useFilterStore } from '../trio/filter'
 import { useCollectionsStore } from '../collections/collections'
 import { useCollectionMainStore } from '../collections/collectionMain'
@@ -22,7 +22,7 @@ import { useMediaStore } from '../media'
 import { useModuleStore } from '../module'
 import { useNotificationsStore } from '../notifications'
 import { useItemStore } from '../item'
-import { useItemNewStore } from '../itemNew'
+
 import { useRoutesMainStore } from './routesMain'
 import { useRoutesParserStore } from './routesParser'
 import { TApiArray } from '@/js/types/collectionTypes'
@@ -30,7 +30,6 @@ import { TApiArray } from '@/js/types/collectionTypes'
 export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   const { send } = useXhrStore()
   const n = useNotificationsStore()
-  const { prepareForNew } = useItemNewStore()
   const c = useCollectionsStore()
   const i = useItemStore()
   const r = useRoutesMainStore()
@@ -38,7 +37,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   const { clearSelectedFilters } = useFilterStore()
   const { apiQueryPayload } = storeToRefs(useFilterStore())
   const { setModuleInfo, tagAndSlugFromId } = useModuleStore()
-  const { setTrio, trioReset } = useTrioStore()
   const { setItemMedia } = useMediaStore()
 
   const fromUndef = ref<boolean>(false)
@@ -55,7 +53,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       switch (x) {
         case 'module.load':
           {
-            trioReset()
+            //trioReset()
             n.showSpinner('Loading module data ...')
             const res = await loadModule(module)
             n.showSpinner(false)
@@ -66,7 +64,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           break
 
         case 'module.clear':
-          trioReset()
+          // trioReset()
           break
 
         case 'collection.item.load':
@@ -145,20 +143,12 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           break
 
         case 'item.prepareForUpdate':
-          prepareForNew(false)
+          await routesPrepareForNew(module, false)
           break
 
         case 'item.prepareForCreate':
-          {
-            const res = await send<TApiArray[]>('module/index', 'post', {
-              module,
-            })
-            if (res.success) {
-              prepareForNew(true, res.data)
-            } else {
-              return { success: false, message: `Error: failed to load current ids` }
-            }
-          }
+          await routesPrepareForNew(module, true)
+
           break
 
         default:
@@ -171,28 +161,31 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   }
 
   async function loadModule(module: TModule): Promise<{ success: boolean; message: string }> {
+    const { useTrioStore } = await import('../trio/trio')
+    const { setTrio, trioReset } = useTrioStore()
     trioReset()
+    console.log(`loadModule ** 1 **`)
     const res = await send<TApiModuleInit>('module/init', 'post', { module: module })
-    if (res.success) {
-      setModuleInfo({
-        module: res.data.module,
-        counts: res.data.counts,
-        welcomeText: res.data.welcome_text,
-        firstId: res.data.first_id,
-      })
-      c.resetCollectionsViewIndex()
-      i.setItemViewIndex(0)
-      i.itemViews = res.data.display_options.item_views
-      c.clear(['main', 'media', 'related'])
-
-      setTrio(res.data.trio)
-
-      c.setCollectionViews('main', res.data.display_options.main_collection_views)
-      c.setCollectionViews('related', res.data.display_options.related_collection_views)
-      return { success: true, message: '' }
-    } else {
+    console.log(`loadModule ** 2 **`)
+    if (!res.success) {
       return { success: false, message: `Error: failed to load module ${module}` }
     }
+    await setModuleInfo({
+      module: res.data.module,
+      counts: res.data.counts,
+      welcomeText: res.data.welcome_text,
+      firstId: res.data.first_id,
+    })
+    c.resetCollectionsViewIndex()
+    i.setItemViewIndex(0)
+    i.itemViews = res.data.display_options.item_views
+    c.clear(['main', 'media', 'related'])
+    console.log(`loadModule ** 3 **`)
+    await setTrio(res.data.trio)
+    console.log(`loadModule ** 4 **`)
+    c.setCollectionViews('main', res.data.display_options.main_collection_views)
+    c.setCollectionViews('related', res.data.display_options.related_collection_views)
+    return { success: true, message: '' }
   }
 
   async function loadCollectionAndItem(module: TModule, query: LocationQuery, slug: string) {
@@ -214,13 +207,13 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   ): Promise<{ success: boolean; message: string }> {
     const { array } = storeToRefs(useCollectionMainStore())
     clearSelectedFilters()
-    const resParseUrl = parseUrlQuery(query)
+    const resParseUrl = await parseUrlQuery(query)
     console.log(`parseUrlQuery result: ${JSON.stringify(resParseUrl, null, 2)}`)
 
     if (!resParseUrl.success) {
       console.log(`parseQuery() failed`)
       clearSelectedFilters()
-      return resParseUrl
+      return { success: false, message: resParseUrl.message! }
     }
 
     const res2 = await send<TApiArray[]>('module/index', 'post', {
@@ -267,7 +260,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     r.to.slug = tagAndSlugFromId(res.data.fields.id, module).slug
     setItemMedia(res.data.media)
     array.value = res.data.related
-    i.saveitemFieldsPlus(res.data)
+    await i.saveitemFieldsPlus(res.data)
     return { success: true, message: '' }
   }
 
@@ -281,7 +274,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     return res
   }
 
-  async function itemSetIndexInCollection(): Promise<boolean> {
+  function itemSetIndexInCollection() {
     //console.log(`prepare.itemSetIndexInCollection()`)
     const itemIndex = c.itemIndexById(i.id)
     if (itemIndex === -1) {
@@ -295,6 +288,24 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     }
   }
 
+  async function routesPrepareForNew(module: TModule, isCreate: boolean) {
+    const { useItemNewStore } = await import('../itemNew')
+    const { prepareForNew } = useItemNewStore()
+
+    console.log(`routesPrepareForNew()`)
+    if (isCreate) {
+      const res = await send<TApiArray[]>('module/index', 'post', {
+        module,
+      })
+      if (res.success) {
+        prepareForNew(true, res.data)
+      } else {
+        return { success: false, message: `Error: failed to load current ids` }
+      }
+    } else {
+      prepareForNew(false)
+    }
+  }
   function prepareForMedia(): void {
     console.log(`prepareForMedia()`)
   }

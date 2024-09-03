@@ -1,60 +1,31 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { maxLength } from '@vuelidate/validators'
-import {
-  TFieldsByModule,
-  TFieldsUnion,
-  FuncSlugToId,
-  TCategorizerByFieldName,
-  TCategorizedFields,
-} from '@/js/types/moduleTypes'
+import { TFieldsByModule, TFieldsUnion, TObjCategorizerByFieldName } from '@/js/types/moduleTypes'
 import { useItemStore } from '../../../scripts/stores/item'
-import { useItemNewStore } from '../../../scripts/stores/itemNew'
 
 export const useStoneStore = defineStore('stone', () => {
   const { fields } = storeToRefs(useItemStore())
-  const { newFields, openIdSelectorModal, isCreate, isUpdate } = storeToRefs(useItemNewStore())
 
-  const categorizer: TCategorizerByFieldName<'Stone'> = {
-    old_museum_id: (val) => {
-      // console.log(`old_museum_idCategorizer(${val})`)
-      return val === null || (typeof val === 'string' && val.length === 0) ? 1 : 0
-    },
-  }
-
-  function categorizerByFieldName<key extends keyof TCategorizedFields>(field: key) {
-    return categorizer[field]
-  }
-
-  const slugToId: FuncSlugToId = function (slug: string) {
-    const sections = slug.split('.')
-
-    if (sections.length !== 3) {
-      return {
-        success: false,
-        message: `Unsupported slug format detected: ${slug}`,
-      }
-    }
-
+  const categorizer = computed<TObjCategorizerByFieldName<'Stone'>>(() => {
     return {
-      success: true,
-      id: slug,
+      old_museum_id: (val) => {
+        // console.log(`old_museum_idCategorizer(${val})`)
+        return val === null || (typeof val === 'string' && val.length === 0) ? 1 : 0
+      },
     }
-  }
-
-  function tagAndSlugFromId(id: string) {
-    return { tag: id, slug: id }
-  }
-
-  const nf = computed(() => {
-    return newFields.value as TFieldsByModule<'Stone'>
   })
 
-  function prepareForNew(isCreate: boolean, ids?: string[]): void {
+  const newItemIsInOC = ref<boolean>(false)
+
+  async function prepareForNew(isCreate: boolean, ids?: string[]) {
+    const { useItemNewStore } = await import('../../../scripts/stores/itemNew')
+    const { newFields, openIdSelectorModal } = storeToRefs(useItemNewStore())
     console.log(
       `prepNew(Stone) create(${isCreate}) fields: ${JSON.stringify(fields.value, null, 2)}`,
     )
-
+    const nf = newFields.value as TFieldsByModule<'Stone'>
+    newItemIsInOC.value = typeof nf.uri === 'string'
     if (isCreate) {
       currentIds.value = ids!
       openIdSelectorModal.value = true
@@ -122,20 +93,24 @@ export const useStoneStore = defineStore('stone', () => {
     })
   })
 
-  function beforeStore(isCreate: boolean): Partial<TFieldsUnion> | false {
+  async function beforeStore(isCreate: boolean): Promise<Partial<TFieldsUnion> | false> {
     //console.log(`stone.beforStore() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
-    if (inOC.value) {
+    const { useItemNewStore } = await import('../../../scripts/stores/itemNew')
+    const { newFields } = storeToRefs(useItemNewStore())
+    const nf = newFields.value as TFieldsByModule<'Stone'>
+    const inOC = typeof nf.uri === 'string'
+    if (inOC) {
       return {
-        id: nf.value.id,
-        id_year: nf.value.id_year,
-        id_access_no: nf.value.id_access_no,
-        id_object_no: nf.value.id_object_no,
-        specialist_description: nf.value.specialist_description,
+        id: nf.id,
+        id_year: nf.id_year,
+        id_access_no: nf.id_access_no,
+        id_object_no: nf.id_object_no,
+        specialist_description: nf.specialist_description,
         specialist_date: new Date(),
       }
     } else {
       const fieldsToSend: Partial<TFieldsByModule<'Stone'>> = {}
-      Object.assign(fieldsToSend, nf.value)
+      Object.assign(fieldsToSend, nf)
       fieldsToSend.specialist_date = new Date()
       fieldsToSend.catalog_date = new Date()
       if (isCreate) {
@@ -146,7 +121,7 @@ export const useStoneStore = defineStore('stone', () => {
   }
 
   const rules = computed(() => {
-    return inOC.value
+    return newItemIsInOC.value
       ? {
           id: {},
           specialist_description: { maxLength: maxLength(25) },
@@ -176,13 +151,6 @@ export const useStoneStore = defineStore('stone', () => {
         }
   })
 
-  const inOC = computed(() => {
-    if (!isCreate.value && !isUpdate.value) {
-      return undefined
-    }
-    return typeof nf.value.uri === 'string'
-  })
-
   const mainTableHeaders = computed(() => {
     return [
       { title: 'Label', align: 'start', key: 'tag' },
@@ -196,13 +164,10 @@ export const useStoneStore = defineStore('stone', () => {
   return {
     mainTableHeaders,
     currentIds,
-    newFields,
     rules,
-    inOC,
+    newItemIsInOC,
     availableItemNumbers,
-    categorizerByFieldName,
-    slugToId,
-    tagAndSlugFromId,
+    categorizer,
     prepareForNew,
     beforeStore,
   }

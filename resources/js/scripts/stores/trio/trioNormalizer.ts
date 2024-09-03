@@ -12,13 +12,11 @@ import type {
   TGroupOrFieldToKeyObj,
   TGroupField,
   TOptionTmp,
-  TCategorizerFunc,
 } from '@/js/types/trioTypes'
-import { useModuleStore } from '../module'
+import type { TFieldValue, TObjAllCategorizerFuncs } from '@/js/types/moduleTypes'
 
 export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   const { mediaCollectionNames } = storeToRefs(useMediaStore())
-  const { categorizerByFieldName } = useModuleStore()
 
   let categories: TCategoriesArray = []
   let groupsObj: TGroupObj = {}
@@ -45,8 +43,13 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     tmpOptions = []
   }
 
-  function normalizetrio(apiTrio: TApiTrio) {
+  async function normalizetrio(
+    apiTrio: TApiTrio,
+    categorizerObj: Record<string, (val: TFieldValue) => number>,
+  ) {
     reset()
+    console.log(`normalizeTrio()`)
+
     apiTrio.forEach((cat) => {
       categories.push({ name: cat.name, groupKeys: [] })
       cat.groups.forEach((grp) => {
@@ -54,7 +57,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
         categories[catCnt].groupKeys.push(grpKey)
         switch (grp.code) {
           case 'FD':
-            handleFD(grp as TApiGroupByCode<'FD'>)
+            handleFD(grp as TApiGroupByCode<'FD'>, categorizerObj)
             break
 
           case 'FS':
@@ -127,7 +130,10 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     })
   }
 
-  function handleFD(grp: TApiGroupByCode<'FD'>) {
+  function handleFD(
+    grp: TApiGroupByCode<'FD'>,
+    catObj: Record<string, (val: TFieldValue) => number>,
+  ) {
     tmpOptions = grp.options
 
     tmpGroup = {
@@ -144,7 +150,8 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
       allow_dependents: grp.allow_dependents,
     }
     if (grp.tag_source === 'Categorized') {
-      tmpGroup.categorizer = categorizerByFieldName(grp.field_name) as TCategorizerFunc
+      console.log(`trioNormalizer 'FD'  Categorized`)
+      tmpGroup.categorizer = catObj[grp.field_name as keyof TObjAllCategorizerFuncs]
     }
   }
 

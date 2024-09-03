@@ -5,62 +5,62 @@
         <id-selector></id-selector>
       </template>
       <template v-else>
-        <v-text-field v-model="newFields.id" label="Label" class="mr-1" filled disabled />
+        <v-text-field v-model="nf.id" label="Label" class="mr-1" filled disabled />
       </template>
 
-      <v-text-field v-model="newFields.square" label="Square" :error-messages="squareErrors" class="mx-1" filled
-        :disabled="inOC" />
-      <v-text-field v-model="newFields.context" label="Context" :error-messages="contextErrors" class="mr-1" filled
-        :disabled="inOC" />
-      <v-text-field v-model="newFields.occupation_level" label="Occupation Level"
-        :error-messages="occupation_levelErrors" class="mr-1" filled :disabled="inOC" />
-      <v-text-field v-model="newFields.excavation_object_id" label="Excavation Object Id"
-        :error-messages="excavation_object_idErrors" class="mr-1" filled :disabled="inOC" />
-      <v-text-field v-model="newFields.old_museum_id" label="Old Museum Id" class="mr-1" filled :disabled="inOC" />
+      <v-text-field v-model="nf.square" label="Square" :error-messages="squareErrors" class="mx-1" filled
+        :disabled="newItemIsInOC" />
+      <v-text-field v-model="nf.context" label="Context" :error-messages="contextErrors" class="mr-1" filled
+        :disabled="newItemIsInOC" />
+      <v-text-field v-model="nf.occupation_level" label="Occupation Level" :error-messages="occupation_levelErrors"
+        class="mr-1" filled :disabled="newItemIsInOC" />
+      <v-text-field v-model="nf.excavation_object_id" label="Excavation Object Id"
+        :error-messages="excavation_object_idErrors" class="mr-1" filled :disabled="newItemIsInOC" />
+      <v-text-field v-model="nf.old_museum_id" label="Old Museum Id" class="mr-1" filled :disabled="newItemIsInOC" />
     </v-row>
 
     <v-row wrap no-gutters>
-      <v-select v-model="newFields.cataloger_id" label="Select" item-title="text" item-value="extra"
+      <v-select v-model="nf.cataloger_id" label="Select" item-title="text" item-value="extra"
         :items="catalogerInfo.options"></v-select>
 
-      <v-select v-model="newFields.material_id" label="Select" item-title="text" item-value="extra"
+      <v-select v-model="nf.material_id" label="Select" item-title="text" item-value="extra"
         :items="materialInfo.options"></v-select>
 
-      <v-select v-model="newFields.base_type_id" label="Select" item-title="text" item-value="extra"
+      <v-select v-model="nf.base_type_id" label="Select" item-title="text" item-value="extra"
         :items="typologyInfo.options"></v-select>
     </v-row>
 
     <v-row wrap no-gutters>
-      <v-textarea v-model="newFields.cataloger_description" label="Cataloger Description" class="mr-1" filled
-        :disabled="inOC" />
-      <v-textarea v-model="newFields.conservation_notes" label="Conservation Notes" class="mr-1" filled
-        :disabled="inOC" />
-      <v-textarea v-model="newFields.dimension_notes" label="Dimension Notes" class="mr-1" filled :disabled="inOC" />
+      <v-textarea v-model="nf.cataloger_description" label="Cataloger Description" class="mr-1" filled
+        :disabled="newItemIsInOC" />
+      <v-textarea v-model="nf.conservation_notes" label="Conservation Notes" class="mr-1" filled
+        :disabled="newItemIsInOC" />
+      <v-textarea v-model="nf.dimension_notes" label="Dimension Notes" class="mr-1" filled :disabled="newItemIsInOC" />
     </v-row>
 
     <v-row wrap no-gutters>
-      <v-text-field v-model="newFields.weight" label="Weight" class="mr-1" filled :disabled="inOC" />
-      <v-text-field v-model="newFields.length" label="Length" class="mr-1" filled :disabled="inOC" />
-      <v-text-field v-model="newFields.width" label="Width" class="mr-1" filled :disabled="inOC" />
-      <v-text-field v-model="newFields.diameter" label="Diameter" class="mr-1" filled :disabled="inOC" />
+      <v-text-field v-model="nf.weight" label="Weight" class="mr-1" filled :disabled="newItemIsInOC" />
+      <v-text-field v-model="nf.length" label="Length" class="mr-1" filled :disabled="newItemIsInOC" />
+      <v-text-field v-model="nf.width" label="Width" class="mr-1" filled :disabled="newItemIsInOC" />
+      <v-text-field v-model="nf.diameter" label="Diameter" class="mr-1" filled :disabled="newItemIsInOC" />
     </v-row>
 
     <v-row wrap no-gutters>
-      <v-text-field v-model="newFields.cultural_period" label="Cataloger Assumed Period" class="mr-1" filled
-        :disabled="inOC" />
-      <v-date-input v-model="newFields.excavation_date" label="Excavation Date" clearable :disabled="inOC"
+      <v-text-field v-model="nf.cultural_period" label="Cataloger Assumed Period" class="mr-1" filled
+        :disabled="newItemIsInOC" />
+      <v-date-input v-model="nf.excavation_date" label="Excavation Date" clearable :disabled="newItemIsInOC"
         max-width="368" @click:clear="clearDate('Excavation')"></v-date-input>
-      <template v-if="inOC">
-        <!-- <v-text-field v-model="catalogerInfo." label="Cataloger" class="mx-1" filled :disabled="inOC" /> -->
-        <v-date-input v-model="newFields.catalog_date" label="Catalog Date" clearable :disabled="inOC" max-width="368"
+      <template v-if="newItemIsInOC">
+        <!-- <v-text-field v-model="catalogerInfo." label="Cataloger" class="mx-1" filled :disabled="newItemIsInOC" /> -->
+        <v-date-input v-model="nf.catalog_date" label="Catalog Date" clearable :disabled="newItemIsInOC" max-width="368"
           @click:clear="clearDate('Catalog')"></v-date-input>
       </template>
     </v-row>
     <v-row wrap no-gutters>
-      <v-textarea v-model="newFields.specialist_description" label="Specialist Description"
+      <v-textarea v-model="nf.specialist_description" label="Specialist Description"
         :error-messages="specialist_descriptionErrors" class="mr-1" filled />
     </v-row>
-    <slot :id="newFields.id" name="newItem" :v="v" :new-fields="newFields" />
+    <slot :id="nf.id" name="newItem" :v="v" :new-fields="nf" />
   </v-container>
 </template>
 
@@ -78,11 +78,15 @@ const props = defineProps<{
   isCreate: boolean
 }>()
 
-const { newFields, rules, inOC } = storeToRefs(useStoneStore())
-let { itemNewFieldsToOptionsObj } = storeToRefs(useItemNewStore())
+const { rules, newItemIsInOC } = storeToRefs(useStoneStore())
+let { itemNewFieldsToOptionsObj, newFields } = storeToRefs(useItemNewStore())
+
 
 const v = useVuelidate(rules, newFields.value as TFieldsByModule<'Stone'>)
 
+const nf = computed(() => {
+  return newFields.value as TFieldsByModule<'Stone'>
+})
 // const idErrors = computed(() => {
 //   return <string>(v.value.id?.$error ? v.value.id.$errors[0].$message : undefined)
 // })
@@ -135,15 +139,15 @@ const typologyInfo = computed(() => {
 function clearDate(field: string) {
   switch (field) {
     case 'Excavation':
-      newFields.value.excavation_date = null
+      nf.value.excavation_date = null
       break
 
     case 'Catalog':
-      newFields.value.catalog_date = null
+      nf.value.catalog_date = null
       break
 
     case 'Specialist':
-      newFields.value.specialist_date = null
+      nf.value.specialist_date = null
       break
     default:
   }

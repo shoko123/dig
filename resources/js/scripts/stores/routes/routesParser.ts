@@ -7,7 +7,6 @@ import type { LocationQuery } from 'vue-router'
 import type { TGroupBase } from '@/js/types/trioTypes'
 
 import { useModuleStore } from '../module'
-import { useTrioStore } from '../trio/trio'
 import { useMainStore } from '../main'
 import { useFilterStore } from '../trio/filter'
 
@@ -44,9 +43,8 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
     return slugToId(module, slug)
   }
 
-  function parseUrlQuery(
-    qp: LocationQuery,
-  ): { success: true } | { success: false; message: string } {
+  async function parseUrlQuery(qp: LocationQuery) {
+    const { useTrioStore } = await import('../trio/trio')
     //console.log(`urlQueryToApiFilters().urlQuery: ${JSON.stringify(qp, null, 2)}`);
     const { trio, groupLabelToGroupKeyObj } = storeToRefs(useTrioStore())
     const { filterAllOptions } = storeToRefs(useFilterStore())
@@ -75,7 +73,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
       switch (group.code) {
         case 'OB':
           {
-            const res = processUrlOB(
+            const res = await processUrlOB(
               group,
               optionTexts.map((x) => x.replace(/_/g, ' ')),
               selectedFilters,
@@ -88,7 +86,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
 
         case 'FS':
           {
-            const res = processUrlCS(group, optionTexts, selectedFilters)
+            const res = await processUrlCS(group, optionTexts, selectedFilters)
             if (!res.success) {
               return res
             }
@@ -97,7 +95,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
 
         default:
           {
-            const res = processUrlDefault(
+            const res = await processUrlDefault(
               group,
               optionTexts.map((x) => x.replace(/_/g, ' ')),
               selectedFilters,
@@ -113,11 +111,12 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
     return { success: true }
   }
 
-  function processUrlDefault(
+  async function processUrlDefault(
     group: TGroupBase,
     optionTexts: string[],
     selectedFilters: string[],
-  ): { success: true } | { success: false; message: string } {
+  ) {
+    const { useTrioStore } = await import('../trio/trio')
     const { trio } = storeToRefs(useTrioStore())
     for (const x of optionTexts) {
       const i = group.optionKeys.findIndex((y) => trio.value.optionsObj[y].text === x)
@@ -132,11 +131,12 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
     return { success: true }
   }
 
-  function processUrlOB(
+  async function processUrlOB(
     group: TGroupBase,
     optionTexts: string[],
     filterAllOptions: string[],
-  ): { success: true } | { success: false; message: string } {
+  ) {
+    const { useTrioStore } = await import('../trio/trio')
     const { trio, orderByOptions } = storeToRefs(useTrioStore())
     const selected: string[] = []
 
@@ -165,11 +165,12 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
     return { success: true }
   }
 
-  function processUrlCS(
+  async function processUrlCS(
     group: TGroupBase,
     optionTexts: string[],
     filterAllOptions: string[],
-  ): { success: true } | { success: false; message: string } {
+  ) {
+    const { useTrioStore } = await import('../trio/trio')
     const { trio } = storeToRefs(useTrioStore())
     if (optionTexts.length > 6) {
       return {

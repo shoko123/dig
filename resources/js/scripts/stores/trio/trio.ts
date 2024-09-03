@@ -30,6 +30,7 @@ export const useTrioStore = defineStore('trio', () => {
   //current index of visible categories/groups
   const categoryIndex = ref<number>(0)
   const groupIndex = ref<number>(0)
+  const categorizer = ref<Record<string, (val: TFieldValue) => number>>({})
 
   function getFieldsOptions(fields: TFieldsUnion) {
     const optionKeys: string[] = []
@@ -37,12 +38,18 @@ export const useTrioStore = defineStore('trio', () => {
     let optionKey: string | undefined
     let val: TFieldValue = 0
 
+    console.log(`getFieldsOptions() fields:${JSON.stringify(fields, null, 2)}`)
+    console.log(`getFieldsOptions()`)
+
     Object.entries(fieldsToGroupKeyObj.value).forEach(([key, value]) => {
+      console.log(`[key: ${key}] => ${value}`)
       const group = <TGroupField>trio.value.groupsObj[value]
       val = fields[key as keyof TFieldsUnion]
       let index = -1
       if (group.tag_source === 'Categorized') {
+        console.log(`categorized group: ${group.label} val: ${val}`)
         index = group.categorizer!(val)
+        console.log(`index: ${index}`)
         optionKey = group.optionKeys[index]
       } else {
         index = group.optionKeys.findIndex(
@@ -73,7 +80,7 @@ export const useTrioStore = defineStore('trio', () => {
       optionKeys.push(optionKey)
     })
 
-    //console.log(`getFieldsOptions() options: ${JSON.stringify(all, null, 2)}`)
+    console.log(`getFieldsOptions() options: ${JSON.stringify(all, null, 2)}`)
     return all
   }
 
@@ -391,11 +398,14 @@ export const useTrioStore = defineStore('trio', () => {
     orderByOptions.value = []
   }
 
-  function setTrio(apiTrio: TApiTrio) {
+  async function setTrio(apiTrio: TApiTrio) {
     trioReset()
-
+    const { useModuleStore } = await import('../module')
+    const { getCurrentStore } = useModuleStore()
+    const store = await getCurrentStore()
+    categorizer.value = { ...(store.categorizer as (val: TFieldValue) => number) }
     //const res = normalizeTrio(apiTrio)
-    const res = normalizetrio(apiTrio)
+    const res = await normalizetrio(apiTrio, categorizer.value)
     trio.value = res.trio
     groupLabelToGroupKeyObj.value = res.groupLabelToGroupKeyObj
     orderByOptions.value = res.orderByOptions
@@ -511,5 +521,6 @@ export const useTrioStore = defineStore('trio', () => {
     optionClicked,
     resetCategoryAndGroupIndices,
     getFieldsOptions,
+    categorizer,
   }
 })

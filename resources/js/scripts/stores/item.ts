@@ -9,7 +9,6 @@ import { useCollectionMainStore } from './collections/collectionMain'
 import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
 import { useModuleStore } from './module'
-import { useTrioStore } from './trio/trio'
 
 export const useItemStore = defineStore('item', () => {
   const { current } = storeToRefs(useRoutesMainStore())
@@ -17,8 +16,6 @@ export const useItemStore = defineStore('item', () => {
   const { tagAndSlugFromId } = useModuleStore()
   const { module } = storeToRefs(useModuleStore())
   const { send } = useXhrStore()
-  const { trio, groupLabelToGroupKeyObj } = storeToRefs(useTrioStore())
-  const { getFieldsOptions } = useTrioStore()
 
   const fields = ref<TFieldsUnion | undefined>(undefined)
   const slug = ref<string | undefined>(undefined)
@@ -62,7 +59,10 @@ export const useItemStore = defineStore('item', () => {
     }
   })
 
-  function saveitemFieldsPlus<F extends TApiFieldsUnion>(apiItem: TApiItemShow<F>) {
+  async function saveitemFieldsPlus<F extends TApiFieldsUnion>(apiItem: TApiItemShow<F>) {
+    const { useTrioStore } = await import('./trio/trio')
+    const { getFieldsOptions } = useTrioStore()
+    console.log(`saveitemFieldsPlus`)
     saveItemFields(apiItem.fields)
 
     const res = tagAndSlugFromId(apiItem.fields.id)
@@ -98,7 +98,9 @@ export const useItemStore = defineStore('item', () => {
     fields.value = Object.fromEntries(tmpMap.entries())
   }
 
-  function addTagOptions(apiTags: TApiTag[]) {
+  async function addTagOptions(apiTags: TApiTag[]) {
+    const { useTrioStore } = await import('./trio/trio')
+    const { trio, groupLabelToGroupKeyObj } = storeToRefs(useTrioStore())
     // console.log(`SaveItem - Add extrnal (module and global) tags`)
     itemTagOptions.value = []
     for (const x of apiTags) {

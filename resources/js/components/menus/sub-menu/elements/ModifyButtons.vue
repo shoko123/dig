@@ -33,7 +33,7 @@ import { useAuthStore } from '../../../../scripts/stores/auth'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 import { useItemStore } from '../../../../scripts/stores/item'
 import { useCollectionMediaStore } from '../../../../scripts/stores/collections/collectionMedia'
-import { useTaggerStore } from '../../../../scripts/stores/trio/tagger'
+
 import { useNotificationsStore } from '../../../../scripts/stores/notifications'
 
 const { routerPush } = useRoutesMainStore()
@@ -68,8 +68,9 @@ function goToMedia() {
   routerPush('media', <string>derived.value.slug)
 }
 
-function goToTagger() {
+async function goToTagger() {
   console.log(`goToTagger`)
+  const { useTaggerStore } = await import('../../../../scripts/stores/trio/tagger')
   const { prepareTagger } = useTaggerStore()
   prepareTagger()
   routerPush('tag', <string>derived.value.slug)

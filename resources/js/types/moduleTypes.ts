@@ -68,11 +68,21 @@ type TFieldInfo = {
   index: number
 }
 
+type TTabularByModule<ModuleName extends TModule> = TAllByModule<ModuleName>['TabularViewFields']
+type TApiTabularByModule<ModuleName extends TModule> = AddTagAndSlugProperties<
+  TTabularByModule<ModuleName>
+>
 type TFieldsToFieldInfo<T extends TBespokeFieldsUnion> = {
   [k in keyof T]: TFieldInfo
 }
 
 type TCategorizedFieldsByModule<M extends TModule> = TAllByModule<M>['categorizedFields']
+
+type TObjCategorizerByFieldName<M extends TModule> = {
+  [Key in keyof TCategorizedFieldsByModule<M>]: (val: TCategorizedFieldsByModule<M>[Key]) => number
+}
+
+/*
 
 type TCategorizerByFieldName<M extends TModule> = {
   [Key in keyof TCategorizedFieldsByModule<M> as TCategorizedFieldsByModule<M>[Key] extends string
@@ -80,23 +90,24 @@ type TCategorizerByFieldName<M extends TModule> = {
     : never]: (val: TCategorizedFieldsByModule<M>[Key]) => number
 }
 
-// type CategorizerByModuleAndFieldName<
-//   M extends TModule,
-//   F extends keyof TCategorizedFieldsByModule<M>,
-// > = {
-//   [K in keyof F]: F[K] extends (val: F[K]) => number ? F[K] : never
-// }
+*/
 
-type TAllTCategorizerByFieldName = TCategorizerByFieldName<TModule>
-
-type TTabularByModule<ModuleName extends TModule> = TAllByModule<ModuleName>['TabularViewFields']
-type TApiTabularByModule<ModuleName extends TModule> = AddTagAndSlugProperties<
-  TTabularByModule<ModuleName>
+type FuncCategorizer = (val: TFieldValue) => number
+type TObjCategorizerFuncsByModule<M extends TModule> = Record<
+  keyof TObjCategorizerByFieldName<M>,
+  FuncCategorizer
 >
+type TObjAllCategorizerFuncs = TObjCategorizerFuncsByModule<TModule>
 
-type FuncSlugToId = (
+type TFuncIdToTagAndSlug = (id: string) => { slug: string; tag: string }
+type TFuncSlugToId = (
   slug: string,
 ) => { success: true; id: string } | { success: false; message: string }
+
+type TObjIdTagAnddSlugFuncsByModule = Record<
+  TModule,
+  { idToSlugTag: TFuncIdToTagAndSlug; slugToId: TFuncSlugToId }
+>
 
 type TApiModuleInit = {
   module: TModule
@@ -126,14 +137,14 @@ export {
   TApiTabularByModule,
   TTabularByModule,
   TApiModuleInit,
-  FuncSlugToId,
   TFieldInfo,
   TFieldsToFieldInfo,
   TBespokeFieldsByModule,
   TFieldValue,
-  TCategorizerByFieldName,
-  TAllTCategorizerByFieldName,
+  TObjCategorizerByFieldName,
+  TObjAllCategorizerFuncs,
   TCategorizedFieldsByModule,
   TCategorizedFields,
-  // CategorizerByModuleAndFieldName,
+  TObjIdTagAnddSlugFuncsByModule,
+  TObjCategorizerFuncsByModule,
 }

@@ -1,44 +1,16 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import {
-  TFieldsByModule,
-  TFieldsUnion,
-  FuncSlugToId,
-  TCategorizerByFieldName,
-  TCategorizedFields,
-} from '@/js/types/moduleTypes'
+import { TFieldsByModule, TFieldsUnion, TObjCategorizerByFieldName } from '@/js/types/moduleTypes'
 import { useItemStore } from '../item'
-import { useItemNewStore } from '../itemNew'
 
 export const useCeramicStore = defineStore('ceramic', () => {
   const { fields } = storeToRefs(useItemStore())
-  const { newFields, openIdSelectorModal } = storeToRefs(useItemNewStore())
-
-  const categorizer: TCategorizerByFieldName<'Ceramic'> = {}
-
-  function categorizerByFieldName<key extends keyof TCategorizedFields>(field: key) {
-    return categorizer[field]
-  }
-
-  const slugToId: FuncSlugToId = function (slug: string) {
-    const arr = slug.split('.')
-
-    if (arr.length === 2) {
-      return {
-        success: true,
-        id: slug,
-      }
-    }
-    return { success: false, message: 'No . [dot] detected in slug.' }
-  }
-
-  function tagAndSlugFromId(id: string) {
-    return { tag: id, slug: id }
-  }
-
+  const categorizer: TObjCategorizerByFieldName<'Ceramic'> = {}
   const currentIds = ref<string[]>([])
 
-  function prepareForNew(isCreate: boolean, ids?: string[]): void {
+  async function prepareForNew(isCreate: boolean, ids?: string[]) {
+    const { useItemNewStore } = await import('../../../scripts/stores/itemNew')
+    const { newFields, openIdSelectorModal } = storeToRefs(useItemNewStore())
     //console.log(`stone.beforStore() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
     Object.assign(newFields.value, fields.value as TFieldsByModule<'Stone'>)
 
@@ -48,7 +20,9 @@ export const useCeramicStore = defineStore('ceramic', () => {
     }
   }
 
-  function beforeStore(isCreate: boolean): TFieldsUnion | false {
+  async function beforeStore(isCreate: boolean): Promise<TFieldsUnion | false> {
+    const { useItemNewStore } = await import('../../../scripts/stores/itemNew')
+    const { newFields } = storeToRefs(useItemNewStore())
     //console.log(`stone.beforStore() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
     if (isCreate) {
       //
@@ -66,12 +40,9 @@ export const useCeramicStore = defineStore('ceramic', () => {
   })
 
   return {
-    newFields,
     mainTableHeaders,
     prepareForNew,
     beforeStore,
-    tagAndSlugFromId,
-    slugToId,
-    categorizerByFieldName,
+    categorizer,
   }
 })
