@@ -11,30 +11,37 @@
 
 <script lang="ts" setup>
 import type { VDataTableVirtual } from 'vuetify/lib/components/index.mjs'
-import { computed } from 'vue'
+import type { TModule } from '@/js/types/moduleTypes'
+import type { TCollectionName, TPage } from '@/js/types/collectionTypes'
+
+import { ref, computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import { TModule } from '@/js/types/moduleTypes'
-import { TCollectionName, TPage } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 import { useCollectionRelatedStore } from '../../scripts/stores/collections/collectionRelated'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
-import { useModuleStore } from '../../scripts/stores/module'
 
+type THeader = { title: string, align: string, key: string }
 const props = defineProps<{
   source: TCollectionName
   pageNoB1: number
 }>()
 
-let { collection } = useCollectionsStore()
-let { mainTableHeaders } = storeToRefs(useModuleStore())
+const { collection } = useCollectionsStore()
 const { relatedTableHeaders } = storeToRefs(useCollectionRelatedStore())
-let { routerPush, moveFromItemToItem } = useRoutesMainStore()
+const { routerPush, moveFromItemToItem } = useRoutesMainStore()
 
-type THeader = { title: string, align: 'start' | 'end', key: string }
+onMounted(async () => {
+  const { useModuleStore } = await import('../../scripts/stores/module')
+  let { getStore } = useModuleStore()
+  const store = await getStore()
+  mainTableHeaders.value = store.mainTableHeaders
+});
+
+const mainTableHeaders = ref<THeader[]>([])
 
 const headers = computed(() => {
   if (props.source === 'main') {
-    return mainTableHeaders.value as THeader[]
+    return mainTableHeaders.value
   } else {
     return relatedTableHeaders.value as THeader[]
   }

@@ -82,31 +82,20 @@ type TObjCategorizerByFieldName<M extends TModule> = {
   [Key in keyof TCategorizedFieldsByModule<M>]: (val: TCategorizedFieldsByModule<M>[Key]) => number
 }
 
-/*
-
-type TCategorizerByFieldName<M extends TModule> = {
-  [Key in keyof TCategorizedFieldsByModule<M> as TCategorizedFieldsByModule<M>[Key] extends string
-    ? TCategorizedFieldsByModule<M>[Key]
-    : never]: (val: TCategorizedFieldsByModule<M>[Key]) => number
-}
-
-*/
-
 type FuncCategorizer = (val: TFieldValue) => number
 type TObjCategorizerFuncsByModule<M extends TModule> = Record<
   keyof TObjCategorizerByFieldName<M>,
   FuncCategorizer
 >
 type TObjAllCategorizerFuncs = TObjCategorizerFuncsByModule<TModule>
-
 type TFuncIdToTagAndSlug = (id: string) => { slug: string; tag: string }
-type TFuncSlugToId = (
-  slug: string,
-) => { success: true; id: string } | { success: false; message: string }
 
-type TObjIdTagAnddSlugFuncsByModule = Record<
+type TObjIdTagAndSlugFuncsByModule = Record<
   TModule,
-  { idToSlugTag: TFuncIdToTagAndSlug; slugToId: TFuncSlugToId }
+  {
+    idToSlugTag: TFuncIdToTagAndSlug
+    regexp: RegExp
+  }
 >
 
 type TApiModuleInit = {
@@ -145,6 +134,6 @@ export {
   TObjAllCategorizerFuncs,
   TCategorizedFieldsByModule,
   TCategorizedFields,
-  TObjIdTagAnddSlugFuncsByModule,
+  TObjIdTagAndSlugFuncsByModule,
   TObjCategorizerFuncsByModule,
 }

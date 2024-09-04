@@ -1,7 +1,7 @@
 // stores/module.ts
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
-import type { TModule, TObjIdTagAnddSlugFuncsByModule } from '../../types/moduleTypes'
+import type { TModule, TObjIdTagAndSlugFuncsByModule } from '../../types/moduleTypes'
 import { useMediaStore } from './media'
 import { useRoutesMainStore } from './routes/routesMain'
 
@@ -13,72 +13,25 @@ export const useModuleStore = defineStore('module', () => {
   const welcomeText = ref<string>('')
   const firstSlug = ref<string>('')
 
-  const moduleSpecific = ref<{
-    mainTableHeaders: { title: string; align: string; key: string }[]
-  }>({
-    mainTableHeaders: [],
-  })
-
   // This object is defined here (rather than having specific functions implemented in each module)
   // for better code splitting.
-  const tagAndSlugObj: TObjIdTagAnddSlugFuncsByModule = {
+  const IdTagSlugObj: TObjIdTagAndSlugFuncsByModule = {
     Locus: {
+      regexp: new RegExp(/^[a-zA-Z -]{2,10}.\d{1,3}.\d{1,3}$/),
       idToSlugTag: (id: string) => {
         return { slug: id, tag: id }
-      },
-      slugToId: (slug: string) => {
-        const sections = slug.split('.')
-
-        if (sections.length !== 3) {
-          return {
-            success: false,
-            message: `Unsupported slug format detected: ${slug}`,
-          }
-        }
-
-        return {
-          success: true,
-          id: slug,
-        }
       },
     },
     Stone: {
+      regexp: new RegExp(/^B20\d{2}.\d{1}.\d{1,3}$/),
       idToSlugTag: (id: string) => {
         return { slug: id, tag: id }
-      },
-      slugToId: (slug: string) => {
-        const sections = slug.split('.')
-
-        if (sections.length !== 3) {
-          return {
-            success: false,
-            message: `Unsupported slug format detected: ${slug}`,
-          }
-        }
-
-        return {
-          success: true,
-          id: slug,
-        }
       },
     },
     Ceramic: {
+      regexp: new RegExp(/^\d{2}.\d{1}$/),
       idToSlugTag: (id: string) => {
         return { slug: id, tag: id }
-      },
-      slugToId: (slug: string) => {
-        const regex = /^\d{2}.\d{1}$/
-        if (!regex.test(slug)) {
-          return {
-            success: false,
-            message: `Unsupported slug format detected: ${slug}`,
-          }
-        }
-
-        return {
-          success: true,
-          id: slug,
-        }
       },
     },
   }
@@ -94,35 +47,29 @@ export const useModuleStore = defineStore('module', () => {
     welcomeText.value = initData.welcomeText
     const ts = tagAndSlugFromId(initData.firstId, initData.module)
     firstSlug.value = ts.slug
-
-    //set module specific data
-    const store = await getStore(module.value)
-    moduleSpecific.value.mainTableHeaders = store.mainTableHeaders
-
-    console.log(
-      `setModuleInfo(${module.value}) done. moduleSpecific: ${JSON.stringify(moduleSpecific.value, null, 2)}`,
-    )
   }
 
   /*
    * if module is not included, use current (we include it e.g. when we want tags of related item)
    */
   function tagAndSlugFromId(id: string, m?: TModule) {
-    const mod = typeof m === 'undefined' ? module.value : m
-    const func = tagAndSlugObj[mod].idToSlugTag
+    const mod = m === undefined ? module.value : m
+    const func = IdTagSlugObj[mod].idToSlugTag
     return func(id)
   }
 
-  function slugToId(module: TModule, slug: string) {
-    const func = tagAndSlugObj[module].slugToId
-    const res = func(slug)
-    console.log(` slugToId(${module}, ${slug} =>\n${JSON.stringify(res, null, 2)}`)
-    return res
+  function slugToId(m: TModule, slug: string) {
+    if (!IdTagSlugObj[m].regexp.test(slug)) {
+      return {
+        success: false,
+        message: `Unsupported ${module.value} slug: ${slug}`,
+      }
+    }
+    return {
+      success: true,
+      id: slug,
+    }
   }
-
-  const mainTableHeaders = computed(() => {
-    return moduleSpecific.value.mainTableHeaders
-  })
 
   function beforeStore(isCreate: boolean) {
     return isCreate
@@ -156,8 +103,10 @@ export const useModuleStore = defineStore('module', () => {
     }
   })
 
-  async function getStore(module: TModule) {
-    switch (module) {
+  async function getStore(m?: TModule) {
+    const mod = m === undefined ? module.value : m
+
+    switch (mod) {
       case 'Locus':
         {
           const { useLocusStore } = await import('./modules/Locus')
@@ -177,22 +126,15 @@ export const useModuleStore = defineStore('module', () => {
     }
   }
 
-  async function getCurrentStore() {
-    return await getStore(module.value)
-  }
-
   return {
     setModuleInfo,
     getStore,
-    getCurrentStore,
     module,
-    moduleSpecific,
     counts,
     welcomeText,
     firstSlug,
     backgroundImage,
     slugToId,
-    mainTableHeaders,
     tagAndSlugFromId,
     beforeStore,
     moduleNewFields,

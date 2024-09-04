@@ -401,8 +401,8 @@ export const useTrioStore = defineStore('trio', () => {
   async function setTrio(apiTrio: TApiTrio) {
     trioReset()
     const { useModuleStore } = await import('../module')
-    const { getCurrentStore } = useModuleStore()
-    const store = await getCurrentStore()
+    const { getStore } = useModuleStore()
+    const store = await getStore()
     categorizer.value = { ...(store.categorizer as (val: TFieldValue) => number) }
     //const res = normalizeTrio(apiTrio)
     const res = await normalizetrio(apiTrio, categorizer.value)
