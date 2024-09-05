@@ -244,7 +244,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     const sp = parseSlug(module, slug)
     if (!sp.success) {
       console.log(`parseSlug() failed`)
-      return { success: false, message: sp.message }
+      return { success: false, message: sp.message! }
     }
 
     const res = await send<TApiItemShow<TApiFieldsUnion>>('module/show', 'post', {
@@ -298,12 +298,12 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
         module,
       })
       if (res.success) {
-        prepareForNew(true, res.data)
+        await prepareForNew(true, res.data)
       } else {
         return { success: false, message: `Error: failed to load current ids` }
       }
     } else {
-      prepareForNew(false)
+      await prepareForNew(false)
     }
   }
   function prepareForMedia(): void {

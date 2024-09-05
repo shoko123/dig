@@ -71,17 +71,17 @@ export const useModuleStore = defineStore('module', () => {
     }
   }
 
-  function beforeStore(isCreate: boolean) {
-    return isCreate
-    // const store = getStore(module.value)
-    // return store.beforeStore(isCreate)
-  }
+  // function beforeStore(isCreate: boolean) {
+  //   return isCreate
+  //   // const store = getStore(module.value)
+  //   // return store.beforeStore(isCreate)
+  // }
 
-  const moduleNewFields = computed(() => {
-    return 'res'
-    // const store = getStore(module.value)
-    // return store.newFields
-  })
+  // const moduleNewFields = computed(() => {
+  //   return 'res'
+  //   // const store = getStore(module.value)
+  //   // return store.newFields
+  // })
 
   const backgroundImage = computed(() => {
     switch (current.value.name) {
@@ -136,7 +136,5 @@ export const useModuleStore = defineStore('module', () => {
     backgroundImage,
     slugToId,
     tagAndSlugFromId,
-    beforeStore,
-    moduleNewFields,
   }
 })

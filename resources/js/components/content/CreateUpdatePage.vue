@@ -30,15 +30,11 @@ const StoneNew = defineAsyncComponent(() => import('../modules/Stone/StoneNew.vu
 const CeramicNew = defineAsyncComponent(() => import('../modules/Ceramic/CeramicNew.vue'))
 
 let { showSpinner, showSnackbar } = useNotificationsStore()
-let { upload } = useItemNewStore()
-let { beforeStore } = useModuleStore()
+let { upload, beforeStore } = useItemNewStore()
+let { newFields, isCreate } = storeToRefs(useItemNewStore())
 const { module } = storeToRefs(useModuleStore())
 let { routerPush } = useRoutesMainStore()
-let { current } = storeToRefs(useRoutesMainStore())
 
-const isCreate = computed(() => {
-  return current.value.name === 'create'
-})
 
 const title = computed(() => {
   return isCreate.value ? 'Create' : 'Update'
@@ -69,14 +65,7 @@ async function submit(v: Validation) {
     return
   }
 
-  // let newReq = child.value!.beforeStore()
-  //alert("Form Successfully Submitted!")
-  let fieldsToSend = beforeStore(isCreate.value)
-
-  if (fieldsToSend === false) {
-    alert(`problem with data`)
-    return
-  }
+  let fieldsToSend = await beforeStore(newFields.value)
 
   showSpinner(`${isCreate.value ? 'Creating' : 'Updating'} ${module.value} item...`)
   const res = await upload(isCreate.value, fieldsToSend)

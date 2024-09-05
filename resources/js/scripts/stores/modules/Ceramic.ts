@@ -20,14 +20,15 @@ export const useCeramicStore = defineStore('ceramic', () => {
     }
   }
 
-  async function beforeStore(isCreate: boolean): Promise<TFieldsUnion | false> {
-    const { useItemNewStore } = await import('../../../scripts/stores/itemNew')
-    const { newFields } = storeToRefs(useItemNewStore())
-    //console.log(`stone.beforStore() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
+  function beforeStore(
+    formFields: Partial<TFieldsUnion>,
+    isCreate: boolean,
+  ): Partial<TFieldsUnion> {
+    //console.log(`ceramic.beforStore() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
     if (isCreate) {
       //
     }
-    return newFields.value as TFieldsByModule<'Ceramic'>
+    return formFields
   }
 
   const mainTableHeaders = computed(() => {

@@ -39,9 +39,7 @@ export const useItemNewStore = defineStore('itemNew', () => {
 
   async function prepareForNew(isCreate: boolean, ids?: string[]) {
     const store = await getStore(module.value)
-    return await store.prepareForNew(isCreate, ids)
-
-    // await modulePrepareForNew(isCreate, ids)
+    await store.prepareForNew(isCreate, ids)
 
     const fd = getFieldsOptions(newFields.value! as TFieldsUnion)
     itemNewAllOptions.value = fd.map((x) => x.optionKey)
@@ -50,6 +48,11 @@ export const useItemNewStore = defineStore('itemNew', () => {
     const tmp = ref<Record<string, TFieldInfo>>({})
     fd.forEach((x) => (tmp.value[x.fieldName] = x))
     itemNewFieldsToOptionsObj.value = tmp.value
+  }
+
+  async function beforeStore(newFields: Partial<TFieldsUnion>) {
+    const store = await getStore(module.value)
+    return store.beforeStore(newFields, isCreate.value)
   }
 
   async function upload(
@@ -103,6 +106,7 @@ export const useItemNewStore = defineStore('itemNew', () => {
     itemNewFieldsToOptionsObj,
     itemClear,
     prepareForNew,
+    beforeStore,
     upload,
   }
 })

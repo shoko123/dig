@@ -80,7 +80,7 @@ export const useTrioStore = defineStore('trio', () => {
       optionKeys.push(optionKey)
     })
 
-    console.log(`getFieldsOptions() options: ${JSON.stringify(all, null, 2)}`)
+    // console.log(`getFieldsOptions() options: ${JSON.stringify(all, null, 2)}`)
     return all
   }
 

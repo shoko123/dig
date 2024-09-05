@@ -24,17 +24,19 @@ export const useStoneStore = defineStore('stone', () => {
     console.log(
       `prepNew(Stone) create(${isCreate}) fields: ${JSON.stringify(fields.value, null, 2)}`,
     )
-    const nf = newFields.value as TFieldsByModule<'Stone'>
-    newItemIsInOC.value = typeof nf.uri === 'string'
+    const stone = newFields.value as TFieldsByModule<'Stone'>
+
+    newItemIsInOC.value = typeof stone.uri === 'string'
     if (isCreate) {
       currentIds.value = ids!
-      openIdSelectorModal.value = true
+
       newFields.value = { ...defaultFields }
       newFields.value.id = 'B2024.1.' + availableItemNumbers.value[0]
       newFields.value.id_year = 24
       newFields.value.id_access_no = 1
       newFields.value.id_object_no = availableItemNumbers.value[0]
       console.log(`isCreate. current ids: ${currentIds.value}`)
+      openIdSelectorModal.value = true
     } else {
       newFields.value = { ...fields.value }
     }
@@ -93,24 +95,27 @@ export const useStoneStore = defineStore('stone', () => {
     })
   })
 
-  async function beforeStore(isCreate: boolean): Promise<Partial<TFieldsUnion> | false> {
+  function beforeStore(
+    formFields: Partial<TFieldsUnion>,
+    isCreate: boolean,
+  ): Partial<TFieldsUnion> {
     //console.log(`stone.beforStore() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
-    const { useItemNewStore } = await import('../../../scripts/stores/itemNew')
-    const { newFields } = storeToRefs(useItemNewStore())
-    const nf = newFields.value as TFieldsByModule<'Stone'>
-    const inOC = typeof nf.uri === 'string'
+    // const { useItemNewStore } = await import('../../../scripts/stores/itemNew')
+    // const { newFields } = storeToRefs(useItemNewStore())
+    const stone = formFields as TFieldsByModule<'Stone'>
+    const inOC = typeof stone.uri === 'string'
     if (inOC) {
       return {
-        id: nf.id,
-        id_year: nf.id_year,
-        id_access_no: nf.id_access_no,
-        id_object_no: nf.id_object_no,
-        specialist_description: nf.specialist_description,
+        id: stone.id,
+        id_year: stone.id_year,
+        id_access_no: stone.id_access_no,
+        id_object_no: stone.id_object_no,
+        specialist_description: stone.specialist_description,
         specialist_date: new Date(),
       }
     } else {
       const fieldsToSend: Partial<TFieldsByModule<'Stone'>> = {}
-      Object.assign(fieldsToSend, nf)
+      Object.assign(fieldsToSend, stone)
       fieldsToSend.specialist_date = new Date()
       fieldsToSend.catalog_date = new Date()
       if (isCreate) {
