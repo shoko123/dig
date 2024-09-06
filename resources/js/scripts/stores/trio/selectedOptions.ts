@@ -3,17 +3,14 @@ import { TrioSourceName, TGroupField } from '../../../types/trioTypes'
 
 import { useTrioStore } from './trio'
 import { useItemStore } from '../item'
-import { useFilterStore } from './filter'
-import { useTaggerStore } from './tagger'
 
 type TGroup = { label: string; options: string[] }
 type TCat = { label: string; groups: TGroup[] }
 
 export const useTrioSelectedStore = defineStore('trioSelected', () => {
-  const { trio, groupLabelToGroupKeyObj } = storeToRefs(useTrioStore())
+  const { trio, groupLabelToGroupKeyObj, filterAllOptions, taggerAllOptions } =
+    storeToRefs(useTrioStore())
   const { itemAllOptions } = storeToRefs(useItemStore())
-  const { filterAllOptions } = storeToRefs(useFilterStore())
-  const { taggerAllOptions } = storeToRefs(useTaggerStore())
 
   function selectedTrio(sourceName: TrioSourceName) {
     if (trio.value.categories.length === 0) {

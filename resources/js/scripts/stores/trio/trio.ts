@@ -7,7 +7,6 @@ import type {
   TGroupOrFieldToKeyObj,
   TGroupTag,
   TApiOption,
-  // TOption,
   TGroupBase,
   TGroupField,
 } from '../../../types/trioTypes'
@@ -15,7 +14,6 @@ import type { TFieldsUnion, TFieldInfo, TFieldValue } from '@/js/types/moduleTyp
 
 import { useTrioNormalizerStore } from './trioNormalizer'
 import { useRoutesMainStore } from '../routes/routesMain'
-import { useTaggerStore } from './tagger'
 import { useFilterStore } from './filter'
 
 export const useTrioStore = defineStore('trio', () => {
@@ -26,8 +24,12 @@ export const useTrioStore = defineStore('trio', () => {
   const groupLabelToGroupKeyObj = ref<TGroupOrFieldToKeyObj>({})
   const fieldsToGroupKeyObj = ref<TGroupOrFieldToKeyObj>({})
 
+  const taggerAllOptions = ref<string[]>([])
+  const filterAllOptions = ref<string[]>([])
+
   const orderByOptions = ref<TApiOption[]>([])
-  //current index of visible categories/groups
+
+  //current indices of visible categories/groups
   const categoryIndex = ref<number>(0)
   const groupIndex = ref<number>(0)
   const categorizer = ref<Record<string, (val: TFieldValue) => number>>({})
@@ -362,8 +364,6 @@ export const useTrioStore = defineStore('trio', () => {
   })
 
   const selected = computed(() => {
-    const { filterAllOptions } = storeToRefs(useFilterStore())
-    const { taggerAllOptions } = storeToRefs(useTaggerStore())
     switch (current.value.name) {
       case 'filter':
         return filterAllOptions.value
@@ -387,8 +387,6 @@ export const useTrioStore = defineStore('trio', () => {
 
   function trioReset() {
     const { clearSelectedFilters } = useFilterStore()
-    const { clearOptions } = useTaggerStore()
-    clearOptions()
     clearSelectedFilters()
 
     groupIndex.value = 0
@@ -398,13 +396,16 @@ export const useTrioStore = defineStore('trio', () => {
     orderByOptions.value = []
   }
 
+  function clearTaggerOptions() {
+    taggerAllOptions.value = []
+  }
+
   async function setTrio(apiTrio: TApiTrio) {
     trioReset()
     const { useModuleStore } = await import('../module')
     const { getStore } = useModuleStore()
     const store = await getStore()
     categorizer.value = { ...(store.categorizer as (val: TFieldValue) => number) }
-    //const res = normalizeTrio(apiTrio)
     const res = await normalizetrio(apiTrio, categorizer.value)
     trio.value = res.trio
     groupLabelToGroupKeyObj.value = res.groupLabelToGroupKeyObj
@@ -522,5 +523,8 @@ export const useTrioStore = defineStore('trio', () => {
     resetCategoryAndGroupIndices,
     getFieldsOptions,
     categorizer,
+    taggerAllOptions,
+    filterAllOptions,
+    clearTaggerOptions,
   }
 })

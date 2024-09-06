@@ -16,7 +16,7 @@ class CeramicValidationRules extends ValidationRules
 
     public function allowed_value_field_names(): array
     {
-        return ['id_year'];
+        return ['id_year', 'id_object_no'];
     }
 
     public function allowed_search_field_names(): array

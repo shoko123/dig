@@ -1,5 +1,5 @@
 // stores/trio.jsTGroupBase
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import type { TGroupBase, TGroupField } from '@/js/types/trioTypes'
 import type { TApiFilters } from '@/js/types/routesTypes'
@@ -19,8 +19,8 @@ export const useFilterStore = defineStore('filter', () => {
     orderByGroup,
     orderByOptions,
     currentGroup,
+    filterAllOptions,
   } = storeToRefs(useTrioStore())
-  const filterAllOptions = ref<string[]>([])
 
   function filtersToQueryObject() {
     const q: {

@@ -14,7 +14,6 @@ import type { TApiItemShow } from '@/js/types/itemTypes'
 import type { LocationQuery } from 'vue-router'
 import { useXhrStore } from '../xhr'
 
-import { useFilterStore } from '../trio/filter'
 import { useCollectionsStore } from '../collections/collections'
 import { useCollectionMainStore } from '../collections/collectionMain'
 import { useCollectionRelatedStore } from '../collections/collectionRelated'
@@ -34,8 +33,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   const i = useItemStore()
   const r = useRoutesMainStore()
   const { parseSlug, parseUrlQuery } = useRoutesParserStore()
-  const { clearSelectedFilters } = useFilterStore()
-  const { apiQueryPayload } = storeToRefs(useFilterStore())
+
   const { setModuleInfo, tagAndSlugFromId } = useModuleStore()
   const { setItemMedia } = useMediaStore()
 
@@ -206,6 +204,10 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     query: LocationQuery,
   ): Promise<{ success: boolean; message: string }> {
     const { array } = storeToRefs(useCollectionMainStore())
+    const { useFilterStore } = await import('../trio/filter')
+    const { clearSelectedFilters } = useFilterStore()
+    const { apiQueryPayload } = storeToRefs(useFilterStore())
+
     clearSelectedFilters()
     const resParseUrl = await parseUrlQuery(query)
     console.log(`parseUrlQuery result: ${JSON.stringify(resParseUrl, null, 2)}`)

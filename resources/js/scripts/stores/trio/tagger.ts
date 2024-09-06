@@ -1,5 +1,5 @@
 // stores/trio.js
-import { ref } from 'vue'
+// import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import type { TFieldsUnion, TFieldValue } from '@/js/types/moduleTypes'
 import type { TGroupField } from '@/js/types/trioTypes'
@@ -9,31 +9,26 @@ import { useTrioStore } from './trio'
 import { useModuleStore } from '../module'
 
 export const useTaggerStore = defineStore('tagger', () => {
-  const { trio, fieldsToGroupKeyObj } = storeToRefs(useTrioStore())
+  const { trio, fieldsToGroupKeyObj, taggerAllOptions } = storeToRefs(useTrioStore())
   const { fields, itemAllOptions } = storeToRefs(useItemStore())
   const { send } = useXhrStore()
   const { module } = storeToRefs(useModuleStore())
-
-  const taggerAllOptions = ref<string[]>([])
 
   function prepareTagger() {
     taggerAllOptions.value = itemAllOptions.value
   }
 
-  function clearOptions() {
-    taggerAllOptions.value = []
-  }
-
   function setDefaultOptions() {
     //copy all the options from item
-    taggerAllOptions.value = itemAllOptions.value
+    // taggerAllOptions.value = itemAllOptions.value
 
-    //keep only 'Categorized'
-    taggerAllOptions.value = taggerAllOptions.value.filter((x) => {
-      const group = <TGroupField>trio.value.groupsObj[trio.value.optionsObj[x].groupKey]
-      return group.tag_source === 'Categorized'
-    })
+    //copy 'Categorized' options from item
+    // taggerAllOptions.value = itemAllOptions.value.filter((x) => {
+    //   const group = <TGroupField>trio.value.groupsObj[trio.value.optionsObj[x].groupKey]
+    //   return group.tag_source === 'Categorized'
+    // })
 
+    taggerAllOptions.value = []
     // add fields dependent options (except 'Categorized') with default group.optionKeys[0]
     for (const x in fieldsToGroupKeyObj.value) {
       const group = trio.value.groupsObj[fieldsToGroupKeyObj.value[x]]
@@ -89,7 +84,6 @@ export const useTaggerStore = defineStore('tagger', () => {
 
   return {
     taggerAllOptions,
-    clearOptions,
     prepareTagger,
     setDefaultOptions,
     sync,
