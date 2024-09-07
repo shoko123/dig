@@ -12,15 +12,8 @@ import { assert } from '../../utils/utils'
 export const useFilterStore = defineStore('filter', () => {
   const { send } = useXhrStore()
   const { module } = storeToRefs(useModuleStore())
-  const {
-    trio,
-    groupLabelToGroupKeyObj,
-    orderByAvailable,
-    orderByGroup,
-    orderByOptions,
-    currentGroup,
-    filterAllOptions,
-  } = storeToRefs(useTrioStore())
+  const { trio, orderByAvailable, orderByGroup, orderByOptions, currentGroup, filterAllOptions } =
+    storeToRefs(useTrioStore())
 
   function filtersToQueryObject() {
     const q: {
@@ -134,20 +127,6 @@ export const useFilterStore = defineStore('filter', () => {
     return all
   })
 
-  function clearSelectedFilters() {
-    console.log(`filter.clearSelectedFilters()`)
-    for (const value of Object.values(groupLabelToGroupKeyObj.value)) {
-      if (trio.value.groupsObj[value].code === 'FS') {
-        trio.value.groupsObj[value].optionKeys.forEach((x) => {
-          trio.value.optionsObj[x].text = ''
-          trio.value.optionsObj[x].extra = ''
-        })
-      }
-    }
-    orderByClear()
-    filterAllOptions.value = []
-  }
-
   async function getCount() {
     const res = await send<TApiArray[]>('module/index', 'post', {
       module: module.value,
@@ -232,7 +211,6 @@ export const useFilterStore = defineStore('filter', () => {
     orderOptionClicked,
     orderByClear,
     filtersToQueryObject,
-    clearSelectedFilters,
     getCount,
     searchTextChanged,
     searchTextClearCurrent,

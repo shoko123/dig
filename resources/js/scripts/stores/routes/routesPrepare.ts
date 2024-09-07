@@ -204,17 +204,18 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     query: LocationQuery,
   ): Promise<{ success: boolean; message: string }> {
     const { array } = storeToRefs(useCollectionMainStore())
+    const { useTrioStore } = await import('../trio/trio')
     const { useFilterStore } = await import('../trio/filter')
-    const { clearSelectedFilters } = useFilterStore()
+    const { clearFilterOptions } = useTrioStore()
     const { apiQueryPayload } = storeToRefs(useFilterStore())
 
-    clearSelectedFilters()
+    clearFilterOptions()
     const resParseUrl = await parseUrlQuery(query)
     console.log(`parseUrlQuery result: ${JSON.stringify(resParseUrl, null, 2)}`)
 
     if (!resParseUrl.success) {
       console.log(`parseQuery() failed`)
-      clearSelectedFilters()
+      clearFilterOptions()
       return { success: false, message: resParseUrl.message! }
     }
 

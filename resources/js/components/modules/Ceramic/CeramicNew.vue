@@ -1,13 +1,13 @@
 <template>
   <v-container fluid class="pa-1 ma-0">
     <v-row wrap no-gutters>
-      <v-text-field v-model="newFields.id" label="Name" :error-messages="nameErrors" class="mr-1" filled />
-      <v-select v-model="newFields.specialist_description" label="Specialist Description" :items="areas" />
-      <v-text-field v-model="newFields.id" label="Square" :error-messages="squareErrors" class="mr-1" filled />
-      <v-text-field v-model="newFields.id" label="stratum" :error-messages="stratumErrors" class="mr-1" filled />
+      <v-text-field v-model="nf.id" label="Name" :error-messages="nameErrors" class="mr-1" filled />
+      <v-select v-model="nf.specialist_description" label="Specialist Description" :items="areas" />
+      <v-text-field v-model="nf.id" label="Square" :error-messages="squareErrors" class="mr-1" filled />
+      <v-text-field v-model="nf.id" label="stratum" :error-messages="stratumErrors" class="mr-1" filled />
     </v-row>
     <v-row v-if="currentItemFields"></v-row>
-    <slot :id="newFields.id" name="newFields" :v="v" :new-fields="newFields" />
+    <slot :id="nf.id" name="newFields" :v="v" :new-fields="nf" />
   </v-container>
 </template>
 
@@ -16,27 +16,23 @@ import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import type { TFieldsByModule } from '@/js/types/moduleTypes'
 import { useVuelidate } from '@vuelidate/core'
-import { required } from '@vuelidate/validators'
+
 import { useItemStore } from '../../../scripts/stores/item'
+import { useItemNewStore } from '../../../scripts/stores/itemNew'
 import { useCeramicStore } from '../../../scripts/stores/modules/Ceramic'
-import { useTrioStore } from '../../../scripts/stores/trio/trio'
+
 
 const { fields } = storeToRefs(useItemStore())
-const { newFields } = storeToRefs(useCeramicStore())
-const { trio, groupLabelToGroupKeyObj } = storeToRefs(useTrioStore())
+const { rules } = storeToRefs(useCeramicStore())
+let { newFields, itemNewFieldsToOptionsObj } = storeToRefs(useItemNewStore())
 
-const areas = computed(() => {
-  let optionKeys = trio.value.groupsObj[groupLabelToGroupKeyObj.value['Area']].optionKeys
-  return optionKeys.map((x) => trio.value.optionsObj[x].text)
+const nf = computed(() => {
+  return newFields.value as TFieldsByModule<'Ceramic'>
 })
 
-const rules = computed(() => {
-  return {
-    id: {},
-    id_year: { required },
-    id_object_no: { required }, //from select list
-  }
-})
+
+
+
 
 const currentItemFields = computed(() => {
   return fields.value! as TFieldsByModule<'Ceramic'>
@@ -54,5 +50,9 @@ const squareErrors = computed(() => {
 
 const stratumErrors = computed(() => {
   return <string>(v.value.stratum.$error ? v.value.stratum.$errors[0].$message : undefined)
+})
+
+const areas = computed(() => {
+  return itemNewFieldsToOptionsObj.value['area']
 })
 </script>

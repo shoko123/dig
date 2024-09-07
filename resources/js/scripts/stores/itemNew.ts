@@ -6,14 +6,12 @@ import { useCollectionMainStore } from './collections/collectionMain'
 import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
 import { useModuleStore } from './module'
-import { useTrioStore } from './trio/trio'
 
 export const useItemNewStore = defineStore('itemNew', () => {
   const { current } = storeToRefs(useRoutesMainStore())
   const { module } = storeToRefs(useModuleStore())
   const { tagAndSlugFromId, getStore } = useModuleStore()
   const { send } = useXhrStore()
-  const { getFieldsOptions } = useTrioStore()
 
   const newFields = ref<Partial<TFieldsUnion>>({})
   const slug = ref<string | undefined>(undefined)
@@ -35,13 +33,19 @@ export const useItemNewStore = defineStore('itemNew', () => {
     return newFields.value!.id
   })
 
+  async function getFuncFieldsOptions() {
+    const { useTrioStore } = await import('./trio/trio')
+    const trio = useTrioStore()
+    return trio.getFieldsOptions
+  }
+
   const itemNewFieldsToOptionsObj = ref<Record<string, TFieldInfo>>({})
 
   async function prepareForNew(isCreate: boolean, ids?: string[]) {
     const store = await getStore(module.value)
     await store.prepareForNew(isCreate, ids)
-
-    const fd = getFieldsOptions(newFields.value! as TFieldsUnion)
+    const func = await getFuncFieldsOptions()
+    const fd = func(newFields.value! as TFieldsUnion)
     itemNewAllOptions.value = fd.map((x) => x.optionKey)
 
     //build object [field_name] : fieldInfo

@@ -19,7 +19,7 @@ import { useAuthStore } from '../auth'
 import { useMainStore } from '../main'
 import { useNotificationsStore } from '../notifications'
 import { useCollectionMainStore } from '../collections/collectionMain'
-import { useFilterStore } from '../trio/filter'
+import { useTrioStore } from '../trio/trio'
 
 export const useRoutesMainStore = defineStore('routesMain', () => {
   const router = useRouter()
@@ -254,7 +254,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     module: TModule | 'current' = 'current',
   ) {
     const { itemIndexById } = useCollectionMainStore()
-    const { clearSelectedFilters } = useFilterStore()
+    const { clearFilterOptions } = useTrioStore()
 
     console.log(
       `moveFromItemToItem "${current.value.module} ${current.value.slug}" -> "${module} ${slug}" (id: ${id})`,
@@ -271,7 +271,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         console.log(
           `moveTo item that is NOT in the current collection - remove filters and reload collection!`,
         )
-        clearSelectedFilters()
+        clearFilterOptions()
         showSnackbar(`Filters removed and result set reloaded`)
         routerPush('show', slug, module, false)
       }

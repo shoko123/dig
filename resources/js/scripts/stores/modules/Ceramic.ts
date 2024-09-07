@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
+import { required } from '@vuelidate/validators'
 import { TFieldsByModule, TFieldsUnion, TObjCategorizerByFieldName } from '@/js/types/moduleTypes'
 import { useItemStore } from '../item'
 
@@ -40,10 +41,19 @@ export const useCeramicStore = defineStore('ceramic', () => {
     ]
   })
 
+  const rules = computed(() => {
+    return {
+      id: {},
+      id_year: { required },
+      id_object_no: { required }, //from select list
+    }
+  })
+
   return {
     mainTableHeaders,
     prepareForNew,
     beforeStore,
     categorizer,
+    rules,
   }
 })

@@ -14,7 +14,6 @@ import type { TFieldsUnion, TFieldInfo, TFieldValue } from '@/js/types/moduleTyp
 
 import { useTrioNormalizerStore } from './trioNormalizer'
 import { useRoutesMainStore } from '../routes/routesMain'
-import { useFilterStore } from './filter'
 
 export const useTrioStore = defineStore('trio', () => {
   const { normalizetrio } = useTrioNormalizerStore()
@@ -386,8 +385,7 @@ export const useTrioStore = defineStore('trio', () => {
   })
 
   function trioReset() {
-    const { clearSelectedFilters } = useFilterStore()
-    clearSelectedFilters()
+    clearFilterOptions()
 
     groupIndex.value = 0
     categoryIndex.value = 0
@@ -398,6 +396,30 @@ export const useTrioStore = defineStore('trio', () => {
 
   function clearTaggerOptions() {
     taggerAllOptions.value = []
+  }
+
+  function clearFilterOptions() {
+    console.log(`trio.clearFilterOptions`)
+    //clear search options
+    for (const value of Object.values(groupLabelToGroupKeyObj.value)) {
+      if (trio.value.groupsObj[value].code === 'FS') {
+        trio.value.groupsObj[value].optionKeys.forEach((x) => {
+          trio.value.optionsObj[x].text = ''
+          trio.value.optionsObj[x].extra = ''
+        })
+      }
+    }
+    // clear order by options
+    orderByGroup.value?.optionKeys.forEach((x) => {
+      trio.value.optionsObj[x].text = ''
+      if (filterAllOptions.value.includes(x)) {
+        const i = filterAllOptions.value.indexOf(x)
+        filterAllOptions.value.splice(i, 1)
+      }
+    })
+
+    // clear filters
+    filterAllOptions.value = []
   }
 
   async function setTrio(apiTrio: TApiTrio) {
@@ -526,5 +548,6 @@ export const useTrioStore = defineStore('trio', () => {
     taggerAllOptions,
     filterAllOptions,
     clearTaggerOptions,
+    clearFilterOptions,
   }
 })

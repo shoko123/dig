@@ -8,7 +8,6 @@ import type { TGroupBase } from '@/js/types/trioTypes'
 
 import { useModuleStore } from '../module'
 import { useMainStore } from '../main'
-import { useFilterStore } from '../trio/filter'
 
 export const useRoutesParserStore = defineStore('routesParser', () => {
   const { urlModuleNameToModule } = storeToRefs(useMainStore())
@@ -46,8 +45,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
   async function parseUrlQuery(qp: LocationQuery) {
     const { useTrioStore } = await import('../trio/trio')
     //console.log(`urlQueryToApiFilters().urlQuery: ${JSON.stringify(qp, null, 2)}`);
-    const { trio, groupLabelToGroupKeyObj } = storeToRefs(useTrioStore())
-    const { filterAllOptions } = storeToRefs(useFilterStore())
+    const { trio, groupLabelToGroupKeyObj, filterAllOptions } = storeToRefs(useTrioStore())
 
     if (qp === null) {
       return { success: true }
