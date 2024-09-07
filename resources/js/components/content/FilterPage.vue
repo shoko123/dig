@@ -5,16 +5,19 @@
         <TagsForm2 source="Filter" />
       </v-col>
       <v-col :cols="widths[1]">
-        <FilterSelector />
+        <Suspense>
+          <FilterSelector />
+        </Suspense>
       </v-col>
     </v-row>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, defineAsyncComponent } from 'vue'
 import { useDisplay } from 'vuetify'
-import FilterSelector from '../filter/FilterSelector.vue'
+const FilterSelector = defineAsyncComponent(() => import('../filter/FilterSelector.vue'))
+// import FilterSelector from '../filter/FilterSelector.vue'
 import TagsForm2 from '../trio/TrioSelectedForm.vue'
 const widths = computed(() => {
   const { smAndDown } = useDisplay()

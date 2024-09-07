@@ -19,7 +19,6 @@ import { useAuthStore } from '../auth'
 import { useMainStore } from '../main'
 import { useNotificationsStore } from '../notifications'
 import { useCollectionMainStore } from '../collections/collectionMain'
-import { useTrioStore } from '../trio/trio'
 
 export const useRoutesMainStore = defineStore('routesMain', () => {
   const router = useRouter()
@@ -248,11 +247,12 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     }
   }
 
-  function moveFromItemToItem<IDtype extends string | number>(
+  async function moveFromItemToItem<IDtype extends string | number>(
     slug: string,
     id: IDtype,
     module: TModule | 'current' = 'current',
   ) {
+    const { useTrioStore } = await import('../trio/trio')
     const { itemIndexById } = useCollectionMainStore()
     const { clearFilterOptions } = useTrioStore()
 

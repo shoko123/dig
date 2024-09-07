@@ -66,13 +66,13 @@ const collectionIsNotEmpty = computed(() => {
   return page.value === undefined ? 0 : page.value.length > 0
 })
 
-function btnClicked(item: TPage<'main', 'Tabular', TModule> | TPage<'related', 'Tabular'>) {
+async function btnClicked(item: TPage<'main', 'Tabular', TModule> | TPage<'related', 'Tabular'>) {
   console.log(`pageTable.btnClicked() item: ${JSON.stringify(item, null, 2)}`)
   if (props.source === 'main') {
     routerPush('show', item.slug)
   } else {
     const related = item as TPage<'related', 'Tabular'>
-    moveFromItemToItem(related.slug, related.id, related.module)
+    await moveFromItemToItem(related.slug, related.id, related.module)
   }
 }
 </script>

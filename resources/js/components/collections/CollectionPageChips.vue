@@ -1,12 +1,7 @@
 <template>
   <v-row wrap>
-    <v-chip
-      v-for="(item, index) in page"
-      :key="index"
-      :disabled="rms.inTransition"
-      class="font-weight-normal ma-2 body-1"
-      @click="goTo(item)"
-    >
+    <v-chip v-for="(item, index) in page" :key="index" :disabled="rms.inTransition"
+      class="font-weight-normal ma-2 body-1" @click="goTo(item)">
       {{ item.tag }}
     </v-chip>
   </v-row>
@@ -34,12 +29,12 @@ const page = computed(() => {
   return c.value.page as TPage<'main', 'Chips'>[] | TPage<'related', 'Chips'>[]
 })
 
-function goTo(item: TPage<'main', 'Chips'> | TPage<'related', 'Chips'>) {
+async function goTo(item: TPage<'main', 'Chips'> | TPage<'related', 'Chips'>) {
   if (props.source === 'main') {
     rms.routerPush('show', (<TPage<'main', 'Chips'>>item).slug)
   } else {
     const related = <TPage<'related', 'Chips'>>item
-    rms.moveFromItemToItem<string>(related.slug, <string>related.id, related.module)
+    await rms.moveFromItemToItem<string>(related.slug, <string>related.id, related.module)
   }
 }
 </script>

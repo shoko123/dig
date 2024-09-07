@@ -19,26 +19,35 @@
 
       <v-sheet elevation="10" class="ma-2">
         <div v-if="isColumnSearch">
-          <OptionsAsTextSearch />
+          <Suspense>
+            <OptionsAsTextSearch />
+          </Suspense>
         </div>
         <div v-else-if="isOrderBy">
-          <OptionsAsOrderBy />
+          <Suspense>
+            <OptionsAsOrderBy />
+          </Suspense>
         </div>
         <div v-else>
-          <OptionsAsChips />
+          <Suspense>
+            <OptionsAsChips />
+          </Suspense>
         </div>
       </v-sheet>
     </v-card-text>
   </v-card>
 </template>
 
+
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, defineAsyncComponent } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useTrioStore } from '../../scripts/stores/trio/trio'
-import OptionsAsChips from './OptionsAsChips.vue'
-import OptionsAsTextSearch from './OptionsAsTextSearch.vue'
-import OptionsAsOrderBy from './OptionsAsOrderBy.vue'
+const { useTrioStore } = await import('../../scripts/stores/trio/trio')
+const OptionsAsChips = defineAsyncComponent(() => import('./OptionsAsChips.vue'))
+const OptionsAsTextSearch = defineAsyncComponent(() => import('./OptionsAsTextSearch.vue'))
+const OptionsAsOrderBy = defineAsyncComponent(() => import('./OptionsAsOrderBy.vue'))
+// import OptionsAsTextSearch from './OptionsAsTextSearch.vue'
+// import OptionsAsOrderBy from './OptionsAsOrderBy.vue'
 let { visibleCategories, visibleGroups, categoryIndex, groupIndex } = storeToRefs(useTrioStore())
 
 const header = computed(() => {

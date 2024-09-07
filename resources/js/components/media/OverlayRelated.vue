@@ -1,10 +1,6 @@
 <template>
   <v-btn class="ml-2 bg-grey-lighten-1" @click="goToItem()"> Visit </v-btn>
-  <v-btn
-    v-if="props.record.media.hasMedia"
-    class="ml-2 bg-grey-lighten-1"
-    @click="openModalCarousel()"
-  >
+  <v-btn v-if="props.record.media.hasMedia" class="ml-2 bg-grey-lighten-1" @click="openModalCarousel()">
     Lightbox
   </v-btn>
 </template>
@@ -34,7 +30,7 @@ async function openModalCarousel() {
   }
 }
 
-function goToItem() {
-  moveFromItemToItem(props.record.slug, props.record.id, props.record.module)
+async function goToItem() {
+  await moveFromItemToItem(props.record.slug, props.record.id, props.record.module)
 }
 </script>

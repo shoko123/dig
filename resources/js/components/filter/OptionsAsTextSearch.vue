@@ -19,7 +19,8 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import { useTrioStore } from '../../scripts/stores/trio/trio'
+// import { useTrioStore } from '../../scripts/stores/trio/trio'
+const { useTrioStore } = await import('../../scripts/stores/trio/trio')
 const { textSearchValues } = storeToRefs(useTrioStore())
 
 async function getFilterStore() {

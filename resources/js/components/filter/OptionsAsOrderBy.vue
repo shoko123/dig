@@ -69,7 +69,8 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useTrioStore } from '../../scripts/stores/trio/trio'
+// import { useTrioStore } from '../../scripts/stores/trio/trio'
+const { useTrioStore } = await import('../../scripts/stores/trio/trio')
 
 let { orderByAvailable, orderBySelected } = storeToRefs(useTrioStore())
 

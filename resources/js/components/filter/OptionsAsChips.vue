@@ -8,12 +8,14 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useTrioStore } from '../../scripts/stores/trio/trio'
+// import { storeToRefs } from 'pinia'
+// import { useTrioStore } from 
 
-let trio = useTrioStore()
+const { useTrioStore } = await import('../../scripts/stores/trio/trio')
+const trioStore = useTrioStore()
 
 const options = computed(() => {
-  return trio.visibleOptions
+  return trioStore.visibleOptions
 })
 
 const selectedOptionIndexes = computed({
@@ -32,6 +34,6 @@ const selectedOptionIndexes = computed({
 })
 
 function paramClicked(prmKey: string) {
-  trio.optionClicked(prmKey)
+  trioStore.optionClicked(prmKey)
 }
 </script>

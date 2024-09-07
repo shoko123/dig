@@ -9,10 +9,12 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
-import { useTrioStore } from '../../../../scripts/stores/trio/trio'
 import { useRouter } from 'vue-router'
+import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 import { useNotificationsStore } from '../../../../scripts/stores/notifications'
+const { useTrioStore } = await import('../../../../scripts/stores/trio/trio')
+
+
 
 const { current } = storeToRefs(useRoutesMainStore())
 const { resetCategoryAndGroupIndices, clearFilterOptions } = useTrioStore()

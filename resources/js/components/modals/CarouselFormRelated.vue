@@ -33,6 +33,6 @@ async function goToItem() {
     module: <TModule>item.value?.module,
   }
   await close()
-  moveFromItemToItem(details.slug, details.id, details.module)
+  await moveFromItemToItem(details.slug, details.id, details.module)
 }
 </script>

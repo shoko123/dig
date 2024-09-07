@@ -6,8 +6,11 @@
           <TagsForm source="Tagger" />
         </v-col>
         <v-col md="12" lg="9" class="d-flex flex-column">
-          <TagSelector />
+          <Suspense>
+            <ItemTagger />
+          </Suspense>
           <ItemCard class="mt-2" />
+
         </v-col>
       </v-row>
     </v-container>
@@ -15,7 +18,8 @@
 </template>
 
 <script lang="ts" setup>
-import TagSelector from '../trio/ItemTagger.vue'
+import { defineAsyncComponent } from 'vue'
+const ItemTagger = defineAsyncComponent(() => import('../trio/ItemTagger.vue'))
 import TagsForm from '../trio/TrioSelectedForm.vue'
 import ItemCard from '../item/item-views/ItemCard.vue'
 </script>
