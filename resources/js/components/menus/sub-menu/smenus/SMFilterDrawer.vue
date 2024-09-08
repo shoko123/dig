@@ -30,7 +30,7 @@ const module = computed(() => {
 
 async function submit() {
   const filterStore = await getFilterStore()
-  const query = filterStore.filtersToQueryObject()
+  const query = await filterStore.filtersToQueryObject()
   resetCategoryAndGroupIndices()
   push({ name: 'index', params: { module: current.value.url_module }, query })
 }

@@ -16,8 +16,6 @@ import { useXhrStore } from '../xhr'
 
 import { useCollectionsStore } from '../collections/collections'
 import { useCollectionMainStore } from '../collections/collectionMain'
-import { useCollectionRelatedStore } from '../collections/collectionRelated'
-import { useMediaStore } from '../media'
 import { useModuleStore } from '../module'
 import { useNotificationsStore } from '../notifications'
 import { useItemStore } from '../item'
@@ -35,7 +33,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   const { parseSlug, parseUrlQuery } = useRoutesParserStore()
 
   const { setModuleInfo, tagAndSlugFromId } = useModuleStore()
-  const { setItemMedia } = useMediaStore()
 
   const fromUndef = ref<boolean>(false)
 
@@ -51,7 +48,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       switch (x) {
         case 'module.load':
           {
-            //trioReset()
             n.showSpinner('Loading module data ...')
             const res = await loadModule(module)
             n.showSpinner(false)
@@ -62,7 +58,12 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           break
 
         case 'module.clear':
-          // trioReset()
+          {
+            //TODO commented because it forces an unnecessary loading of the trio store on landing page
+            // const { useTrioStore } = await import('../trio/trio')
+            // const { resetTrio } = useTrioStore()
+            // resetTrio()
+          }
           break
 
         case 'collection.item.load':
@@ -160,11 +161,10 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
   async function loadModule(module: TModule): Promise<{ success: boolean; message: string }> {
     const { useTrioStore } = await import('../trio/trio')
-    const { setTrio, trioReset } = useTrioStore()
-    trioReset()
-    console.log(`loadModule ** 1 **`)
+    const { setTrio, resetTrio } = useTrioStore()
+    resetTrio()
+
     const res = await send<TApiModuleInit>('module/init', 'post', { module: module })
-    console.log(`loadModule ** 2 **`)
     if (!res.success) {
       return { success: false, message: `Error: failed to load module ${module}` }
     }
@@ -178,9 +178,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     i.setItemViewIndex(0)
     i.itemViews = res.data.display_options.item_views
     c.clear(['main', 'media', 'related'])
-    console.log(`loadModule ** 3 **`)
     await setTrio(res.data.trio)
-    console.log(`loadModule ** 4 **`)
     c.setCollectionViews('main', res.data.display_options.main_collection_views)
     c.setCollectionViews('related', res.data.display_options.related_collection_views)
     return { success: true, message: '' }
@@ -205,9 +203,9 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   ): Promise<{ success: boolean; message: string }> {
     const { array } = storeToRefs(useCollectionMainStore())
     const { useTrioStore } = await import('../trio/trio')
-    const { useFilterStore } = await import('../trio/filter')
+    // const { useFilterStore } = await import('../trio/filter')
     const { clearFilterOptions } = useTrioStore()
-    const { apiQueryPayload } = storeToRefs(useFilterStore())
+    const { apiQueryPayload } = storeToRefs(useTrioStore())
 
     clearFilterOptions()
     const resParseUrl = await parseUrlQuery(query)
@@ -242,7 +240,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     module: TModule,
     slug: string,
   ): Promise<{ success: boolean; message: string }> {
-    const { array } = storeToRefs(useCollectionRelatedStore())
     console.log(`loadItem() slug: ${slug}`)
     const sp = parseSlug(module, slug)
     if (!sp.success) {
@@ -261,8 +258,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
     // console.log(`loadItem() success! res: ${JSON.stringify(res, null, 2)}`)
     r.to.slug = tagAndSlugFromId(res.data.fields.id, module).slug
-    setItemMedia(res.data.media)
-    array.value = res.data.related
     await i.saveitemFieldsPlus(res.data)
     return { success: true, message: '' }
   }
@@ -281,8 +276,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     //console.log(`prepare.itemSetIndexInCollection()`)
     const itemIndex = c.itemIndexById(i.id)
     if (itemIndex === -1) {
-      console.log(`Item not found in mainCollection - set itemIndex to -1, clear page`)
-      //c.mainPageArray = []
       i.itemIndex = -1
       return false
     } else {
@@ -309,6 +302,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       await prepareForNew(false)
     }
   }
+
   function prepareForMedia(): void {
     console.log(`prepareForMedia()`)
   }

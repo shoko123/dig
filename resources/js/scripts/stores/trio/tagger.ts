@@ -1,15 +1,11 @@
-// stores/trio.js
-// import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import type { TFieldsUnion, TFieldValue } from '@/js/types/moduleTypes'
 import type { TGroupField } from '@/js/types/trioTypes'
 import { useXhrStore } from '../xhr'
 import { useItemStore } from '../item'
-// import { useTrioStore } from './trio'
 import { useModuleStore } from '../module'
 
 export const useTaggerStore = defineStore('tagger', () => {
-  //const { trio, fieldsToGroupKeyObj, taggerAllOptions } = storeToRefs(useTrioStore())
   const { fields } = storeToRefs(useItemStore())
   const { send } = useXhrStore()
   const { module } = storeToRefs(useModuleStore())
@@ -18,6 +14,7 @@ export const useTaggerStore = defineStore('tagger', () => {
     const { useTrioStore } = await import('./trio')
     return useTrioStore()
   }
+
   async function prepareTagger() {
     const trioStore = await getTrioStore()
     trioStore.copyItemOptionsToTaggerOptions()
@@ -83,7 +80,6 @@ export const useTaggerStore = defineStore('tagger', () => {
   }
 
   return {
-    // taggerAllOptions,
     prepareTagger,
     setDefaultOptions,
     sync,

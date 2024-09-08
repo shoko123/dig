@@ -11,8 +11,8 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
-import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 
+import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 import { useNotificationsStore } from '../../../../scripts/stores/notifications'
 const { useTrioStore } = await import('../../../../scripts/stores/trio/trio')
 import WelcomeButton from '../elements/WelcomeButton.vue'
@@ -29,7 +29,7 @@ async function getFilterStore() {
 async function submit() {
   const filterStore = await getFilterStore()
   console.log(`filter.submit()`)
-  const query = filterStore.filtersToQueryObject()
+  const query = await filterStore.filtersToQueryObject()
   resetCategoryAndGroupIndices()
   router.push({ name: 'index', params: { module: current.value.url_module }, query })
 }

@@ -6,12 +6,12 @@
           <v-card-item>
             <v-text-field v-for="(item, index) in textSearchValues" :key="index" v-model="textSearchValues[index]"
               :label="`term-${index + 1}`" :name="`search-${index + 1}`" filled
-              @update:model-value="(val: string) => searchTextChanged(index, val)" />
+              @update:model-value="(val: string) => localSearchTextChanged(index, val)" />
           </v-card-item>
         </v-card>
       </v-col>
       <v-col cols="12" sm="2">
-        <v-btn class="ml-2" @click="searchTextClearCurrent"> Clear </v-btn>
+        <v-btn class="ml-2" @click="localSearchTextClearCurrent"> Clear </v-btn>
       </v-col>
     </v-row>
   </v-container>
@@ -19,7 +19,6 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-// import { useTrioStore } from '../../scripts/stores/trio/trio'
 const { useTrioStore } = await import('../../scripts/stores/trio/trio')
 const { textSearchValues } = storeToRefs(useTrioStore())
 
@@ -28,13 +27,13 @@ async function getFilterStore() {
   return useFilterStore()
 }
 
-async function searchTextChanged(index: number, val: string) {
+async function localSearchTextChanged(index: number, val: string) {
   const filterStore = await getFilterStore()
-  filterStore.searchTextChanged(index, val)
+  await filterStore.searchTextChanged(index, val)
 }
 
-async function searchTextClearCurrent() {
+async function localSearchTextClearCurrent() {
   const filterStore = await getFilterStore()
-  filterStore.searchTextClearCurrent()
+  await filterStore.searchTextClearCurrent()
 }
 </script>

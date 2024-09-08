@@ -6,6 +6,8 @@ import type { TApiItemShow, TApiTag } from '@/js/types/itemTypes'
 import type { TApiArray } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from './collections/collections'
 import { useCollectionMainStore } from './collections/collectionMain'
+import { useMediaStore } from './media'
+import { useCollectionRelatedStore } from './collections/collectionRelated'
 import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
 import { useModuleStore } from './module'
@@ -53,6 +55,10 @@ export const useItemStore = defineStore('item', () => {
   async function saveitemFieldsPlus<F extends TApiFieldsUnion>(apiItem: TApiItemShow<F>) {
     const { useTrioStore } = await import('./trio/trio')
     const { getFieldsOptions, setItemAllOptions } = useTrioStore()
+    const { setItemMedia } = useMediaStore()
+    const { array } = storeToRefs(useCollectionRelatedStore())
+    setItemMedia(apiItem.media)
+    array.value = apiItem.related
     console.log(`saveitemFieldsPlus`)
     saveItemFields(apiItem.fields)
 

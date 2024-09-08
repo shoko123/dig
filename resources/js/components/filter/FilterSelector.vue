@@ -42,13 +42,12 @@
 <script lang="ts" setup>
 import { computed, defineAsyncComponent } from 'vue'
 import { storeToRefs } from 'pinia'
-const { useTrioStore } = await import('../../scripts/stores/trio/trio')
 const OptionsAsChips = defineAsyncComponent(() => import('./OptionsAsChips.vue'))
 const OptionsAsTextSearch = defineAsyncComponent(() => import('./OptionsAsTextSearch.vue'))
 const OptionsAsOrderBy = defineAsyncComponent(() => import('./OptionsAsOrderBy.vue'))
-// import OptionsAsTextSearch from './OptionsAsTextSearch.vue'
-// import OptionsAsOrderBy from './OptionsAsOrderBy.vue'
-let { visibleCategories, visibleGroups, categoryIndex, groupIndex } = storeToRefs(useTrioStore())
+const { useTrioStore } = await import('../../scripts/stores/trio/trio')
+
+const { visibleCategories, visibleGroups, categoryIndex, groupIndex } = storeToRefs(useTrioStore())
 
 const header = computed(() => {
   return 'Filter Selector'

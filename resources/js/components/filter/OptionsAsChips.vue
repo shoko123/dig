@@ -8,9 +8,6 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-// import { storeToRefs } from 'pinia'
-// import { useTrioStore } from 
-
 const { useTrioStore } = await import('../../scripts/stores/trio/trio')
 const trioStore = useTrioStore()
 

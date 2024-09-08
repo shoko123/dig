@@ -38,7 +38,7 @@ import type { TrioSourceName } from '../../types/trioTypes'
 import { useItemStore } from '../../scripts/stores/item'
 const { useTrioStore } = await import('../../scripts/stores/trio/trio')
 
-let { derived } = storeToRefs(useItemStore())
+const { derived } = storeToRefs(useItemStore())
 const { selectedFilterOptions, selectedItemOptions, selectedTaggerOptions } = storeToRefs(useTrioStore())
 
 const props = defineProps<{
