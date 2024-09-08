@@ -4,7 +4,9 @@
       <ItemCard />
     </v-col>
     <v-col :cols="widths[1]">
-      <TagsForm2 source="Item" />
+      <Suspense>
+        <ItemSelected  source="Item"/>
+      </Suspense>
     </v-col>
   </v-row>
   <CollectionForm source="media" class="my-2" />
@@ -12,12 +14,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, defineAsyncComponent } from 'vue'
 import { useDisplay } from 'vuetify'
 import ItemCard from '../item-views/ItemCard.vue'
 import CollectionForm from '../../collections/CollectionForm.vue'
-import TagsForm2 from '../../trio/TrioSelectedForm.vue'
-
+const ItemSelected = defineAsyncComponent(() => import('../../trio/TrioSelectedForm.vue'))
 const { smAndDown } = useDisplay()
 
 const widths = computed(() => {

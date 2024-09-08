@@ -27,16 +27,7 @@ export const useItemStore = defineStore('item', () => {
   const itemViewIndex = ref<number>(0)
   const itemIndex = ref<number>(-1)
 
-  //item's fields options - start
-  const itemTagOptions = ref<string[]>([])
-  const itemFieldsOptions = ref<string[]>([])
-  const itemAllOptions = computed(() => {
-    return [...itemFieldsOptions.value, ...itemTagOptions.value].sort((a, b) => {
-      return a > b ? 1 : -1
-    })
-  })
   const itemFieldsToOptionsObj = ref<Partial<TBespokeFieldsUnion>>({})
-  //item's fields options - end
 
   const id = computed(() => {
     return typeof fields.value === 'undefined' ? -1 : (<TFieldsUnion>fields.value).id
@@ -61,7 +52,7 @@ export const useItemStore = defineStore('item', () => {
 
   async function saveitemFieldsPlus<F extends TApiFieldsUnion>(apiItem: TApiItemShow<F>) {
     const { useTrioStore } = await import('./trio/trio')
-    const { getFieldsOptions } = useTrioStore()
+    const { getFieldsOptions, setItemAllOptions } = useTrioStore()
     console.log(`saveitemFieldsPlus`)
     saveItemFields(apiItem.fields)
 
@@ -71,13 +62,16 @@ export const useItemStore = defineStore('item', () => {
 
     //get fields related options
     const fd = getFieldsOptions(apiItem.fields)
-    itemFieldsOptions.value = fd.map((x) => x.optionKey)
 
     //build itemFieldsToOptionsObj [field_name] : tag.text
     const tmp = ref<Record<string, string>>({})
     fd.forEach((x) => (tmp.value[x.fieldName] = x.optionLabel))
     itemFieldsToOptionsObj.value = tmp.value
-    addTagOptions(apiItem.model_tags.concat(apiItem.global_tags))
+
+    //set item's fields and tags options keys
+    const fieldsOptions = fd.map((x) => x.optionKey)
+    const tagOptions = await getSelectedTagOptions(apiItem.model_tags.concat(apiItem.global_tags))
+    setItemAllOptions([...fieldsOptions, ...tagOptions])
   }
 
   function saveItemFields<F extends TApiFieldsUnion>(apiFields: F) {
@@ -98,21 +92,23 @@ export const useItemStore = defineStore('item', () => {
     fields.value = Object.fromEntries(tmpMap.entries())
   }
 
-  async function addTagOptions(apiTags: TApiTag[]) {
+  async function getSelectedTagOptions(apiTags: TApiTag[]) {
     const { useTrioStore } = await import('./trio/trio')
     const { trio, groupLabelToGroupKeyObj } = storeToRefs(useTrioStore())
     // console.log(`SaveItem - Add extrnal (module and global) tags`)
-    itemTagOptions.value = []
+    const tagOptions: string[] = []
     for (const x of apiTags) {
       const group = trio.value.groupsObj[groupLabelToGroupKeyObj.value[x.group_label]]
       // console.log(`Add Tag:  ${x.group_label} => "${x.tag_text}"`)
-
       const optionKey = group.optionKeys.find((y) => trio.value.optionsObj[y].text === x.tag_text)
       if (optionKey === undefined) {
-        throw new Error(`addTagOptions() - Can't find tag ${x.tag_text} in group ${group.label}`)
+        throw new Error(
+          `getSelectedTagOptions() - Can't find tag ${x.tag_text} in group ${group.label}`,
+        )
       }
-      itemTagOptions.value.push(optionKey)
+      tagOptions.push(optionKey)
     }
+    return tagOptions
   }
 
   function itemClear() {
@@ -122,8 +118,6 @@ export const useItemStore = defineStore('item', () => {
     short.value = undefined
     tag.value = undefined
     itemFieldsToOptionsObj.value = {}
-    itemFieldsOptions.value = []
-    itemTagOptions.value = []
   }
 
   function nextSlug(isRight: boolean) {
@@ -184,8 +178,5 @@ export const useItemStore = defineStore('item', () => {
     saveitemFieldsPlus,
     itemRemove,
     itemFieldsToOptionsObj,
-    itemTagOptions,
-    itemFieldsOptions,
-    itemAllOptions,
   }
 })

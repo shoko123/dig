@@ -3,16 +3,17 @@
     Filters
     <v-tooltip activator="parent" location="bottom left">
       <v-text-field>{{ tip }}</v-text-field>
-      <TagsForm source="Filter" />
+      <Suspense>
+        <FilterSelected source="Filter" />
+      </Suspense>
     </v-tooltip>
   </v-btn>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, defineAsyncComponent } from 'vue'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
-import TagsForm from '../../../trio/TrioSelectedForm.vue'
-
+const FilterSelected = defineAsyncComponent(() => import('../../../trio/TrioSelectedForm.vue'))
 const { routerPush } = useRoutesMainStore()
 
 const tip = computed(() => {

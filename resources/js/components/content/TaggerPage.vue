@@ -3,14 +3,15 @@
     <v-container fluid class="ma-0">
       <v-row wrap dense>
         <v-col md="12" lg="3" class="d-flex flex-column">
-          <TagsForm source="Tagger" />
+          <Suspense>
+            <TaggerSelected source="Tagger" />
+          </Suspense>
         </v-col>
         <v-col md="12" lg="9" class="d-flex flex-column">
           <Suspense>
             <ItemTagger />
           </Suspense>
           <ItemCard class="mt-2" />
-
         </v-col>
       </v-row>
     </v-container>
@@ -19,7 +20,7 @@
 
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue'
-const ItemTagger = defineAsyncComponent(() => import('../trio/ItemTagger.vue'))
-import TagsForm from '../trio/TrioSelectedForm.vue'
 import ItemCard from '../item/item-views/ItemCard.vue'
+const ItemTagger = defineAsyncComponent(() => import('../trio/ItemTagger.vue'))
+const TaggerSelected = defineAsyncComponent(() => import('../trio/TrioSelectedForm.vue'))
 </script>
