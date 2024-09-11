@@ -104,28 +104,12 @@ type TCollectionExtra = {
   viewIndex: number
 }
 
-type TCollectionMeta = {
-  views: TCView[]
-  viewIndex: number
-  view: TCView
-  viewName: TCollectionView
-  itemsPerPage: number
-  pageNoB1: number
-  noOfItems: number
-  noOfPages: number
-  noOfItemsInCurrentPage: number
-  firstItemNo: number
-  lastItemNo: number
-  length: number
-}
-
 type TItemsPerView = { [key in TCollectionView]: number }
 
 export {
   TItemsPerView,
   TCView,
   TCollectionExtra,
-  TCollectionMeta,
   TApiArray,
   TCollectionName,
   TCollectionView,

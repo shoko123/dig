@@ -4,7 +4,6 @@ import { computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import type {
   TCollectionName,
-  TCollectionMeta,
   // TCView,
   TCollectionView,
   TApiArray,
@@ -27,33 +26,6 @@ export const useCollectionsStore = defineStore('collections', () => {
         return useCollectionMediaStore()
       case 'related':
         return useCollectionRelatedStore()
-    }
-  }
-
-  function collectionMeta(name: TCollectionName): TCollectionMeta {
-    const c = getCollectionStore(name)
-    const arrLength = c.array.length
-    const extra = c.extra
-    const page = c.page
-
-    //console.log(`collectionMeta("${name}")`)
-    const view = extra.views[extra.viewIndex]
-    const ipp = c.ipp //getIpp(view)
-    const noOfPages = Math.floor(arrLength / ipp) + (arrLength % ipp === 0 ? 0 : 1)
-
-    return {
-      views: extra.views, //.map(x => ECollectionViews[x]),
-      viewIndex: extra.viewIndex,
-      view: view,
-      viewName: view.name,
-      itemsPerPage: ipp,
-      pageNoB1: extra.pageNoB1,
-      noOfItems: arrLength,
-      noOfPages,
-      noOfItemsInCurrentPage: page.length,
-      firstItemNo: (extra.pageNoB1 - 1) * ipp + 1,
-      lastItemNo: (extra.pageNoB1 - 1) * ipp + page.length,
-      length: arrLength,
     }
   }
 
@@ -123,20 +95,14 @@ export const useCollectionsStore = defineStore('collections', () => {
     const nextViewIndex = (meta2.viewIndex + 1) % meta2.views.length
     const nextView = meta2.views[nextViewIndex]
     const nextIndex = meta2.firstItemNo - 1
-    //////////
-    const meta = collectionMeta(name)
-    const currentView = meta.views[meta.viewIndex]
-    const newViewIndex = (meta.viewIndex + 1) % meta.views.length
-    const newView = meta.views[newViewIndex]
-    const index = meta.firstItemNo - 1
-    //////////////
+
     console.log(
-      `toggleCollectionView() collection: ${name}  module: ${module.value} views: ${meta.itemsPerPage}  current view: ${currentView.name}  new view: ${newView.name} index: ${index}`,
+      `toggleCollectionView() c: ${name}  module: ${module.value} nextView: ${nextView} nextIndex: ${nextIndex}`,
     )
     await loadPageByItemIndex(name, nextView, meta2.itemsPerPage, nextIndex, module.value)
     //  await loadPageByItemIndex(name, newView, index, module.value)
     const c = getCollectionStore(name)
-    c.extra.viewIndex = newViewIndex
+    c.extra.viewIndex = nextViewIndex
   }
 
   function itemIndexById<IDtype extends string | number>(id: IDtype) {
@@ -196,7 +162,6 @@ export const useCollectionsStore = defineStore('collections', () => {
     return {
       array: c.array,
       page: c.page,
-      meta: collectionMeta('main'),
       meta2: getConsumeableCollection(
         'main',
         c.extra.viewIndex,
@@ -212,7 +177,6 @@ export const useCollectionsStore = defineStore('collections', () => {
     return {
       array: c.array,
       page: c.page,
-      meta: collectionMeta('media'),
       meta2: getConsumeableCollection(
         'media',
         c.extra.viewIndex,
@@ -228,7 +192,6 @@ export const useCollectionsStore = defineStore('collections', () => {
     return {
       array: c.array,
       page: c.page,
-      meta: collectionMeta('related'),
       meta2: getConsumeableCollection(
         'related',
         c.extra.viewIndex,

@@ -1,12 +1,10 @@
 <template>
   <v-row wrap no-gutters>
     <v-col v-for="(item, index) in page" :key="index" :cols="`${mediaSizeInColumns}`">
-      <MediaSquare
-        v-bind="{
-          source: source,
-          itemIndex: itemIndex(index),
-        }"
-      />
+      <MediaSquare v-bind="{
+        source: source,
+        itemIndex: itemIndex(index),
+      }" />
     </v-col>
   </v-row>
 </template>
@@ -55,6 +53,6 @@ const mediaSizeInColumns = computed(() => {
   }
 })
 function itemIndex(index: number): number {
-  return (props.pageNoB1 - 1) * c.value.meta.itemsPerPage + index
+  return (props.pageNoB1 - 1) * c.value.meta2.itemsPerPage + index
 }
 </script>

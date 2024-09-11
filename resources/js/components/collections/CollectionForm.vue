@@ -49,10 +49,6 @@ const viewToIcon = {
   Chips: 'mdi-dots-horizontal',
 }
 
-// const meta = computed(() => {
-//   const c = collection(props.source)
-//   return c.value.meta
-// })
 const meta2 = computed(() => {
   const c = collection(props.source)
   return c.value.meta2

@@ -1,17 +1,8 @@
 <template>
   <v-hover v-slot="{ isHovering, props }">
     <v-card v-bind="props" variant="outlined" class="ml-1 mb-1">
-      <v-img
-        :src="data.urls?.tn"
-        :lazy-src="data.urls?.tn"
-        aspect-ratio="1"
-        class="bg-grey-lighten-2"
-      >
-        <v-btn
-          v-if="data.showTag"
-          class="text-subtitle-1 font-weight-medium text-black"
-          color="grey"
-        >
+      <v-img :src="data.urls?.tn" :lazy-src="data.urls?.tn" aspect-ratio="1" class="bg-grey-lighten-2">
+        <v-btn v-if="data.showTag" class="text-subtitle-1 font-weight-medium text-black" color="grey">
           {{ data.tagText }}
         </v-btn>
         <v-card class="mx-auto" color="transparent" flat>
@@ -44,7 +35,7 @@ const prps = defineProps<{
 
 const record = computed(() => {
   const c = collection(prps.source)
-  let indexInPage = prps.itemIndex % c.value.meta.itemsPerPage
+  let indexInPage = prps.itemIndex % c.value.meta2.itemsPerPage
   return c.value.page[indexInPage] as TGalleryIntersection // TPage<TCollectionName, 'Gallery', TModule>
 })
 
