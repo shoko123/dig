@@ -5,7 +5,7 @@ import { defineStore, storeToRefs } from 'pinia'
 import type {
   TCollectionName,
   TCollectionMeta,
-  TCView,
+  // TCView,
   TCollectionView,
   TApiArray,
 } from '@/js/types/collectionTypes'
@@ -45,6 +45,7 @@ export const useCollectionsStore = defineStore('collections', () => {
       views: extra.views, //.map(x => ECollectionViews[x]),
       viewIndex: extra.viewIndex,
       view: view,
+      viewName: view.name,
       itemsPerPage: ipp,
       pageNoB1: extra.pageNoB1,
       noOfItems: arrLength,
@@ -67,7 +68,7 @@ export const useCollectionsStore = defineStore('collections', () => {
     return {
       views: getCollectionViews(name), //.map(x => ECollectionViews[x]),
       viewIndex,
-      view: getViewName(name, viewIndex),
+      viewName: getViewName(name, viewIndex),
       itemsPerPage,
       pageNoB1,
       noOfItems: arrayLength,
@@ -83,39 +84,57 @@ export const useCollectionsStore = defineStore('collections', () => {
   async function loadGenericPage(
     name: TCollectionName,
     pageNoB1: number,
-    view: TCView,
+    viewName: TCollectionView,
+    pageLength: number,
     module: TModule,
   ) {
     //console.log(`loadPage() source: ${name}  module: ${module} view: ${view} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1}`);
 
     const c = getCollectionStore(name)
 
-    const res = await c.loadPage(pageNoB1, view.name, view.ipp, module)
+    const res = await c.loadPage(pageNoB1, viewName, pageLength, module)
     return res
   }
 
   async function loadPageByItemIndex(
     collectionName: TCollectionName,
-    view: TCView,
+    viewName: TCollectionView,
+    pageLength: number,
     index: number,
     module: TModule,
   ) {
-    const ipp = view.ipp
-    const pageNoB0 = Math.floor(index / ipp)
+    // const ipp = view.ipp
+    const pageNoB0 = Math.floor(index / pageLength)
     //console.log(`loadPageByItemIndex() collectionName: ${collectionName} view: ${view} index: ${index} module: ${module}`)
-    return await loadGenericPage(collectionName, pageNoB0 + 1, view, module)
+    return await loadGenericPage(collectionName, pageNoB0 + 1, viewName, pageLength, module)
   }
 
   async function toggleCollectionView(name: TCollectionName) {
+    const col = getCollectionStore(name)
+
+    const meta2 = getConsumeableCollection(
+      name,
+      col.extra.viewIndex,
+      col.extra.pageNoB1,
+      getItemsPerPage(name, col.extra.viewIndex),
+      col.array.length,
+    )
+
+    const nextViewIndex = (meta2.viewIndex + 1) % meta2.views.length
+    const nextView = meta2.views[nextViewIndex]
+    const nextIndex = meta2.firstItemNo - 1
+    //////////
     const meta = collectionMeta(name)
     const currentView = meta.views[meta.viewIndex]
     const newViewIndex = (meta.viewIndex + 1) % meta.views.length
     const newView = meta.views[newViewIndex]
     const index = meta.firstItemNo - 1
+    //////////////
     console.log(
       `toggleCollectionView() collection: ${name}  module: ${module.value} views: ${meta.itemsPerPage}  current view: ${currentView.name}  new view: ${newView.name} index: ${index}`,
     )
-    await loadPageByItemIndex(name, newView, index, module.value)
+    await loadPageByItemIndex(name, nextView, meta2.itemsPerPage, nextIndex, module.value)
+    //  await loadPageByItemIndex(name, newView, index, module.value)
     const c = getCollectionStore(name)
     c.extra.viewIndex = newViewIndex
   }
@@ -178,6 +197,13 @@ export const useCollectionsStore = defineStore('collections', () => {
       array: c.array,
       page: c.page,
       meta: collectionMeta('main'),
+      meta2: getConsumeableCollection(
+        'main',
+        c.extra.viewIndex,
+        c.extra.pageNoB1,
+        getItemsPerPage('main', c.extra.viewIndex),
+        c.array.length,
+      ),
     }
   })
 
@@ -187,6 +213,13 @@ export const useCollectionsStore = defineStore('collections', () => {
       array: c.array,
       page: c.page,
       meta: collectionMeta('media'),
+      meta2: getConsumeableCollection(
+        'media',
+        c.extra.viewIndex,
+        c.extra.pageNoB1,
+        getItemsPerPage('media', c.extra.viewIndex),
+        c.array.length,
+      ),
     }
   })
 
@@ -196,6 +229,13 @@ export const useCollectionsStore = defineStore('collections', () => {
       array: c.array,
       page: c.page,
       meta: collectionMeta('related'),
+      meta2: getConsumeableCollection(
+        'related',
+        c.extra.viewIndex,
+        c.extra.pageNoB1,
+        getItemsPerPage('related', c.extra.viewIndex),
+        c.array.length,
+      ),
     }
   })
 

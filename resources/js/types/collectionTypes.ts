@@ -108,6 +108,7 @@ type TCollectionMeta = {
   views: TCView[]
   viewIndex: number
   view: TCView
+  viewName: TCollectionView
   itemsPerPage: number
   pageNoB1: number
   noOfItems: number

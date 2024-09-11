@@ -258,9 +258,11 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   }
 
   async function loadPage(firstPage: boolean): Promise<{ success: boolean; message: string }> {
+    const meta2 = c.collection('main').value.meta2
     const res = await c.loadPageByItemIndex(
       'main',
-      c.collection('main').value.meta.view,
+      meta2.viewName,
+      meta2.itemsPerPage,
       firstPage ? 0 : i.itemIndex,
       <TModule>r.to.module,
     )
