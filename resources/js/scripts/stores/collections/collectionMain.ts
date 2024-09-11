@@ -3,8 +3,6 @@ import { ref, computed } from 'vue'
 import type {
   TCollectionExtra,
   TApiArray,
-  TItemsPerView,
-  TCView,
   TApiPage,
   TPage,
   TCollectionView,
@@ -21,15 +19,9 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
   const { buildMedia } = useMediaStore()
   const { tagAndSlugFromId } = useModuleStore()
   const { getConsumeableCollection } = useCollectionsStore()
-  const itemsPerView = <TItemsPerView>{ Gallery: 18, Tabular: 20, Chips: 50 }
 
   const extra = ref<TCollectionExtra>({
     pageNoB1: 1,
-    views: <TCView[]>[
-      { name: 'Gallery', ipp: 18 },
-      { name: 'Tabular', ipp: 50 },
-      { name: 'Chips', ipp: 40 },
-    ],
     viewIndex: 0,
   })
 
@@ -45,10 +37,6 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     }
   })
 
-  const ipp = computed(() => {
-    return extra.value.views[extra.value.viewIndex].ipp
-  })
-
   const all = computed(() => {
     return getConsumeableCollection(
       'main',
@@ -58,12 +46,6 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
       array.value.length,
     )
   })
-
-  function setCollectionViews(views: TCollectionView[]) {
-    extra.value.views = views.map((x) => {
-      return { name: x, ipp: itemsPerView[x] }
-    })
-  }
 
   const loadPage: TFuncLoadPage = async function (
     pageNoB1: number,
@@ -182,12 +164,10 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
 
   return {
     extra,
-    ipp,
     array,
     page,
     loadPage,
     itemIndexById,
-    setCollectionViews,
     collection,
     itemIsInPage,
     removeItemIdFromMainArray,

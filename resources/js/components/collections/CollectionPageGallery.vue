@@ -53,6 +53,6 @@ const mediaSizeInColumns = computed(() => {
   }
 })
 function itemIndex(index: number): number {
-  return (props.pageNoB1 - 1) * c.value.meta2.itemsPerPage + index
+  return (props.pageNoB1 - 1) * c.value.info.itemsPerPage + index
 }
 </script>

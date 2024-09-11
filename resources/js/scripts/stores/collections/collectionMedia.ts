@@ -4,22 +4,17 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { TModule } from '@/js/types/moduleTypes'
 import type { TFuncLoadPage } from '@/js/types/routesTypes'
-import {
-  TCollectionExtra,
-  TApiArray,
-  TCollectionView,
-  TItemsPerView,
-} from '@/js/types/collectionTypes'
+import { TCollectionExtra, TApiArray, TCollectionView } from '@/js/types/collectionTypes'
+import { useModuleStore } from '../module'
 import { useMediaStore } from '../media'
 import { useCollectionsStore } from './collections'
 
 export const useCollectionMediaStore = defineStore('collectionMedia', () => {
   const { buildMedia } = useMediaStore()
   const { getConsumeableCollection } = useCollectionsStore()
-  const itemsPerView = <TItemsPerView>{ Gallery: 18, Tabular: 20, Chips: 50 }
+  const { getItemsPerPage } = useModuleStore()
   const extra = ref<TCollectionExtra>({
     pageNoB1: 1,
-    views: [{ name: 'Gallery', ipp: 36 }],
     viewIndex: 0,
   })
 
@@ -33,10 +28,6 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     }
   })
 
-  const ipp = computed(() => {
-    return extra.value.views[extra.value.viewIndex].ipp
-  })
-
   const all = computed(() => {
     return getConsumeableCollection(
       'media',
@@ -48,8 +39,9 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
   })
 
   const page = computed<TApiArray<'media'>[]>(() => {
-    const start = (extra.value.pageNoB1 - 1) * ipp.value
-    const slice = array.value.slice(start, start + ipp.value)
+    const ipp = getItemsPerPage('media', extra.value.viewIndex)
+    const start = (extra.value.pageNoB1 - 1) * ipp
+    const slice = array.value.slice(start, start + ipp)
     const res = slice.map((x) => {
       const media = buildMedia({ full: x.urls.full, tn: x.urls.tn })
       return {
@@ -60,12 +52,6 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     })
     return res
   })
-
-  function setCollectionViews(views: TCollectionView[]) {
-    extra.value.views = views.map((x) => {
-      return { name: x, ipp: itemsPerView[x] }
-    })
-  }
 
   function switchArrayItems(indexA: number, indexB: number) {
     const temp = { ...array.value[indexA] }
@@ -102,12 +88,10 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
 
   return {
     extra,
-    ipp,
     array,
     page,
     loadPage,
     itemIndexById,
-    setCollectionViews,
     switchArrayItems,
     collection,
     itemIsInPage,

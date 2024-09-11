@@ -170,12 +170,11 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     }
     await setModuleInfo(res.data)
     c.resetCollectionsViewIndex()
+    c.clear(['main', 'media', 'related'])
     i.setItemViewIndex(0)
     i.itemViews = res.data.display_options.item_views
-    c.clear(['main', 'media', 'related'])
+
     await setTrio(res.data.trio)
-    c.setCollectionViews('main', res.data.display_options.main_collection_views)
-    c.setCollectionViews('related', res.data.display_options.related_collection_views)
     return { success: true, message: '' }
   }
 
@@ -258,11 +257,11 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   }
 
   async function loadPage(firstPage: boolean): Promise<{ success: boolean; message: string }> {
-    const meta2 = c.collection('main').value.meta2
+    const info = c.collection('main').value.info
     const res = await c.loadPageByItemIndex(
       'main',
-      meta2.viewName,
-      meta2.itemsPerPage,
+      info.viewName,
+      info.itemsPerPage,
       firstPage ? 0 : i.itemIndex,
       <TModule>r.to.module,
     )

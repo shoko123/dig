@@ -2,12 +2,7 @@
 //handles all collections and loading of pages
 import { computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type {
-  TCollectionName,
-  // TCView,
-  TCollectionView,
-  TApiArray,
-} from '@/js/types/collectionTypes'
+import type { TCollectionName, TCollectionView, TApiArray } from '@/js/types/collectionTypes'
 import type { TModule } from '@/js/types/moduleTypes'
 import { useModuleStore } from '../module'
 import { useCollectionMainStore } from './collectionMain'
@@ -84,7 +79,7 @@ export const useCollectionsStore = defineStore('collections', () => {
   async function toggleCollectionView(name: TCollectionName) {
     const col = getCollectionStore(name)
 
-    const meta2 = getConsumeableCollection(
+    const info = getConsumeableCollection(
       name,
       col.extra.viewIndex,
       col.extra.pageNoB1,
@@ -92,14 +87,14 @@ export const useCollectionsStore = defineStore('collections', () => {
       col.array.length,
     )
 
-    const nextViewIndex = (meta2.viewIndex + 1) % meta2.views.length
-    const nextView = meta2.views[nextViewIndex]
-    const nextIndex = meta2.firstItemNo - 1
+    const nextViewIndex = (info.viewIndex + 1) % info.views.length
+    const nextView = info.views[nextViewIndex]
+    const nextIndex = info.firstItemNo - 1
 
     console.log(
       `toggleCollectionView() c: ${name}  module: ${module.value} nextView: ${nextView} nextIndex: ${nextIndex}`,
     )
-    await loadPageByItemIndex(name, nextView, meta2.itemsPerPage, nextIndex, module.value)
+    await loadPageByItemIndex(name, nextView, info.itemsPerPage, nextIndex, module.value)
     //  await loadPageByItemIndex(name, newView, index, module.value)
     const c = getCollectionStore(name)
     c.extra.viewIndex = nextViewIndex
@@ -145,11 +140,6 @@ export const useCollectionsStore = defineStore('collections', () => {
     })
   }
 
-  function setCollectionViews(collection: TCollectionName, views: TCollectionView[]) {
-    const c = getCollectionStore(<TCollectionName>collection)
-    c.setCollectionViews(views)
-  }
-
   function resetCollectionsViewIndex() {
     ;['main', 'media', 'related'].forEach((x) => {
       const c = getCollectionStore(<TCollectionName>x)
@@ -162,7 +152,7 @@ export const useCollectionsStore = defineStore('collections', () => {
     return {
       array: c.array,
       page: c.page,
-      meta2: getConsumeableCollection(
+      info: getConsumeableCollection(
         'main',
         c.extra.viewIndex,
         c.extra.pageNoB1,
@@ -177,7 +167,7 @@ export const useCollectionsStore = defineStore('collections', () => {
     return {
       array: c.array,
       page: c.page,
-      meta2: getConsumeableCollection(
+      info: getConsumeableCollection(
         'media',
         c.extra.viewIndex,
         c.extra.pageNoB1,
@@ -192,7 +182,7 @@ export const useCollectionsStore = defineStore('collections', () => {
     return {
       array: c.array,
       page: c.page,
-      meta2: getConsumeableCollection(
+      info: getConsumeableCollection(
         'related',
         c.extra.viewIndex,
         c.extra.pageNoB1,
@@ -220,7 +210,6 @@ export const useCollectionsStore = defineStore('collections', () => {
     itemByIndex,
     //setArray,
     loadGenericPage,
-    setCollectionViews,
     toggleCollectionView,
     clear,
     resetCollectionsViewIndex,

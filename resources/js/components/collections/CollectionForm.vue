@@ -11,7 +11,7 @@
     </v-toolbar>
     <v-card-text>
       <v-container fluid class="ma-0 pa-0">
-        <component :is="collectionPage" :source="props.source" :page-no-b1="meta2.pageNoB1" />
+        <component :is="collectionPage" :source="props.source" :page-no-b1="info.pageNoB1" />
       </v-container>
     </v-card-text>
   </v-card>
@@ -49,9 +49,9 @@ const viewToIcon = {
   Chips: 'mdi-dots-horizontal',
 }
 
-const meta2 = computed(() => {
+const info = computed(() => {
   const c = collection(props.source)
-  return c.value.meta2
+  return c.value.info
 })
 const ico = computed(() => {
   return viewToIcon[displayOption.value]
@@ -62,8 +62,8 @@ async function asynLoadPage(val: number) {
   const res = await loadGenericPage(
     props.source,
     val,
-    meta2.value.viewName,
-    meta2.value.itemsPerPage,
+    info.value.viewName,
+    info.value.itemsPerPage,
     <TModule>derived.value.module,
   )
   showSpinner(false)
@@ -84,7 +84,7 @@ const page = computed({
 const header = computed(() => {
   let pageInfo,
     headerText = ``
-  switch (meta2.value.length) {
+  switch (info.value.length) {
     case 0:
       pageInfo = `(Empty)`
       break
@@ -92,38 +92,38 @@ const header = computed(() => {
       pageInfo = `(P1)`
       break
     default:
-      pageInfo = `(P${meta2.value.pageNoB1}/${meta2.value.noOfPages})`
+      pageInfo = `(P${info.value.pageNoB1}/${info.value.noOfPages})`
   }
 
   switch (props.source) {
     case 'main':
       headerText = smAndDown.value
-        ? `Collection(${meta2.value.length}): ${pageInfo}`
-        : `${derived.value.module} Collection(${meta2.value.length}): ${pageInfo}, items (${meta2.value.firstItemNo}-${meta2.value.lastItemNo})`
+        ? `Collection(${info.value.length}): ${pageInfo}`
+        : `${derived.value.module} Collection(${info.value.length}): ${pageInfo}, items (${info.value.firstItemNo}-${info.value.lastItemNo})`
       break
     case 'media':
       headerText = smAndDown.value
-        ? `Media(${meta2.value.length}) ${pageInfo}`
-        : `${derived.value.moduleAndTag} - Media(${meta2.value.length}) ${pageInfo}`
+        ? `Media(${info.value.length}) ${pageInfo}`
+        : `${derived.value.moduleAndTag} - Media(${info.value.length}) ${pageInfo}`
       break
     case 'related':
       headerText = smAndDown.value
-        ? `Related(${meta2.value.length}) ${pageInfo}`
-        : `${derived.value.moduleAndTag} - Related(${meta2.value.length}) ${pageInfo}`
+        ? `Related(${info.value.length}) ${pageInfo}`
+        : `${derived.value.moduleAndTag} - Related(${info.value.length}) ${pageInfo}`
   }
   return headerText
 })
 
 const paginator = computed(() => {
   return {
-    show: meta2.value.noOfPages > 1,
-    page: meta2.value.pageNoB1,
-    pages: meta2.value.noOfPages,
+    show: info.value.noOfPages > 1,
+    page: info.value.pageNoB1,
+    pages: info.value.noOfPages,
   }
 })
 
 const collectionPage = computed<Component>(() => {
-  switch (meta2.value.viewName) {
+  switch (info.value.viewName) {
     case 'Gallery':
       return CollectionPageGallery
     case 'Chips':
@@ -131,16 +131,16 @@ const collectionPage = computed<Component>(() => {
     case 'Tabular':
       return CollectionPageTabular
     default:
-      console.log(`Collection.vue invalid collectionPage: ${meta2.value.viewIndex}`)
+      console.log(`Collection.vue invalid collectionPage: ${info.value.viewIndex}`)
       return CollectionPageGallery
   }
 })
 
 const showBtnViewToggle = computed(() => {
-  return meta2.value.length > 0 && meta2.value.views.length > 1
+  return info.value.length > 0 && info.value.views.length > 1
 })
 const displayOption = computed(() => {
-  return meta2.value.viewName
+  return info.value.viewName
 })
 
 async function toggleCollectionDisplayOption() {

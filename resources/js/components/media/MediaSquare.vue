@@ -35,7 +35,7 @@ const prps = defineProps<{
 
 const record = computed(() => {
   const c = collection(prps.source)
-  let indexInPage = prps.itemIndex % c.value.meta2.itemsPerPage
+  let indexInPage = prps.itemIndex % c.value.info.itemsPerPage
   return c.value.page[indexInPage] as TGalleryIntersection // TPage<TCollectionName, 'Gallery', TModule>
 })
 

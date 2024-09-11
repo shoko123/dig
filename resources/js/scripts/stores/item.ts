@@ -128,7 +128,7 @@ export const useItemStore = defineStore('item', () => {
 
   function nextSlug(isRight: boolean) {
     let newIndex
-    const length = collection('main').value.meta2.length
+    const length = collection('main').value.info.length
     if (isRight) {
       newIndex = itemIndex.value === length - 1 ? 0 : itemIndex.value + 1
     } else {

@@ -4,30 +4,18 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { TModule } from '@/js/types/moduleTypes'
 import type { TFuncLoadPage } from '@/js/types/routesTypes'
-import {
-  TCollectionExtra,
-  TCollectionView,
-  TItemsPerView,
-  TCView,
-  TApiArray,
-} from '@/js/types/collectionTypes'
+import { TCollectionExtra, TCollectionView, TApiArray } from '@/js/types/collectionTypes'
 import { useMediaStore } from '../media'
 import { useModuleStore } from '../module'
 import { useCollectionsStore } from './collections'
 
 export const useCollectionRelatedStore = defineStore('collectionRelated', () => {
   const { buildMedia } = useMediaStore()
-  const { tagAndSlugFromId } = useModuleStore()
+  const { tagAndSlugFromId, getViewName, getItemsPerPage } = useModuleStore()
   const { getConsumeableCollection } = useCollectionsStore()
-
-  const itemsPerView = <TItemsPerView>{ Gallery: 36, Tabular: 100, Chips: 200 }
 
   const extra = ref<TCollectionExtra>({
     pageNoB1: 1,
-    views: <TCView[]>[
-      { name: 'Tabular', ipp: 36 },
-      { name: 'Chips', ipp: 200 },
-    ],
     viewIndex: 0,
   })
 
@@ -43,10 +31,6 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     )
   })
 
-  const ipp = computed(() => {
-    return extra.value.views[extra.value.viewIndex].ipp
-  })
-
   //relatedTableHeaders for the related.Tabular view
   const relatedTableHeaders = computed(() => {
     return [
@@ -57,12 +41,13 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
   })
 
   const page = computed(() => {
-    //let ipp = c.getIpp("Gallery")
-    const start = (extra.value.pageNoB1 - 1) * ipp.value
-    const slice = array.value.slice(start, start + ipp.value)
+    const ipp = getItemsPerPage('related', extra.value.viewIndex)
+    const viewName = getViewName('related', extra.value.viewIndex)
+    const start = (extra.value.pageNoB1 - 1) * ipp
+    const slice = array.value.slice(start, start + ipp)
     let res = []
 
-    switch (extra.value.views[extra.value.viewIndex].name) {
+    switch (viewName) {
       case 'Tabular':
         res = slice.map((x) => {
           return {
@@ -104,12 +89,6 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     }
   })
 
-  function setCollectionViews(views: TCollectionView[]) {
-    extra.value.views = views.map((x) => {
-      return { name: x, ipp: itemsPerView[x] }
-    })
-  }
-
   const loadPage: TFuncLoadPage = async function (
     pageNoB1: number,
     view: TCollectionView,
@@ -143,13 +122,11 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
 
   return {
     extra,
-    ipp,
     array,
     page,
     relatedTableHeaders,
     loadPage,
     itemIndexById,
-    setCollectionViews,
     collection,
     itemIsInPage,
     clear,

@@ -90,8 +90,6 @@ type TGalleryIntersection = TPage<'main', 'Gallery'> &
   TPage<'media', 'Gallery'> &
   TPage<'related', 'Gallery'>
 
-type TCView = { name: TCollectionView; ipp: number }
-
 //convert media proporty type from the api's TMediaUrls to the frontend's TMediaOfItem
 type ExchangeMediaProperty<T extends TApiPage<'related', 'Gallery'>> = Omit<T, 'media'> & {
   media: TMediaOfItem
@@ -100,15 +98,10 @@ type ExchangeMediaProperty<T extends TApiPage<'related', 'Gallery'>> = Omit<T, '
 //internal collection data
 type TCollectionExtra = {
   pageNoB1: number
-  views: TCView[]
   viewIndex: number
 }
 
-type TItemsPerView = { [key in TCollectionView]: number }
-
 export {
-  TItemsPerView,
-  TCView,
   TCollectionExtra,
   TApiArray,
   TCollectionName,
