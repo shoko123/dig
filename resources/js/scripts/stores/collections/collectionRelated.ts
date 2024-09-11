@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { TModule } from '@/js/types/moduleTypes'
 import type { TFuncLoadPage } from '@/js/types/routesTypes'
-import { TCollectionExtra, TCollectionView, TApiArray } from '@/js/types/collectionTypes'
+import { TCollectionView, TApiArray } from '@/js/types/collectionTypes'
 import { useMediaStore } from '../media'
 import { useModuleStore } from '../module'
 import { useCollectionsStore } from './collections'
@@ -14,18 +14,16 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
   const { tagAndSlugFromId, getViewName, getItemsPerPage } = useModuleStore()
   const { getConsumeableCollection } = useCollectionsStore()
 
-  const extra = ref<TCollectionExtra>({
-    pageNoB1: 1,
-    viewIndex: 0,
-  })
+  const pageNoB1 = ref(1)
+  const viewIndex = ref(0)
 
   const array = ref<TApiArray<'related'>[]>([])
 
   const all = computed(() => {
     return getConsumeableCollection(
       'related',
-      extra.value.viewIndex,
-      extra.value.pageNoB1,
+      viewIndex.value,
+      pageNoB1.value,
       page.value.length,
       array.value.length,
     )
@@ -41,9 +39,9 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
   })
 
   const page = computed(() => {
-    const ipp = getItemsPerPage('related', extra.value.viewIndex)
-    const viewName = getViewName('related', extra.value.viewIndex)
-    const start = (extra.value.pageNoB1 - 1) * ipp
+    const ipp = getItemsPerPage('related', viewIndex.value)
+    const viewName = getViewName('related', viewIndex.value)
+    const start = (pageNoB1.value - 1) * ipp
     const slice = array.value.slice(start, start + ipp)
     let res = []
 
@@ -85,12 +83,13 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     return {
       array: array.value,
       page: page.value, //computedPage.value,
-      extra: extra.value,
+      pageNoB1: pageNoB1.value,
+      viewIndex: viewIndex.value,
     }
   })
 
   const loadPage: TFuncLoadPage = async function (
-    pageNoB1: number,
+    pageNo: number,
     view: TCollectionView,
     pageLength: number,
     module: TModule,
@@ -98,7 +97,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     //related page is a sub-array of array, determined by computed(array, pageNoB1). So, just set pageNoB1
     view
     module
-    extra.value.pageNoB1 = pageNoB1
+    pageNoB1.value = pageNo
     return { success: true, message: '' }
   }
 
@@ -116,12 +115,14 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
   // }
 
   function clear() {
+    console.log(`collectionRelated.clear()`)
     array.value = []
-    extra.value.pageNoB1 = 1
+    pageNoB1.value = 1
   }
 
   return {
-    extra,
+    pageNoB1,
+    viewIndex,
     array,
     page,
     relatedTableHeaders,

@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { TModule } from '@/js/types/moduleTypes'
 import type { TFuncLoadPage } from '@/js/types/routesTypes'
-import { TCollectionExtra, TApiArray, TCollectionView } from '@/js/types/collectionTypes'
+import { TApiArray, TCollectionView } from '@/js/types/collectionTypes'
 import { useModuleStore } from '../module'
 import { useMediaStore } from '../media'
 import { useCollectionsStore } from './collections'
@@ -13,10 +13,9 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
   const { buildMedia } = useMediaStore()
   const { getConsumeableCollection } = useCollectionsStore()
   const { getItemsPerPage } = useModuleStore()
-  const extra = ref<TCollectionExtra>({
-    pageNoB1: 1,
-    viewIndex: 0,
-  })
+
+  const pageNoB1 = ref(1)
+  const viewIndex = ref(0)
 
   const array = ref<TApiArray<'media'>[]>([])
 
@@ -24,23 +23,24 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     return {
       array: array.value,
       page: page.value,
-      extra: extra.value,
+      pageNoB1: pageNoB1.value,
+      viewIndex: viewIndex.value,
     }
   })
 
   const all = computed(() => {
     return getConsumeableCollection(
       'media',
-      extra.value.viewIndex,
-      extra.value.pageNoB1,
+      viewIndex.value,
+      pageNoB1.value,
       page.value.length,
       array.value.length,
     )
   })
 
   const page = computed<TApiArray<'media'>[]>(() => {
-    const ipp = getItemsPerPage('media', extra.value.viewIndex)
-    const start = (extra.value.pageNoB1 - 1) * ipp
+    const ipp = getItemsPerPage('media', viewIndex.value)
+    const start = (pageNoB1.value - 1) * ipp
     const slice = array.value.slice(start, start + ipp)
     const res = slice.map((x) => {
       const media = buildMedia({ full: x.urls.full, tn: x.urls.tn })
@@ -60,7 +60,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
   }
 
   const loadPage: TFuncLoadPage = async function (
-    pageNoB1: number,
+    pageNo: number,
     view: TCollectionView,
     pageLength: number,
     module: TModule,
@@ -68,7 +68,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     view
     module
     pageLength
-    extra.value.pageNoB1 = pageNoB1
+    pageNoB1.value = pageNo
     return { success: true, message: '' }
   }
 
@@ -82,14 +82,16 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
   }
 
   function clear() {
+    console.log(`collectionMedia.clear()`)
     array.value = []
-    extra.value.pageNoB1 = 1
+    pageNoB1.value = 1
   }
 
   return {
-    extra,
     array,
     page,
+    pageNoB1,
+    viewIndex,
     loadPage,
     itemIndexById,
     switchArrayItems,

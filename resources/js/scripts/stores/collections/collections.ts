@@ -31,7 +31,7 @@ export const useCollectionsStore = defineStore('collections', () => {
     pageLength: number,
     arrayLength: number,
   ) {
-    const itemsPerPage = getItemsPerPage(name, viewIndex) as number
+    const itemsPerPage = getItemsPerPage(name, viewIndex)
     return {
       views: getCollectionViews(name), //.map(x => ECollectionViews[x]),
       viewIndex,
@@ -72,7 +72,9 @@ export const useCollectionsStore = defineStore('collections', () => {
   ) {
     // const ipp = view.ipp
     const pageNoB0 = Math.floor(index / pageLength)
-    //console.log(`loadPageByItemIndex() collectionName: ${collectionName} view: ${view} index: ${index} module: ${module}`)
+    console.log(
+      `loadPageByItemIndex() collectionName: ${collectionName} view: ${viewName} ipp: ${pageLength} index: ${index} module: ${module} pageB1: ${pageNoB0 + 1}`,
+    )
     return await loadGenericPage(collectionName, pageNoB0 + 1, viewName, pageLength, module)
   }
 
@@ -81,23 +83,24 @@ export const useCollectionsStore = defineStore('collections', () => {
 
     const info = getConsumeableCollection(
       name,
-      col.extra.viewIndex,
-      col.extra.pageNoB1,
-      getItemsPerPage(name, col.extra.viewIndex),
+      col.viewIndex,
+      col.pageNoB1,
+      getItemsPerPage(name, col.viewIndex),
       col.array.length,
     )
 
     const nextViewIndex = (info.viewIndex + 1) % info.views.length
+    const nextItemsPerPage = getItemsPerPage(name, nextViewIndex)
     const nextView = info.views[nextViewIndex]
     const nextIndex = info.firstItemNo - 1
 
     console.log(
-      `toggleCollectionView() c: ${name}  module: ${module.value} nextView: ${nextView} nextIndex: ${nextIndex}`,
+      `toggleCollectionView() c: ${name}  module: ${module.value} currentView: ${info.viewName} nextView: ${nextView} index: ${nextIndex}`,
     )
-    await loadPageByItemIndex(name, nextView, info.itemsPerPage, nextIndex, module.value)
+    await loadPageByItemIndex(name, nextView, nextItemsPerPage, nextIndex, module.value)
     //  await loadPageByItemIndex(name, newView, index, module.value)
-    const c = getCollectionStore(name)
-    c.extra.viewIndex = nextViewIndex
+
+    col.viewIndex = nextViewIndex
   }
 
   function itemIndexById<IDtype extends string | number>(id: IDtype) {
@@ -143,7 +146,7 @@ export const useCollectionsStore = defineStore('collections', () => {
   function resetCollectionsViewIndex() {
     ;['main', 'media', 'related'].forEach((x) => {
       const c = getCollectionStore(<TCollectionName>x)
-      c.extra.viewIndex = 0
+      c.viewIndex = 0
     })
   }
 
@@ -154,9 +157,9 @@ export const useCollectionsStore = defineStore('collections', () => {
       page: c.page,
       info: getConsumeableCollection(
         'main',
-        c.extra.viewIndex,
-        c.extra.pageNoB1,
-        getItemsPerPage('main', c.extra.viewIndex),
+        c.viewIndex,
+        c.pageNoB1,
+        c.page.length,
         c.array.length,
       ),
     }
@@ -169,9 +172,9 @@ export const useCollectionsStore = defineStore('collections', () => {
       page: c.page,
       info: getConsumeableCollection(
         'media',
-        c.extra.viewIndex,
-        c.extra.pageNoB1,
-        getItemsPerPage('media', c.extra.viewIndex),
+        c.viewIndex,
+        c.pageNoB1,
+        c.page.length,
         c.array.length,
       ),
     }
@@ -184,9 +187,9 @@ export const useCollectionsStore = defineStore('collections', () => {
       page: c.page,
       info: getConsumeableCollection(
         'related',
-        c.extra.viewIndex,
-        c.extra.pageNoB1,
-        getItemsPerPage('related', c.extra.viewIndex),
+        c.viewIndex,
+        c.pageNoB1,
+        c.page.length,
         c.array.length,
       ),
     }

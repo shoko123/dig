@@ -95,18 +95,4 @@ type ExchangeMediaProperty<T extends TApiPage<'related', 'Gallery'>> = Omit<T, '
   media: TMediaOfItem
 }
 
-//internal collection data
-type TCollectionExtra = {
-  pageNoB1: number
-  viewIndex: number
-}
-
-export {
-  TCollectionExtra,
-  TApiArray,
-  TCollectionName,
-  TCollectionView,
-  TApiPage,
-  TPage,
-  TGalleryIntersection,
-}
+export { TApiArray, TCollectionName, TCollectionView, TApiPage, TPage, TGalleryIntersection }

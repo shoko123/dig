@@ -1,12 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type {
-  TCollectionExtra,
-  TApiArray,
-  TApiPage,
-  TPage,
-  TCollectionView,
-} from '@/js/types/collectionTypes'
+import type { TApiArray, TApiPage, TPage, TCollectionView } from '@/js/types/collectionTypes'
 import type { TFuncLoadPage } from '@/js/types/routesTypes'
 import type { TModule, TApiPageMainTabularUnion } from '@/js/types/moduleTypes'
 import { useModuleStore } from '../module'
@@ -20,11 +14,8 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
   const { tagAndSlugFromId } = useModuleStore()
   const { getConsumeableCollection } = useCollectionsStore()
 
-  const extra = ref<TCollectionExtra>({
-    pageNoB1: 1,
-    viewIndex: 0,
-  })
-
+  const pageNoB1 = ref(1)
+  const viewIndex = ref(0)
   const array = ref<TApiArray[]>([])
 
   const page = ref<TPage<'main', TCollectionView, TModule>[]>([])
@@ -33,35 +24,36 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     return {
       array: array.value,
       page: page.value, //computedPage.value,
-      extra: extra.value,
+      pageNoB1: pageNoB1.value,
+      viewIndex: viewIndex.value,
     }
   })
 
   const all = computed(() => {
     return getConsumeableCollection(
       'main',
-      extra.value.viewIndex,
-      extra.value.pageNoB1,
+      viewIndex.value,
+      pageNoB1.value,
       page.value.length,
       array.value.length,
     )
   })
 
   const loadPage: TFuncLoadPage = async function (
-    pageNoB1: number,
+    pageNo: number,
     view: TCollectionView,
     pageLength: number,
     module: TModule,
   ) {
-    const start = (pageNoB1 - 1) * pageLength
+    const start = (pageNo - 1) * pageLength
 
     console.log(
-      `loadPage() c: main v: ${view} pageB1: ${pageNoB1}  length: ${pageLength} startIndex: ${start} endIndex: ${start + pageLength - 1} module: ${module}`,
+      `loadPage() c: main v: ${view} pageB1: ${pageNo}  length: ${pageLength} startIndex: ${start} endIndex: ${start + pageLength - 1} module: ${module}`,
     )
 
     //if view is chips, use a slice into the 'main' collection's array
     if (view === 'Chips') {
-      extra.value.pageNoB1 = pageNoB1
+      pageNoB1.value = pageNo
       const slice = array.value.slice(start, start + pageLength)
       savePage(
         slice,
@@ -76,7 +68,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
 
     //'Gallery' and 'Tabular' views require db access
     const ids = array.value.slice(start, start + pageLength)
-
+    // console.log(`start: ${start}, pageLength: ${pageLength}, ids to send to module/page: ${ids}`)
     if (ids.length === 0) {
       console.log(`ids.length is 0 - returning`)
       savePage([], view, module)
@@ -90,7 +82,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     })
     if (res.success) {
       savePage(res.data, view, module)
-      extra.value.pageNoB1 = pageNoB1
+      pageNoB1.value = pageNo
       return { success: true, message: '' }
     } else {
       console.log(`loadPage failed. err: ${JSON.stringify(res.message, null, 2)}`)
@@ -157,13 +149,15 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
   }
 
   function clear() {
+    console.log(`collectionMain.clear()`)
     array.value = []
     page.value = []
-    extra.value.pageNoB1 = 1
+    pageNoB1.value = 1
   }
 
   return {
-    extra,
+    pageNoB1,
+    viewIndex,
     array,
     page,
     loadPage,

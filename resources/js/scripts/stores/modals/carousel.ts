@@ -128,8 +128,8 @@ export const useCarouselStore = defineStore('carousel', () => {
       case 'main':
         {
           const mainStore = c.getCollectionStore('main')
-          const view = getViewName('main', mainStore.extra.viewIndex)
-          const ipp = getItemsPerPage('main', mainStore.extra.viewIndex)
+          const view = getViewName('main', mainStore.viewIndex)
+          const ipp = getItemsPerPage('main', mainStore.viewIndex)
           if (!c.itemIsInPage(<string>carouselItemDetails.value?.id)) {
             const index = c.itemIndexById<string>((<TCarousel<'main'>>carouselItemDetails.value).id)
 
