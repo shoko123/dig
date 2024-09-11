@@ -20,7 +20,7 @@ import { useCollectionsStore } from '../../scripts/stores/collections/collection
 import { useCollectionRelatedStore } from '../../scripts/stores/collections/collectionRelated'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 
-type THeader = { title: string, align: string, key: string }
+type THeader = { title: string, align: 'start' | 'end' | 'center' | undefined, key: string }
 const props = defineProps<{
   source: TCollectionName
   pageNoB1: number
@@ -34,14 +34,14 @@ onMounted(async () => {
   const { useModuleStore } = await import('../../scripts/stores/module')
   let { getStore } = useModuleStore()
   const store = await getStore()
-  mainTableHeaders.value = store.mainTableHeaders
+  mainTableHeaders.value = store.mainTableHeaders as THeader[]
 });
 
 const mainTableHeaders = ref<THeader[]>([])
 
 const headers = computed(() => {
   if (props.source === 'main') {
-    return mainTableHeaders.value
+    return mainTableHeaders.value as THeader[]
   } else {
     return relatedTableHeaders.value as THeader[]
   }

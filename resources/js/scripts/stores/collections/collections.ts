@@ -218,5 +218,6 @@ export const useCollectionsStore = defineStore('collections', () => {
     itemIsInPage,
     next,
     getConsumeableCollection,
+    getCollectionStore,
   }
 })

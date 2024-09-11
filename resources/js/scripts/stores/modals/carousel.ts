@@ -5,7 +5,6 @@ import { TCollectionName, TApiArray } from '@/js/types/collectionTypes'
 import { TCarousel, TApiCarousel, TCarouselUnion } from '@/js/types/mediaTypes'
 import { TModule } from '@/js/types/moduleTypes'
 import { useCollectionsStore } from '../collections/collections'
-import { useCollectionMainStore } from '../collections/collectionMain'
 import { useXhrStore } from '../xhr'
 import { useMediaStore } from '../media'
 import { useModuleStore } from '../module'
@@ -13,12 +12,11 @@ import { useItemStore } from '../item'
 
 export const useCarouselStore = defineStore('carousel', () => {
   const c = useCollectionsStore()
-  const { extra } = storeToRefs(useCollectionMainStore())
   const { send } = useXhrStore()
 
   const { derived } = storeToRefs(useItemStore())
   const { buildMedia } = useMediaStore()
-  const { tagAndSlugFromId } = useModuleStore()
+  const { tagAndSlugFromId, getViewName, getItemsPerPage } = useModuleStore()
 
   const isOpen = ref<boolean>(false)
   const collectionName = ref<TCollectionName>('main')
@@ -129,13 +127,16 @@ export const useCarouselStore = defineStore('carousel', () => {
     switch (collectionName.value) {
       case 'main':
         {
-          const view = extra.value.views[extra.value.viewIndex]
+          const mainStore = c.getCollectionStore('main')
+          const view = getViewName('main', mainStore.extra.viewIndex)
+          const ipp = getItemsPerPage('main', mainStore.extra.viewIndex)
           if (!c.itemIsInPage(<string>carouselItemDetails.value?.id)) {
             const index = c.itemIndexById<string>((<TCarousel<'main'>>carouselItemDetails.value).id)
 
             const res = await c.loadPageByItemIndex(
               collectionName.value,
               view,
+              ipp,
               index,
               <TModule>derived.value.module,
             )
