@@ -14,12 +14,13 @@ import type { TModule, TApiPageMainTabularUnion } from '@/js/types/moduleTypes'
 import { useModuleStore } from '../module'
 import { useXhrStore } from '../xhr'
 import { useMediaStore } from '../media'
+import { useCollectionsStore } from './collections'
 
 export const useCollectionMainStore = defineStore('collectionMain', () => {
   const { send } = useXhrStore()
   const { buildMedia } = useMediaStore()
   const { tagAndSlugFromId } = useModuleStore()
-
+  const { getConsumeableCollection } = useCollectionsStore()
   const itemsPerView = <TItemsPerView>{ Gallery: 18, Tabular: 20, Chips: 50 }
 
   const extra = ref<TCollectionExtra>({
@@ -46,6 +47,16 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
 
   const ipp = computed(() => {
     return extra.value.views[extra.value.viewIndex].ipp
+  })
+
+  const all = computed(() => {
+    return getConsumeableCollection(
+      'main',
+      extra.value.viewIndex,
+      extra.value.pageNoB1,
+      page.value.length,
+      array.value.length,
+    )
   })
 
   function setCollectionViews(views: TCollectionView[]) {
@@ -181,5 +192,6 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     itemIsInPage,
     removeItemIdFromMainArray,
     clear,
+    all,
   }
 })

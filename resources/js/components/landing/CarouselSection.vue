@@ -19,14 +19,11 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { useMediaStore } from '../../scripts/stores/media'
 import { TMediaOfItem } from '../../types/mediaTypes'
 import { storeToRefs } from 'pinia'
 import { useMainStore } from '../../scripts/stores/main'
 
-let { bucketUrl } = storeToRefs(useMediaStore())
-let { appName } = storeToRefs(useMainStore())
-
+let { appName, bucketUrl } = storeToRefs(useMainStore())
 
 const model = ref<number>(0)
 

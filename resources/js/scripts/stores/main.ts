@@ -8,7 +8,6 @@ import type {
 } from '@/js/types/moduleTypes'
 import { useXhrStore } from './xhr'
 import { useAuthStore } from './auth'
-import { useMediaStore } from './media'
 
 type sendApiAppInit = {
   appUrl: string
@@ -24,13 +23,15 @@ type sendApiAppInit = {
 }
 
 export const useMainStore = defineStore('main', () => {
-  const { initMedia } = useMediaStore()
   const { accessibility } = storeToRefs(useAuthStore())
   const { send } = useXhrStore()
 
   const initialized = ref(false)
   const appName = ref('')
   const googleMapsApiKey = ref('')
+  const bucketUrl = ref('')
+  const mediaCollectionNames = ref<string[]>([])
+
   const moduleToUrlModuleName = ref<Partial<TModuleToUrlName>>({})
   const urlModuleNameToModule = ref<Partial<TUrlModuleNameToModule>>({})
 
@@ -38,7 +39,8 @@ export const useMainStore = defineStore('main', () => {
     const res = await send<sendApiAppInit>('app/init', 'get')
     if (res.success) {
       const data = <sendApiAppInit>res.data
-      initMedia(data.bucketUrl, data.media_collections)
+      bucketUrl.value = data.bucketUrl
+      mediaCollectionNames.value = data.media_collections
       accessibility.value = data.accessibility
       initialized.value = true
       googleMapsApiKey.value = data.googleMapsApiKey
@@ -82,5 +84,7 @@ export const useMainStore = defineStore('main', () => {
     urlModuleNameToModule,
     moduleBtnsInfo,
     googleMapsApiKey,
+    bucketUrl,
+    mediaCollectionNames,
   }
 })

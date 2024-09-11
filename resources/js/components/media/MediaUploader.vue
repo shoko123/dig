@@ -23,18 +23,9 @@
           </v-row>
 
           <v-row class="pt-2">
-            <v-file-input
-              id="fileInput"
-              v-model="images"
-              multiple
-              :show-size="1000"
-              accept="image/png, image/jpeg, image/bmp"
-              placeholder="Select images"
-              prepend-icon="mdi-camera"
-              :label="fileInputLabel"
-              @change="onInputChange"
-              @click:clear="clear()"
-            />
+            <v-file-input id="fileInput" v-model="images" multiple :show-size="1000"
+              accept="image/png, image/jpeg, image/bmp" placeholder="Select images" prepend-icon="mdi-camera"
+              :label="fileInputLabel" @change="onInputChange" @click:clear="clear()" />
           </v-row>
 
           <v-row>
@@ -42,12 +33,8 @@
               Type: {{ mediaCollection }}
               <v-menu activator="parent">
                 <v-list>
-                  <v-list-item
-                    v-for="(item, index) in mediaCollectionNames"
-                    :key="index"
-                    :value="item"
-                    @click="setMediaCollectionName(item)"
-                  >
+                  <v-list-item v-for="(item, index) in mediaCollectionNames" :key="index" :value="item"
+                    @click="setMediaCollectionName(item)">
                     <v-list-item-title>{{ item }}</v-list-item-title>
                   </v-list-item>
                 </v-list>
@@ -68,6 +55,8 @@
 
 <script lang="ts" setup>
 import { computed, onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useMainStore } from '../../scripts/stores/main'
 import { useMediaStore } from '../../scripts/stores/media'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
 
@@ -76,7 +65,7 @@ onMounted(() => {
 })
 const m = useMediaStore()
 const { showSpinner, showSnackbar } = useNotificationsStore()
-
+const { mediaCollectionNames } = storeToRefs(useMainStore())
 const mediaReady = computed(() => {
   return m.mediaReady
 })
@@ -112,9 +101,9 @@ function clear() {
 }
 
 //choose media collection
-const mediaCollectionNames = computed<string[]>(() => {
-  return m.mediaCollectionNames
-})
+// const mediaCollectionNames = computed<string[]>(() => {
+//   return m.mediaCollectionNames
+// })
 
 const mediaCollection = computed(() => {
   return m.mediaCollectionName
@@ -124,7 +113,7 @@ function setMediaCollectionName(val: string) {
   m.mediaCollectionName = val
 }
 
-function openMultiItemSelector() {}
+function openMultiItemSelector() { }
 
 async function upload() {
   showSpinner('Uploading media...')

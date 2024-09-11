@@ -8,7 +8,7 @@
 
   <v-navigation-drawer v-model="showDrawer" temporary color="blue-grey darken-4">
     <Suspense>
-      <component :is="menu?.drawer" />
+      <component :is="menu!.drawer" />
     </Suspense>
 
   </v-navigation-drawer>
@@ -43,10 +43,12 @@ const menu = computed(() => {
       return { elements: Filter, drawer: FilterD }
     case 'show':
       return { elements: Show, drawer: ShowD }
+
     case 'media':
-      return { elements: Media, drawer: null }
     default:
-      return null
+      return { elements: Media, drawer: WelcomeD }
+
+
   }
 })
 </script>

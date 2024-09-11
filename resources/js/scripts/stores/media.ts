@@ -8,6 +8,7 @@ import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 
 import { useRoutesMainStore } from './routes/routesMain'
+import { useMainStore } from './main'
 import { useXhrStore } from './xhr'
 import { useCollectionMediaStore } from '../../scripts/stores/collections/collectionMedia'
 import { useItemStore } from '../../scripts/stores/item'
@@ -16,18 +17,11 @@ import { useNotificationsStore } from '../../scripts/stores/notifications'
 export const useMediaStore = defineStore('media', () => {
   const { send } = useXhrStore()
   const { showSnackbar } = useNotificationsStore()
-  //both bucketUrl and mediaCollectionNames are initiated at app.init()
-  const bucketUrl = ref('')
-  const mediaCollectionNames = ref<string[]>([])
+  const { bucketUrl, mediaCollectionNames } = storeToRefs(useMainStore())
 
   //Media collection index
   const mediaCollectionName = ref('Photo')
   const showUploader = ref<boolean>(false)
-
-  function initMedia(burl: string, media_collections: string[]) {
-    bucketUrl.value = burl
-    mediaCollectionNames.value = media_collections
-  }
 
   function buildMedia(apiMedia: TMediaUrls | null, module?: TModule): TMediaOfItem {
     if (apiMedia === null || apiMedia === undefined) {
@@ -194,7 +188,6 @@ export const useMediaStore = defineStore('media', () => {
     mediaCollectionName,
     images,
     imagesAsBrowserReadable,
-    initMedia,
     buildMedia,
     onInputChange,
     clear,

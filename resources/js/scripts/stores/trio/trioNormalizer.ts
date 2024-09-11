@@ -1,5 +1,5 @@
 import { defineStore, storeToRefs } from 'pinia'
-import { useMediaStore } from '../media'
+import { useMainStore } from '../main'
 import type {
   TApiTrio,
   TApiOption,
@@ -16,7 +16,7 @@ import type {
 import type { TFieldValue, TObjAllCategorizerFuncs } from '@/js/types/moduleTypes'
 
 export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
-  const { mediaCollectionNames } = storeToRefs(useMediaStore())
+  const { mediaCollectionNames } = storeToRefs(useMainStore())
 
   let categories: TCategoriesArray = []
   let groupsObj: TGroupObj = {}

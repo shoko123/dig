@@ -1,5 +1,5 @@
 import type { TApiTrio, TOption } from '@/js/types/trioTypes'
-import type { TCollectionView } from '@/js/types/collectionTypes'
+import type { TCollectionName, TCollectionView } from '@/js/types/collectionTypes'
 import type { TLocus } from '@/js/types/modules/Locus'
 import type { TStone } from '@/js/types/modules/Stone'
 import type { TCeramic } from '@/js/types/modules/Ceramic'
@@ -98,6 +98,10 @@ type TObjIdTagAndSlugFuncsByModule = Record<
   }
 >
 
+type TItemsPerPageByView = Record<TCollectionView, number>
+
+type TViewsForCollection = Record<TCollectionName, TCollectionView[]>
+
 type TApiModuleInit = {
   module: TModule
   counts: { items: number; media: number }
@@ -106,7 +110,10 @@ type TApiModuleInit = {
     item_views: string[]
     main_collection_views: TCollectionView[]
     related_collection_views: TCollectionView[]
+    collection_views: TViewsForCollection
+    items_per_page: TItemsPerPageByView
   }
+
   trio: TApiTrio
   welcome_text: string
 }
@@ -126,6 +133,8 @@ export {
   TApiTabularByModule,
   TTabularByModule,
   TApiModuleInit,
+  TViewsForCollection,
+  TItemsPerPageByView,
   TFieldInfo,
   TFieldsToFieldInfo,
   TBespokeFieldsByModule,

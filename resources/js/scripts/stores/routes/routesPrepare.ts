@@ -168,12 +168,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     if (!res.success) {
       return { success: false, message: `Error: failed to load module ${module}` }
     }
-    await setModuleInfo({
-      module: res.data.module,
-      counts: res.data.counts,
-      welcomeText: res.data.welcome_text,
-      firstId: res.data.first_id,
-    })
+    await setModuleInfo(res.data)
     c.resetCollectionsViewIndex()
     i.setItemViewIndex(0)
     i.itemViews = res.data.display_options.item_views

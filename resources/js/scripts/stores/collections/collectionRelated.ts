@@ -13,10 +13,12 @@ import {
 } from '@/js/types/collectionTypes'
 import { useMediaStore } from '../media'
 import { useModuleStore } from '../module'
+import { useCollectionsStore } from './collections'
 
 export const useCollectionRelatedStore = defineStore('collectionRelated', () => {
   const { buildMedia } = useMediaStore()
   const { tagAndSlugFromId } = useModuleStore()
+  const { getConsumeableCollection } = useCollectionsStore()
 
   const itemsPerView = <TItemsPerView>{ Gallery: 36, Tabular: 100, Chips: 200 }
 
@@ -30,6 +32,16 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
   })
 
   const array = ref<TApiArray<'related'>[]>([])
+
+  const all = computed(() => {
+    return getConsumeableCollection(
+      'related',
+      extra.value.viewIndex,
+      extra.value.pageNoB1,
+      page.value.length,
+      array.value.length,
+    )
+  })
 
   const ipp = computed(() => {
     return extra.value.views[extra.value.viewIndex].ipp
@@ -141,5 +153,6 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     collection,
     itemIsInPage,
     clear,
+    all,
   }
 })

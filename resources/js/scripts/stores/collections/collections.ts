@@ -16,9 +16,10 @@ import { useCollectionMediaStore } from './collectionMedia'
 import { useCollectionRelatedStore } from './collectionRelated'
 
 export const useCollectionsStore = defineStore('collections', () => {
+  const { getItemsPerPage, getViewName, getCollectionViews } = useModuleStore()
   const { module } = storeToRefs(useModuleStore())
 
-  function getCollection(source: TCollectionName) {
+  function getCollectionStore(source: TCollectionName) {
     switch (source) {
       case 'main':
         return useCollectionMainStore()
@@ -30,7 +31,7 @@ export const useCollectionsStore = defineStore('collections', () => {
   }
 
   function collectionMeta(name: TCollectionName): TCollectionMeta {
-    const c = getCollection(name)
+    const c = getCollectionStore(name)
     const arrLength = c.array.length
     const extra = c.extra
     const page = c.page
@@ -55,6 +56,30 @@ export const useCollectionsStore = defineStore('collections', () => {
     }
   }
 
+  function getConsumeableCollection(
+    name: TCollectionName,
+    viewIndex: number,
+    pageNoB1: number,
+    pageLength: number,
+    arrayLength: number,
+  ) {
+    const itemsPerPage = getItemsPerPage(name, viewIndex) as number
+    return {
+      views: getCollectionViews(name), //.map(x => ECollectionViews[x]),
+      viewIndex,
+      view: getViewName(name, viewIndex),
+      itemsPerPage,
+      pageNoB1,
+      noOfItems: arrayLength,
+      noOfPages:
+        Math.floor(arrayLength / itemsPerPage) + (arrayLength % itemsPerPage === 0 ? 0 : 1),
+      noOfItemsInCurrentPage: pageLength,
+      firstItemNo: (pageNoB1 - 1) * itemsPerPage + 1,
+      lastItemNo: (pageNoB1 - 1) * itemsPerPage + pageLength,
+      length: arrayLength,
+    }
+  }
+
   async function loadGenericPage(
     name: TCollectionName,
     pageNoB1: number,
@@ -63,7 +88,7 @@ export const useCollectionsStore = defineStore('collections', () => {
   ) {
     //console.log(`loadPage() source: ${name}  module: ${module} view: ${view} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1}`);
 
-    const c = getCollection(name)
+    const c = getCollectionStore(name)
 
     const res = await c.loadPage(pageNoB1, view.name, view.ipp, module)
     return res
@@ -91,22 +116,22 @@ export const useCollectionsStore = defineStore('collections', () => {
       `toggleCollectionView() collection: ${name}  module: ${module.value} views: ${meta.itemsPerPage}  current view: ${currentView.name}  new view: ${newView.name} index: ${index}`,
     )
     await loadPageByItemIndex(name, newView, index, module.value)
-    const c = getCollection(name)
+    const c = getCollectionStore(name)
     c.extra.viewIndex = newViewIndex
   }
 
   function itemIndexById<IDtype extends string | number>(id: IDtype) {
-    const c = getCollection('main')
+    const c = getCollectionStore('main')
     return c.itemIndexById<IDtype>(id)
   }
 
   function itemIsInPage<IDtype extends string | number>(id: IDtype) {
-    const c = getCollection('main')
+    const c = getCollectionStore('main')
     return c.itemIsInPage(id)
   }
 
   function itemByIndex(name: TCollectionName, index: number): TApiArray<TCollectionName> {
-    const c = getCollection(name)
+    const c = getCollectionStore(name)
     return c.array[index]
     //return c.itemByIndex(index)
   }
@@ -116,7 +141,7 @@ export const useCollectionsStore = defineStore('collections', () => {
     index: number,
     isRight: boolean,
   ): { item: TApiArray<TCollectionName>; index: number } {
-    const c = getCollection(name)
+    const c = getCollectionStore(name)
     const length = c.array.length
     let newIndex
 
@@ -130,25 +155,25 @@ export const useCollectionsStore = defineStore('collections', () => {
 
   function clear(collections: TCollectionName[]) {
     collections.forEach((x) => {
-      const c = getCollection(<TCollectionName>x)
+      const c = getCollectionStore(<TCollectionName>x)
       return c.clear()
     })
   }
 
   function setCollectionViews(collection: TCollectionName, views: TCollectionView[]) {
-    const c = getCollection(<TCollectionName>collection)
+    const c = getCollectionStore(<TCollectionName>collection)
     c.setCollectionViews(views)
   }
 
   function resetCollectionsViewIndex() {
     ;['main', 'media', 'related'].forEach((x) => {
-      const c = getCollection(<TCollectionName>x)
+      const c = getCollectionStore(<TCollectionName>x)
       c.extra.viewIndex = 0
     })
   }
 
   const mainCollection = computed(() => {
-    const c = getCollection('main')
+    const c = getCollectionStore('main')
     return {
       array: c.array,
       page: c.page,
@@ -157,7 +182,7 @@ export const useCollectionsStore = defineStore('collections', () => {
   })
 
   const mediaCollection = computed(() => {
-    const c = getCollection('media')
+    const c = getCollectionStore('media')
     return {
       array: c.array,
       page: c.page,
@@ -166,7 +191,7 @@ export const useCollectionsStore = defineStore('collections', () => {
   })
 
   const relatedCollection = computed(() => {
-    const c = getCollection('related')
+    const c = getCollectionStore('related')
     return {
       array: c.array,
       page: c.page,
@@ -200,5 +225,6 @@ export const useCollectionsStore = defineStore('collections', () => {
     loadPageByItemIndex,
     itemIsInPage,
     next,
+    getConsumeableCollection,
   }
 })

@@ -1,17 +1,27 @@
 // stores/module.ts
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
-import type { TModule, TObjIdTagAndSlugFuncsByModule } from '../../types/moduleTypes'
-import { useMediaStore } from './media'
+import type {
+  TApiModuleInit,
+  TModule,
+  TObjIdTagAndSlugFuncsByModule,
+  TItemsPerPageByView,
+  TViewsForCollection,
+} from '../../types/moduleTypes'
+import { useMainStore } from './main'
 import { useRoutesMainStore } from './routes/routesMain'
+import { TCollectionName } from '@/js/types/collectionTypes'
 
 export const useModuleStore = defineStore('module', () => {
-  const { bucketUrl } = storeToRefs(useMediaStore())
+  const { bucketUrl } = storeToRefs(useMainStore())
   const { current } = storeToRefs(useRoutesMainStore())
   const module = ref<TModule>('Locus')
   const counts = ref({ items: 0, media: 0 })
   const welcomeText = ref<string>('')
   const firstSlug = ref<string>('')
+
+  const itemsPerPage = ref<TItemsPerPageByView>({ Gallery: 0, Tabular: 0, Chips: 0 })
+  const collectionViews = ref<TViewsForCollection>({ main: [], media: [], related: [] })
 
   // This object is defined here (rather than having specific functions implemented in each module)
   // for better code splitting.
@@ -36,19 +46,27 @@ export const useModuleStore = defineStore('module', () => {
     },
   }
 
-  async function setModuleInfo(initData: {
-    module: TModule
-    counts: { items: number; media: number }
-    welcomeText: string
-    firstId: string
-  }) {
+  async function setModuleInfo(initData: TApiModuleInit) {
     module.value = initData.module
     counts.value = initData.counts
-    welcomeText.value = initData.welcomeText
-    const ts = tagAndSlugFromId(initData.firstId, initData.module)
+    welcomeText.value = initData.welcome_text
+    const ts = tagAndSlugFromId(initData.first_id, initData.module)
     firstSlug.value = ts.slug
+    itemsPerPage.value = initData.display_options.items_per_page
+    collectionViews.value = initData.display_options.collection_views
   }
 
+  function getItemsPerPage(collectionName: TCollectionName, collectionViewIndex: number): number {
+    return itemsPerPage.value[collectionViews.value[collectionName][collectionViewIndex]]
+  }
+
+  function getViewName(collectionName: TCollectionName, collectionViewIndex: number) {
+    return collectionViews.value[collectionName][collectionViewIndex]
+  }
+
+  function getCollectionViews(collectionName: TCollectionName) {
+    return collectionViews.value[collectionName]
+  }
   /*
    * if module is not included, use current (we include it e.g. when we want tags of related item)
    */
@@ -133,8 +151,13 @@ export const useModuleStore = defineStore('module', () => {
     counts,
     welcomeText,
     firstSlug,
+    itemsPerPage,
+    collectionViews,
     backgroundImage,
     slugToId,
     tagAndSlugFromId,
+    getCollectionViews,
+    getViewName,
+    getItemsPerPage,
   }
 })

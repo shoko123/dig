@@ -4,12 +4,19 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { TModule } from '@/js/types/moduleTypes'
 import type { TFuncLoadPage } from '@/js/types/routesTypes'
-import { TCollectionExtra, TApiArray, TCollectionView } from '@/js/types/collectionTypes'
+import {
+  TCollectionExtra,
+  TApiArray,
+  TCollectionView,
+  TItemsPerView,
+} from '@/js/types/collectionTypes'
 import { useMediaStore } from '../media'
+import { useCollectionsStore } from './collections'
 
 export const useCollectionMediaStore = defineStore('collectionMedia', () => {
   const { buildMedia } = useMediaStore()
-
+  const { getConsumeableCollection } = useCollectionsStore()
+  const itemsPerView = <TItemsPerView>{ Gallery: 18, Tabular: 20, Chips: 50 }
   const extra = ref<TCollectionExtra>({
     pageNoB1: 1,
     views: [{ name: 'Gallery', ipp: 36 }],
@@ -30,6 +37,16 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     return extra.value.views[extra.value.viewIndex].ipp
   })
 
+  const all = computed(() => {
+    return getConsumeableCollection(
+      'media',
+      extra.value.viewIndex,
+      extra.value.pageNoB1,
+      page.value.length,
+      array.value.length,
+    )
+  })
+
   const page = computed<TApiArray<'media'>[]>(() => {
     const start = (extra.value.pageNoB1 - 1) * ipp.value
     const slice = array.value.slice(start, start + ipp.value)
@@ -45,8 +62,9 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
   })
 
   function setCollectionViews(views: TCollectionView[]) {
-    views
-    //The media collection has only one view (Gallery) independent of module. So, do nothing.
+    extra.value.views = views.map((x) => {
+      return { name: x, ipp: itemsPerView[x] }
+    })
   }
 
   function switchArrayItems(indexA: number, indexB: number) {
@@ -94,5 +112,6 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     collection,
     itemIsInPage,
     clear,
+    all,
   }
 })

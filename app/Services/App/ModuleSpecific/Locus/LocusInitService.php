@@ -18,6 +18,12 @@ class LocusInitService extends InitService implements InitSpecificServiceInterfa
             'item_views' => ['Main', 'Media', 'Related'],
             'main_collection_views' => ['Gallery', 'Tabular', 'Chips'],
             'related_collection_views' => ['Gallery', 'Tabular', 'Chips'],
+            'collection_views' => (object)[
+                'main' => ['Tabular', 'Chips'],
+                'related' => ['Gallery', 'Tabular', 'Chips'],
+                'media' => ['Gallery'],
+            ],
+            'items_per_page' => ['Gallery' => 36, 'Tabular' => 50, 'Chips' => 100]
         ];
     }
 
