@@ -103,20 +103,19 @@ export const useCollectionsStore = defineStore('collections', () => {
     col.viewIndex = nextViewIndex
   }
 
-  function itemIndexById<IDtype extends string | number>(id: IDtype) {
-    const c = getCollectionStore('main')
-    return c.itemIndexById<IDtype>(id)
-  }
+  // function itemIndexById<IDtype extends string | number>(id: IDtype) {
+  //   const c = getCollectionStore('main')
+  //   return c.itemIndexById<IDtype>(id)
+  // }
 
-  function itemIsInPage<IDtype extends string | number>(id: IDtype) {
-    const c = getCollectionStore('main')
-    return c.itemIsInPage(id)
-  }
+  // function itemIsInPage<IDtype extends string | number>(id: IDtype) {
+  //   const c = getCollectionStore('main')
+  //   return c.itemIsInPage(id)
+  // }
 
   function itemByIndex(name: TCollectionName, index: number): TApiArray<TCollectionName> {
     const c = getCollectionStore(name)
     return c.array[index]
-    //return c.itemByIndex(index)
   }
 
   function next(
@@ -216,9 +215,9 @@ export const useCollectionsStore = defineStore('collections', () => {
     toggleCollectionView,
     clear,
     resetCollectionsViewIndex,
-    itemIndexById,
+    // itemIndexById,
     loadPageByItemIndex,
-    itemIsInPage,
+    // itemIsInPage,
     next,
     getConsumeableCollection,
     getCollectionStore,

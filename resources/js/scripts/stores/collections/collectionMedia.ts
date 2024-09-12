@@ -1,4 +1,3 @@
-// collection.ts
 //handles all collections and loading of pages
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
@@ -19,6 +18,21 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
 
   const array = ref<TApiArray<'media'>[]>([])
 
+  const page = computed<TApiArray<'media'>[]>(() => {
+    const ipp = getItemsPerPage('media', viewIndex.value)
+    const start = (pageNoB1.value - 1) * ipp
+    const slice = array.value.slice(start, start + ipp)
+    const res = slice.map((x) => {
+      const media = buildMedia({ full: x.urls.full, tn: x.urls.tn })
+      return {
+        id: x.id,
+        order_column: x.order_column,
+        urls: media.urls,
+      }
+    })
+    return res
+  })
+
   const collection = computed(() => {
     return {
       array: array.value,
@@ -38,21 +52,6 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     )
   })
 
-  const page = computed<TApiArray<'media'>[]>(() => {
-    const ipp = getItemsPerPage('media', viewIndex.value)
-    const start = (pageNoB1.value - 1) * ipp
-    const slice = array.value.slice(start, start + ipp)
-    const res = slice.map((x) => {
-      const media = buildMedia({ full: x.urls.full, tn: x.urls.tn })
-      return {
-        id: x.id,
-        order_column: x.order_column,
-        urls: media.urls,
-      }
-    })
-    return res
-  })
-
   function switchArrayItems(indexA: number, indexB: number) {
     const temp = { ...array.value[indexA] }
     array.value[indexA] = { ...array.value[indexB] }
@@ -65,6 +64,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     pageLength: number,
     module: TModule,
   ) {
+    //do nothing except setting pageNoB1
     view
     module
     pageLength
@@ -72,14 +72,14 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     return { success: true, message: '' }
   }
 
-  function itemIndexById<IDtype extends string | number>(id: IDtype) {
-    const index = array.value.findIndex((x) => x['id'] === id)
-    return index
-  }
+  // function itemIndexById<IDtype extends string | number>(id: IDtype) {
+  //   const index = array.value.findIndex((x) => x['id'] === id)
+  //   return index
+  // }
 
-  function itemIsInPage<IDtype extends string | number>(id: IDtype) {
-    return page.value.some((x) => x.id === id)
-  }
+  // function itemIsInPage<IDtype extends string | number>(id: IDtype) {
+  //   return page.value.some((x) => x.id === id)
+  // }
 
   function clear() {
     console.log(`collectionMedia.clear()`)
@@ -93,10 +93,10 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     pageNoB1,
     viewIndex,
     loadPage,
-    itemIndexById,
+    // itemIndexById,
     switchArrayItems,
     collection,
-    itemIsInPage,
+    // itemIsInPage,
     clear,
     all,
   }

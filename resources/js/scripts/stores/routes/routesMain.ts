@@ -18,7 +18,6 @@ import { useRoutesPrepareStore } from './routesPrepare'
 import { useAuthStore } from '../auth'
 import { useMainStore } from '../main'
 import { useNotificationsStore } from '../notifications'
-import { useCollectionMainStore } from '../collections/collectionMain'
 
 export const useRoutesMainStore = defineStore('routesMain', () => {
   const router = useRouter()
@@ -253,6 +252,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     module: TModule | 'current' = 'current',
   ) {
     const { useTrioStore } = await import('../trio/trio')
+    const { useCollectionMainStore } = await import('../collections/collectionMain')
     const { itemIndexById } = useCollectionMainStore()
     const { clearFilterOptions } = useTrioStore()
 

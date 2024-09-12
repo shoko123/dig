@@ -49,9 +49,9 @@ export const useTrioStore = defineStore('trio', () => {
       val = fields[key as keyof TFieldsUnion]
       let index = -1
       if (group.tag_source === 'Categorized') {
-        console.log(`categorized group: ${group.label} val: ${val}`)
+        // console.log(`categorized group: ${group.label} val: ${val}`)
         index = group.categorizer!(val)
-        console.log(`index: ${index}`)
+        // console.log(`index: ${index}`)
         optionKey = group.optionKeys[index]
       } else {
         index = group.optionKeys.findIndex(

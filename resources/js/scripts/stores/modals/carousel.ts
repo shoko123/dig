@@ -127,11 +127,13 @@ export const useCarouselStore = defineStore('carousel', () => {
     switch (collectionName.value) {
       case 'main':
         {
-          const mainStore = c.getCollectionStore('main')
-          const view = getViewName('main', mainStore.viewIndex)
-          const ipp = getItemsPerPage('main', mainStore.viewIndex)
-          if (!c.itemIsInPage(<string>carouselItemDetails.value?.id)) {
-            const index = c.itemIndexById<string>((<TCarousel<'main'>>carouselItemDetails.value).id)
+          const { useCollectionMainStore } = await import('../collections/collectionMain')
+          const { itemIndexById, itemIsInPage } = useCollectionMainStore()
+          const { viewIndex } = storeToRefs(useCollectionMainStore())
+          const view = getViewName('main', viewIndex.value)
+          const ipp = getItemsPerPage('main', viewIndex.value)
+          if (!itemIsInPage(<string>carouselItemDetails.value?.id)) {
+            const index = itemIndexById<string>((<TCarousel<'main'>>carouselItemDetails.value).id)
 
             const res = await c.loadPageByItemIndex(
               collectionName.value,

@@ -10,9 +10,9 @@ import { defineStore, storeToRefs } from 'pinia'
 import { useRoutesMainStore } from './routes/routesMain'
 import { useMainStore } from './main'
 import { useXhrStore } from './xhr'
-import { useCollectionMediaStore } from '../../scripts/stores/collections/collectionMedia'
-import { useItemStore } from '../../scripts/stores/item'
-import { useNotificationsStore } from '../../scripts/stores/notifications'
+import { useCollectionMediaStore } from './collections/collectionMedia'
+import { useItemStore } from './item'
+import { useNotificationsStore } from './notifications'
 
 export const useMediaStore = defineStore('media', () => {
   const { send } = useXhrStore()
