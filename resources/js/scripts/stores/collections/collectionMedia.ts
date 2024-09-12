@@ -1,4 +1,3 @@
-//handles all collections and loading of pages
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { TModule } from '@/js/types/moduleTypes'
@@ -42,7 +41,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     }
   })
 
-  const all = computed(() => {
+  const info = computed(() => {
     return getConsumeableCollection(
       'media',
       viewIndex.value,
@@ -98,6 +97,6 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     collection,
     // itemIsInPage,
     clear,
-    all,
+    info,
   }
 })

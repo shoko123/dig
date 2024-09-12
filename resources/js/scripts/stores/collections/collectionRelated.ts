@@ -1,5 +1,3 @@
-// collection.ts
-//handles all collections and loading of pages
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { TModule } from '@/js/types/moduleTypes'
@@ -19,7 +17,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
 
   const array = ref<TApiArray<'related'>[]>([])
 
-  const all = computed(() => {
+  const info = computed(() => {
     return getConsumeableCollection(
       'related',
       viewIndex.value,
@@ -131,6 +129,6 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     collection,
     itemIsInPage,
     clear,
-    all,
+    info,
   }
 })

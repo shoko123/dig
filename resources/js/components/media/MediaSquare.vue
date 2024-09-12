@@ -26,7 +26,7 @@ import { TCollectionName, TGalleryIntersection } from '../../types/collectionTyp
 import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 import MediaOverlay from './MediaOverlay.vue'
 
-const { collection } = useCollectionsStore()
+const { getCollectionStore } = useCollectionsStore()
 
 const prps = defineProps<{
   source: TCollectionName
@@ -34,9 +34,9 @@ const prps = defineProps<{
 }>()
 
 const record = computed(() => {
-  const c = collection(prps.source)
-  let indexInPage = prps.itemIndex % c.value.info.itemsPerPage
-  return c.value.page[indexInPage] as TGalleryIntersection // TPage<TCollectionName, 'Gallery', TModule>
+  const c = getCollectionStore(prps.source)
+  let indexInPage = prps.itemIndex % c.info.itemsPerPage
+  return c.page[indexInPage] as TGalleryIntersection // TPage<TCollectionName, 'Gallery', TModule>
 })
 
 const data = computed(() => {

@@ -37,7 +37,7 @@ const props = defineProps<{
   source: TCollectionName
 }>()
 
-const { collection, loadGenericPage, toggleCollectionView } = useCollectionsStore()
+const { getCollectionStore, loadGenericPage, toggleCollectionView } = useCollectionsStore()
 const { pushHome } = useRoutesMainStore()
 const { derived } = storeToRefs(useItemStore())
 const { showSpinner } = useNotificationsStore()
@@ -50,8 +50,8 @@ const viewToIcon = {
 }
 
 const info = computed(() => {
-  const c = collection(props.source)
-  return c.value.info
+  const c = getCollectionStore(props.source)
+  return c.info
 })
 const ico = computed(() => {
   return viewToIcon[displayOption.value]

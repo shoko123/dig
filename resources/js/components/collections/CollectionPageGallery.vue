@@ -23,15 +23,12 @@ const props = defineProps<{
 }>()
 
 const { name } = useDisplay()
+let { getCollectionStore } = useCollectionsStore()
 
-let { collection } = useCollectionsStore()
 
-const c = computed(() => {
-  return collection(props.source).value
-})
 
 const page = computed(() => {
-  return c.value.page
+  return getCollectionStore(props.source).page
 })
 
 const mediaSizeInColumns = computed(() => {
@@ -53,6 +50,6 @@ const mediaSizeInColumns = computed(() => {
   }
 })
 function itemIndex(index: number): number {
-  return (props.pageNoB1 - 1) * c.value.info.itemsPerPage + index
+  return (props.pageNoB1 - 1) * getCollectionStore(props.source).info.itemsPerPage + index
 }
 </script>

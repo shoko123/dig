@@ -26,7 +26,7 @@ const props = defineProps<{
   pageNoB1: number
 }>()
 
-const { collection } = useCollectionsStore()
+const { getCollectionStore } = useCollectionsStore()
 const { relatedTableHeaders } = storeToRefs(useCollectionRelatedStore())
 const { routerPush, moveFromItemToItem } = useRoutesMainStore()
 
@@ -48,7 +48,7 @@ const headers = computed(() => {
 })
 
 const c = computed(() => {
-  return collection(props.source).value
+  return getCollectionStore(props.source)
 })
 
 const page = computed(() => {

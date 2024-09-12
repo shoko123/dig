@@ -29,7 +29,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     }
   })
 
-  const all = computed(() => {
+  const info = computed(() => {
     return getConsumeableCollection(
       'main',
       viewIndex.value,
@@ -166,6 +166,6 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     itemIsInPage,
     removeItemIdFromMainArray,
     clear,
-    all,
+    info,
   }
 })

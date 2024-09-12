@@ -18,15 +18,11 @@ const props = defineProps<{
   pageNoB1: number
 }>()
 
-const { collection } = useCollectionsStore()
+const { getCollectionStore } = useCollectionsStore()
 const rms = useRoutesMainStore()
 
-const c = computed(() => {
-  return collection(props.source).value
-})
-
 const page = computed(() => {
-  return c.value.page as TPage<'main', 'Chips'>[] | TPage<'related', 'Chips'>[]
+  return getCollectionStore('main').page as TPage<'main', 'Chips'>[] | TPage<'related', 'Chips'>[]
 })
 
 async function goTo(item: TPage<'main', 'Chips'> | TPage<'related', 'Chips'>) {
