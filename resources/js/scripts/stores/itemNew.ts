@@ -2,7 +2,7 @@ import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import type { TApiFieldsUnion, TFieldsUnion, TFieldInfo } from '@/js/types/moduleTypes'
 import type { TApiItemShow } from '@/js/types/itemTypes'
-import { useCollectionMainStore } from './collections/collectionMain'
+import { useCollectionsStore } from './collections/collections'
 import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
 import { useModuleStore } from './module'
@@ -12,15 +12,20 @@ export const useItemNewStore = defineStore('itemNew', () => {
   const { module } = storeToRefs(useModuleStore())
   const { tagAndSlugFromId, getStore } = useModuleStore()
   const { send } = useXhrStore()
+  const { getCollectionStore } = useCollectionsStore()
 
   const newFields = ref<Partial<TFieldsUnion>>({})
   const slug = ref<string | undefined>(undefined)
   const tag = ref<string | undefined>(undefined)
   const itemNewAllOptions = ref<string[]>([])
   const ready = ref<boolean>(false)
-
   const openIdSelectorModal = ref<boolean>(false)
 
+  const store = getCollectionStore('main')
+
+  const mainArray = computed(() => {
+    return store.array as string[]
+  })
   const isCreate = computed(() => {
     return current.value.name === 'create'
   })
@@ -83,8 +88,7 @@ export const useItemNewStore = defineStore('itemNew', () => {
 
     if (isCreate) {
       //push newly created id into the 'main' collection
-      const { array } = useCollectionMainStore()
-      array.push(res.data.fields.id)
+      mainArray.value.push(res.data.fields.id)
     }
 
     return { success: true, slug: tagAndSlug.slug }

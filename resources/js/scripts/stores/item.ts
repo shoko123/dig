@@ -14,7 +14,7 @@ import { useModuleStore } from './module'
 
 export const useItemStore = defineStore('item', () => {
   const { current } = storeToRefs(useRoutesMainStore())
-  const { collection, itemByIndex } = useCollectionsStore()
+  const { getCollectionStore, itemByIndex } = useCollectionsStore()
   const { tagAndSlugFromId } = useModuleStore()
   const { module } = storeToRefs(useModuleStore())
   const { send } = useXhrStore()
@@ -128,7 +128,7 @@ export const useItemStore = defineStore('item', () => {
 
   function nextSlug(isRight: boolean) {
     let newIndex
-    const length = collection('main').value.info.length
+    const length = getCollectionStore('main').info.length
     if (isRight) {
       newIndex = itemIndex.value === length - 1 ? 0 : itemIndex.value + 1
     } else {
