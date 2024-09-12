@@ -11,7 +11,7 @@ import { useModuleStore } from '../module'
 import { useItemStore } from '../item'
 
 export const useCarouselStore = defineStore('carousel', () => {
-  const c = useCollectionsStore()
+  const { getCollectionStore, next, itemByIndex, loadPageByItemIndex } = useCollectionsStore()
   const { send } = useXhrStore()
 
   const { derived } = storeToRefs(useItemStore())
@@ -23,9 +23,9 @@ export const useCarouselStore = defineStore('carousel', () => {
   const index = ref<number>(-1)
   const carouselItemDetails = ref<TCarouselUnion | null>(null)
 
-  const arrayLength = computed(() => {
-    const collection = c.collection(<TCollectionName>collectionName.value)
-    return collection.value.array.length
+  const sourceArrayLength = computed(() => {
+    const store = getCollectionStore(collectionName.value)
+    return store.array.length
   })
 
   async function open(
@@ -33,8 +33,10 @@ export const useCarouselStore = defineStore('carousel', () => {
     openIndex: number,
   ): Promise<{ success: true } | { success: false; message: string }> {
     collectionName.value = source
+
     //console.log(`carousel.open() source: ${collectionName.value} index: ${openIndex}`)
-    const res = await loadCarouselItem(c.itemByIndex(source, openIndex))
+    const item = itemByIndex(source, openIndex)
+    const res = await loadCarouselItem(item)
     if (res.success) {
       index.value = openIndex
       isOpen.value = true
@@ -44,14 +46,14 @@ export const useCarouselStore = defineStore('carousel', () => {
     }
   }
 
-  async function next(
+  async function nextItem(
     isRight: boolean,
   ): Promise<{ success: true } | { success: false; message: string }> {
-    const next = c.next(collectionName.value, index.value, isRight)
-    const res = await loadCarouselItem(c.itemByIndex(collectionName.value, next.index))
+    const nextItem = next(collectionName.value, index.value, isRight)
+    const res = await loadCarouselItem(itemByIndex(collectionName.value, nextItem.index))
 
     if (res.success) {
-      index.value = next.index
+      index.value = nextItem.index
       return { success: true }
     } else {
       return res
@@ -135,7 +137,7 @@ export const useCarouselStore = defineStore('carousel', () => {
           if (!itemIsInPage(<string>carouselItemDetails.value?.id)) {
             const index = itemIndexById<string>((<TCarousel<'main'>>carouselItemDetails.value).id)
 
-            const res = await c.loadPageByItemIndex(
+            const res = await loadPageByItemIndex(
               collectionName.value,
               view,
               ipp,
@@ -164,10 +166,10 @@ export const useCarouselStore = defineStore('carousel', () => {
     isOpen,
     collectionName,
     carouselItemDetails,
-    arrayLength,
+    sourceArrayLength,
     index,
     open,
     close,
-    next,
+    nextItem,
   }
 })

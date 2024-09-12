@@ -4,18 +4,8 @@
       <v-card height="97vh">
         <v-toolbar height="36" class="bg-grey-lighten-1">
           <v-toolbar-title>{{ details.header }}</v-toolbar-title>
-          <v-btn
-            v-if="showNextArrows"
-            size="small"
-            icon="mdi-arrow-left"
-            @click="nextClicked(false)"
-          />
-          <v-btn
-            v-if="showNextArrows"
-            size="small"
-            icon="mdi-arrow-right"
-            @click="nextClicked(true)"
-          />
+          <v-btn v-if="showNextArrows" size="small" icon="mdi-arrow-left" @click="nextClicked(false)" />
+          <v-btn v-if="showNextArrows" size="small" icon="mdi-arrow-right" @click="nextClicked(true)" />
           <v-btn size="small" icon="mdi-close" @click="closeCarousel" />
         </v-toolbar>
         <v-card-text>
@@ -52,10 +42,10 @@ import CarouselFormMedia from './CarouselFormMedia.vue'
 import CarouselFormRelated from './CarouselFormRelated.vue'
 
 const { smAndDown } = useDisplay()
-const { close, next } = useCarouselStore()
+const { close, nextItem } = useCarouselStore()
 const { showSpinner } = useNotificationsStore()
 const { pushHome } = useRoutesMainStore()
-const { isOpen, index, arrayLength, collectionName, carouselItemDetails } =
+const { isOpen, index, sourceArrayLength, collectionName, carouselItemDetails } =
   storeToRefs(useCarouselStore())
 
 const { derived } = storeToRefs(useItemStore())
@@ -78,7 +68,7 @@ const details = computed(() => {
 })
 
 const counter = computed(() => {
-  return `(${index.value + 1}/${arrayLength.value})`
+  return `(${index.value + 1}/${sourceArrayLength.value})`
 })
 
 function mainHeader(item: TCarousel<'main'>) {
@@ -98,12 +88,12 @@ const widths = computed(() => {
 })
 
 const showNextArrows = computed(() => {
-  return arrayLength.value > 1
+  return sourceArrayLength.value > 1
 })
 
 async function nextClicked(isRight: boolean) {
   showSpinner(`Loading carousel item...`)
-  const res = await next(isRight)
+  const res = await nextItem(isRight)
   showSpinner(false)
   if (!res.success) {
     pushHome(`Error: ${res.message}. Redirected to home page.`)
