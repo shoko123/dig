@@ -32,15 +32,6 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     return res
   })
 
-  const collection = computed(() => {
-    return {
-      array: array.value,
-      page: page.value,
-      pageNoB1: pageNoB1.value,
-      viewIndex: viewIndex.value,
-    }
-  })
-
   const info = computed(() => {
     return getConsumeableCollection(
       'media',
@@ -94,7 +85,6 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     loadPage,
     // itemIndexById,
     switchArrayItems,
-    collection,
     // itemIsInPage,
     clear,
     info,

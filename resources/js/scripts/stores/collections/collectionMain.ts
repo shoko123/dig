@@ -20,15 +20,6 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
 
   const page = ref<TPage<'main', TCollectionView, TModule>[]>([])
 
-  const collection = computed(() => {
-    return {
-      array: array.value,
-      page: page.value, //computedPage.value,
-      pageNoB1: pageNoB1.value,
-      viewIndex: viewIndex.value,
-    }
-  })
-
   const info = computed(() => {
     return getConsumeableCollection(
       'main',
@@ -162,7 +153,6 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     page,
     loadPage,
     itemIndexById,
-    collection,
     itemIsInPage,
     removeItemIdFromMainArray,
     clear,

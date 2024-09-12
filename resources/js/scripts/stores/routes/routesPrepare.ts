@@ -257,7 +257,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   }
 
   async function loadPage(firstPage: boolean): Promise<{ success: boolean; message: string }> {
-    const info = c.collection('main').value.info
+    const info = c.getCollectionStore('main').info
     const res = await c.loadPageByItemIndex(
       'main',
       info.viewName,

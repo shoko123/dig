@@ -1,6 +1,4 @@
-// collection.ts
-//handles all collections and loading of pages
-import { computed } from 'vue'
+// import { computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import type { TCollectionName, TCollectionView, TApiArray } from '@/js/types/collectionTypes'
 import type { TModule } from '@/js/types/moduleTypes'
@@ -149,66 +147,9 @@ export const useCollectionsStore = defineStore('collections', () => {
     })
   }
 
-  const mainCollection = computed(() => {
-    const c = getCollectionStore('main')
-    return {
-      array: c.array,
-      page: c.page,
-      info: getConsumeableCollection(
-        'main',
-        c.viewIndex,
-        c.pageNoB1,
-        c.page.length,
-        c.array.length,
-      ),
-    }
-  })
-
-  const mediaCollection = computed(() => {
-    const c = getCollectionStore('media')
-    return {
-      array: c.array,
-      page: c.page,
-      info: getConsumeableCollection(
-        'media',
-        c.viewIndex,
-        c.pageNoB1,
-        c.page.length,
-        c.array.length,
-      ),
-    }
-  })
-
-  const relatedCollection = computed(() => {
-    const c = getCollectionStore('related')
-    return {
-      array: c.array,
-      page: c.page,
-      info: getConsumeableCollection(
-        'related',
-        c.viewIndex,
-        c.pageNoB1,
-        c.page.length,
-        c.array.length,
-      ),
-    }
-  })
-
-  function collection(name: TCollectionName) {
-    switch (name) {
-      case 'main':
-        return mainCollection
-      case 'related':
-        return relatedCollection
-      case 'media':
-        return mediaCollection
-    }
-  }
-
-  // mainCollection, mediaCollection, main and media for debug only.
   //Note : computed collection will only e reactive only if state (main, media) is exposed.
   return {
-    collection,
+    // collection,
     itemByIndex,
     //setArray,
     loadGenericPage,

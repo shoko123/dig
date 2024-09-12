@@ -77,15 +77,6 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     return res
   })
 
-  const collection = computed(() => {
-    return {
-      array: array.value,
-      page: page.value, //computedPage.value,
-      pageNoB1: pageNoB1.value,
-      viewIndex: viewIndex.value,
-    }
-  })
-
   const loadPage: TFuncLoadPage = async function (
     pageNo: number,
     view: TCollectionView,
@@ -126,7 +117,6 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     relatedTableHeaders,
     loadPage,
     itemIndexById,
-    collection,
     itemIsInPage,
     clear,
     info,
