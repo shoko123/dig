@@ -90,10 +90,10 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     return { success: true, message: '' }
   }
 
-  function itemIndexById<IDtype extends string | number>(id: IDtype) {
-    const index = array.value.findIndex((x) => x.id === id)
-    return index
-  }
+  // function itemIndexById<IDtype extends string | number>(id: IDtype) {
+  //   const index = array.value.findIndex((x) => x.id === id)
+  //   return index
+  // }
 
   function itemIsInPage<IDtype extends string | number>(id: IDtype) {
     return page.value.some((x) => x.id === id)
@@ -116,7 +116,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     page,
     relatedTableHeaders,
     loadPage,
-    itemIndexById,
+    // itemIndexById,
     itemIsInPage,
     clear,
     info,

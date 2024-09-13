@@ -128,16 +128,16 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     return page.value.some((x) => (<TPage<'main', 'Gallery'>>x).id === id)
   }
 
-  function removeItemIdFromMainArray(id: string): number {
-    const index = array.value.indexOf(id)
-    if (index > -1) {
-      array.value.splice(index, 1)
-    }
+  // function removeItemFromArray(id: string): number {
+  //   const index = array.value.indexOf(id)
+  //   if (index > -1) {
+  //     array.value.splice(index, 1)
+  //   }
 
-    const newArray = array.value.filter((x) => x !== id)
-    array.value = newArray
-    return newArray.length
-  }
+  //   const newArray = array.value.filter((x) => x !== id)
+  //   array.value = newArray
+  //   return newArray.length
+  // }
 
   function clear() {
     console.log(`collectionMain.clear()`)
@@ -154,7 +154,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     loadPage,
     itemIndexById,
     itemIsInPage,
-    removeItemIdFromMainArray,
+    // removeItemFromArray,
     clear,
     info,
   }

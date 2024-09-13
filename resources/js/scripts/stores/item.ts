@@ -5,7 +5,7 @@ import type { TApiFieldsUnion, TFieldsUnion, TBespokeFieldsUnion } from '@/js/ty
 import type { TApiItemShow, TApiTag } from '@/js/types/itemTypes'
 import type { TApiArray } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from './collections/collections'
-import { useCollectionMainStore } from './collections/collectionMain'
+
 import { useMediaStore } from './media'
 import { useCollectionRelatedStore } from './collections/collectionRelated'
 import { useRoutesMainStore } from './routes/routesMain'
@@ -18,7 +18,7 @@ export const useItemStore = defineStore('item', () => {
   const { tagAndSlugFromId } = useModuleStore()
   const { module } = storeToRefs(useModuleStore())
   const { send } = useXhrStore()
-
+  const mcs = getCollectionStore('main')
   const fields = ref<TFieldsUnion | undefined>(undefined)
   const slug = ref<string | undefined>(undefined)
   const tag = ref<string | undefined>(undefined)
@@ -32,7 +32,7 @@ export const useItemStore = defineStore('item', () => {
   const itemFieldsToOptionsObj = ref<Partial<TBespokeFieldsUnion>>({})
 
   const id = computed(() => {
-    return typeof fields.value === 'undefined' ? -1 : (<TFieldsUnion>fields.value).id
+    return typeof fields.value === 'undefined' ? undefined : (<TFieldsUnion>fields.value).id
   })
 
   const itemView = computed(() => {
@@ -139,12 +139,14 @@ export const useItemStore = defineStore('item', () => {
     return tagAndSlug.slug
   }
 
+  const mainArray = computed(() => {
+    return mcs.array as string[]
+  })
+
   async function itemRemove(): Promise<
     { success: true; slug: string | null } | { success: false; message: string }
   > {
-    const { removeItemIdFromMainArray } = useCollectionMainStore()
-
-    const res = await send<TApiItemShow<TApiFieldsUnion>>('module/destroy', 'post', {
+    const res = await send<{ deleted_id: string }>('module/destroy', 'post', {
       module: module.value,
       id: fields.value?.id,
     })
@@ -154,10 +156,13 @@ export const useItemStore = defineStore('item', () => {
     }
 
     const prevSlug = nextSlug(false)
-    const newLength = removeItemIdFromMainArray((<TFieldsUnion>fields.value).id)
+    const index = mainArray.value.indexOf(res.data.deleted_id)
+    if (index > -1) {
+      mainArray.value.splice(index, 1)
+    }
 
     //return of slug === null means that is was the last element in the current array.
-    if (newLength === 0) {
+    if (mainArray.value.length === 0) {
       return { success: true, slug: null }
     } else {
       return { success: true, slug: prevSlug }

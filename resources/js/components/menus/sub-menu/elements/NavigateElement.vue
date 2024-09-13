@@ -12,17 +12,17 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
-import { useCollectionMainStore } from '../../../../scripts/stores/collections/collectionMain'
+import { useCollectionsStore } from '../../../../scripts/stores/collections/collections'
 import { useItemStore } from '../../../../scripts/stores/item'
 
 const { nextSlug } = useItemStore()
 const { derived, itemIndex } = storeToRefs(useItemStore())
 const { routerPush } = useRoutesMainStore()
 const { inTransition } = storeToRefs(useRoutesMainStore())
-const { array } = storeToRefs(useCollectionMainStore())
-
+const { getCollectionStore } = useCollectionsStore()
+const mcs = getCollectionStore('main')
 const tag = computed(() => {
-  return derived.value.tag ? `${derived.value.tag} (${itemIndex.value + 1}/${array.value.length})` : `...`
+  return derived.value.tag ? `${derived.value.tag} (${itemIndex.value + 1}/${mcs.array.length})` : `...`
 })
 
 function next(isRight: boolean) {

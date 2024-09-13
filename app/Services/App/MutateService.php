@@ -70,6 +70,6 @@ class MutateService extends DigModuleService
         unset($item->model_tags);
         unset($item->global_tags);
 
-        return $item->toArray();
+        return ["deleted_id" => $item->id];
     }
 }
