@@ -1,6 +1,10 @@
 // import { computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type { TCollectionName, TCollectionView, TApiArray } from '@/js/types/collectionTypes'
+import type {
+  TCollectionName,
+  TCollectionView,
+  TCollectionArrays,
+} from '@/js/types/collectionTypes'
 import type { TModule } from '@/js/types/moduleTypes'
 import { useModuleStore } from '../module'
 import { useCollectionMainStore } from './collectionMain'
@@ -111,7 +115,7 @@ export const useCollectionsStore = defineStore('collections', () => {
   //   return c.itemIsInPage(id)
   // }
 
-  function itemByIndex(name: TCollectionName, index: number): TApiArray<TCollectionName> {
+  function itemByIndex(name: TCollectionName, index: number): TCollectionArrays {
     const c = getCollectionStore(name)
     return c.array[index]
   }
@@ -120,7 +124,7 @@ export const useCollectionsStore = defineStore('collections', () => {
     name: TCollectionName,
     index: number,
     isRight: boolean,
-  ): { item: TApiArray<TCollectionName>; index: number } {
+  ): { item: TCollectionArrays; index: number } {
     const c = getCollectionStore(name)
     const length = c.array.length
     let newIndex

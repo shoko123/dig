@@ -2,7 +2,14 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { TModule } from '@/js/types/moduleTypes'
 import type { TFuncLoadPage } from '@/js/types/routesTypes'
-import { TApiArray, TCollectionView } from '@/js/types/collectionTypes'
+import {
+  TApiArray,
+  TCollectionArrays,
+  TApiPage,
+  TCollectionView,
+  TArrayEqualFunc,
+  TPageEqualFunc,
+} from '@/js/types/collectionTypes'
 import { useModuleStore } from '../module'
 import { useMediaStore } from '../media'
 import { useCollectionsStore } from './collections'
@@ -77,6 +84,19 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     pageNoB1.value = 1
   }
 
+  const arrayEqualFunc: TArrayEqualFunc = function (a: TCollectionArrays, b: TCollectionArrays) {
+    const aMain = a as string
+    const bMain = b as string
+    return aMain === bMain
+  }
+
+  const pageEqualFunc: TPageEqualFunc<'media', TCollectionView, TModule> = function (
+    a: TApiPage<'media', TCollectionView, TModule>,
+    b: TApiPage<'media', TCollectionView, TModule>,
+  ) {
+    return a === b
+  }
+
   return {
     array,
     page,
@@ -88,5 +108,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     // itemIsInPage,
     clear,
     info,
+    arrayEqualFunc,
+    pageEqualFunc,
   }
 })

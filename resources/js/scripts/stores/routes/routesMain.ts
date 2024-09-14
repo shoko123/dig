@@ -252,10 +252,13 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     module: TModule | 'current' = 'current',
   ) {
     const { useTrioStore } = await import('../trio/trio')
-    const { useCollectionMainStore } = await import('../collections/collectionMain')
-    const { itemIndexById } = useCollectionMainStore()
+    // const { useCollectionMainStore } = await import('../collections/collectionMain')
+    const { useElementAndCollectionStore } = await import('../collections/elementAndCollection')
+    const { indexByArrayItem } = useElementAndCollectionStore()
+    // const { itemIndexById } = useCollectionMainStore()
     const { clearFilterOptions } = useTrioStore()
 
+    // const { indexByArrayItem } = useElementAndCollectionStore()
     console.log(
       `moveFromItemToItem "${current.value.module} ${current.value.slug}" -> "${module} ${slug}" (id: ${id})`,
     )
@@ -264,7 +267,9 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         console.log(`moveTo same item - ignore`)
         return
       }
-      if (itemIndexById(id) !== -1) {
+
+      if (indexByArrayItem('main', <string>id) !== -1) {
+        // if (itemIndexById(id) !== -1) {
         console.log(`moveTo item that is already in the current collection - go!`)
         routerPush('show', slug, module)
       } else {

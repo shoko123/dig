@@ -18,6 +18,7 @@ type TAllCollections = {
 }
 
 type TCollectionName = keyof TAllCollections
+type TCollectionArrays = TAllCollections[TCollectionName]
 
 type TApiArray<C extends TCollectionName = 'main'> = TAllCollections[C]
 
@@ -94,5 +95,22 @@ type TGalleryIntersection = TPage<'main', 'Gallery'> &
 type ExchangeMediaProperty<T extends TApiPage<'related', 'Gallery'>> = Omit<T, 'media'> & {
   media: TMediaOfItem
 }
+type TArrayEqualFunc = (a: TCollectionArrays, b: TCollectionArrays) => boolean
 
-export { TApiArray, TCollectionName, TCollectionView, TApiPage, TPage, TGalleryIntersection }
+type TPageEqualFunc<
+  C extends TCollectionName,
+  V extends TCollectionView,
+  M extends TModule = 'Stone',
+> = (a: TApiPage<C, V, M>, b: TApiPage<C, V, M>) => boolean
+
+export {
+  TApiArray,
+  TCollectionName,
+  TCollectionArrays,
+  TCollectionView,
+  TApiPage,
+  TPage,
+  TGalleryIntersection,
+  TArrayEqualFunc,
+  TPageEqualFunc,
+}

@@ -1,7 +1,7 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { TCollectionName, TApiArray } from '@/js/types/collectionTypes'
+import { TCollectionName, TApiArray, TCollectionArrays } from '@/js/types/collectionTypes'
 import { TCarousel, TApiCarousel, TCarouselUnion } from '@/js/types/mediaTypes'
 import { TModule } from '@/js/types/moduleTypes'
 import { useCollectionsStore } from '../collections/collections'
@@ -61,7 +61,7 @@ export const useCarouselStore = defineStore('carousel', () => {
   }
 
   async function loadCarouselItem(
-    item: TApiArray<TCollectionName>,
+    item: TCollectionArrays,
   ): Promise<{ success: true } | { success: false; message: string }> {
     switch (collectionName.value) {
       case 'main':
@@ -129,14 +129,21 @@ export const useCarouselStore = defineStore('carousel', () => {
     switch (collectionName.value) {
       case 'main':
         {
+          const { useElementAndCollectionStore } = await import(
+            '../collections/elementAndCollection'
+          )
+          const { indexByArrayItem } = useElementAndCollectionStore()
           const { useCollectionMainStore } = await import('../collections/collectionMain')
-          const { itemIndexById, itemIsInPage } = useCollectionMainStore()
+          const { itemIsInPage } = useCollectionMainStore()
           const { viewIndex } = storeToRefs(useCollectionMainStore())
           const view = getViewName('main', viewIndex.value)
           const ipp = getItemsPerPage('main', viewIndex.value)
           if (!itemIsInPage(<string>carouselItemDetails.value?.id)) {
-            const index = itemIndexById<string>((<TCarousel<'main'>>carouselItemDetails.value).id)
-
+            // const index = itemIndexById<string>((<TCarousel<'main'>>carouselItemDetails.value).id)
+            const index = indexByArrayItem(
+              'main',
+              <string>(<TCarousel<'main'>>carouselItemDetails.value).id,
+            )
             const res = await loadPageByItemIndex(
               collectionName.value,
               view,

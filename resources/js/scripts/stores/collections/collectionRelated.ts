@@ -2,7 +2,14 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { TModule } from '@/js/types/moduleTypes'
 import type { TFuncLoadPage } from '@/js/types/routesTypes'
-import { TCollectionView, TApiArray } from '@/js/types/collectionTypes'
+import {
+  TCollectionView,
+  TApiArray,
+  TCollectionArrays,
+  TApiPage,
+  TArrayEqualFunc,
+  TPageEqualFunc,
+} from '@/js/types/collectionTypes'
 import { useMediaStore } from '../media'
 import { useModuleStore } from '../module'
 import { useCollectionsStore } from './collections'
@@ -103,6 +110,19 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
   //   return array.value[index]
   // }
 
+  const arrayEqualFunc: TArrayEqualFunc = function (a: TCollectionArrays, b: TCollectionArrays) {
+    const aMain = a as string
+    const bMain = b as string
+    return aMain === bMain
+  }
+
+  const pageEqualFunc: TPageEqualFunc<'related', TCollectionView, TModule> = function (
+    a: TApiPage<'related', TCollectionView, TModule>,
+    b: TApiPage<'related', TCollectionView, TModule>,
+  ) {
+    return a === b
+  }
+
   function clear() {
     console.log(`collectionRelated.clear()`)
     array.value = []
@@ -120,5 +140,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     itemIsInPage,
     clear,
     info,
+    arrayEqualFunc,
+    pageEqualFunc,
   }
 })

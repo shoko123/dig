@@ -1,6 +1,14 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { TApiArray, TApiPage, TPage, TCollectionView } from '@/js/types/collectionTypes'
+import type {
+  TApiArray,
+  TApiPage,
+  TPage,
+  TCollectionView,
+  TArrayEqualFunc,
+  TPageEqualFunc,
+  TCollectionArrays,
+} from '@/js/types/collectionTypes'
 import type { TFuncLoadPage } from '@/js/types/routesTypes'
 import type { TModule, TApiPageMainTabularUnion } from '@/js/types/moduleTypes'
 import { useModuleStore } from '../module'
@@ -128,6 +136,19 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     return page.value.some((x) => (<TPage<'main', 'Gallery'>>x).id === id)
   }
 
+  const arrayEqualFunc: TArrayEqualFunc = function (a: TCollectionArrays, b: TCollectionArrays) {
+    const aMain = a as string
+    const bMain = b as string
+    return aMain === bMain
+  }
+
+  const pageEqualFunc: TPageEqualFunc<'main', TCollectionView, TModule> = function (
+    a: TApiPage<'main', TCollectionView, TModule>,
+    b: TApiPage<'main', TCollectionView, TModule>,
+  ) {
+    return a === b
+  }
+
   // function removeItemFromArray(id: string): number {
   //   const index = array.value.indexOf(id)
   //   if (index > -1) {
@@ -157,5 +178,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     // removeItemFromArray,
     clear,
     info,
+    arrayEqualFunc,
+    pageEqualFunc,
   }
 })

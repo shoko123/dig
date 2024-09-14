@@ -15,6 +15,7 @@ import type { LocationQuery } from 'vue-router'
 import { useXhrStore } from '../xhr'
 
 import { useCollectionsStore } from '../collections/collections'
+import { useElementAndCollectionStore } from '../collections/elementAndCollection'
 import { useCollectionMainStore } from '../collections/collectionMain'
 import { useModuleStore } from '../module'
 import { useNotificationsStore } from '../notifications'
@@ -110,7 +111,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           break
 
         case 'item.setIndexInCollection':
-          if (!itemSetIndexInCollection()) {
+          if (!setItemIndexInCollectionMain()) {
             return { success: false, message: 'Error: Item not found in Collection.' }
           }
           break
@@ -268,10 +269,11 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     return res
   }
 
-  function itemSetIndexInCollection() {
-    const { itemIndexById } = useCollectionMainStore()
-    //console.log(`prepare.itemSetIndexInCollection()`)
-    const itemIndex = itemIndexById(i.id!)
+  function setItemIndexInCollectionMain() {
+    //console.log(`prepare.setItemIndexInCollectionMain()`)
+    const { indexByArrayItem } = useElementAndCollectionStore()
+
+    const itemIndex = indexByArrayItem('main', i.fields!.id)
     if (itemIndex === -1) {
       i.itemIndex = -1
       return false
@@ -280,6 +282,19 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       return true
     }
   }
+
+  // function setItemIndexInCollectionMain() {
+  //   const { itemIndexById } = useCollectionMainStore()
+  //   //console.log(`prepare.setItemIndexInCollectionMain()`)
+  //   const itemIndex = itemIndexById(i.id!)
+  //   if (itemIndex === -1) {
+  //     i.itemIndex = -1
+  //     return false
+  //   } else {
+  //     i.itemIndex = itemIndex
+  //     return true
+  //   }
+  // }
 
   async function routesPrepareForNew(module: TModule, isCreate: boolean) {
     const { useItemNewStore } = await import('../itemNew')
