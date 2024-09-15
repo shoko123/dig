@@ -69,19 +69,14 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     return { success: true, message: '' }
   }
 
-  // function itemIndexById<IDtype extends string | number>(id: IDtype) {
-  //   const index = array.value.findIndex((x) => x['id'] === id)
-  //   return index
-  // }
-
-  // function itemIsInPage<IDtype extends string | number>(id: IDtype) {
-  //   return page.value.some((x) => x.id === id)
-  // }
-
   function clear() {
     console.log(`collectionMedia.clear()`)
     array.value = []
     pageNoB1.value = 1
+  }
+
+  function itemIsInPage<IDtype extends string | number>(id: IDtype) {
+    return !!id
   }
 
   const arrayEqualFunc: TArrayEqualFunc = function (a: TCollectionArrays, b: TCollectionArrays) {
@@ -102,13 +97,13 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     page,
     pageNoB1,
     viewIndex,
-    loadPage,
-    // itemIndexById,
-    switchArrayItems,
-    // itemIsInPage,
-    clear,
     info,
+    loadPage,
+    clear,
+    itemIsInPage,
     arrayEqualFunc,
     pageEqualFunc,
+    //specific
+    switchArrayItems,
   }
 })

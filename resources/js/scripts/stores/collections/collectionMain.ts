@@ -126,12 +126,6 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     //console.log(`mainCollection.savePage() length: ${toSave.length}\npage:\n${JSON.stringify(page.value, null, 2)}`)
   }
 
-  // function itemIndexById<IDtype extends string | number>(id: IDtype) {
-  //   const index = array.value.findIndex((x) => x === id)
-  //   //console.log(`collectionMain.itemIndexById(id:${id}) array: ${JSON.stringify(array.value.slice(0,5), null, 2)} index: ${index}`)
-  //   return index
-  // }
-
   function itemIsInPage<IDtype extends string | number>(id: IDtype) {
     return page.value.some((x) => (<TPage<'main', 'Gallery'>>x).id === id)
   }
@@ -149,17 +143,6 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     return a === b
   }
 
-  // function removeItemFromArray(id: string): number {
-  //   const index = array.value.indexOf(id)
-  //   if (index > -1) {
-  //     array.value.splice(index, 1)
-  //   }
-
-  //   const newArray = array.value.filter((x) => x !== id)
-  //   array.value = newArray
-  //   return newArray.length
-  // }
-
   function clear() {
     console.log(`collectionMain.clear()`)
     array.value = []
@@ -168,16 +151,14 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
   }
 
   return {
-    pageNoB1,
-    viewIndex,
     array,
     page,
-    loadPage,
-    // itemIndexById,
-    itemIsInPage,
-    // removeItemFromArray,
-    clear,
+    pageNoB1,
+    viewIndex,
     info,
+    loadPage,
+    clear,
+    itemIsInPage,
     arrayEqualFunc,
     pageEqualFunc,
   }

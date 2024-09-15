@@ -1,6 +1,6 @@
 //routesPrepare
 //At this point the new route is assured to have a correct form and all
-//relevant fields are stored in routesStore.from and .to. Actions needed
+//relevant fields are stored in routesStore.from+.to. Actions needed
 //to complete the transition to the new route are stored in TPlanAction[].
 //Here we execute the loading of assets (collection, page, item)and other
 //activities (e.g. clear, copy current -> new,), before
@@ -271,9 +271,9 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
   function setItemIndexInCollectionMain() {
     //console.log(`prepare.setItemIndexInCollectionMain()`)
-    const { indexByArrayItem } = useElementAndCollectionStore()
+    const { indexByArrayElement } = useElementAndCollectionStore()
 
-    const itemIndex = indexByArrayItem('main', i.fields!.id)
+    const itemIndex = indexByArrayElement('main', i.fields!.id)
     if (itemIndex === -1) {
       i.itemIndex = -1
       return false
@@ -282,19 +282,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       return true
     }
   }
-
-  // function setItemIndexInCollectionMain() {
-  //   const { itemIndexById } = useCollectionMainStore()
-  //   //console.log(`prepare.setItemIndexInCollectionMain()`)
-  //   const itemIndex = itemIndexById(i.id!)
-  //   if (itemIndex === -1) {
-  //     i.itemIndex = -1
-  //     return false
-  //   } else {
-  //     i.itemIndex = itemIndex
-  //     return true
-  //   }
-  // }
 
   async function routesPrepareForNew(module: TModule, isCreate: boolean) {
     const { useItemNewStore } = await import('../itemNew')

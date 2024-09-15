@@ -97,18 +97,9 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     return { success: true, message: '' }
   }
 
-  // function itemIndexById<IDtype extends string | number>(id: IDtype) {
-  //   const index = array.value.findIndex((x) => x.id === id)
-  //   return index
-  // }
-
   function itemIsInPage<IDtype extends string | number>(id: IDtype) {
     return page.value.some((x) => x.id === id)
   }
-
-  // function itemByIndex(index: number): TApiArray<'related'> {
-  //   return array.value[index]
-  // }
 
   const arrayEqualFunc: TArrayEqualFunc = function (a: TCollectionArrays, b: TCollectionArrays) {
     const aMain = a as string
@@ -130,17 +121,17 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
   }
 
   return {
-    pageNoB1,
-    viewIndex,
     array,
     page,
-    relatedTableHeaders,
-    loadPage,
-    // itemIndexById,
-    itemIsInPage,
-    clear,
+    pageNoB1,
+    viewIndex,
     info,
+    loadPage,
+    clear,
+    itemIsInPage,
     arrayEqualFunc,
     pageEqualFunc,
+    //specific
+    relatedTableHeaders,
   }
 })

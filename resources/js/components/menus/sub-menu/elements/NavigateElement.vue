@@ -16,7 +16,7 @@ import { useCollectionsStore } from '../../../../scripts/stores/collections/coll
 import { useModuleStore } from '../../../../scripts/stores/module'
 import { useItemStore } from '../../../../scripts/stores/item'
 import { useElementAndCollectionStore } from '../../../../scripts/stores/collections/elementAndCollection'
-// const { nextSlug } = useItemStore()
+
 const { derived, itemIndex } = storeToRefs(useItemStore())
 const { routerPush } = useRoutesMainStore()
 const { inTransition, current } = storeToRefs(useRoutesMainStore())
@@ -32,6 +32,5 @@ function next(isRight: boolean) {
   const nextItem = nextArrayElement('main', itemIndex.value, isRight)
   const tagAndSlug = tagAndSlugFromId(<string>nextItem.item, current.value.module)
   routerPush('show', tagAndSlug.slug)
-  // routerPush('show', nextSlug(isRight))
 }
 </script>

@@ -1,9 +1,9 @@
-// stores/media.js
-import { ref, computed } from 'vue'
-import { defineStore, storeToRefs } from 'pinia'
 import type { TApiFieldsUnion, TFieldsUnion, TBespokeFieldsUnion } from '@/js/types/moduleTypes'
 import type { TApiItemShow, TApiTag } from '@/js/types/itemTypes'
-// import type { TApiArray } from '@/js/types/collectionTypes'
+
+import { ref, computed } from 'vue'
+import { defineStore, storeToRefs } from 'pinia'
+
 import { useCollectionsStore } from './collections/collections'
 import { useElementAndCollectionStore } from './collections/elementAndCollection'
 import { useMediaStore } from './media'
@@ -15,10 +15,10 @@ import { useModuleStore } from './module'
 export const useItemStore = defineStore('item', () => {
   const { current } = storeToRefs(useRoutesMainStore())
   const { getCollectionStore } = useCollectionsStore()
-  // const { arrayElementByIndex } = useElementAndCollectionStore()
   const { tagAndSlugFromId } = useModuleStore()
   const { module } = storeToRefs(useModuleStore())
   const { send } = useXhrStore()
+
   const mcs = getCollectionStore('main')
   const fields = ref<TFieldsUnion | undefined>(undefined)
   const slug = ref<string | undefined>(undefined)
@@ -127,34 +127,6 @@ export const useItemStore = defineStore('item', () => {
     itemFieldsToOptionsObj.value = {}
   }
 
-  // function nextSlug(isRight: boolean) {
-  //   let newIndex
-  //   const length = getCollectionStore('main').info.length
-  //   if (isRight) {
-  //     newIndex = itemIndex.value === length - 1 ? 0 : itemIndex.value + 1
-  //   } else {
-  //     newIndex = itemIndex.value === 0 ? length - 1 : itemIndex.value - 1
-  //   }
-
-  //   // const tagAndSlug = tagAndSlugFromId(<TApiArray>itemByIndex('main', newIndex))
-  //   const tagAndSlug = tagAndSlugFromId(<TApiArray>arrayElementByIndex('main', newIndex))
-  //   return tagAndSlug.slug
-  // }
-
-  // function nextSlug(isRight: boolean) {
-  //   let newIndex
-  //   const length = getCollectionStore('main').info.length
-  //   if (isRight) {
-  //     newIndex = itemIndex.value === length - 1 ? 0 : itemIndex.value + 1
-  //   } else {
-  //     newIndex = itemIndex.value === 0 ? length - 1 : itemIndex.value - 1
-  //   }
-
-  //   // const tagAndSlug = tagAndSlugFromId(<TApiArray>itemByIndex('main', newIndex))
-  //   const tagAndSlug = tagAndSlugFromId(<TApiArray>arrayElementByIndex('main', newIndex))
-  //   return tagAndSlug.slug
-  // }
-
   const mainArray = computed(() => {
     return mcs.array as string[]
   })
@@ -171,13 +143,11 @@ export const useItemStore = defineStore('item', () => {
       return res
     }
 
-    // const prevSlug = nextSlug(false)
-    ///////
     const { nextArrayElement } = useElementAndCollectionStore()
     const prevItem = nextArrayElement('main', itemIndex.value, false)
     const tagAndSlug = tagAndSlugFromId(<string>prevItem.item, current.value.module)
     const prevSlug = tagAndSlug.slug
-    /////
+
     const index = mainArray.value.indexOf(res.data.deleted_id)
     if (index > -1) {
       mainArray.value.splice(index, 1)
@@ -200,7 +170,6 @@ export const useItemStore = defineStore('item', () => {
     id,
     derived,
     itemIndex,
-    // nextSlug,
     itemClear,
     itemViews,
     itemViewIndex,

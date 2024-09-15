@@ -1,11 +1,8 @@
-// import { computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type {
-  TCollectionName,
-  TCollectionView,
-  // TCollectionArrays,
-} from '@/js/types/collectionTypes'
+
+import type { TCollectionName, TCollectionView } from '@/js/types/collectionTypes'
 import type { TModule } from '@/js/types/moduleTypes'
+
 import { useModuleStore } from '../module'
 import { useCollectionMainStore } from './collectionMain'
 import { useCollectionMediaStore } from './collectionMedia'
@@ -82,7 +79,6 @@ export const useCollectionsStore = defineStore('collections', () => {
 
   async function toggleCollectionView(name: TCollectionName) {
     const col = getCollectionStore(name)
-
     const info = getConsumeableCollection(
       name,
       col.viewIndex,
@@ -100,42 +96,8 @@ export const useCollectionsStore = defineStore('collections', () => {
       `toggleCollectionView() c: ${name}  module: ${module.value} currentView: ${info.viewName} nextView: ${nextView} index: ${nextIndex}`,
     )
     await loadPageByItemIndex(name, nextView, nextItemsPerPage, nextIndex, module.value)
-    //  await loadPageByItemIndex(name, newView, index, module.value)
-
     col.viewIndex = nextViewIndex
   }
-
-  // function itemIndexById<IDtype extends string | number>(id: IDtype) {
-  //   const c = getCollectionStore('main')
-  //   return c.itemIndexById<IDtype>(id)
-  // }
-
-  // function itemIsInPage<IDtype extends string | number>(id: IDtype) {
-  //   const c = getCollectionStore('main')
-  //   return c.itemIsInPage(id)
-  // }
-
-  // function itemByIndex(name: TCollectionName, index: number): TCollectionArrays {
-  //   const c = getCollectionStore(name)
-  //   return c.array[index]
-  // }
-
-  // function next(
-  //   name: TCollectionName,
-  //   index: number,
-  //   isRight: boolean,
-  // ): { item: TCollectionArrays; index: number } {
-  //   const c = getCollectionStore(name)
-  //   const length = c.array.length
-  //   let newIndex
-
-  //   if (isRight) {
-  //     newIndex = index === length - 1 ? 0 : index + 1
-  //   } else {
-  //     newIndex = index === 0 ? length - 1 : index - 1
-  //   }
-  //   return { item: c.array[newIndex], index: newIndex }
-  // }
 
   function clear(collections: TCollectionName[]) {
     collections.forEach((x) => {
@@ -151,20 +113,14 @@ export const useCollectionsStore = defineStore('collections', () => {
     })
   }
 
-  //Note : computed collection will only e reactive only if state (main, media) is exposed.
+  //Note: computed collection will only be reactive only if state (main, media) is exposed.
   return {
-    // collection,
-    // itemByIndex,
-    //setArray,
+    getCollectionStore,
+    getConsumeableCollection,
+    loadPageByItemIndex,
     loadGenericPage,
     toggleCollectionView,
     clear,
     resetCollectionsViewIndex,
-    // itemIndexById,
-    loadPageByItemIndex,
-    // itemIsInPage,
-    // next,
-    getConsumeableCollection,
-    getCollectionStore,
   }
 })
