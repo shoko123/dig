@@ -22,21 +22,21 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { TCollectionName, TGalleryIntersection } from '../../types/collectionTypes'
+import { TCName, TGalleryIntersection } from '../../types/collectionTypes'
 import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 import MediaOverlay from './MediaOverlay.vue'
 
 const { getCollectionStore } = useCollectionsStore()
 
 const prps = defineProps<{
-  source: TCollectionName
+  source: TCName
   itemIndex: number
 }>()
 
 const record = computed(() => {
   const c = getCollectionStore(prps.source)
   let indexInPage = prps.itemIndex % c.info.itemsPerPage
-  return c.page[indexInPage] as TGalleryIntersection // TPage<TCollectionName, 'Gallery', TModule>
+  return c.page[indexInPage] as TGalleryIntersection // TPage<TCName, 'Gallery', TModule>
 })
 
 const data = computed(() => {

@@ -1,6 +1,6 @@
 // mediaTypes.ts
 import { TModule } from '@/js/types/moduleTypes'
-import { TApiPage, TPage, TCollectionName } from '@/js/types/collectionTypes'
+import { TApiPage, TPage, TCName } from '@/js/types/collectionTypes'
 
 type TMediaUrls = { full: string; tn: string }
 
@@ -50,7 +50,7 @@ type CarouselAll = {
 
 type TApiCarouselUnion = CarouselAll[keyof CarouselAll]['api']
 type TCarouselUnion = CarouselAll[keyof CarouselAll]['item']
-type TApiCarousel<C extends TCollectionName> = CarouselAll[C]['api']
-type TCarousel<C extends TCollectionName> = CarouselAll[C]['item']
+type TApiCarousel<C extends TCName> = CarouselAll[C]['api']
+type TCarousel<C extends TCName> = CarouselAll[C]['item']
 
 export { TMediaUrls, TMediaOfItem, TApiCarousel, TApiCarouselUnion, TCarousel, TCarouselUnion }

@@ -10,7 +10,7 @@ import type {
 } from '../../types/moduleTypes'
 import { useMainStore } from './main'
 import { useRoutesMainStore } from './routes/routesMain'
-import { TCollectionName } from '@/js/types/collectionTypes'
+import { TCName } from '@/js/types/collectionTypes'
 
 export const useModuleStore = defineStore('module', () => {
   const { bucketUrl } = storeToRefs(useMainStore())
@@ -56,15 +56,15 @@ export const useModuleStore = defineStore('module', () => {
     collectionViews.value = initData.display_options.collection_views
   }
 
-  function getItemsPerPage(collectionName: TCollectionName, collectionViewIndex: number): number {
+  function getItemsPerPage(collectionName: TCName, collectionViewIndex: number): number {
     return itemsPerPage.value[collectionViews.value[collectionName][collectionViewIndex]]
   }
 
-  function getViewName(collectionName: TCollectionName, collectionViewIndex: number) {
+  function getViewName(collectionName: TCName, collectionViewIndex: number) {
     return collectionViews.value[collectionName][collectionViewIndex]
   }
 
-  function getCollectionViews(collectionName: TCollectionName) {
+  function getCollectionViews(collectionName: TCName) {
     return collectionViews.value[collectionName]
   }
   /*

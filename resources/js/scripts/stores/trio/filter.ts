@@ -1,5 +1,5 @@
 import { defineStore, storeToRefs } from 'pinia'
-import type { TApiArray } from '@/js/types/collectionTypes'
+import type { TArrayByCName } from '@/js/types/collectionTypes'
 import { useXhrStore } from '../xhr'
 import { useModuleStore } from '../module'
 
@@ -40,7 +40,7 @@ export const useFilterStore = defineStore('filter', () => {
 
   async function getCount() {
     const trioStore = await getTrioStore()
-    const res = await send<TApiArray[]>('module/index', 'post', {
+    const res = await send<TArrayByCName[]>('module/index', 'post', {
       module: module.value,
       query: trioStore.apiQueryPayload,
     })

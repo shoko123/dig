@@ -1,4 +1,4 @@
-import type { TCollectionName, TCollectionArrays } from '@/js/types/collectionTypes'
+import type { TCName, TCArray } from '@/js/types/collectionTypes'
 
 import { defineStore } from 'pinia'
 
@@ -7,12 +7,12 @@ import { useCollectionsStore } from './collections'
 export const useElementAndCollectionStore = defineStore('elementAndCollection', () => {
   const { getCollectionStore } = useCollectionsStore()
 
-  function arrayElementByIndex(name: TCollectionName, index: number): TCollectionArrays {
+  function arrayElementByIndex(name: TCName, index: number): TCArray {
     const c = getCollectionStore(name)
     return c.array[index]
   }
 
-  function indexByArrayElement(collectionName: TCollectionName, element: TCollectionArrays) {
+  function indexByArrayElement(collectionName: TCName, element: TCArray) {
     const c = getCollectionStore(collectionName)
     const index = c.array.findIndex((x) => {
       return c.arrayEqualFunc(x, element)
@@ -23,7 +23,7 @@ export const useElementAndCollectionStore = defineStore('elementAndCollection', 
     return index
   }
 
-  function nextArrayIndex(name: TCollectionName, index: number, isRight: boolean) {
+  function nextArrayIndex(name: TCName, index: number, isRight: boolean) {
     const c = getCollectionStore(name)
     const length = c.array.length
     let newIndex
@@ -37,10 +37,10 @@ export const useElementAndCollectionStore = defineStore('elementAndCollection', 
   }
 
   function nextArrayElement(
-    name: TCollectionName,
+    name: TCName,
     index: number,
     isRight: boolean,
-  ): { item: TCollectionArrays; index: number } {
+  ): { item: TCArray; index: number } {
     const newIndex = nextArrayIndex(name, index, isRight)
     return { item: arrayElementByIndex(name, newIndex), index: newIndex }
   }

@@ -3,8 +3,8 @@ import { ref, computed } from 'vue'
 import type { TModule } from '@/js/types/moduleTypes'
 import type { TFuncLoadPage } from '@/js/types/routesTypes'
 import {
-  TApiArray,
-  TCollectionArrays,
+  TArrayByCName,
+  TCArray,
   TApiPage,
   TCollectionView,
   TArrayEqualFunc,
@@ -22,9 +22,9 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
   const pageNoB1 = ref(1)
   const viewIndex = ref(0)
 
-  const array = ref<TApiArray<'media'>[]>([])
+  const array = ref<TArrayByCName<'media'>[]>([])
 
-  const page = computed<TApiArray<'media'>[]>(() => {
+  const page = computed<TArrayByCName<'media'>[]>(() => {
     const ipp = getItemsPerPage('media', viewIndex.value)
     const start = (pageNoB1.value - 1) * ipp
     const slice = array.value.slice(start, start + ipp)
@@ -79,7 +79,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     return !!id
   }
 
-  const arrayEqualFunc: TArrayEqualFunc = function (a: TCollectionArrays, b: TCollectionArrays) {
+  const arrayEqualFunc: TArrayEqualFunc = function (a: TCArray, b: TCArray) {
     const aMain = a as string
     const bMain = b as string
     return aMain === bMain

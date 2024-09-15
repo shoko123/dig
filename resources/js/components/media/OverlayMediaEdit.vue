@@ -1,32 +1,22 @@
 <template>
   <v-row justify="space-between" align="center">
-    <v-btn
-      icon="mdi-arrow-left"
-      variant="text"
-      :disabled="disableLeft"
-      @click="switchMedia(true)"
-    />
+    <v-btn icon="mdi-arrow-left" variant="text" :disabled="disableLeft" @click="switchMedia(true)" />
     <v-btn class="bg-grey-lighten-1" @click="deleteMedia()"> Delete </v-btn>
-    <v-btn
-      icon="mdi-arrow-right"
-      variant="text"
-      :disabled="disableRight"
-      @click="switchMedia(false)"
-    />
+    <v-btn icon="mdi-arrow-right" variant="text" :disabled="disableRight" @click="switchMedia(false)" />
   </v-row>
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import type { TApiArray } from '../../types/collectionTypes'
+import type { TArrayByCName } from '../../types/collectionTypes'
 import { useMediaStore } from '../../scripts/stores/media'
 import { useCollectionMediaStore } from '../../scripts/stores/collections/collectionMedia'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
 
 const props = defineProps<{
   itemIndex: number
-  record: TApiArray<'media'>
+  record: TArrayByCName<'media'>
 }>()
 
 const { mediaDestroy } = useMediaStore()

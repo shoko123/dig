@@ -4,8 +4,8 @@ import type { TModule } from '@/js/types/moduleTypes'
 import type { TFuncLoadPage } from '@/js/types/routesTypes'
 import {
   TCollectionView,
-  TApiArray,
-  TCollectionArrays,
+  TArrayByCName,
+  TCArray,
   TApiPage,
   TArrayEqualFunc,
   TPageEqualFunc,
@@ -22,7 +22,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
   const pageNoB1 = ref(1)
   const viewIndex = ref(0)
 
-  const array = ref<TApiArray<'related'>[]>([])
+  const array = ref<TArrayByCName<'related'>[]>([])
 
   const info = computed(() => {
     return getConsumeableCollection(
@@ -101,7 +101,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     return page.value.some((x) => x.id === id)
   }
 
-  const arrayEqualFunc: TArrayEqualFunc = function (a: TCollectionArrays, b: TCollectionArrays) {
+  const arrayEqualFunc: TArrayEqualFunc = function (a: TCArray, b: TCArray) {
     const aMain = a as string
     const bMain = b as string
     return aMain === bMain

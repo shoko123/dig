@@ -1,26 +1,107 @@
 // collectionTypes.ts
 
 import { TMediaOfItem, TMediaUrls } from '@/js/types/mediaTypes'
-import { TModule, TApiTabularByModule, TTabularByModule } from '@/js/types/moduleTypes'
+import {
+  TModule,
+  TApiTabularByModule,
+  TTabularByModule,
+  // TApiPageMainTabular,
+} from '@/js/types/moduleTypes'
 
 type TCollectionView = 'Gallery' | 'Chips' | 'Tabular'
 
-type TAllCollections = {
-  main: string
-  media: { id: number; order_column: number; urls: TMediaUrls }
-  related: {
+type TApiPageMain<M extends TModule> = {
+  Gallery: {
     id: string
     short: string
+    urls: TMediaUrls
+  }
+  Tabular: TTabularByModule<M>
+  Chips: { id: string }
+}
+
+type TApiPageMedia = {
+  Gallery: {
+    id: number
+    order_column: number
+    urls: TMediaUrls
+  }
+}
+
+type TApiPageRelated = {
+  Gallery: {
     relation_name: string
     module: TModule
+    id: number
+    short: string
+    urls: TMediaUrls
+  }
+  Tabular: {
+    relation_name: string
+    module: TModule
+    id: string
+    short: string
     media: TMediaUrls
+  }
+  Chips: {
+    relation_name: string
+    module: TModule
+    id: string
+  }
+}
+
+// type AddSlugAndTagToValues<
+//   M extends TModule,
+//   P extends TApiPageMain<M> | TApiPageRelated | TApiPageMedia,
+// > = {
+//   [k in keyof P]: P[k] & { tag: string; slug: string }
+// }[keyof P]
+
+type TAllCollections<M extends TModule = 'Stone'> = {
+  main: {
+    array: string
+    apiPage: TApiPageMain<M>
+    page: AddSlugAndTag<TApiPageMain<M>>
+    apiCarousel: {
+      id: string
+      short: string
+      media: TMediaOfItem
+    }
+  }
+  media: {
+    array: TApiPageMedia['Gallery']
+    apiPage: TApiPageMedia['Gallery']
+    page: AddSlugAndTag<TApiPageMedia>
+    apiCarousel: {
+      id: number
+      urls: TMediaUrls
+      size: number
+      collection_name: string
+      file_name: string
+      order_column: number
+      title: string
+      text: string
+    }
+  }
+  related: {
+    array: TApiPageRelated
+    apiPage: TApiPageRelated
+    page: AddSlugAndTag<TApiPageRelated>
+    apiCarousel: {
+      module: TModule
+      id: number
+      urls: TMediaUrls
+      short: string
+      relation_name: string
+    }
   }
 }
 
 type TCName = keyof TAllCollections
-type TCArray = TAllCollections[TCName]
+type TCArray = TAllCollections[TCName]['array']
 
-type TArrayByCName<C extends TCName = 'main'> = TAllCollections[C]
+type TArrayByCName<C extends TCName = 'main'> = TAllCollections[C]['array']
+// type TApiPage1 = TAllCollections[TCName]['apiPage']
 
 type TApiPage<
   C extends TCName,

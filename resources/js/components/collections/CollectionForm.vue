@@ -23,7 +23,7 @@ import { storeToRefs } from 'pinia'
 import { useDisplay } from 'vuetify'
 
 import type { TModule } from '@/js/types/moduleTypes'
-import type { TCollectionName } from '@/js/types/collectionTypes'
+import type { TCName } from '@/js/types/collectionTypes'
 import { useItemStore } from '../../scripts/stores/item'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
 import { useCollectionsStore } from '../../scripts/stores/collections/collections'
@@ -34,7 +34,7 @@ const CollectionPageChips = defineAsyncComponent(() => import('./CollectionPageC
 const CollectionPageTabular = defineAsyncComponent(() => import('./CollectionPageTabular.vue'))
 
 const props = defineProps<{
-  source: TCollectionName
+  source: TCName
 }>()
 
 const { getCollectionStore, loadGenericPage, toggleCollectionView } = useCollectionsStore()

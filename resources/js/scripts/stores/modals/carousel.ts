@@ -1,7 +1,7 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { TCollectionName, TApiArray, TCollectionArrays } from '@/js/types/collectionTypes'
+import { TCName, TArrayByCName, TCArray } from '@/js/types/collectionTypes'
 import { TCarousel, TApiCarousel, TCarouselUnion } from '@/js/types/mediaTypes'
 import { TModule } from '@/js/types/moduleTypes'
 
@@ -22,7 +22,7 @@ export const useCarouselStore = defineStore('carousel', () => {
     useElementAndCollectionStore()
 
   const isOpen = ref<boolean>(false)
-  const collectionName = ref<TCollectionName>('main')
+  const collectionName = ref<TCName>('main')
   const index = ref<number>(-1)
   const carouselItemDetails = ref<TCarouselUnion | null>(null)
 
@@ -32,7 +32,7 @@ export const useCarouselStore = defineStore('carousel', () => {
   })
 
   async function open(
-    source: TCollectionName,
+    source: TCName,
     openIndex: number,
   ): Promise<{ success: true } | { success: false; message: string }> {
     collectionName.value = source
@@ -53,7 +53,7 @@ export const useCarouselStore = defineStore('carousel', () => {
   }
 
   async function loadMainCarouselItem(
-    item: TApiArray<'main'>,
+    item: TArrayByCName<'main'>,
   ): Promise<{ success: true } | { success: false; message: string }> {
     const res = await send<TApiCarousel<'main'>>('carousel/show', 'post', {
       source: 'main',
@@ -74,7 +74,7 @@ export const useCarouselStore = defineStore('carousel', () => {
   }
 
   async function loadMediaCarouselItem(
-    item: TApiArray<'media'>,
+    item: TArrayByCName<'media'>,
   ): Promise<{ success: true } | { success: false; message: string }> {
     const res = await send<TApiCarousel<'media'>>('carousel/show', 'post', {
       source: 'media',
@@ -101,9 +101,9 @@ export const useCarouselStore = defineStore('carousel', () => {
   }
 
   async function loadRelatedCarouselItem(
-    item: TApiArray<'related'>,
+    item: TArrayByCName<'related'>,
   ): Promise<{ success: true } | { success: false; message: string }> {
-    const tmp = <TApiArray<'related'>>item
+    const tmp = <TArrayByCName<'related'>>item
     carouselItemDetails.value = {
       ...tmp,
       ...tagAndSlugFromId(tmp.id, tmp.module),
@@ -112,20 +112,20 @@ export const useCarouselStore = defineStore('carousel', () => {
     return { success: true }
   }
 
-  async function loadItem(arrayElement: TCollectionArrays) {
+  async function loadItem(arrayElement: TCArray) {
     let res: { success: true } | { success: false; message: string } = {
       success: false,
       message: '',
     }
     switch (collectionName.value) {
       case 'main':
-        res = await loadMainCarouselItem(arrayElement as TApiArray<'main'>)
+        res = await loadMainCarouselItem(arrayElement as TArrayByCName<'main'>)
         break
       case 'media':
-        res = await loadMediaCarouselItem(arrayElement as TApiArray<'media'>)
+        res = await loadMediaCarouselItem(arrayElement as TArrayByCName<'media'>)
         break
       case 'related':
-        res = await loadRelatedCarouselItem(arrayElement as TApiArray<'related'>)
+        res = await loadRelatedCarouselItem(arrayElement as TArrayByCName<'related'>)
         break
     }
     return res

@@ -1,6 +1,6 @@
 import { defineStore, storeToRefs } from 'pinia'
 
-import type { TCollectionName, TCollectionView } from '@/js/types/collectionTypes'
+import type { TCName, TCollectionView } from '@/js/types/collectionTypes'
 import type { TModule } from '@/js/types/moduleTypes'
 
 import { useModuleStore } from '../module'
@@ -12,7 +12,7 @@ export const useCollectionsStore = defineStore('collections', () => {
   const { getItemsPerPage, getViewName, getCollectionViews } = useModuleStore()
   const { module } = storeToRefs(useModuleStore())
 
-  function getCollectionStore(source: TCollectionName) {
+  function getCollectionStore(source: TCName) {
     switch (source) {
       case 'main':
         return useCollectionMainStore()
@@ -24,7 +24,7 @@ export const useCollectionsStore = defineStore('collections', () => {
   }
 
   function getConsumeableCollection(
-    name: TCollectionName,
+    name: TCName,
     viewIndex: number,
     pageNoB1: number,
     pageLength: number,
@@ -48,7 +48,7 @@ export const useCollectionsStore = defineStore('collections', () => {
   }
 
   async function loadGenericPage(
-    name: TCollectionName,
+    name: TCName,
     pageNoB1: number,
     viewName: TCollectionView,
     pageLength: number,
@@ -63,7 +63,7 @@ export const useCollectionsStore = defineStore('collections', () => {
   }
 
   async function loadPageByItemIndex(
-    collectionName: TCollectionName,
+    collectionName: TCName,
     viewName: TCollectionView,
     pageLength: number,
     index: number,
@@ -77,7 +77,7 @@ export const useCollectionsStore = defineStore('collections', () => {
     return await loadGenericPage(collectionName, pageNoB0 + 1, viewName, pageLength, module)
   }
 
-  async function toggleCollectionView(name: TCollectionName) {
+  async function toggleCollectionView(name: TCName) {
     const col = getCollectionStore(name)
     const info = getConsumeableCollection(
       name,
@@ -99,16 +99,16 @@ export const useCollectionsStore = defineStore('collections', () => {
     col.viewIndex = nextViewIndex
   }
 
-  function clear(collections: TCollectionName[]) {
+  function clear(collections: TCName[]) {
     collections.forEach((x) => {
-      const c = getCollectionStore(<TCollectionName>x)
+      const c = getCollectionStore(<TCName>x)
       return c.clear()
     })
   }
 
   function resetCollectionsViewIndex() {
     ;['main', 'media', 'related'].forEach((x) => {
-      const c = getCollectionStore(<TCollectionName>x)
+      const c = getCollectionStore(<TCName>x)
       c.viewIndex = 0
     })
   }

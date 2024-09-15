@@ -1,5 +1,5 @@
 import type { TApiTrio, TOption } from '@/js/types/trioTypes'
-import type { TCollectionName, TCollectionView } from '@/js/types/collectionTypes'
+import type { TCName, TCollectionView } from '@/js/types/collectionTypes'
 import type { TLocus } from '@/js/types/modules/Locus'
 import type { TStone } from '@/js/types/modules/Stone'
 import type { TCeramic } from '@/js/types/modules/Ceramic'
@@ -55,7 +55,7 @@ type TBespokeFieldsByModule<ModuleName extends TModule> = TAllByModule<ModuleNam
 
 type TApiFieldsUnion = SwapDatesWithStrings<TFieldsUnion>
 type TApiPageMainTabularUnion = ModuleUnion['TabularViewFields'] & { slug: string }
-
+type TApiPageMainTabular = ModuleUnion['TabularViewFields']
 type TFieldValue = string | number | boolean
 
 type TFieldInfo = {
@@ -100,7 +100,7 @@ type TObjIdTagAndSlugFuncsByModule = Record<
 
 type TItemsPerPageByView = Record<TCollectionView, number>
 
-type TViewsForCollection = Record<TCollectionName, TCollectionView[]>
+type TViewsForCollection = Record<TCName, TCollectionView[]>
 
 type TApiModuleInit = {
   module: TModule
@@ -129,6 +129,7 @@ export {
   TBespokeFieldsUnion,
   TApiFieldsUnion,
   TApiPageMainTabularUnion,
+  TApiPageMainTabular,
   TFieldsByModule,
   TApiTabularByModule,
   TTabularByModule,

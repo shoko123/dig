@@ -7,7 +7,7 @@
 <script lang="ts" setup>
 import { computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import { TCollectionName, TGalleryIntersection } from '../../types/collectionTypes'
+import { TCName, TGalleryIntersection } from '../../types/collectionTypes'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import OverlayRelated from './OverlayRelated.vue'
 import OverlayCMedia from './OverlayCMedia.vue'
@@ -15,7 +15,7 @@ import OverlayMediaEdit from './OverlayMediaEdit.vue'
 import OverlayCMain from './OverlayCMain.vue'
 
 const props = defineProps<{
-  source: TCollectionName
+  source: TCName
   itemIndex: number
   record: TGalleryIntersection
 }>()

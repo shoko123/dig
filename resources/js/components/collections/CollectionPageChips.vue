@@ -9,12 +9,12 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-import type { TCollectionName, TPage } from '../../types/collectionTypes'
+import type { TCName, TPage } from '../../types/collectionTypes'
 import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 
 const props = defineProps<{
-  source: TCollectionName
+  source: TCName
   pageNoB1: number
 }>()
 

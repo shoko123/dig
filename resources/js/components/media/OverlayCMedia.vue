@@ -5,14 +5,14 @@
 </template>
 
 <script lang="ts" setup>
-import type { TApiArray } from '../../types/collectionTypes'
+import type { TArrayByCName } from '../../types/collectionTypes'
 import { useCarouselStore } from '../../scripts/stores/modals/carousel'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
 
 const props = defineProps<{
   itemIndex: number
-  record: TApiArray<'media'>
+  record: TArrayByCName<'media'>
 }>()
 
 const { open } = useCarouselStore()

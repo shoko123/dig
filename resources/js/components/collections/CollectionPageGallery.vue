@@ -13,12 +13,12 @@
 import { computed } from 'vue'
 import { useDisplay } from 'vuetify'
 
-import { TCollectionName } from '../../types/collectionTypes'
+import { TCName } from '../../types/collectionTypes'
 import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 import MediaSquare from '../media/MediaSquare.vue'
 
 const props = defineProps<{
-  source: TCollectionName
+  source: TCName
   pageNoB1: number
 }>()
 

@@ -12,7 +12,7 @@
 <script lang="ts" setup>
 import type { VDataTableVirtual } from 'vuetify/lib/components/index.mjs'
 import type { TModule } from '@/js/types/moduleTypes'
-import type { TCollectionName, TPage } from '@/js/types/collectionTypes'
+import type { TCName, TPage } from '@/js/types/collectionTypes'
 
 import { ref, computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
@@ -22,7 +22,7 @@ import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 
 type THeader = { title: string, align: 'start' | 'end' | 'center' | undefined, key: string }
 const props = defineProps<{
-  source: TCollectionName
+  source: TCName
   pageNoB1: number
 }>()
 
