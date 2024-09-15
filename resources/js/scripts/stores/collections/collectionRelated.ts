@@ -97,7 +97,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     return { success: true, message: '' }
   }
 
-  function itemIsInPage<IDtype extends string | number>(id: IDtype) {
+  function elementIsInPage<IDtype extends string | number>(id: IDtype) {
     return page.value.some((x) => x.id === id)
   }
 
@@ -128,7 +128,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     info,
     loadPage,
     clear,
-    itemIsInPage,
+    elementIsInPage,
     arrayEqualFunc,
     pageEqualFunc,
     //specific

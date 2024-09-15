@@ -18,7 +18,8 @@ export const useCarouselStore = defineStore('carousel', () => {
   const { derived } = storeToRefs(useItemStore())
   const { buildMedia } = useMediaStore()
   const { tagAndSlugFromId, getViewName, getItemsPerPage } = useModuleStore()
-  const { arrayElementByIndex, nextArrayElement } = useElementAndCollectionStore()
+  const { arrayElementByIndex, nextArrayElement, indexByArrayElement } =
+    useElementAndCollectionStore()
 
   const isOpen = ref<boolean>(false)
   const collectionName = ref<TCollectionName>('main')
@@ -150,16 +151,12 @@ export const useCarouselStore = defineStore('carousel', () => {
     switch (collectionName.value) {
       case 'main':
         {
-          const { useElementAndCollectionStore } = await import(
-            '../collections/elementAndCollection'
-          )
-          const { indexByArrayElement } = useElementAndCollectionStore()
           const { useCollectionMainStore } = await import('../collections/collectionMain')
-          const { itemIsInPage } = useCollectionMainStore()
+          const { elementIsInPage } = useCollectionMainStore()
           const { viewIndex } = storeToRefs(useCollectionMainStore())
           const view = getViewName('main', viewIndex.value)
           const ipp = getItemsPerPage('main', viewIndex.value)
-          if (!itemIsInPage(<string>carouselItemDetails.value?.id)) {
+          if (!elementIsInPage(<string>carouselItemDetails.value?.id)) {
             const index = indexByArrayElement(
               'main',
               <string>(<TCarousel<'main'>>carouselItemDetails.value).id,

@@ -126,7 +126,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     //console.log(`mainCollection.savePage() length: ${toSave.length}\npage:\n${JSON.stringify(page.value, null, 2)}`)
   }
 
-  function itemIsInPage<IDtype extends string | number>(id: IDtype) {
+  function elementIsInPage<IDtype extends string | number>(id: IDtype) {
     return page.value.some((x) => (<TPage<'main', 'Gallery'>>x).id === id)
   }
 
@@ -158,7 +158,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     info,
     loadPage,
     clear,
-    itemIsInPage,
+    elementIsInPage,
     arrayEqualFunc,
     pageEqualFunc,
   }

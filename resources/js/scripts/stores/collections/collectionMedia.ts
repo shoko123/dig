@@ -75,7 +75,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     pageNoB1.value = 1
   }
 
-  function itemIsInPage<IDtype extends string | number>(id: IDtype) {
+  function elementIsInPage<IDtype extends string | number>(id: IDtype) {
     return !!id
   }
 
@@ -100,7 +100,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     info,
     loadPage,
     clear,
-    itemIsInPage,
+    elementIsInPage,
     arrayEqualFunc,
     pageEqualFunc,
     //specific
