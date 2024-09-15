@@ -126,11 +126,11 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     //console.log(`mainCollection.savePage() length: ${toSave.length}\npage:\n${JSON.stringify(page.value, null, 2)}`)
   }
 
-  function itemIndexById<IDtype extends string | number>(id: IDtype) {
-    const index = array.value.findIndex((x) => x === id)
-    //console.log(`collectionMain.itemIndexById(id:${id}) array: ${JSON.stringify(array.value.slice(0,5), null, 2)} index: ${index}`)
-    return index
-  }
+  // function itemIndexById<IDtype extends string | number>(id: IDtype) {
+  //   const index = array.value.findIndex((x) => x === id)
+  //   //console.log(`collectionMain.itemIndexById(id:${id}) array: ${JSON.stringify(array.value.slice(0,5), null, 2)} index: ${index}`)
+  //   return index
+  // }
 
   function itemIsInPage<IDtype extends string | number>(id: IDtype) {
     return page.value.some((x) => (<TPage<'main', 'Gallery'>>x).id === id)
@@ -173,7 +173,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     array,
     page,
     loadPage,
-    itemIndexById,
+    // itemIndexById,
     itemIsInPage,
     // removeItemFromArray,
     clear,

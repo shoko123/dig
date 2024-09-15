@@ -13,19 +13,25 @@ import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 import { useCollectionsStore } from '../../../../scripts/stores/collections/collections'
+import { useModuleStore } from '../../../../scripts/stores/module'
 import { useItemStore } from '../../../../scripts/stores/item'
-
-const { nextSlug } = useItemStore()
+import { useElementAndCollectionStore } from '../../../../scripts/stores/collections/elementAndCollection'
+// const { nextSlug } = useItemStore()
 const { derived, itemIndex } = storeToRefs(useItemStore())
 const { routerPush } = useRoutesMainStore()
-const { inTransition } = storeToRefs(useRoutesMainStore())
+const { inTransition, current } = storeToRefs(useRoutesMainStore())
 const { getCollectionStore } = useCollectionsStore()
+const { tagAndSlugFromId } = useModuleStore()
 const mcs = getCollectionStore('main')
 const tag = computed(() => {
   return derived.value.tag ? `${derived.value.tag} (${itemIndex.value + 1}/${mcs.array.length})` : `...`
 })
 
 function next(isRight: boolean) {
-  routerPush('show', nextSlug(isRight))
+  const { nextArrayElement } = useElementAndCollectionStore()
+  const nextItem = nextArrayElement('main', itemIndex.value, isRight)
+  const tagAndSlug = tagAndSlugFromId(<string>nextItem.item, current.value.module)
+  routerPush('show', tagAndSlug.slug)
+  // routerPush('show', nextSlug(isRight))
 }
 </script>
