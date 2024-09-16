@@ -136,10 +136,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     return aMain === bMain
   }
 
-  const pageEqualFunc: TPageEqualFunc<'main', TCollectionView, TModule> = function (
-    a: TApiPage<'main', TCollectionView, TModule>,
-    b: TApiPage<'main', TCollectionView, TModule>,
-  ) {
+  const pageEqualFunc: TPageEqualFunc = function (a: string, b: string) {
     return a === b
   }
 

@@ -97,10 +97,7 @@ type ExchangeMediaProperty<T extends TApiPage<'related', 'Gallery'>> = Omit<T, '
 }
 type TArrayEqualFunc = (a: TCArray, b: TCArray) => boolean
 
-type TPageEqualFunc<C extends TCName, V extends TCollectionView, M extends TModule = 'Stone'> = (
-  a: TApiPage<C, V, M>,
-  b: TApiPage<C, V, M>,
-) => boolean
+type TPageEqualFunc = (a: string, b: string) => boolean
 
 export {
   TArrayByCName,

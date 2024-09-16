@@ -5,6 +5,7 @@ import {
   TModule,
   TApiTabularByModule,
   TTabularByModule,
+  // TViewsForCollection,
   // TApiPageMainTabular,
 } from '@/js/types/moduleTypes'
 
@@ -14,7 +15,7 @@ type TApiPageMain<M extends TModule> = {
   Gallery: {
     id: string
     short: string
-    urls: TMediaUrls
+    media: TMediaUrls
   }
   Tabular: TTabularByModule<M>
   Chips: { id: string }
@@ -50,18 +51,10 @@ type TApiPageRelated = {
   }
 }
 
-// type AddSlugAndTagToValues<
-//   M extends TModule,
-//   P extends TApiPageMain<M> | TApiPageRelated | TApiPageMedia,
-// > = {
-//   [k in keyof P]: P[k] & { tag: string; slug: string }
-// }[keyof P]
-
-type TAllCollections<M extends TModule = 'Stone'> = {
+type TAllCollections<M extends TModule> = {
   main: {
     array: string
     apiPage: TApiPageMain<M>
-    page: AddSlugAndTag<TApiPageMain<M>>
     apiCarousel: {
       id: string
       short: string
@@ -70,8 +63,7 @@ type TAllCollections<M extends TModule = 'Stone'> = {
   }
   media: {
     array: TApiPageMedia['Gallery']
-    apiPage: TApiPageMedia['Gallery']
-    page: AddSlugAndTag<TApiPageMedia>
+    apiPage: TApiPageMedia
     apiCarousel: {
       id: number
       urls: TMediaUrls
@@ -86,7 +78,6 @@ type TAllCollections<M extends TModule = 'Stone'> = {
   related: {
     array: TApiPageRelated
     apiPage: TApiPageRelated
-    page: AddSlugAndTag<TApiPageRelated>
     apiCarousel: {
       module: TModule
       id: number
@@ -97,91 +88,51 @@ type TAllCollections<M extends TModule = 'Stone'> = {
   }
 }
 
-type TCName = keyof TAllCollections
-type TCArray = TAllCollections[TCName]['array']
+type TCName = keyof TAllCollections<TModule>
+type TCArray = TAllCollections<TModule>[TCName]['array']
+type TArrayByCName<C extends TCName = 'main'> = TAllCollections<TModule>[C]['array']
 
-type TArrayByCName<C extends TCName = 'main'> = TAllCollections[C]['array']
-// type TApiPage1 = TAllCollections[TCName]['apiPage']
-
+type TApiPage1<C extends TCName> = TAllCollections<TModule>[C]['apiPage']
+type TViewsByCName<C extends TCName> = keyof TApiPage1<C>
+// type TViewValByCName<C extends TCName> = TApiPage1<C>[TViewsByCName<C>]
+type TApiPage2<C extends TCName, V extends TViewsByCName<C>> = TApiPage1<C>[V]
 type TApiPage<
   C extends TCName,
-  V extends TCollectionView,
+  V extends TViewsByCName<C>,
   M extends TModule = 'Stone',
 > = C extends 'main'
   ? V extends 'Tabular'
     ? TApiTabularByModule<M>
-    : V extends 'Gallery'
-      ? {
-          id: string
-          short: string
-          media: TMediaUrls
-        }
-      : // <'main', 'Chips', default>
-        string
-  : C extends 'media'
-    ? TArrayByCName<'media'>
-    : /* C extends 'related' */
-      V extends 'Tabular'
-      ? {
-          relation_name: string
-          module: TModule
-          id: number
-          slug: string
-          tag: string
-          short: string
-        }
-      : V extends 'Gallery'
-        ? TApiPage<'main', 'Gallery'> & {
-            relation_name: string
-            module: TModule
-          }
-        : TApiPage<'main', 'Chips'>
+    : TApiPage2<C, V>
+  : TApiPage2<C, V>
 
-type AddSlugAndTag<T> = T & {
-  tag: string
-  slug: TModule
-}
+type TPage<C extends TCName, V extends TViewsByCName<C>, M extends TModule = 'Stone'> = TApiPage<
+  C,
+  V,
+  M
+> & { tag: string; slug: string }
 
-type TPage<
-  C extends TCName,
-  V extends TCollectionView,
-  M extends TModule = 'Stone',
-> = C extends 'main'
-  ? V extends 'Tabular'
-    ? AddSlugAndTag<TTabularByModule<M>>
-    : V extends 'Gallery'
-      ? AddSlugAndTag<TApiPage<'main', 'Gallery'>>
-      : //V extends 'Chips'
-        {
-          id: string
-          slug: string
-          tag: string
-        }
-  : C extends 'media'
-    ? TArrayByCName<'media'>
-    : V extends 'Tabular'
-      ? AddSlugAndTag<TApiPage<'related', 'Tabular'>>
-      : V extends 'Gallery'
-        ? AddSlugAndTag<ExchangeMediaProperty<TApiPage<'related', 'Gallery'>>>
-        : TPage<'main', 'Chips'> & {
-            module: TModule
-          }
+// const a: TViewsByCName<'media'> = 'Gal'
+
+// //used by MediaSquare & MediaOverlay to pass a 'generic' record of different types between them
+// type TGalleryIntersection = TPage<'main', 'Gallery'> &
+//   TPage<'media', 'Gallery'> &
+//   TPage<'related', 'Gallery'>
+
+// //convert media property type from the api's TMediaUrls to the frontend's TMediaOfItem
+// type ExchangeMediaProperty<T extends TApiPage<'related', 'Gallery'>> = Omit<T, 'media'> & {
+//   media: TMediaOfItem
+// }
 
 //used by MediaSquare & MediaOverlay to pass a 'generic' record of different types between them
-type TGalleryIntersection = TPage<'main', 'Gallery'> &
-  TPage<'media', 'Gallery'> &
-  TPage<'related', 'Gallery'>
+// type TGalleryIntersection = TPage<'main', 'Gallery'> &
+//   TPage<'media', 'Gallery'> &
+//   TPage<'related', 'Gallery'>
 
-//convert media proporty type from the api's TMediaUrls to the frontend's TMediaOfItem
-type ExchangeMediaProperty<T extends TApiPage<'related', 'Gallery'>> = Omit<T, 'media'> & {
-  media: TMediaOfItem
-}
 type TArrayEqualFunc = (a: TCArray, b: TCArray) => boolean
+type TPageEqualFunc = (a: string, b: string) => boolean
 
-type TPageEqualFunc<C extends TCName, V extends TCollectionView, M extends TModule = 'Stone'> = (
-  a: TApiPage<C, V, M>,
-  b: TApiPage<C, V, M>,
-) => boolean
+// const a: TPage<'main', 'Tabular', 'Ceramic'> = {id: 'G', tag: "",}
 
 export {
   TArrayByCName,
@@ -190,7 +141,7 @@ export {
   TCollectionView,
   TApiPage,
   TPage,
-  TGalleryIntersection,
+  // TGalleryIntersection,
   TArrayEqualFunc,
   TPageEqualFunc,
 }

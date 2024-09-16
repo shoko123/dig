@@ -6,7 +6,7 @@ import {
   TCollectionView,
   TArrayByCName,
   TCArray,
-  TApiPage,
+  // TApiPage,
   TArrayEqualFunc,
   TPageEqualFunc,
 } from '@/js/types/collectionTypes'
@@ -107,10 +107,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     return aMain === bMain
   }
 
-  const pageEqualFunc: TPageEqualFunc<'related', TCollectionView, TModule> = function (
-    a: TApiPage<'related', TCollectionView, TModule>,
-    b: TApiPage<'related', TCollectionView, TModule>,
-  ) {
+  const pageEqualFunc: TPageEqualFunc = function (a: string, b: string) {
     return a === b
   }
 

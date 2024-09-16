@@ -5,7 +5,7 @@ import type { TFuncLoadPage } from '@/js/types/routesTypes'
 import {
   TArrayByCName,
   TCArray,
-  TApiPage,
+  // TApiPage,
   TCollectionView,
   TArrayEqualFunc,
   TPageEqualFunc,
@@ -85,10 +85,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     return aMain === bMain
   }
 
-  const pageEqualFunc: TPageEqualFunc<'media', TCollectionView, TModule> = function (
-    a: TApiPage<'media', TCollectionView, TModule>,
-    b: TApiPage<'media', TCollectionView, TModule>,
-  ) {
+  const pageEqualFunc: TPageEqualFunc = function (a: string, b: string) {
     return a === b
   }
 
