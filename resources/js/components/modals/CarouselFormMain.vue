@@ -17,10 +17,10 @@ import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { useCarouselStore } from '../../scripts/stores/modals/carousel'
 const { routerPush } = useRoutesMainStore()
 const { close } = useCarouselStore()
-const { carouselItemDetails } = storeToRefs(useCarouselStore())
+const { carouselComputed } = storeToRefs(useCarouselStore())
 
 const item = computed(() => {
-  return <TCarousel<'main'> | null>carouselItemDetails.value
+  return <TCarousel<'main'> | undefined>carouselComputed.value
 })
 
 async function clicked() {

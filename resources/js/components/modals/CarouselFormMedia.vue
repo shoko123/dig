@@ -2,14 +2,7 @@
   <v-card-text v-if="item">
     <v-row no-gutters class="text-h5"> Media for {{ derived.moduleAndTag }} </v-row>
     <v-row wrap no-gutters>
-      <v-textarea
-        v-model="derived.short"
-        label="Description"
-        class="mr-1"
-        rows="3"
-        readonly
-        filled
-      />
+      <v-textarea v-model="derived.moduleAndTag" label="Description" class="mr-1" rows="3" readonly filled />
     </v-row>
     <v-row no-gutters>
       <v-text-field v-model="item.file_name" label="File Name" class="mr-1" readonly filled />
@@ -35,11 +28,11 @@ import { useItemStore } from '../../scripts/stores/item'
 import { useCarouselStore } from '../../scripts/stores/modals/carousel'
 
 const { close } = useCarouselStore()
-const { carouselItemDetails } = storeToRefs(useCarouselStore())
+const { carouselComputed } = storeToRefs(useCarouselStore())
 const { derived } = storeToRefs(useItemStore())
 
 const item = computed(() => {
-  return <TCarousel<'media'> | null>carouselItemDetails.value
+  return <TCarousel<'media'> | null>carouselComputed.value
 })
 
 async function backToItem() {

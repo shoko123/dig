@@ -71,11 +71,11 @@ type TAllCollections<M extends TModule> = {
     array: TApiPageRelated['Gallery']
     apiPage: TApiPageRelated
     apiCarousel: {
+      relation_name: string
       module: TModule
       id: number
       urls: TMediaUrls
       short: string
-      relation_name: string
     }
   }
 }

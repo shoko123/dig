@@ -1,8 +1,7 @@
-// stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { TCName, TArrayByCName, TCArray } from '@/js/types/collectionTypes'
-import { TCarousel, TApiCarousel, TCarouselUnion } from '@/js/types/mediaTypes'
+import { TCarousel, TApiCarousel, TCarouselUnion, TApiCarouselUnion } from '@/js/types/mediaTypes'
 import { TModule } from '@/js/types/moduleTypes'
 
 import { useCollectionsStore } from '../collections/collections'
@@ -25,23 +24,52 @@ export const useCarouselStore = defineStore('carousel', () => {
   const collectionName = ref<TCName>('main')
   const index = ref<number>(-1)
   const carouselItemDetails = ref<TCarouselUnion | null>(null)
+  const current = ref<TApiCarouselUnion | null>(null)
+
+  const carouselComputed = computed(() => {
+    if (current.value === null) {
+      return undefined
+    }
+
+    switch (collectionName.value) {
+      case 'main': {
+        const car = current.value as TApiCarousel<'main'>
+        const media = buildMedia(car.urls, derived.value.module)
+        const tagAndSlug = tagAndSlugFromId(car.id)
+        return { ...car, media, ...tagAndSlug }
+      }
+
+      case 'media': {
+        const car = current.value as TApiCarousel<'media'>
+        const media = buildMedia(car.urls, derived.value.module)
+        return {
+          ...car,
+          media,
+          size: (car.size / 1000000).toFixed(2).toString() + 'MB',
+          tag: '',
+          text: '',
+          title: '',
+        }
+      }
+      case 'related':
+      default: {
+        const car = current.value as TApiCarousel<'related'>
+        const media = buildMedia(car.urls, car.module)
+        const tagAndSlug = tagAndSlugFromId(car.id)
+        return { ...car, media, ...tagAndSlug }
+      }
+    }
+  })
 
   const sourceArrayLength = computed(() => {
     const store = getCollectionStore(collectionName.value)
     return store.array.length
   })
 
-  async function open(
-    source: TCName,
-    openIndex: number,
-  ): Promise<{ success: true } | { success: false; message: string }> {
+  async function open(source: TCName, openIndex: number) {
     collectionName.value = source
     const arrayElement = arrayElementByIndex(source, openIndex)
-    let res: { success: true } | { success: false; message: string } = {
-      success: false,
-      message: '',
-    }
-    res = await loadItem(arrayElement)
+    const res = await loadItem(arrayElement)
 
     if (res.success) {
       index.value = openIndex
@@ -52,7 +80,20 @@ export const useCarouselStore = defineStore('carousel', () => {
     }
   }
 
-  async function loadMainCarouselItem(
+  async function loadItem(arrayElement: TCArray) {
+    switch (collectionName.value) {
+      case 'main':
+        return await loadCarouselMain(arrayElement as TArrayByCName<'main'>)
+
+      case 'media':
+        return await loadCarouselMedia(arrayElement as TArrayByCName<'media'>)
+
+      case 'related':
+        return loadCarouselRelated(arrayElement as TArrayByCName<'related'>)
+    }
+  }
+
+  async function loadCarouselMain(
     item: TArrayByCName<'main'>,
   ): Promise<{ success: true } | { success: false; message: string }> {
     const res = await send<TApiCarousel<'main'>>('carousel/show', 'post', {
@@ -60,12 +101,14 @@ export const useCarouselStore = defineStore('carousel', () => {
       module: derived.value.module,
       module_id: item,
     })
+
     if (res.success) {
       carouselItemDetails.value = {
         ...res.data,
         ...tagAndSlugFromId(res.data.id),
         media: buildMedia(res.data.urls, derived.value.module),
       }
+      current.value = res.data
     } else {
       return { success: false, message: `Failed to load carousel item.` }
       //pushHome('Failed to load carousel item. Redirected to home page.')
@@ -73,7 +116,7 @@ export const useCarouselStore = defineStore('carousel', () => {
     return { success: true }
   }
 
-  async function loadMediaCarouselItem(
+  async function loadCarouselMedia(
     item: TArrayByCName<'media'>,
   ): Promise<{ success: true } | { success: false; message: string }> {
     const res = await send<TApiCarousel<'media'>>('carousel/show', 'post', {
@@ -94,41 +137,24 @@ export const useCarouselStore = defineStore('carousel', () => {
         title: res.data.title,
         text: res.data.text,
       }
+      current.value = res.data
       return { success: true }
     } else {
       return { success: false, message: `Failed to load carousel item.` }
     }
   }
 
-  async function loadRelatedCarouselItem(
+  async function loadCarouselRelated(
     item: TArrayByCName<'related'>,
   ): Promise<{ success: true } | { success: false; message: string }> {
     const tmp = <TArrayByCName<'related'>>item
     carouselItemDetails.value = {
       ...tmp,
       ...tagAndSlugFromId(tmp.id, tmp.module),
-      media: buildMedia(tmp.media, tmp.module),
+      media: buildMedia(tmp.urls, tmp.module),
     }
+    current.value = tmp
     return { success: true }
-  }
-
-  async function loadItem(arrayElement: TCArray) {
-    let res: { success: true } | { success: false; message: string } = {
-      success: false,
-      message: '',
-    }
-    switch (collectionName.value) {
-      case 'main':
-        res = await loadMainCarouselItem(arrayElement as TArrayByCName<'main'>)
-        break
-      case 'media':
-        res = await loadMediaCarouselItem(arrayElement as TArrayByCName<'media'>)
-        break
-      case 'related':
-        res = await loadRelatedCarouselItem(arrayElement as TArrayByCName<'related'>)
-        break
-    }
-    return res
   }
 
   async function nextItem(
@@ -146,7 +172,7 @@ export const useCarouselStore = defineStore('carousel', () => {
   }
 
   async function close(): Promise<{ success: true } | { success: false; message: string }> {
-    //if current carouselItem is in currently loaded page - close, otherwise, load relevant page
+    //if current current is in currently loaded page - close, otherwise, load relevant page
 
     switch (collectionName.value) {
       case 'main':
@@ -190,6 +216,10 @@ export const useCarouselStore = defineStore('carousel', () => {
     isOpen,
     collectionName,
     carouselItemDetails,
+    ///
+    current,
+    carouselComputed,
+    ////
     sourceArrayLength,
     index,
     open,

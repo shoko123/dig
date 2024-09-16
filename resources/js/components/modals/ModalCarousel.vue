@@ -45,7 +45,7 @@ const { smAndDown } = useDisplay()
 const { close, nextItem } = useCarouselStore()
 const { showSpinner } = useNotificationsStore()
 const { pushHome } = useRoutesMainStore()
-const { isOpen, index, sourceArrayLength, collectionName, carouselItemDetails } =
+const { isOpen, index, sourceArrayLength, collectionName, carouselComputed } =
   storeToRefs(useCarouselStore())
 
 const { derived } = storeToRefs(useItemStore())
@@ -54,12 +54,12 @@ const details = computed(() => {
     case 'main':
       return {
         form: CarouselFormMain,
-        header: mainHeader(<TCarousel<'main'>>carouselItemDetails.value),
+        header: mainHeader(<TCarousel<'main'>>carouselComputed.value),
       }
     case 'related':
       return {
         form: CarouselFormRelated,
-        header: relatedHeader(<TCarousel<'related'>>carouselItemDetails.value),
+        header: relatedHeader(<TCarousel<'related'>>carouselComputed.value),
       }
     case 'media':
     default:

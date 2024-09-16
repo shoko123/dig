@@ -1,13 +1,7 @@
 <template>
   <div id="zoomy-container" height="100vh">
-    <v-img
-      id="zoomy"
-      :src="media?.urls.full"
-      :lazy-src="media?.urls.tn"
-      aspect-ratio="1"
-      height="95vh"
-      :cover="isFiller"
-    >
+    <v-img id="zoomy" :src="media?.urls.full" :lazy-src="media?.urls.tn" aspect-ratio="1" height="95vh"
+      :cover="isFiller">
       <v-overlay v-model="isFiller" contained class="align-center justify-center">
         <div class="text-white text-h2">No Media Available</div>
       </v-overlay>
@@ -37,10 +31,10 @@ onBeforeUnmount(() => {
   zm.value = null
 })
 
-const { carouselItemDetails } = storeToRefs(useCarouselStore())
+const { carouselComputed } = storeToRefs(useCarouselStore())
 
 const media = computed(() => {
-  return carouselItemDetails.value?.media
+  return carouselComputed.value?.media
 })
 
 const zm = ref<Zoomy | null>(null)
