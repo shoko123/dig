@@ -57,43 +57,38 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     pageLength: number,
     module: TModule,
   ) {
-    const start = (pageNo - 1) * pageLength
-    console.log(
-      `loadPage() c: main v: ${view} pageB1: ${pageNo}  length: ${pageLength} startIndex: ${start} endIndex: ${start + pageLength - 1} module: ${module}`,
-    )
-
-    //if view is chips, use a slice into the 'main' collection's array
-    if (view === 'Chips') {
-      pageNoB1.value = pageNo
-      const slice = array.value.slice(start, start + pageLength)
-
-      apiPage.value = slice.map((x) => {
-        return { id: x }
-      })
-      return { success: true, message: '' }
-    }
-
-    //'Gallery' and 'Tabular' views require db access
-    const ids = array.value.slice(start, start + pageLength)
-    // console.log(`start: ${start}, pageLength: ${pageLength}, ids to send to module/page: ${ids}`)
-    if (ids.length === 0) {
-      console.log(`ids.length is 0 - returning`)
+    if (pageLength === 0) {
       apiPage.value = []
-      return { success: false, message: 'Error: page size 0.' }
+      return { success: false, message: 'Error: page size is 0.' }
     }
+    const start = (pageNo - 1) * pageLength
+    const slice = array.value.slice(start, start + pageLength)
+    console.log(`loadPage(main) v: ${view} pNo: ${pageNo}  len: ${pageLength} startIndex: ${start}`)
 
-    const res = await send<TApiPage<'main', 'Gallery'>[]>('module/page', 'post', {
-      module: module,
-      view: view,
-      ids,
-    })
-    if (res.success) {
-      apiPage.value = res.data
-      pageNoB1.value = pageNo
-      return { success: true, message: '' }
-    } else {
-      console.log(`loadPage failed. err: ${JSON.stringify(res.message, null, 2)}`)
-      return { success: false, message: res.message }
+    switch (view) {
+      case 'Chips':
+        apiPage.value = slice.map((x) => {
+          return { id: x }
+        })
+        pageNoB1.value = pageNo
+        return { success: true, message: '' }
+
+      default: {
+        //views Gallery or Tabular require db access
+        const res = await send<TApiPage<'main', 'Gallery'>[]>('module/page', 'post', {
+          module: module,
+          view: view,
+          ids: slice,
+        })
+        if (res.success) {
+          apiPage.value = res.data
+          pageNoB1.value = pageNo
+          return { success: true, message: '' }
+        } else {
+          console.log(`loadPage failed. err: ${JSON.stringify(res.message, null, 2)}`)
+          return { success: false, message: res.message }
+        }
+      }
     }
   }
 
@@ -121,7 +116,6 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
   return {
     array,
     page,
-    // myPage,
     pageNoB1,
     viewIndex,
     info,
