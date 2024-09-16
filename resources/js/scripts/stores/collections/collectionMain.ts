@@ -116,6 +116,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
   return {
     array,
     page,
+    apiPage,
     pageNoB1,
     viewIndex,
     info,

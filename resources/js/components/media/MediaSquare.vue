@@ -22,7 +22,7 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { TCName, TGalleryIntersection } from '../../types/collectionTypes'
+import { TCName, TPage } from '../../types/collectionTypes'
 import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 import MediaOverlay from './MediaOverlay.vue'
 
@@ -36,7 +36,9 @@ const prps = defineProps<{
 const record = computed(() => {
   const c = getCollectionStore(prps.source)
   let indexInPage = prps.itemIndex % c.info.itemsPerPage
-  return c.page[indexInPage] as TGalleryIntersection // TPage<TCName, 'Gallery', TModule>
+  return c.page[indexInPage] as TPage<'main', 'Gallery'> &
+    TPage<'media', 'Gallery'> &
+    TPage<'related', 'Gallery'>
 })
 
 const data = computed(() => {
@@ -53,7 +55,7 @@ const data = computed(() => {
       return {
         showTag: false,
         tagText: '',
-        urls: record.value?.urls,
+        urls: record.value.urls,
         short: '',
         record: record.value,
       }

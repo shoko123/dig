@@ -63,7 +63,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
 
       case 'Gallery':
         res = slice.map((x) => {
-          const media = buildMedia(x.media, x.module)
+          const media = buildMedia(x.urls, x.module)
           return { ...x, media }
         })
         break

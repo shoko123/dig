@@ -24,7 +24,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
 
   const array = ref<TArrayByCName<'media'>[]>([])
 
-  const page = computed<TArrayByCName<'media'>[]>(() => {
+  const page = computed(() => {
     const ipp = getItemsPerPage('media', viewIndex.value)
     const start = (pageNoB1.value - 1) * ipp
     const slice = array.value.slice(start, start + ipp)
