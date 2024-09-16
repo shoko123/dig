@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
 import type {
   TArrayByCName,
@@ -10,7 +10,7 @@ import type {
   TCArray,
 } from '@/js/types/collectionTypes'
 import type { TFuncLoadPage } from '@/js/types/routesTypes'
-import type { TModule, TApiPageMainTabularUnion } from '@/js/types/moduleTypes'
+import type { TModule } from '@/js/types/moduleTypes'
 import { useModuleStore } from '../module'
 import { useXhrStore } from '../xhr'
 import { useMediaStore } from '../media'
@@ -20,13 +20,26 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
   const { send } = useXhrStore()
   const { buildMedia } = useMediaStore()
   const { tagAndSlugFromId } = useModuleStore()
+  const { module } = storeToRefs(useModuleStore())
   const { getConsumeableCollection } = useCollectionsStore()
 
   const pageNoB1 = ref(1)
   const viewIndex = ref(0)
   const array = ref<TArrayByCName[]>([])
 
-  const page = ref<TPage<'main', TCollectionView, TModule>[]>([])
+  const apiPage = ref<TApiPage<'main', TCollectionView, TModule>[]>([])
+
+  const page = computed(() => {
+    return apiPage.value.map((x) => {
+      const tagAndSlug = tagAndSlugFromId(x.id)
+      let y = { ...x, ...tagAndSlug }
+      if ('media' in x) {
+        const media = buildMedia(x.media, module.value)
+        y = { ...y, ...{ media } }
+      }
+      return y
+    })
+  })
 
   const info = computed(() => {
     return getConsumeableCollection(
@@ -45,7 +58,6 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     module: TModule,
   ) {
     const start = (pageNo - 1) * pageLength
-
     console.log(
       `loadPage() c: main v: ${view} pageB1: ${pageNo}  length: ${pageLength} startIndex: ${start} endIndex: ${start + pageLength - 1} module: ${module}`,
     )
@@ -54,14 +66,10 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     if (view === 'Chips') {
       pageNoB1.value = pageNo
       const slice = array.value.slice(start, start + pageLength)
-      savePage(
-        slice,
-        // slice.map((x) => {
-        //   return { id: x, ...tagAndSlugFromId(module, x) }
-        // }),
-        view,
-        module,
-      )
+
+      apiPage.value = slice.map((x) => {
+        return { id: x }
+      })
       return { success: true, message: '' }
     }
 
@@ -70,7 +78,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     // console.log(`start: ${start}, pageLength: ${pageLength}, ids to send to module/page: ${ids}`)
     if (ids.length === 0) {
       console.log(`ids.length is 0 - returning`)
-      savePage([], view, module)
+      apiPage.value = []
       return { success: false, message: 'Error: page size 0.' }
     }
 
@@ -80,50 +88,13 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
       ids,
     })
     if (res.success) {
-      savePage(res.data, view, module)
+      apiPage.value = res.data
       pageNoB1.value = pageNo
       return { success: true, message: '' }
     } else {
       console.log(`loadPage failed. err: ${JSON.stringify(res.message, null, 2)}`)
       return { success: false, message: res.message }
     }
-  }
-
-  function savePage<M extends TModule>(
-    apiPage: TApiPage<'main', TCollectionView, TModule>[],
-    view: TCollectionView,
-    module: M,
-  ): void {
-    let toSave = []
-    let typed = []
-    //console.log(`savePage view: ${view.name} apiPage: ${JSON.stringify(apiPage, null, 2)}`)
-    switch (view) {
-      case 'Gallery':
-        typed = apiPage as TApiPage<'main', 'Gallery', M>[]
-        toSave = typed.map((x) => {
-          const media = buildMedia(x.media, module)
-          return { ...x, ...tagAndSlugFromId(x.id), media }
-        })
-        page.value = toSave
-        break
-
-      case 'Tabular':
-        typed = apiPage as TApiPageMainTabularUnion[]
-        toSave = typed.map((x) => {
-          return { ...x, ...tagAndSlugFromId(x.id) }
-        })
-        page.value = toSave
-        break
-
-      case 'Chips':
-        typed = apiPage as string[]
-        toSave = typed.map((x) => {
-          return { id: x, ...tagAndSlugFromId(x) }
-        })
-        page.value = toSave
-        break
-    }
-    //console.log(`mainCollection.savePage() length: ${toSave.length}\npage:\n${JSON.stringify(page.value, null, 2)}`)
   }
 
   function elementIsInPage<IDtype extends string | number>(id: IDtype) {
@@ -143,13 +114,14 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
   function clear() {
     console.log(`collectionMain.clear()`)
     array.value = []
-    page.value = []
+    apiPage.value = []
     pageNoB1.value = 1
   }
 
   return {
     array,
     page,
+    // myPage,
     pageNoB1,
     viewIndex,
     info,

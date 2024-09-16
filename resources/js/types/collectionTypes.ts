@@ -36,7 +36,7 @@ type TApiPage<
           media: TMediaUrls
         }
       : // <'main', 'Chips', default>
-        string
+        { id: string }
   : C extends 'media'
     ? TArrayByCName<'media'>
     : /* C extends 'related' */
