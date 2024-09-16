@@ -33,7 +33,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
       return {
         id: x.id,
         order_column: x.order_column,
-        urls: media.urls,
+        media,
       }
     })
     return res

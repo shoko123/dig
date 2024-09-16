@@ -33,8 +33,8 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     return apiPage.value.map((x) => {
       const tagAndSlug = tagAndSlugFromId(x.id)
       let y = { ...x, ...tagAndSlug }
-      if ('media' in x) {
-        const media = buildMedia(x.media, module.value)
+      if ('urls' in y) {
+        const media = buildMedia(y.urls, module.value)
         y = { ...y, ...{ media } }
       }
       return y

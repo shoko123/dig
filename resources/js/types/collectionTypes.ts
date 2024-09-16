@@ -1,13 +1,5 @@
-// collectionTypes.ts
-
 import { TMediaOfItem, TMediaUrls } from '@/js/types/mediaTypes'
-import {
-  TModule,
-  TApiTabularByModule,
-  TTabularByModule,
-  // TViewsForCollection,
-  // TApiPageMainTabular,
-} from '@/js/types/moduleTypes'
+import { TModule, TApiTabularByModule, TTabularByModule } from '@/js/types/moduleTypes'
 
 type TCollectionView = 'Gallery' | 'Chips' | 'Tabular'
 
@@ -15,7 +7,7 @@ type TApiPageMain<M extends TModule> = {
   Gallery: {
     id: string
     short: string
-    media: TMediaUrls
+    urls: TMediaUrls
   }
   Tabular: TTabularByModule<M>
   Chips: { id: string }
@@ -94,7 +86,6 @@ type TArrayByCName<C extends TCName = 'main'> = TAllCollections<TModule>[C]['arr
 
 type TApiPage1<C extends TCName> = TAllCollections<TModule>[C]['apiPage']
 type TViewsByCName<C extends TCName> = keyof TApiPage1<C>
-// type TViewValByCName<C extends TCName> = TApiPage1<C>[TViewsByCName<C>]
 type TApiPage2<C extends TCName, V extends TViewsByCName<C>> = TApiPage1<C>[V]
 type TApiPage<
   C extends TCName,
@@ -106,12 +97,6 @@ type TApiPage<
     : TApiPage2<C, V>
   : TApiPage2<C, V>
 
-// type TPage<C extends TCName, V extends TViewsByCName<C>, M extends TModule = 'Stone'> = TApiPage<
-//   C,
-//   V,
-//   M
-// > & { tag: string; slug: string }
-
 type TPage<
   C extends TCName,
   V extends TViewsByCName<C>,
@@ -120,23 +105,10 @@ type TPage<
   ? SwapUrlWithMedia<TApiPage<C, V, M>> & { tag: string; slug: string }
   : TApiPage<C, V, M> & { tag: string; slug: string }
 
-// type TPage2<TPage1<C, V, M>> = SwapUrlWithMedia<TPage1<
-//   C,
-//   V,
-//   M
-// >>
-
-// const a: TViewsByCName<'media'> = 'Gal'
-
 // //convert media property type from the api's TMediaUrls to the frontend's TMediaOfItem
-type SwapUrlWithMedia<T extends TApiPage<TCName, 'Gallery'>> = Omit<T, 'url'> & {
+type SwapUrlWithMedia<T extends TApiPage<TCName, 'Gallery'>> = Omit<T, 'urls'> & {
   media: TMediaOfItem
 }
-
-//used by MediaSquare & MediaOverlay to pass a 'generic' record of different types between them
-// type TGalleryIntersection = TPage<'main', 'Gallery'> &
-//   TPage<'media', 'Gallery'> &
-//   TPage<'related', 'Gallery'>
 
 type TArrayEqualFunc = (a: TCArray, b: TCArray) => boolean
 type TPageEqualFunc = (a: string, b: string) => boolean
@@ -150,7 +122,6 @@ export {
   TCollectionView,
   TApiPage,
   TPage,
-  // TGalleryIntersection,
   TArrayEqualFunc,
   TPageEqualFunc,
 }

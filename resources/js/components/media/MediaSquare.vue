@@ -47,7 +47,7 @@ const data = computed(() => {
       return {
         showTag: true,
         tagText: record.value.tag,
-        urls: record.value.media?.urls,
+        urls: record.value.media.urls,
         short: record.value.short,
         record: record.value,
       }
@@ -55,7 +55,7 @@ const data = computed(() => {
       return {
         showTag: false,
         tagText: '',
-        urls: record.value.urls,
+        urls: record.value.media.urls,
         short: '',
         record: record.value,
       }
@@ -64,7 +64,7 @@ const data = computed(() => {
       return {
         showTag: true,
         tagText: record.value.relation_name,
-        urls: record.value.media?.urls,
+        urls: record.value.media.urls,
         short: `${record.value.module} ${record.value.tag}.  ${record.value.short}`,
         record: record.value,
       }
