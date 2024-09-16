@@ -42,12 +42,13 @@ const record = computed(() => {
 })
 
 const data = computed(() => {
+  // console.log(`MediaSquare.record: ${JSON.stringify(record.value, null, 2)}`)
   switch (prps.source) {
     case 'main':
       return {
         showTag: true,
         tagText: record.value.tag,
-        urls: record.value.media.urls,
+        urls: record.value.media?.urls,//IMPORTANT due to race condition on transition between collection view Gallery -> Tabular
         short: record.value.short,
         record: record.value,
       }
