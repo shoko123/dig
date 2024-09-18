@@ -42,6 +42,7 @@ const record = computed(() => {
 })
 
 const data = computed(() => {
+  //TODO fix it!!!
   // console.log(`MediaSquare.record: ${JSON.stringify(record.value, null, 2)}`)
   switch (prps.source) {
     case 'main':

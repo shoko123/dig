@@ -47,36 +47,36 @@ type TAllCollections<M extends TModule> = {
   main: {
     array: string
     apiPage: TApiPageMain<M>
-    apiCarousel: {
-      id: string
-      short: string
-      media: TMediaOfItem
-    }
+    // apiCarousel: {
+    //   id: string
+    //   short: string
+    //   media: TMediaOfItem
+    // }
   }
   media: {
     array: TApiPageMedia['Gallery']
     apiPage: TApiPageMedia
-    apiCarousel: {
-      id: number
-      urls: TMediaUrls
-      size: number
-      collection_name: string
-      file_name: string
-      order_column: number
-      title: string
-      text: string
-    }
+    // apiCarousel: {
+    //   id: number
+    //   urls: TMediaUrls
+    //   size: number
+    //   collection_name: string
+    //   file_name: string
+    //   order_column: number
+    //   title: string
+    //   text: string
+    // }
   }
   related: {
     array: TApiPageRelated['Gallery']
     apiPage: TApiPageRelated
-    apiCarousel: {
-      relation_name: string
-      module: TModule
-      id: number
-      urls: TMediaUrls
-      short: string
-    }
+    // apiCarousel: {
+    //   relation_name: string
+    //   module: TModule
+    //   id: number
+    //   urls: TMediaUrls
+    //   short: string
+    // }
   }
 }
 
@@ -111,7 +111,10 @@ type SwapUrlWithMedia<T extends TApiPage<TCName, 'Gallery'>> = Omit<T, 'urls'> &
 }
 
 type TArrayEqualFunc = (a: TCArray, b: TCArray) => boolean
-type TPageEqualFunc = (a: string, b: string) => boolean
+type TPageEqualFunc = <C extends TCName, V extends TViewsByCName<C>, M extends TModule = 'Stone'>(
+  a: TApiPage<C, V, M>,
+  b: TApiPage<C, V, M>,
+) => boolean
 
 // const a: TPage<'main', 'Tabular', 'Ceramic'> = {id: 'G', tag: "",}
 
@@ -124,4 +127,5 @@ export {
   TPage,
   TArrayEqualFunc,
   TPageEqualFunc,
+  TViewsByCName,
 }

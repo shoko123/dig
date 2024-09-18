@@ -6,9 +6,11 @@ import {
   TCollectionView,
   TArrayByCName,
   TCArray,
-  // TApiPage,
+  TApiPage,
   TArrayEqualFunc,
   TPageEqualFunc,
+  TCName,
+  TViewsByCName,
 } from '@/js/types/collectionTypes'
 import { useMediaStore } from '../media'
 import { useModuleStore } from '../module'
@@ -107,7 +109,11 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     return aMain === bMain
   }
 
-  const pageEqualFunc: TPageEqualFunc = function (a: string, b: string) {
+  const pageEqualFunc: TPageEqualFunc = function <
+    C extends TCName,
+    V extends TViewsByCName<C>,
+    M extends TModule = 'Stone',
+  >(a: TApiPage<C, V, M>, b: TApiPage<C, V, M>) {
     return a === b
   }
 
