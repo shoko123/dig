@@ -6,7 +6,7 @@ import {
   TCollectionView,
   TArrayByCName,
   TCArray,
-  TApiPage,
+  TPage,
   TArrayEqualFunc,
   TPageEqualFunc,
   TCName,
@@ -110,11 +110,14 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
   }
 
   const pageEqualFunc: TPageEqualFunc = function <
+    A extends TCArray,
     C extends TCName,
     V extends TViewsByCName<C>,
     M extends TModule = 'Stone',
-  >(a: TApiPage<C, V, M>, b: TApiPage<C, V, M>) {
-    return a === b
+  >(e: A, p: TPage<C, V, M>) {
+    const eRelated = e as TArrayByCName<'related'>
+    const pRelated = p as TPage<'related', TCollectionView>
+    return eRelated.module === pRelated.module && eRelated.id === pRelated.id
   }
 
   function clear() {

@@ -1,8 +1,9 @@
-import type { TCName, TCArray } from '@/js/types/collectionTypes'
+import type { TCName, TCArray, TViewsByCName, TPage } from '@/js/types/collectionTypes'
 
 import { defineStore } from 'pinia'
 
 import { useCollectionsStore } from './collections'
+import { TModule } from '@/js/types/moduleTypes'
 
 export const useElementAndCollectionStore = defineStore('elementAndCollection', () => {
   const { getCollectionStore } = useCollectionsStore()
@@ -21,6 +22,18 @@ export const useElementAndCollectionStore = defineStore('elementAndCollection', 
       `indexByArrayElement() name: ${collectionName}, element: ${JSON.stringify(element, null, 2)}\n=> ${index}`,
     )
     return index
+  }
+
+  function elementInPage<
+    A extends TCArray,
+    C extends TCName,
+    V extends TViewsByCName<C>,
+    M extends TModule,
+  >(collectionName: C, element: A) {
+    const c = getCollectionStore(collectionName)
+    return c.page.some((x) => {
+      return c.pageEqualFunc<A, C, TViewsByCName<C>, TModule>(element, <TPage<C, V, M>>x)
+    })
   }
 
   function nextArrayIndex(name: TCName, index: number, isRight: boolean) {
@@ -50,5 +63,6 @@ export const useElementAndCollectionStore = defineStore('elementAndCollection', 
     nextArrayElement,
     nextArrayIndex,
     indexByArrayElement,
+    elementInPage,
   }
 })

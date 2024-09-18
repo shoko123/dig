@@ -5,7 +5,7 @@ import type { TFuncLoadPage } from '@/js/types/routesTypes'
 import {
   TArrayByCName,
   TCArray,
-  TApiPage,
+  TPage,
   TCollectionView,
   TArrayEqualFunc,
   TCName,
@@ -88,11 +88,14 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
   }
 
   const pageEqualFunc: TPageEqualFunc = function <
+    A extends TCArray,
     C extends TCName,
     V extends TViewsByCName<C>,
     M extends TModule = 'Stone',
-  >(a: TApiPage<C, V, M>, b: TApiPage<C, V, M>) {
-    return a === b
+  >(e: A, p: TPage<C, V, M>) {
+    const eMedia = e as TArrayByCName<'media'>
+    const pMedia = p as TPage<'media', 'Gallery'>
+    return eMedia.id === pMedia.id
   }
 
   return {

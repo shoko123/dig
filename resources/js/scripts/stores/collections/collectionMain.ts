@@ -2,6 +2,7 @@ import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
 import type {
   TArrayByCName,
+  TCArray,
   TApiPage,
   TPage,
   TCollectionView,
@@ -9,7 +10,6 @@ import type {
   TPageEqualFunc,
   TCName,
   TViewsByCName,
-  TCArray,
 } from '@/js/types/collectionTypes'
 import type { TFuncLoadPage } from '@/js/types/routesTypes'
 import type { TModule } from '@/js/types/moduleTypes'
@@ -105,11 +105,14 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
   }
 
   const pageEqualFunc: TPageEqualFunc = function <
+    A extends TCArray,
     C extends TCName,
     V extends TViewsByCName<C>,
     M extends TModule = 'Stone',
-  >(a: TApiPage<C, V, M>, b: TApiPage<C, V, M>) {
-    return a === b
+  >(e: A, p: TPage<C, V, M>) {
+    const eMain = e as TArrayByCName<'main'>
+    const pMain = p as TPage<'main', TCollectionView>
+    return eMain === pMain.id
   }
 
   function clear() {

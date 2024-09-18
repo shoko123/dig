@@ -16,7 +16,7 @@ export const useCarouselStore = defineStore('carousel', () => {
   const { derived } = storeToRefs(useItemStore())
   const { buildMedia } = useMediaStore()
   const { tagAndSlugFromId, getViewName, getItemsPerPage } = useModuleStore()
-  const { arrayElementByIndex, nextArrayElement, indexByArrayElement } =
+  const { arrayElementByIndex, nextArrayElement, indexByArrayElement, elementInPage } =
     useElementAndCollectionStore()
 
   const isOpen = ref<boolean>(false)
@@ -143,8 +143,9 @@ export const useCarouselStore = defineStore('carousel', () => {
           const mainStore = getCollectionStore('main')
           const view = getViewName('main', mainStore.viewIndex)
           const ipp = getItemsPerPage('main', mainStore.viewIndex)
-          if (mainStore.elementIsInPage(<string>carouselComputed.value?.id)) {
+          if (elementInPage('main', <string>carouselComputed.value!.id)) {
             console.log(`carousel.close() no need to load a new page`)
+            break
           }
 
           const index = indexByArrayElement(
