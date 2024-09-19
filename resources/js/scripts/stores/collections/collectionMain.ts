@@ -7,8 +7,6 @@ import type {
   TCollectionView,
   TArrayEqualFunc,
   TPageEqualFunc,
-  TCName,
-  TViewsByCName,
 } from '@/js/types/collectionTypes'
 import type { TFuncLoadPage } from '@/js/types/routesTypes'
 import type { TModule } from '@/js/types/moduleTypes'
@@ -94,16 +92,12 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
   }
 
   const arrayEqualFunc: TArrayEqualFunc = function (a: TArray, b: TArray) {
-    const aMain = a as string
-    const bMain = b as string
+    const aMain = a as TArray<'main'>
+    const bMain = b as TArray<'main'>
     return aMain === bMain
   }
 
-  const pageEqualFunc: TPageEqualFunc = function <
-    C extends TCName = TCName,
-    V extends TViewsByCName<C> = TViewsByCName<C>,
-    M extends TModule = 'Stone',
-  >(e: TArray, p: TPage<C, V, M>) {
+  const pageEqualFunc: TPageEqualFunc = function (e: TArray, p: TPage) {
     const eMain = e as TArray<'main'>
     const pMain = p as TPage<'main', TCollectionView>
     return eMain === pMain.id

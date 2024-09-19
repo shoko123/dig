@@ -1,9 +1,8 @@
-import type { TCName, TArray, TViewsByCName, TPage } from '@/js/types/collectionTypes'
+import type { TCName, TArray, TPage } from '@/js/types/collectionTypes'
 
 import { defineStore } from 'pinia'
 
 import { useCollectionsStore } from './collections'
-import { TModule } from '@/js/types/moduleTypes'
 
 export const useElementAndCollectionStore = defineStore('elementAndCollection', () => {
   const { getCollectionStore } = useCollectionsStore()
@@ -24,15 +23,10 @@ export const useElementAndCollectionStore = defineStore('elementAndCollection', 
     return index
   }
 
-  function elementInPage<
-    A extends TArray,
-    C extends TCName,
-    V extends TViewsByCName<C>,
-    M extends TModule,
-  >(collectionName: C, element: A) {
+  function elementInPage<A extends TArray, C extends TCName>(collectionName: C, element: A) {
     const c = getCollectionStore(collectionName)
     return c.page.some((x) => {
-      return c.pageEqualFunc<A, C, TViewsByCName<C>, TModule>(element, <TPage<C, V, M>>x)
+      return c.pageEqualFunc(element, <TPage>x)
     })
   }
 

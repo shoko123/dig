@@ -7,8 +7,6 @@ import {
   TPage,
   TCollectionView,
   TArrayEqualFunc,
-  TCName,
-  TViewsByCName,
   TPageEqualFunc,
 } from '@/js/types/collectionTypes'
 import { useModuleStore } from '../module'
@@ -82,11 +80,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     return aMain.id === bMain.id
   }
 
-  const pageEqualFunc: TPageEqualFunc = function <
-    C extends TCName,
-    V extends TViewsByCName<C>,
-    M extends TModule = 'Stone',
-  >(e: TArray, p: TPage<C, V, M>) {
+  const pageEqualFunc: TPageEqualFunc = function (e: TArray, p: TPage) {
     const eMedia = e as TArray<'media'>
     const pMedia = p as TPage<'media', 'Gallery'>
     return eMedia.id === pMedia.id

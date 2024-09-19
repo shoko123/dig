@@ -88,16 +88,7 @@ type SwapUrlWithMedia<T extends TApiPage<TCName, 'Gallery'>> = Omit<T, 'urls'> &
 }
 
 type TArrayEqualFunc = (a: TArray, b: TArray) => boolean
-
-type TPageEqualFunc = <
-  A extends TArray = TArray,
-  C extends TCName = TCName,
-  V extends TViewsByCName<C> = TViewsByCName<C>,
-  M extends TModule = 'Stone',
->(
-  a: A,
-  p: TPage<C, V, M>,
-) => boolean
+type TPageEqualFunc = (a: TArray, p: TPage) => boolean
 
 // const a: TPage<'main', 'Tabular', 'Ceramic'> = {id: 'G', tag: "",}
 

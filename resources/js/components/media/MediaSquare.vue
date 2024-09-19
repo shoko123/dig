@@ -39,6 +39,7 @@ const record = computed(() => {
   return c.page[indexInPage] as TPage<'main', 'Gallery'> &
     TPage<'media', 'Gallery'> &
     TPage<'related', 'Gallery'>
+  //Note This can't be reduced to TPage<TCName', 'Gallery'>
 })
 
 const data = computed(() => {
@@ -49,7 +50,7 @@ const data = computed(() => {
       return {
         showTag: true,
         tagText: record.value.tag,
-        urls: record.value.media?.urls,//IMPORTANT due to race condition on transition between collection view Gallery -> Tabular
+        urls: record.value.media?.urls,//IMPORTANT required on transition between collection view Gallery -> Tabular
         short: record.value.short,
         record: record.value,
       }
