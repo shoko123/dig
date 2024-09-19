@@ -100,11 +100,10 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
   }
 
   const pageEqualFunc: TPageEqualFunc = function <
-    A extends TArray,
-    C extends TCName,
-    V extends TViewsByCName<C>,
+    C extends TCName = TCName,
+    V extends TViewsByCName<C> = TViewsByCName<C>,
     M extends TModule = 'Stone',
-  >(e: A, p: TPage<C, V, M>) {
+  >(e: TArray, p: TPage<C, V, M>) {
     const eMain = e as TArray<'main'>
     const pMain = p as TPage<'main', TCollectionView>
     return eMain === pMain.id

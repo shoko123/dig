@@ -109,11 +109,10 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
   }
 
   const pageEqualFunc: TPageEqualFunc = function <
-    A extends TArray,
     C extends TCName,
     V extends TViewsByCName<C>,
     M extends TModule = 'Stone',
-  >(e: A, p: TPage<C, V, M>) {
+  >(e: TArray, p: TPage<C, V, M>) {
     const eRelated = e as TArray<'related'>
     const pRelated = p as TPage<'related', TCollectionView>
     return eRelated.module === pRelated.module && eRelated.id === pRelated.id

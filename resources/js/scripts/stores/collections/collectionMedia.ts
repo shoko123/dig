@@ -83,11 +83,10 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
   }
 
   const pageEqualFunc: TPageEqualFunc = function <
-    A extends TArray,
     C extends TCName,
     V extends TViewsByCName<C>,
     M extends TModule = 'Stone',
-  >(e: A, p: TPage<C, V, M>) {
+  >(e: TArray, p: TPage<C, V, M>) {
     const eMedia = e as TArray<'media'>
     const pMedia = p as TPage<'media', 'Gallery'>
     return eMedia.id === pMedia.id

@@ -22,10 +22,10 @@ const { getCollectionStore } = useCollectionsStore()
 const rms = useRoutesMainStore()
 
 const page = computed(() => {
-  return getCollectionStore('main').page as TPage<'main', 'Chips'>[] | TPage<'related', 'Chips'>[]
+  return getCollectionStore('main').page as TPage<'main' | 'related', 'Chips'>[]
 })
 
-async function goTo(item: TPage<'main', 'Chips'> | TPage<'related', 'Chips'>) {
+async function goTo(item: TPage<'main' | 'related', 'Chips'>) {
   if (props.source === 'main') {
     rms.routerPush('show', (<TPage<'main', 'Chips'>>item).slug)
   } else {

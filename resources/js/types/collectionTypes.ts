@@ -65,8 +65,8 @@ type TApiPage1<C extends TCName> = TAllCollections[C]['apiPage']
 type TViewsByCName<C extends TCName> = keyof TApiPage1<C>
 type TApiPage2<C extends TCName, V extends TViewsByCName<C>> = TApiPage1<C>[V]
 type TApiPage<
-  C extends TCName,
-  V extends TViewsByCName<C>,
+  C extends TCName = TCName,
+  V extends TViewsByCName<C> = TViewsByCName<C>,
   M extends TModule = 'Stone',
 > = C extends 'main'
   ? V extends 'Tabular'
@@ -75,8 +75,8 @@ type TApiPage<
   : TApiPage2<C, V>
 
 type TPage<
-  C extends TCName,
-  V extends TViewsByCName<C>,
+  C extends TCName = TCName,
+  V extends TViewsByCName<C> = TViewsByCName<C>,
   M extends TModule = 'Stone',
 > = V extends 'Gallery'
   ? SwapUrlWithMedia<TApiPage<C, V, M>> & { tag: string; slug: string }
@@ -90,13 +90,13 @@ type SwapUrlWithMedia<T extends TApiPage<TCName, 'Gallery'>> = Omit<T, 'urls'> &
 type TArrayEqualFunc = (a: TArray, b: TArray) => boolean
 
 type TPageEqualFunc = <
-  A extends TArray,
-  C extends TCName,
-  V extends TViewsByCName<C>,
+  A extends TArray = TArray,
+  C extends TCName = TCName,
+  V extends TViewsByCName<C> = TViewsByCName<C>,
   M extends TModule = 'Stone',
 >(
   a: A,
-  b: TPage<C, V, M>,
+  p: TPage<C, V, M>,
 ) => boolean
 
 // const a: TPage<'main', 'Tabular', 'Ceramic'> = {id: 'G', tag: "",}
