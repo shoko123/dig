@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { TCName, TArrayByCName, TCArray } from '@/js/types/collectionTypes'
+import { TCName, TArray } from '@/js/types/collectionTypes'
 import { TApiCarousel, TApiCarouselUnion } from '@/js/types/mediaTypes'
 
 import { useCollectionsStore } from '../collections/collections'
@@ -79,21 +79,21 @@ export const useCarouselStore = defineStore('carousel', () => {
   }
 
   async function loadCarousel(
-    arrayElement: TCArray,
+    arrayElement: TArray,
   ): Promise<{ success: true } | { success: false; message: string }> {
     switch (collectionName.value) {
       case 'related':
-        current.value = arrayElement as TArrayByCName<'related'>
+        current.value = arrayElement as TArray<'related'>
         return { success: true }
       case 'main':
-        return await loadCarouselMain(arrayElement as TArrayByCName<'main'>)
+        return await loadCarouselMain(arrayElement as TArray<'main'>)
 
       case 'media':
-        return await loadCarouselMedia(arrayElement as TArrayByCName<'media'>)
+        return await loadCarouselMedia(arrayElement as TArray<'media'>)
     }
   }
 
-  async function loadCarouselMain(item: TArrayByCName<'main'>) {
+  async function loadCarouselMain(item: TArray<'main'>) {
     const res = await send<TApiCarousel<'main'>>('carousel/show', 'post', {
       source: 'main',
       module: derived.value.module,
@@ -102,7 +102,7 @@ export const useCarouselStore = defineStore('carousel', () => {
     return handleXhrResult(res)
   }
 
-  async function loadCarouselMedia(item: TArrayByCName<'media'>) {
+  async function loadCarouselMedia(item: TArray<'media'>) {
     const res = await send<TApiCarousel<'media'>>('carousel/show', 'post', {
       source: 'media',
       module: derived.value.module,
@@ -135,7 +135,7 @@ export const useCarouselStore = defineStore('carousel', () => {
   }
 
   async function close(): Promise<{ success: true } | { success: false; message: string }> {
-    let element: TCArray
+    let element: TArray
     switch (collectionName.value) {
       case 'main': {
         const car = carouselComputed.value as unknown as TApiCarousel<'main'>

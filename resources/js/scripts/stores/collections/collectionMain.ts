@@ -1,8 +1,7 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
 import type {
-  TArrayByCName,
-  TCArray,
+  TArray,
   TApiPage,
   TPage,
   TCollectionView,
@@ -27,7 +26,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
 
   const pageNoB1 = ref(1)
   const viewIndex = ref(0)
-  const array = ref<TArrayByCName[]>([])
+  const array = ref<TArray[]>([])
 
   const apiPage = ref<TApiPage<'main', TCollectionView, TModule>[]>([])
 
@@ -94,19 +93,19 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     }
   }
 
-  const arrayEqualFunc: TArrayEqualFunc = function (a: TCArray, b: TCArray) {
+  const arrayEqualFunc: TArrayEqualFunc = function (a: TArray, b: TArray) {
     const aMain = a as string
     const bMain = b as string
     return aMain === bMain
   }
 
   const pageEqualFunc: TPageEqualFunc = function <
-    A extends TCArray,
+    A extends TArray,
     C extends TCName,
     V extends TViewsByCName<C>,
     M extends TModule = 'Stone',
   >(e: A, p: TPage<C, V, M>) {
-    const eMain = e as TArrayByCName<'main'>
+    const eMain = e as TArray<'main'>
     const pMain = p as TPage<'main', TCollectionView>
     return eMain === pMain.id
   }

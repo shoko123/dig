@@ -2,7 +2,7 @@
 import { TFieldsUnion } from '@/js/types/moduleTypes'
 import { TMediaOfItem, TMediaUrls } from '@/js/types/mediaTypes'
 import type { TModule } from '@/js/types/moduleTypes'
-import type { TArrayByCName } from '@/js/types/collectionTypes'
+import type { TArray } from '@/js/types/collectionTypes'
 
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
@@ -43,7 +43,7 @@ export const useMediaStore = defineStore('media', () => {
     }
   }
 
-  function setItemMedia(media: TArrayByCName<'media'>[]) {
+  function setItemMedia(media: TArray<'media'>[]) {
     const { array } = storeToRefs(useCollectionMediaStore())
     array.value = media
   }
@@ -122,7 +122,7 @@ export const useMediaStore = defineStore('media', () => {
     fd.append('id', idAsString)
     fd.append('media_collection_name', mediaCollectionName.value)
 
-    const res = await send<TArrayByCName<'media'>[]>('media/upload', 'post', fd)
+    const res = await send<TArray<'media'>[]>('media/upload', 'post', fd)
     if (res.success) {
       showUploader.value = false
       setItemMedia(res.data)
@@ -141,7 +141,7 @@ export const useMediaStore = defineStore('media', () => {
       `destroy() media_id: ${media_id}, model: ${r.current.module}, model_id: ${(<TFieldsUnion>i.fields).id}`,
     )
 
-    const res = await send<TArrayByCName<'media'>[]>('media/destroy', 'post', {
+    const res = await send<TArray<'media'>[]>('media/destroy', 'post', {
       media_id,
       module: r.current.module,
       module_id: (<TFieldsUnion>i.fields).id,
@@ -166,7 +166,7 @@ export const useMediaStore = defineStore('media', () => {
       `reorder()  model: ${r.current.module}, id: ${i.fields?.id} ,ordered: ${JSON.stringify(ordered, null, 2)}`,
     )
 
-    const res = await send<TArrayByCName<'media'>[]>('media/reorder', 'post', {
+    const res = await send<TArray<'media'>[]>('media/reorder', 'post', {
       module: r.current.module,
       module_id: i.fields?.id,
       ordered_media_ids: ordered,

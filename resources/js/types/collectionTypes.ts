@@ -3,7 +3,7 @@ import { TModule, TApiTabularByModule, TTabularByModule } from '@/js/types/modul
 
 type TCollectionView = 'Gallery' | 'Chips' | 'Tabular'
 
-type TApiPageMain<M extends TModule> = {
+type TApiPageMain<M extends TModule = TModule> = {
   Gallery: {
     id: string
     short: string
@@ -43,48 +43,25 @@ type TApiPageRelated = {
   }
 }
 
-type TAllCollections<M extends TModule> = {
+type TAllCollections<M extends TModule = TModule> = {
   main: {
     array: string
     apiPage: TApiPageMain<M>
-    // apiCarousel: {
-    //   id: string
-    //   short: string
-    //   media: TMediaOfItem
-    // }
   }
   media: {
     array: TApiPageMedia['Gallery']
     apiPage: TApiPageMedia
-    // apiCarousel: {
-    //   id: number
-    //   urls: TMediaUrls
-    //   size: number
-    //   collection_name: string
-    //   file_name: string
-    //   order_column: number
-    //   title: string
-    //   text: string
-    // }
   }
   related: {
     array: TApiPageRelated['Gallery']
     apiPage: TApiPageRelated
-    // apiCarousel: {
-    //   relation_name: string
-    //   module: TModule
-    //   id: number
-    //   urls: TMediaUrls
-    //   short: string
-    // }
   }
 }
 
-type TCName = keyof TAllCollections<TModule>
-type TCArray = TAllCollections<TModule>[TCName]['array']
-type TArrayByCName<C extends TCName = TCName> = TAllCollections<TModule>[C]['array']
+type TCName = keyof TAllCollections
+type TArray<C extends TCName = TCName> = TAllCollections[C]['array']
 
-type TApiPage1<C extends TCName> = TAllCollections<TModule>[C]['apiPage']
+type TApiPage1<C extends TCName> = TAllCollections[C]['apiPage']
 type TViewsByCName<C extends TCName> = keyof TApiPage1<C>
 type TApiPage2<C extends TCName, V extends TViewsByCName<C>> = TApiPage1<C>[V]
 type TApiPage<
@@ -110,10 +87,10 @@ type SwapUrlWithMedia<T extends TApiPage<TCName, 'Gallery'>> = Omit<T, 'urls'> &
   media: TMediaOfItem
 }
 
-type TArrayEqualFunc = (a: TArrayByCName, b: TArrayByCName) => boolean
+type TArrayEqualFunc = (a: TArray, b: TArray) => boolean
 
 type TPageEqualFunc = <
-  A extends TCArray,
+  A extends TArray,
   C extends TCName,
   V extends TViewsByCName<C>,
   M extends TModule = 'Stone',
@@ -125,9 +102,8 @@ type TPageEqualFunc = <
 // const a: TPage<'main', 'Tabular', 'Ceramic'> = {id: 'G', tag: "",}
 
 export {
-  TArrayByCName,
+  TArray,
   TCName,
-  TCArray,
   TCollectionView,
   TApiPage,
   TPage,

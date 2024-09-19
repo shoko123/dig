@@ -5,14 +5,14 @@
 </template>
 
 <script lang="ts" setup>
-import type { TArrayByCName } from '../../types/collectionTypes'
+import type { TArray } from '../../types/collectionTypes'
 import { useCarouselStore } from '../../scripts/stores/modals/carousel'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
 
 const props = defineProps<{
   itemIndex: number
-  record: TArrayByCName<'media'>
+  record: TArray<'media'>
 }>()
 
 const { open } = useCarouselStore()
@@ -25,7 +25,7 @@ async function openModalCarousel() {
   const res = await open('media', props.itemIndex)
   showSpinner(false)
   if (!res.success) {
-    pushHome(`Error: ${res.message}. Redirected to home page.`)
+    pushHome(`Problem encountered! Redirected to home page.`)
   }
 }
 </script>

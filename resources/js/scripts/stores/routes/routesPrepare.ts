@@ -23,7 +23,7 @@ import { useItemStore } from '../item'
 
 import { useRoutesMainStore } from './routesMain'
 import { useRoutesParserStore } from './routesParser'
-import { TArrayByCName } from '@/js/types/collectionTypes'
+import { TArray } from '@/js/types/collectionTypes'
 
 export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   const { send } = useXhrStore()
@@ -212,7 +212,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       return { success: false, message: resParseUrl.message! }
     }
 
-    const res2 = await send<TArrayByCName[]>('module/index', 'post', {
+    const res2 = await send<TArray[]>('module/index', 'post', {
       module: module,
       query: apiQueryPayload.value,
     })
@@ -289,7 +289,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
     console.log(`routesPrepareForNew()`)
     if (isCreate) {
-      const res = await send<TArrayByCName[]>('module/index', 'post', {
+      const res = await send<TArray<'main'>[]>('module/index', 'post', {
         module,
       })
       if (res.success) {

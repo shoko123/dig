@@ -3,8 +3,7 @@ import { ref, computed } from 'vue'
 import type { TModule } from '@/js/types/moduleTypes'
 import type { TFuncLoadPage } from '@/js/types/routesTypes'
 import {
-  TArrayByCName,
-  TCArray,
+  TArray,
   TPage,
   TCollectionView,
   TArrayEqualFunc,
@@ -24,7 +23,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
   const pageNoB1 = ref(1)
   const viewIndex = ref(0)
 
-  const array = ref<TArrayByCName<'media'>[]>([])
+  const array = ref<TArray<'media'>[]>([])
 
   const page = computed(() => {
     const ipp = getItemsPerPage('media', viewIndex.value)
@@ -77,19 +76,19 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     pageNoB1.value = 1
   }
 
-  const arrayEqualFunc: TArrayEqualFunc = function (a: TArrayByCName, b: TArrayByCName) {
-    const aMain = a as TArrayByCName<'media'>
-    const bMain = b as TArrayByCName<'media'>
+  const arrayEqualFunc: TArrayEqualFunc = function (a: TArray, b: TArray) {
+    const aMain = a as TArray<'media'>
+    const bMain = b as TArray<'media'>
     return aMain.id === bMain.id
   }
 
   const pageEqualFunc: TPageEqualFunc = function <
-    A extends TCArray,
+    A extends TArray,
     C extends TCName,
     V extends TViewsByCName<C>,
     M extends TModule = 'Stone',
   >(e: A, p: TPage<C, V, M>) {
-    const eMedia = e as TArrayByCName<'media'>
+    const eMedia = e as TArray<'media'>
     const pMedia = p as TPage<'media', 'Gallery'>
     return eMedia.id === pMedia.id
   }

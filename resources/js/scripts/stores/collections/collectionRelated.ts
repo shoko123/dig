@@ -4,8 +4,7 @@ import type { TModule } from '@/js/types/moduleTypes'
 import type { TFuncLoadPage } from '@/js/types/routesTypes'
 import {
   TCollectionView,
-  TArrayByCName,
-  TCArray,
+  TArray,
   TPage,
   TArrayEqualFunc,
   TPageEqualFunc,
@@ -24,7 +23,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
   const pageNoB1 = ref(1)
   const viewIndex = ref(0)
 
-  const array = ref<TArrayByCName<'related'>[]>([])
+  const array = ref<TArray<'related'>[]>([])
 
   const info = computed(() => {
     return getConsumeableCollection(
@@ -99,9 +98,9 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     return { success: true, message: '' }
   }
 
-  const arrayEqualFunc: TArrayEqualFunc = function (a: TCArray, b: TCArray) {
-    const aArr = a as TArrayByCName<'related'>
-    const bArr = b as TArrayByCName<'related'>
+  const arrayEqualFunc: TArrayEqualFunc = function (a: TArray, b: TArray) {
+    const aArr = a as TArray<'related'>
+    const bArr = b as TArray<'related'>
     return (
       aArr.relation_name === bArr.relation_name &&
       aArr.module === bArr.module &&
@@ -110,12 +109,12 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
   }
 
   const pageEqualFunc: TPageEqualFunc = function <
-    A extends TCArray,
+    A extends TArray,
     C extends TCName,
     V extends TViewsByCName<C>,
     M extends TModule = 'Stone',
   >(e: A, p: TPage<C, V, M>) {
-    const eRelated = e as TArrayByCName<'related'>
+    const eRelated = e as TArray<'related'>
     const pRelated = p as TPage<'related', TCollectionView>
     return eRelated.module === pRelated.module && eRelated.id === pRelated.id
   }

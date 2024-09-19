@@ -9,14 +9,14 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import type { TArrayByCName } from '../../types/collectionTypes'
+import type { TArray } from '../../types/collectionTypes'
 import { useMediaStore } from '../../scripts/stores/media'
 import { useCollectionMediaStore } from '../../scripts/stores/collections/collectionMedia'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
 
 const props = defineProps<{
   itemIndex: number
-  record: TArrayByCName<'media'>
+  record: TArray<'media'>
 }>()
 
 const { mediaDestroy } = useMediaStore()

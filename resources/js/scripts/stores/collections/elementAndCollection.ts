@@ -1,4 +1,4 @@
-import type { TCName, TCArray, TViewsByCName, TPage } from '@/js/types/collectionTypes'
+import type { TCName, TArray, TViewsByCName, TPage } from '@/js/types/collectionTypes'
 
 import { defineStore } from 'pinia'
 
@@ -8,12 +8,12 @@ import { TModule } from '@/js/types/moduleTypes'
 export const useElementAndCollectionStore = defineStore('elementAndCollection', () => {
   const { getCollectionStore } = useCollectionsStore()
 
-  function arrayElementByIndex(name: TCName, index: number): TCArray {
+  function arrayElementByIndex(name: TCName, index: number): TArray {
     const c = getCollectionStore(name)
     return c.array[index]
   }
 
-  function indexByArrayElement(collectionName: TCName, element: TCArray) {
+  function indexByArrayElement(collectionName: TCName, element: TArray) {
     const c = getCollectionStore(collectionName)
     const index = c.array.findIndex((x) => {
       return c.arrayEqualFunc(x, element)
@@ -25,7 +25,7 @@ export const useElementAndCollectionStore = defineStore('elementAndCollection', 
   }
 
   function elementInPage<
-    A extends TCArray,
+    A extends TArray,
     C extends TCName,
     V extends TViewsByCName<C>,
     M extends TModule,
@@ -53,7 +53,7 @@ export const useElementAndCollectionStore = defineStore('elementAndCollection', 
     name: TCName,
     index: number,
     isRight: boolean,
-  ): { item: TCArray; index: number } {
+  ): { item: TArray; index: number } {
     const newIndex = nextArrayIndex(name, index, isRight)
     return { item: arrayElementByIndex(name, newIndex), index: newIndex }
   }
