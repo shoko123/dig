@@ -22,9 +22,9 @@ const { pushHome } = useRoutesMainStore()
 async function openModalCarousel() {
   console.log(`Open carousel clicked .....`)
   showSpinner(`Loading carousel item...`)
-  const res = await open('media', props.itemIndex)
+  const ok = await open('media', props.itemIndex)
   showSpinner(false)
-  if (!res.success) {
+  if (!ok) {
     pushHome(`Problem encountered! Redirected to home page.`)
   }
 }

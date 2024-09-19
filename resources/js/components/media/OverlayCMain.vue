@@ -1,10 +1,6 @@
 <template>
   <v-btn class="ml-2 bg-grey-lighten-1" @click="goToItem()"> Visit </v-btn>
-  <v-btn
-    v-if="props.record.media.hasMedia"
-    class="ml-2 bg-grey-lighten-1"
-    @click="openModalCarousel()"
-  >
+  <v-btn v-if="props.record.media.hasMedia" class="ml-2 bg-grey-lighten-1" @click="openModalCarousel()">
     Lightbox
   </v-btn>
 </template>
@@ -27,10 +23,10 @@ const { pushHome } = useRoutesMainStore()
 
 async function openModalCarousel() {
   showSpinner(`Loading carousel item...`)
-  const res = await open('main', props.itemIndex)
+  const ok = await open('main', props.itemIndex)
   showSpinner(false)
-  if (!res.success) {
-    pushHome(`Error: ${res.message}. Redirected to home page.`)
+  if (!ok) {
+    pushHome(`Problem encountered! Redirected to home page.`)
   }
 }
 

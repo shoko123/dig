@@ -104,8 +104,8 @@ async function closeCarousel() {
   showSpinner('Loading a new page...')
   const res = await close()
   showSpinner(false)
-  if (!res.success) {
-    pushHome(`Error: ${res.message}. Redirected to home page.`)
+  if (!res) {
+    pushHome(`Error encountered. Redirected to home page.`)
   }
 }
 </script>

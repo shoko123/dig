@@ -23,9 +23,9 @@ const { open } = useCarouselStore()
 
 async function openModalCarousel() {
   showSpinner(`Loading carousel item...`)
-  const res = await open('related', props.itemIndex)
+  const ok = await open('related', props.itemIndex)
   showSpinner(false)
-  if (!res.success) {
+  if (!ok) {
     pushHome(`Error encountered! Redirected to home page.`)
   }
 }

@@ -69,12 +69,12 @@ export const useCarouselStore = defineStore('carousel', () => {
     const arrayElement = arrayElementByIndex(source, openIndex)
     const res = await loadCarousel(arrayElement)
 
-    if (res.success) {
+    if (res) {
       index.value = openIndex
       isOpen.value = true
-      return { success: true }
+      return true
     } else {
-      return res
+      return false
     }
   }
 
@@ -134,7 +134,7 @@ export const useCarouselStore = defineStore('carousel', () => {
     return res
   }
 
-  async function close(): Promise<{ success: true } | { success: false; message: string }> {
+  async function close(): Promise<boolean> {
     let element: TArray
     switch (collectionName.value) {
       case 'main': {
@@ -165,7 +165,7 @@ export const useCarouselStore = defineStore('carousel', () => {
     if (elementInPage(collectionName.value, element)) {
       console.log(`carousel.close() no need to load a new page`)
       isOpen.value = false
-      return { success: true }
+      return true
     }
 
     console.log(`carousel-load new page by element: ${JSON.stringify(element, null, 2)}`)
@@ -181,12 +181,9 @@ export const useCarouselStore = defineStore('carousel', () => {
       index,
       derived.value.module!,
     )
-    if (!res.success) {
-      return res
-    } else {
-      isOpen.value = false
-      return { success: true }
-    }
+
+    isOpen.value = false
+    return res.success
   }
 
   return {
