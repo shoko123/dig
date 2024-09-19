@@ -95,8 +95,8 @@ async function nextClicked(isRight: boolean) {
   showSpinner(`Loading carousel item...`)
   const res = await nextItem(isRight)
   showSpinner(false)
-  if (!res.success) {
-    pushHome(`Error: ${res.message}. Redirected to home page.`)
+  if (!res) {
+    pushHome(`Error encountered. Redirected to home page.`)
   }
 }
 

@@ -78,13 +78,11 @@ export const useCarouselStore = defineStore('carousel', () => {
     }
   }
 
-  async function loadCarousel(
-    arrayElement: TArray,
-  ): Promise<{ success: true } | { success: false; message: string }> {
+  async function loadCarousel(arrayElement: TArray): Promise<boolean> {
     switch (collectionName.value) {
       case 'related':
         current.value = arrayElement as TArray<'related'>
-        return { success: true }
+        return true
       case 'main':
         return await loadCarouselMain(arrayElement as TArray<'main'>)
 
@@ -115,12 +113,13 @@ export const useCarouselStore = defineStore('carousel', () => {
     res:
       | { success: true; data: TApiCarousel<'main' | 'media'> }
       | { success: false; message: string },
-  ): { success: true } | { success: false; message: string } {
+  ) {
     if (res.success) {
       current.value = res.data
-      return { success: true }
+      return true
     } else {
-      return { success: false, message: `Failed to load carousel item.` }
+      console.log(`carousel.load() failed. error: ${res.message}`)
+      return false
     }
   }
 
@@ -128,7 +127,7 @@ export const useCarouselStore = defineStore('carousel', () => {
     const nextItem = nextArrayElement(collectionName.value, index.value, isRight)
     const res = await loadCarousel(nextItem.item)
 
-    if (res.success) {
+    if (res) {
       index.value = nextItem.index
     }
     return res
