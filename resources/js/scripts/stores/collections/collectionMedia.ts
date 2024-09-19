@@ -77,14 +77,10 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     pageNoB1.value = 1
   }
 
-  function elementIsInPage<IDtype extends string | number>(id: IDtype) {
-    return !!id
-  }
-
-  const arrayEqualFunc: TArrayEqualFunc = function (a: TCArray, b: TCArray) {
-    const aMain = a as string
-    const bMain = b as string
-    return aMain === bMain
+  const arrayEqualFunc: TArrayEqualFunc = function (a: TArrayByCName, b: TArrayByCName) {
+    const aMain = a as TArrayByCName<'media'>
+    const bMain = b as TArrayByCName<'media'>
+    return aMain.id === bMain.id
   }
 
   const pageEqualFunc: TPageEqualFunc = function <
@@ -106,7 +102,6 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     info,
     loadPage,
     clear,
-    elementIsInPage,
     arrayEqualFunc,
     pageEqualFunc,
     //specific

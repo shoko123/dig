@@ -82,7 +82,7 @@ type TAllCollections<M extends TModule> = {
 
 type TCName = keyof TAllCollections<TModule>
 type TCArray = TAllCollections<TModule>[TCName]['array']
-type TArrayByCName<C extends TCName = 'main'> = TAllCollections<TModule>[C]['array']
+type TArrayByCName<C extends TCName = TCName> = TAllCollections<TModule>[C]['array']
 
 type TApiPage1<C extends TCName> = TAllCollections<TModule>[C]['apiPage']
 type TViewsByCName<C extends TCName> = keyof TApiPage1<C>
@@ -110,7 +110,7 @@ type SwapUrlWithMedia<T extends TApiPage<TCName, 'Gallery'>> = Omit<T, 'urls'> &
   media: TMediaOfItem
 }
 
-type TArrayEqualFunc = (a: TCArray, b: TCArray) => boolean
+type TArrayEqualFunc = (a: TArrayByCName, b: TArrayByCName) => boolean
 
 type TPageEqualFunc = <
   A extends TCArray,

@@ -68,13 +68,13 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     console.log(`loadPage(main) v: ${view} pNo: ${pageNo}  len: ${pageLength} startIndex: ${start}`)
 
     switch (view) {
-      case 'Chips':
-        apiPage.value = slice.map((x) => {
+      case 'Chips': {
+        apiPage.value = <TApiPage<'main', 'Chips', TModule>[]>slice.map((x) => {
           return { id: x }
         })
         pageNoB1.value = pageNo
         return { success: true, message: '' }
-
+      }
       default: {
         //views Gallery or Tabular require db access
         const res = await send<TApiPage<'main', 'Gallery'>[]>('module/page', 'post', {
@@ -92,10 +92,6 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         }
       }
     }
-  }
-
-  function elementIsInPage<IDtype extends string | number>(id: IDtype) {
-    return page.value.some((x) => (<TPage<'main', 'Gallery'>>x).id === id)
   }
 
   const arrayEqualFunc: TArrayEqualFunc = function (a: TCArray, b: TCArray) {
@@ -131,7 +127,6 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     info,
     loadPage,
     clear,
-    elementIsInPage,
     arrayEqualFunc,
     pageEqualFunc,
   }

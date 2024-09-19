@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { TCName, TArrayByCName, TCArray } from '@/js/types/collectionTypes'
-import { TCarousel, TApiCarousel, TApiCarouselUnion } from '@/js/types/mediaTypes'
+import { TApiCarousel, TApiCarouselUnion } from '@/js/types/mediaTypes'
 
 import { useCollectionsStore } from '../collections/collections'
 import { useElementAndCollectionStore } from '../collections/elementAndCollection'
@@ -15,7 +15,7 @@ export const useCarouselStore = defineStore('carousel', () => {
   const { send } = useXhrStore()
   const { derived } = storeToRefs(useItemStore())
   const { buildMedia } = useMediaStore()
-  const { tagAndSlugFromId, getViewName, getItemsPerPage } = useModuleStore()
+  const { tagAndSlugFromId, getItemsPerPage } = useModuleStore()
   const { arrayElementByIndex, nextArrayElement, indexByArrayElement, elementInPage } =
     useElementAndCollectionStore()
 
@@ -135,43 +135,58 @@ export const useCarouselStore = defineStore('carousel', () => {
   }
 
   async function close(): Promise<{ success: true } | { success: false; message: string }> {
-    //if current current is in currently loaded page - close, otherwise, load relevant page
-
+    let element: TCArray
     switch (collectionName.value) {
-      case 'main':
-        {
-          const mainStore = getCollectionStore('main')
-          const view = getViewName('main', mainStore.viewIndex)
-          const ipp = getItemsPerPage('main', mainStore.viewIndex)
-          if (elementInPage('main', <string>carouselComputed.value!.id)) {
-            console.log(`carousel.close() no need to load a new page`)
-            break
-          }
+      case 'main': {
+        const car = carouselComputed.value as unknown as TApiCarousel<'main'>
+        element = car.id
+        break
+      }
 
-          const index = indexByArrayElement(
-            'main',
-            <string>(<TCarousel<'main'>>carouselComputed.value).id,
-          )
-          const res = await loadPageByItemIndex(
-            collectionName.value,
-            view,
-            ipp,
-            index,
-            derived.value.module!,
-          )
-          if (!res.success) {
-            return res
-          }
-        }
+      case 'media': {
+        const car = carouselComputed.value as unknown as TApiCarousel<'media'>
+        element = { id: car.id, order_column: car.order_column, urls: car.urls }
         break
-      case 'media':
-        console.log(`carousel.close() media not loading new page (YET)`)
+      }
+      case 'related': {
+        const car = carouselComputed.value as unknown as TApiCarousel<'related'>
+        element = { ...car } //{
+        //   relation_name: car.relation_name,
+        //   module: car.module,
+        //   id: car.id,
+        //   short: car.short,
+        //   urls: car.urls,
+        // }
         break
-      case 'related':
-        console.log(`carousel.close() related not loading new page (YET)`)
+      }
     }
-    isOpen.value = false
-    return { success: true }
+
+    //If current carousel item is in the currently loaded page, close.
+    if (elementInPage(collectionName.value, element)) {
+      console.log(`carousel.close() no need to load a new page`)
+      isOpen.value = false
+      return { success: true }
+    }
+
+    console.log(`carousel-load new page by element: ${JSON.stringify(element, null, 2)}`)
+    const store = getCollectionStore(collectionName.value)
+    const ipp = getItemsPerPage(collectionName.value, store.viewIndex)
+
+    const index = indexByArrayElement(collectionName.value, element)
+
+    const res = await loadPageByItemIndex(
+      collectionName.value,
+      'Gallery',
+      ipp,
+      index,
+      derived.value.module!,
+    )
+    if (!res.success) {
+      return res
+    } else {
+      isOpen.value = false
+      return { success: true }
+    }
   }
 
   return {

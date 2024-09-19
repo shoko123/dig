@@ -99,14 +99,14 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     return { success: true, message: '' }
   }
 
-  function elementIsInPage<IDtype extends string | number>(id: IDtype) {
-    return page.value.some((x) => x.id === id)
-  }
-
   const arrayEqualFunc: TArrayEqualFunc = function (a: TCArray, b: TCArray) {
-    const aMain = a as string
-    const bMain = b as string
-    return aMain === bMain
+    const aArr = a as TArrayByCName<'related'>
+    const bArr = b as TArrayByCName<'related'>
+    return (
+      aArr.relation_name === bArr.relation_name &&
+      aArr.module === bArr.module &&
+      aArr.id === bArr.id
+    )
   }
 
   const pageEqualFunc: TPageEqualFunc = function <
@@ -134,7 +134,6 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     info,
     loadPage,
     clear,
-    elementIsInPage,
     arrayEqualFunc,
     pageEqualFunc,
     //specific
