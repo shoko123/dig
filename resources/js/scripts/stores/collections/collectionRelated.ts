@@ -52,10 +52,11 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     switch (viewName) {
       case 'Tabular':
         res = slice.map((x) => {
+          const tas = tagAndSlugFromId(x.id, x.module)
           return {
             ...x,
-            ...tagAndSlugFromId(x.id, x.module),
-            tag: `${x.module} ${tagAndSlugFromId(x.id, x.module)}`,
+            slug: tas.slug,
+            tag: `${x.module} ${tas.tag}`,
           }
         })
         break
@@ -63,19 +64,19 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
       case 'Gallery':
         res = slice.map((x) => {
           const media = buildMedia(x.urls, x.module)
-          return { ...x, media }
+          const tas = tagAndSlugFromId(x.id, x.module)
+          return { ...x, tag: tas.tag, slug: tas.slug, media }
         })
         break
 
       case 'Chips':
         res = slice.map((x) => {
-          const res = tagAndSlugFromId(x.id, x.module)
+          const tas = tagAndSlugFromId(x.id, x.module)
           return {
             relation_name: x.relation_name,
             module: x.module,
             id: x.id,
-            slug: res.slug,
-            tag: `${x.module} ${res.tag}`,
+            ...tas,
           }
         })
         break

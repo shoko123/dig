@@ -22,7 +22,7 @@ const { getCollectionStore } = useCollectionsStore()
 const rms = useRoutesMainStore()
 
 const page = computed(() => {
-  return getCollectionStore('main').page as TPage<'main' | 'related', 'Chips'>[]
+  return getCollectionStore(props.source).page as TPage<'main' | 'related', 'Chips'>[]
 })
 
 async function goTo(item: TPage<'main' | 'related', 'Chips'>) {

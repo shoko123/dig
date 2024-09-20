@@ -66,9 +66,9 @@ const data = computed(() => {
     default:
       return {
         showTag: true,
-        tagText: record.value.relation_name,
+        tagText: `${record.value.module} ${record.value.tag}`,
         urls: record.value.media.urls,
-        short: `${record.value.module} ${record.value.tag}.  ${record.value.short}`,
+        short: `${record.value.relation_name} :: ${record.value.short}`,
         record: record.value,
       }
   }
