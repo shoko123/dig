@@ -30,7 +30,7 @@ async function goTo(item: TPage<'main' | 'related', 'Chips'>) {
     await rms.routerPush('show', (<TPage<'main', 'Chips'>>item).slug)
   } else {
     const related = <TPage<'related', 'Chips'>>item
-    await rms.moveFromItemToItem<string>(related.slug, <string>related.id, related.module)
+    await rms.moveToRelatedItem(related.module, related.id)
   }
 }
 </script>

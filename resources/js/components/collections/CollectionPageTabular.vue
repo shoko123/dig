@@ -28,7 +28,7 @@ const props = defineProps<{
 
 const { getCollectionStore } = useCollectionsStore()
 const { relatedTableHeaders } = storeToRefs(useCollectionRelatedStore())
-const { routerPush, moveFromItemToItem } = useRoutesMainStore()
+const { routerPush, moveToRelatedItem } = useRoutesMainStore()
 
 onMounted(async () => {
   const { useModuleStore } = await import('../../scripts/stores/module')
@@ -72,7 +72,7 @@ async function btnClicked(item: TPage<'main', 'Tabular', TModule> | TPage<'relat
     await routerPush('show', item.slug)
   } else {
     const related = item as TPage<'related', 'Tabular'>
-    await moveFromItemToItem(related.slug, related.id, related.module)
+    await moveToRelatedItem(related.module, related.id)
   }
 }
 </script>

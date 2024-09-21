@@ -251,42 +251,6 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     }
   }
 
-  async function moveFromItemToItem<IDtype extends string | number>(
-    slug: string,
-    id: IDtype,
-    module: TModule | 'current' = 'current',
-  ) {
-    const { useTrioStore } = await import('../trio/trio')
-    const { useElementAndCollectionStore } = await import('../collections/elementAndCollection')
-    const { indexByArrayElement } = useElementAndCollectionStore()
-    const { clearFilterOptions } = useTrioStore()
-
-    console.log(
-      `moveFromItemToItem "${current.value.module} ${current.value.slug}" -> "${module} ${slug}" (id: ${id})`,
-    )
-    if (current.value.module === module) {
-      if (current.value.slug === slug) {
-        console.log(`moveTo same item - ignore`)
-        return
-      }
-
-      if (indexByArrayElement('main', <string>id) !== -1) {
-        console.log(`moveTo item that is already in the current collection - go!`)
-        await routerPush('show', slug, module)
-      } else {
-        console.log(
-          `moveTo item that is NOT in the current collection - remove filters and reload collection!`,
-        )
-        clearFilterOptions()
-        showSnackbar(`Filters removed and result set reloaded`)
-        await routerPush('show', slug, module, false)
-      }
-    } else {
-      console.log(`GoTo item in a different module`)
-      await routerPush('show', slug, module, false)
-    }
-  }
-
   async function moveToRelatedItem(module: TModule, id: string) {
     const { useTrioStore } = await import('../trio/trio')
     const { useElementAndCollectionStore } = await import('../collections/elementAndCollection')
@@ -294,7 +258,9 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     const { indexByArrayElement } = useElementAndCollectionStore()
     const { clearFilterOptions } = useTrioStore()
     const { tagAndSlugFromId } = useModuleStore()
+
     const tas = tagAndSlugFromId(id, module)
+
     if (current.value.module !== module) {
       return await routerPush('show', tas.slug, module, false)
     }
@@ -303,7 +269,9 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
       console.log(`moveToRelated "${module} ${tas.slug}" - IN collection`)
       return await routerPush('show', tas.slug, module)
     } else {
-      console.log(`moveToRelated "${module} ${tas.slug}" - NOT in collection`)
+      console.log(
+        `moveToRelated "${module} ${tas.slug}" - NOT in collection: Filters cleared and result set reloaded`,
+      )
       clearFilterOptions()
       await routerPush('show', tas.slug, module, false)
       showSnackbar(`Filters removed and result set reloaded`)
@@ -316,7 +284,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     handleRouteChange,
     routerPush,
     pushHome,
-    moveFromItemToItem,
+    // moveFromItemToItem,
     moveToRelatedItem,
   }
 })

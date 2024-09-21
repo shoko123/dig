@@ -18,7 +18,7 @@ import type { TCarousel } from '@/js/types/mediaTypes'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { useCarouselStore } from '../../scripts/stores/modals/carousel'
 
-const { moveFromItemToItem } = useRoutesMainStore()
+const { moveToRelatedItem } = useRoutesMainStore()
 const { close } = useCarouselStore()
 const { carouselComputed } = storeToRefs(useCarouselStore())
 
@@ -33,6 +33,6 @@ async function goToItem() {
     module: <TModule>item.value?.module,
   }
   await close()
-  await moveFromItemToItem(details.slug, details.id, details.module)
+  await moveToRelatedItem(details.module, details.id)
 }
 </script>

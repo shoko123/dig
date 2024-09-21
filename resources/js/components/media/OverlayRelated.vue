@@ -32,6 +32,5 @@ async function openModalCarousel() {
 
 async function goToItem() {
   await moveToRelatedItem(props.record.module, props.record.id)
-  //await moveFromItemToItem(props.record.slug, , props.record.module)
 }
 </script>
