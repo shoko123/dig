@@ -284,7 +284,6 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     handleRouteChange,
     routerPush,
     pushHome,
-    // moveFromItemToItem,
     moveToRelatedItem,
   }
 })

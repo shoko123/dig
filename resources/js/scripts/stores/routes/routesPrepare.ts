@@ -16,7 +16,6 @@ import { useXhrStore } from '../xhr'
 
 import { useCollectionsStore } from '../collections/collections'
 import { useElementAndCollectionStore } from '../collections/elementAndCollection'
-import { useCollectionMainStore } from '../collections/collectionMain'
 import { useModuleStore } from '../module'
 import { useNotificationsStore } from '../notifications'
 import { useItemStore } from '../item'
@@ -91,7 +90,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           break
 
         case 'collection.clear':
-          c.clear(['main', 'media', 'related'])
+          c.clear(['main'])
           break
 
         case 'item.load':
@@ -107,7 +106,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
         case 'item.clear':
           i.itemClear()
-          c.clear(['media', 'related'])
           break
 
         case 'item.setIndexInCollection':
@@ -171,7 +169,8 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     }
     await setModuleInfo(res.data)
     c.resetCollectionsViewIndex()
-    c.clear(['main', 'media', 'related'])
+    c.clear(['main'])
+    i.itemClear()
     i.setItemViewIndex(0)
     i.itemViews = res.data.display_options.item_views
 
@@ -196,7 +195,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     module: TModule,
     query: LocationQuery,
   ): Promise<{ success: boolean; message: string }> {
-    const { array } = storeToRefs(useCollectionMainStore())
+    const { setCollectionArray } = useCollectionsStore()
     const { useTrioStore } = await import('../trio/trio')
     // const { useFilterStore } = await import('../trio/filter')
     const { clearFilterOptions } = useTrioStore()
@@ -223,7 +222,8 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
         return { success: false, message: 'Error: Empty result set' }
       }
       r.to.queryParams = query
-      array.value = res2.data
+      setCollectionArray('main', res2.data)
+      // array.value = res2.data
       return { success: true, message: '' }
     } else {
       console.log(`loadMainCollection() err: ${res2.message}`)

@@ -6,15 +6,13 @@ import { defineStore, storeToRefs } from 'pinia'
 
 import { useCollectionsStore } from './collections/collections'
 import { useElementAndCollectionStore } from './collections/elementAndCollection'
-import { useMediaStore } from './media'
-import { useCollectionRelatedStore } from './collections/collectionRelated'
 import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
 import { useModuleStore } from './module'
 
 export const useItemStore = defineStore('item', () => {
   const { current } = storeToRefs(useRoutesMainStore())
-  const { getCollectionStore } = useCollectionsStore()
+  const { getCollectionStore, setCollectionArray } = useCollectionsStore()
   const { tagAndSlugFromId } = useModuleStore()
   const { module } = storeToRefs(useModuleStore())
   const { send } = useXhrStore()
@@ -56,10 +54,9 @@ export const useItemStore = defineStore('item', () => {
   async function saveitemFieldsPlus<F extends TApiFieldsUnion>(apiItem: TApiItemShow<F>) {
     const { useTrioStore } = await import('./trio/trio')
     const { getFieldsOptions, setItemAllOptions } = useTrioStore()
-    const { setItemMedia } = useMediaStore()
-    const { array } = storeToRefs(useCollectionRelatedStore())
-    setItemMedia(apiItem.media)
-    array.value = apiItem.related
+    // save media & related collections
+    setCollectionArray('media', apiItem.media)
+    setCollectionArray('related', apiItem.related)
     console.log(`saveitemFieldsPlus`)
     saveItemFields(apiItem.fields)
 
@@ -125,6 +122,8 @@ export const useItemStore = defineStore('item', () => {
     short.value = undefined
     tag.value = undefined
     itemFieldsToOptionsObj.value = {}
+    setCollectionArray('media', [])
+    setCollectionArray('related', [])
   }
 
   const mainArray = computed(() => {

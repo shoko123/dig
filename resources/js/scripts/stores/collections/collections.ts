@@ -1,6 +1,6 @@
 import { defineStore, storeToRefs } from 'pinia'
 
-import type { TCName, TCollectionView } from '@/js/types/collectionTypes'
+import type { TArray, TCName, TCollectionView } from '@/js/types/collectionTypes'
 import type { TModule } from '@/js/types/moduleTypes'
 
 import { useModuleStore } from '../module'
@@ -21,6 +21,11 @@ export const useCollectionsStore = defineStore('collections', () => {
       case 'related':
         return useCollectionRelatedStore()
     }
+  }
+
+  function setCollectionArray(name: TCName, array: TArray[]) {
+    const c = getCollectionStore(name)
+    c.setArray(array)
   }
 
   function getConsumeableCollection(
@@ -78,13 +83,13 @@ export const useCollectionsStore = defineStore('collections', () => {
   }
 
   async function toggleCollectionView(name: TCName) {
-    const col = getCollectionStore(name)
+    const c = getCollectionStore(name)
     const info = getConsumeableCollection(
       name,
-      col.viewIndex,
-      col.pageNoB1,
-      getItemsPerPage(name, col.viewIndex),
-      col.array.length,
+      c.viewIndex,
+      c.pageNoB1,
+      getItemsPerPage(name, c.viewIndex),
+      c.array.length,
     )
 
     const nextViewIndex = (info.viewIndex + 1) % info.views.length
@@ -96,7 +101,7 @@ export const useCollectionsStore = defineStore('collections', () => {
       `toggleCollectionView() c: ${name}  module: ${module.value} currentView: ${info.viewName} nextView: ${nextView} index: ${nextIndex}`,
     )
     await loadPageByItemIndex(name, nextView, nextItemsPerPage, nextIndex, module.value)
-    col.viewIndex = nextViewIndex
+    c.viewIndex = nextViewIndex
   }
 
   function clear(collections: TCName[]) {
@@ -115,6 +120,7 @@ export const useCollectionsStore = defineStore('collections', () => {
 
   //Note: computed collection will only be reactive only if state (main, media) is exposed.
   return {
+    setCollectionArray,
     getCollectionStore,
     getConsumeableCollection,
     loadPageByItemIndex,

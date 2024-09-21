@@ -23,6 +23,10 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
 
   const array = ref<TArray<'related'>[]>([])
 
+  function setArray(arr: TArray[]) {
+    array.value = arr as unknown as TArray<'related'>[]
+  }
+
   const info = computed(() => {
     return getConsumeableCollection(
       'related',
@@ -125,6 +129,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     pageNoB1,
     viewIndex,
     info,
+    setArray,
     loadPage,
     clear,
     arrayEqualFunc,

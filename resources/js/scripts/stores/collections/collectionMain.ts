@@ -24,9 +24,13 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
 
   const pageNoB1 = ref(1)
   const viewIndex = ref(0)
-  const array = ref<TArray[]>([])
+  const array = ref<TArray<'main'>[]>([])
 
   const apiPage = ref<TApiPage<'main', TCollectionView, TModule>[]>([])
+
+  function setArray(arr: TArray[]) {
+    array.value = arr as unknown as TArray<'main'>[]
+  }
 
   const page = computed(() => {
     return apiPage.value.map((x) => {
@@ -117,6 +121,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     pageNoB1,
     viewIndex,
     info,
+    setArray,
     loadPage,
     clear,
     arrayEqualFunc,

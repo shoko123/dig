@@ -23,6 +23,10 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
 
   const array = ref<TArray<'media'>[]>([])
 
+  function setArray(arr: TArray[]) {
+    array.value = arr as unknown as TArray<'media'>[]
+  }
+
   const page = computed(() => {
     const ipp = getItemsPerPage('media', viewIndex.value)
     const start = (pageNoB1.value - 1) * ipp
@@ -92,6 +96,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     pageNoB1,
     viewIndex,
     info,
+    setArray,
     loadPage,
     clear,
     arrayEqualFunc,
