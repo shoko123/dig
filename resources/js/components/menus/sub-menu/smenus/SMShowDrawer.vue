@@ -16,8 +16,8 @@ import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain
 const { routerPush } = useRoutesMainStore()
 const { itemViewIndex, itemViews } = storeToRefs(useItemStore())
 
-function goTo(pageName: TPageName) {
-  routerPush(pageName)
+async function goTo(pageName: TPageName) {
+  await routerPush(pageName)
 }
 
 function toggle() {

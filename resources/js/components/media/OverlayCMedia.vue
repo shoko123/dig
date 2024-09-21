@@ -25,7 +25,7 @@ async function openModalCarousel() {
   const ok = await open('media', props.itemIndex)
   showSpinner(false)
   if (!ok) {
-    pushHome(`Problem encountered! Redirected to home page.`)
+    await pushHome(`Problem encountered! Redirected to home page.`)
   }
 }
 </script>

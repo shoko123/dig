@@ -53,19 +53,19 @@ function isAllowed(action: string) {
   return permissions.value.includes(term)
 }
 
-function itemCreate() {
+async function itemCreate() {
   console.log(`itemCreate`)
-  routerPush('create')
+  await routerPush('create')
 }
 
-function itemUpdate() {
+async function itemUpdate() {
   console.log(`itemUpdate`)
-  routerPush('update', <string>derived.value.slug)
+  await routerPush('update', <string>derived.value.slug)
 }
 
-function goToMedia() {
+async function goToMedia() {
   console.log(`goToMedia`)
-  routerPush('media', <string>derived.value.slug)
+  await routerPush('media', <string>derived.value.slug)
 }
 
 async function goToTagger() {
@@ -73,7 +73,7 @@ async function goToTagger() {
   const { useTaggerStore } = await import('../../../../scripts/stores/trio/tagger')
   const { prepareTagger } = useTaggerStore()
   prepareTagger()
-  routerPush('tag', <string>derived.value.slug)
+  await routerPush('tag', <string>derived.value.slug)
 }
 
 async function itemDelete() {
@@ -97,10 +97,10 @@ async function itemDelete() {
 
   if (res.slug === null) {
     showSnackbar('Item deleted successfully. Redirected to Welcome page')
-    routerPush('welcome', 'none')
+    await routerPush('welcome', 'none')
   } else {
     showSnackbar('Item deleted successfully.')
-    routerPush('show', res.slug)
+    await routerPush('show', res.slug)
   }
 }
 </script>

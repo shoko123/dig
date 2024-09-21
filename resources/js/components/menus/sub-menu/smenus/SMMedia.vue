@@ -42,10 +42,10 @@ async function reorderAndBack() {
   if (res.success)
     showSnackbar(res.success ? `Reorder completed successfully` : `Reorde failed. ${res.message}`)
   clear()
-  routerPush('show', <string>derived.value.slug)
+  await routerPush('show', <string>derived.value.slug)
 }
-function back() {
+async function back() {
   clear()
-  routerPush('show', <string>derived.value.slug)
+  await routerPush('show', <string>derived.value.slug)
 }
 </script>

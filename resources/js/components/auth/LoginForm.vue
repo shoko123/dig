@@ -1,34 +1,20 @@
 <template>
   <div class="text-subtitle-1 text-medium-emphasis">Email</div>
 
-  <v-text-field
-    v-model="data.email"
-    :error-messages="emailErrors"
-    density="compact"
-    placeholder="Email address"
-    prepend-inner-icon="mdi-email-outline"
-    variant="outlined"
-  />
+  <v-text-field v-model="data.email" :error-messages="emailErrors" density="compact" placeholder="Email address"
+    prepend-inner-icon="mdi-email-outline" variant="outlined" />
 
   <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
     Password
 
     <a class="text-caption text-decoration-none text-blue" @click="goTo('forgot-password')">
-      Forgot password?</a
-    >
+      Forgot password?</a>
   </div>
 
-  <v-text-field
-    v-model="data.password"
-    :error-messages="passwordErrors"
-    :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
-    :type="visible ? 'text' : 'password'"
-    density="compact"
-    placeholder="Enter your password"
-    prepend-inner-icon="mdi-lock-outline"
-    variant="outlined"
-    @click:append-inner="visible = !visible"
-  />
+  <v-text-field v-model="data.password" :error-messages="passwordErrors"
+    :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'" :type="visible ? 'text' : 'password'" density="compact"
+    placeholder="Enter your password" prepend-inner-icon="mdi-lock-outline" variant="outlined"
+    @click:append-inner="visible = !visible" />
 
   <v-btn block class="mb-8" color="blue" size="large" variant="tonal" @click="login">
     Log In
@@ -106,7 +92,7 @@ async function login() {
     if (
       ['/auth/register', '/auth/forgot-password'].includes(<string>current.value.preLoginFullPath)
     ) {
-      routerPush('home')
+      await routerPush('home')
     } else {
       router.push(<string>current.value.preLoginFullPath)
     }
@@ -114,12 +100,12 @@ async function login() {
     if (res.status === 422) {
       showSnackbar(res.message)
     } else {
-      pushHome(`Error! ${res.message}. Redirected to home page`)
+      await pushHome(`Error! ${res.message}. Redirected to home page`)
     }
   }
 }
 
-function goTo(routeName: TPageName) {
-  routerPush(routeName)
+async function goTo(routeName: TPageName) {
+  await routerPush(routeName)
 }
 </script>

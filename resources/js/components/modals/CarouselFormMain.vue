@@ -26,6 +26,6 @@ const item = computed(() => {
 async function clicked() {
   let slug = item.value?.slug
   await close()
-  routerPush('show', slug)
+  await routerPush('show', slug)
 }
 </script>

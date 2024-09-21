@@ -81,11 +81,11 @@ async function submit(v: Validation) {
   )
   console.log(`CreateUpdate. success! res: ${JSON.stringify(res, null, 2)}`)
 
-  routerPush('show', res.slug)
+  await routerPush('show', res.slug)
 }
 
-const cancel = () => {
+const cancel = async () => {
   console.log(`CreateUpdateForm.cancel()`)
-  routerPush('back1')
+  await routerPush('back1')
 }
 </script>

@@ -16,7 +16,7 @@ const props = defineProps<{
   record: TPage<'related', 'Gallery'>
 }>()
 
-let { moveFromItemToItem } = useRoutesMainStore()
+let { moveToRelatedItem } = useRoutesMainStore()
 const { showSpinner } = useNotificationsStore()
 const { pushHome } = useRoutesMainStore()
 const { open } = useCarouselStore()
@@ -26,11 +26,12 @@ async function openModalCarousel() {
   const ok = await open('related', props.itemIndex)
   showSpinner(false)
   if (!ok) {
-    pushHome(`Error encountered! Redirected to home page.`)
+    await pushHome(`Error encountered! Redirected to home page.`)
   }
 }
 
 async function goToItem() {
-  await moveFromItemToItem(props.record.slug, props.record.id, props.record.module)
+  await moveToRelatedItem(props.record.module, props.record.id)
+  //await moveFromItemToItem(props.record.slug, , props.record.module)
 }
 </script>

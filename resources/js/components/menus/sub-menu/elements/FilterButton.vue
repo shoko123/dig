@@ -20,7 +20,7 @@ const tip = computed(() => {
   return `Go to filters`
 })
 
-function toFilter() {
-  routerPush('filter')
+async function toFilter() {
+  await routerPush('filter')
 }
 </script>

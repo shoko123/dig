@@ -69,7 +69,7 @@ const collectionIsNotEmpty = computed(() => {
 async function btnClicked(item: TPage<'main', 'Tabular', TModule> | TPage<'related', 'Tabular'>) {
   console.log(`pageTable.btnClicked() item: ${JSON.stringify(item, null, 2)}`)
   if (props.source === 'main') {
-    routerPush('show', item.slug)
+    await routerPush('show', item.slug)
   } else {
     const related = item as TPage<'related', 'Tabular'>
     await moveFromItemToItem(related.slug, related.id, related.module)

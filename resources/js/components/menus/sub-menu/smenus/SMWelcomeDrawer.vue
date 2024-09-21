@@ -12,15 +12,15 @@ import { useModuleStore } from '../../../../scripts/stores/module'
 const { routerPush } = useRoutesMainStore()
 const { firstSlug } = storeToRefs(useModuleStore())
 
-function toCollection() {
-  routerPush('index')
+async function toCollection() {
+  await routerPush('index')
 }
 
 async function toItem() {
-  routerPush('show', firstSlug.value)
+  await routerPush('show', firstSlug.value)
 }
 
-function toFilter() {
-  routerPush('filter')
+async function toFilter() {
+  await routerPush('filter')
 }
 </script>

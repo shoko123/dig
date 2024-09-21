@@ -27,10 +27,10 @@ const tag = computed(() => {
   return derived.value.tag ? `${derived.value.tag} (${itemIndex.value + 1}/${mcs.array.length})` : `...`
 })
 
-function next(isRight: boolean) {
+async function next(isRight: boolean) {
   const { nextArrayElement } = useElementAndCollectionStore()
   const nextItem = nextArrayElement('main', itemIndex.value, isRight)
   const tagAndSlug = tagAndSlugFromId(<string>nextItem.item, current.value.module)
-  routerPush('show', tagAndSlug.slug)
+  await routerPush('show', tagAndSlug.slug)
 }
 </script>

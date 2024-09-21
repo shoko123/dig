@@ -96,7 +96,7 @@ async function nextClicked(isRight: boolean) {
   const res = await nextItem(isRight)
   showSpinner(false)
   if (!res) {
-    pushHome(`Error encountered. Redirected to home page.`)
+    await pushHome(`Error encountered. Redirected to home page.`)
   }
 }
 
@@ -105,7 +105,7 @@ async function closeCarousel() {
   const res = await close()
   showSpinner(false)
   if (!res) {
-    pushHome(`Error encountered. Redirected to home page.`)
+    await pushHome(`Error encountered. Redirected to home page.`)
   }
 }
 </script>

@@ -34,8 +34,8 @@ const showLoginButton = computed(() => {
   return !auth.authenticated && !['login', 'register'].includes(current.value.name)
 })
 
-function loginClick() {
-  routerPush('login')
+async function loginClick() {
+  await routerPush('login')
 }
 
 async function userOptionsClicked(item: TUserOption) {

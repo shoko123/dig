@@ -105,17 +105,17 @@ async function submit() {
   if (res.success) {
     resetCategoryAndGroupIndices()
     clearTaggerOptions()
-    routerPush('back1')
+    await routerPush('back1')
   } else {
     showSnackbar(`Syncing of tags failed. Error: ${res.message}`)
   }
 }
 
-function cancel() {
+async function cancel() {
   console.log(`cancelClicked`)
   resetCategoryAndGroupIndices()
   clearTaggerOptions()
-  routerPush('back1')
+  await routerPush('back1')
 }
 
 function resetToItem() {

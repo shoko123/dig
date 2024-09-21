@@ -68,7 +68,7 @@ async function asynLoadPage(val: number) {
   )
   showSpinner(false)
   if (!res.success) {
-    pushHome(`${res.message}. Redirected to home page`)
+    await pushHome(`${res.message}. Redirected to home page`)
   }
 }
 

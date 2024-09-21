@@ -17,7 +17,7 @@ const tip = computed(() => {
   return `Go to the Welcome Page`
 })
 
-function toWelcome() {
-  routerPush('welcome')
+async function toWelcome() {
+  await routerPush('welcome')
 }
 </script>

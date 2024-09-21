@@ -26,11 +26,11 @@ async function openModalCarousel() {
   const ok = await open('main', props.itemIndex)
   showSpinner(false)
   if (!ok) {
-    pushHome(`Problem encountered! Redirected to home page.`)
+    await pushHome(`Problem encountered! Redirected to home page.`)
   }
 }
 
-function goToItem() {
-  routerPush('show', props.record.slug)
+async function goToItem() {
+  await routerPush('show', props.record.slug)
 }
 </script>

@@ -36,10 +36,10 @@ const idInfo = computed(() => {
     return { id: id.value, tag: "Fake tag" }
 })
 
-function cancel() {
+async function cancel() {
     openIdSelectorModal.value = false
     console.log(`IdSelector.cancel()`)
-    routerPush('back1')
+    await routerPush('back1')
 }
 
 function changeLabel() {

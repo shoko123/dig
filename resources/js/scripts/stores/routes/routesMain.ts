@@ -17,11 +17,13 @@ import { useRoutesPlanTransitionStore } from './routesPlanTransition'
 import { useRoutesPrepareStore } from './routesPrepare'
 import { useAuthStore } from '../auth'
 import { useMainStore } from '../main'
+
 import { useNotificationsStore } from '../notifications'
 
 export const useRoutesMainStore = defineStore('routesMain', () => {
   const router = useRouter()
   const { parseModule } = useRoutesParserStore()
+
   const { planTransition } = useRoutesPlanTransitionStore()
   const { showSnackbar, showSpinner } = useNotificationsStore()
   const { moduleToUrlModuleName } = storeToRefs(useMainStore())
@@ -174,16 +176,16 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     //current.value = JSON.parse(JSON.stringify(to.value))
   }
 
-  function pushHome(message = '') {
+  async function pushHome(message = '') {
     console.log(`goHome`)
     inTransition.value = false
     if (message !== '') {
       showSnackbar(message)
     }
-    routerPush('home')
+    await router.push('home')
   }
 
-  function routerPush(
+  async function routerPush(
     routeName: string,
     slug: string = 'none',
     module: TModule | 'current' = 'current',
@@ -198,14 +200,14 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
 
       case 'home':
       case 'dashboard':
-        router.push({ name: routeName })
+        await router.push({ name: routeName })
         break
 
       case 'login':
       case 'register':
       case 'forgot-password':
       case 'reset-password':
-        router.push({ name: routeName })
+        await router.push({ name: routeName })
         break
 
       case 'welcome':
@@ -213,14 +215,14 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
       case 'create':
         urlModule =
           module === 'current' ? current.value.url_module : moduleToUrlModuleName.value[module]
-        router.push({ name: routeName, params: { module: urlModule } })
+        await router.push({ name: routeName, params: { module: urlModule } })
         break
 
       case 'index':
         urlModule =
           module === 'current' ? current.value.url_module : moduleToUrlModuleName.value[module]
         query = keepQuery ? current.value.queryParams : ''
-        router.push({
+        await router.push({
           name: 'index',
           params: { module: urlModule },
           query: <LocationQueryRaw>query,
@@ -231,7 +233,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         urlModule =
           module === 'current' ? current.value.url_module : moduleToUrlModuleName.value[module]
         query = keepQuery ? current.value.queryParams : ''
-        router.push({
+        await router.push({
           name: 'show',
           params: { module: urlModule, slug: slug },
           query: <LocationQueryRaw>query,
@@ -241,7 +243,10 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
       case 'update':
       case 'media':
       case 'tag':
-        router.push({ name: routeName, params: { module: current.value.url_module, slug: slug } })
+        await router.push({
+          name: routeName,
+          params: { module: current.value.url_module, slug: slug },
+        })
         break
     }
   }
@@ -267,19 +272,51 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
 
       if (indexByArrayElement('main', <string>id) !== -1) {
         console.log(`moveTo item that is already in the current collection - go!`)
-        routerPush('show', slug, module)
+        await routerPush('show', slug, module)
       } else {
         console.log(
           `moveTo item that is NOT in the current collection - remove filters and reload collection!`,
         )
         clearFilterOptions()
         showSnackbar(`Filters removed and result set reloaded`)
-        routerPush('show', slug, module, false)
+        await routerPush('show', slug, module, false)
       }
     } else {
       console.log(`GoTo item in a different module`)
-      routerPush('show', slug, module, false)
+      await routerPush('show', slug, module, false)
     }
   }
-  return { inTransition, current, to, handleRouteChange, routerPush, pushHome, moveFromItemToItem }
+
+  async function moveToRelatedItem(module: TModule, id: string) {
+    const { useTrioStore } = await import('../trio/trio')
+    const { useElementAndCollectionStore } = await import('../collections/elementAndCollection')
+    const { useModuleStore } = await import('../module')
+    const { indexByArrayElement } = useElementAndCollectionStore()
+    const { clearFilterOptions } = useTrioStore()
+    const { tagAndSlugFromId } = useModuleStore()
+    const tas = tagAndSlugFromId(id, module)
+    if (current.value.module !== module) {
+      return await routerPush('show', tas.slug, module, false)
+    }
+
+    if (indexByArrayElement('main', id) !== -1) {
+      console.log(`moveToRelated "${module} ${tas.slug}" - IN collection`)
+      return await routerPush('show', tas.slug, module)
+    } else {
+      console.log(`moveToRelated "${module} ${tas.slug}" - NOT in collection`)
+      clearFilterOptions()
+      await routerPush('show', tas.slug, module, false)
+      showSnackbar(`Filters removed and result set reloaded`)
+    }
+  }
+  return {
+    inTransition,
+    current,
+    to,
+    handleRouteChange,
+    routerPush,
+    pushHome,
+    moveFromItemToItem,
+    moveToRelatedItem,
+  }
 })

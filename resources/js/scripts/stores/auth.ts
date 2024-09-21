@@ -82,11 +82,11 @@ export const useAuthStore = defineStore('auth', () => {
     return send('fortify/reset-password', 'post', form)
   }
 
-  function resetAndGoTo(routeName: TPageName | null = null) {
+  async function resetAndGoTo(routeName: TPageName | null = null) {
     const { routerPush } = useRoutesMainStore()
     dialog.value = { open: false, message: '' }
     if (routeName !== null) {
-      routerPush(routeName)
+      await routerPush(routeName)
     }
   }
 

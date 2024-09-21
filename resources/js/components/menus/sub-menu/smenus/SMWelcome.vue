@@ -21,6 +21,6 @@ const { routerPush } = useRoutesMainStore()
 const { firstSlug } = storeToRefs(useModuleStore())
 
 async function showClicked() {
-  routerPush('show', firstSlug.value)
+  await routerPush('show', firstSlug.value)
 }
 </script>

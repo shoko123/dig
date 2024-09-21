@@ -27,7 +27,7 @@ const page = computed(() => {
 
 async function goTo(item: TPage<'main' | 'related', 'Chips'>) {
   if (props.source === 'main') {
-    rms.routerPush('show', (<TPage<'main', 'Chips'>>item).slug)
+    await rms.routerPush('show', (<TPage<'main', 'Chips'>>item).slug)
   } else {
     const related = <TPage<'related', 'Chips'>>item
     await rms.moveFromItemToItem<string>(related.slug, <string>related.id, related.module)

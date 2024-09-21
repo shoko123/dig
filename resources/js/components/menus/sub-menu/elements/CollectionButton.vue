@@ -17,7 +17,7 @@ const tip = computed(() => {
   return `Go to the Collection Page`
 })
 
-function toCollection() {
-  routerPush('index')
+async function toCollection() {
+  await routerPush('index')
 }
 </script>
