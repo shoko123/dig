@@ -24,9 +24,9 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
 
   const pageNoB1 = ref(1)
   const viewIndex = ref(0)
-  const arrayData = ref<TArray<'main'>[]>([])
 
-  const apiPage = ref<TApiPage<'main', TCollectionView, TModule>[]>([])
+  // array
+  const arrayData = ref<TArray<'main'>[]>([])
 
   function setArray(arr: TArray[]) {
     arrayData.value = arr as unknown as TArray<'main'>[]
@@ -36,27 +36,8 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     return arrayData.value
   })
 
-  const page = computed(() => {
-    return apiPage.value.map((x) => {
-      const tagAndSlug = tagAndSlugFromId(x.id)
-      let y = { ...x, ...tagAndSlug }
-      if ('urls' in y) {
-        const media = buildMedia(y.urls, module.value)
-        y = { ...y, ...{ media } }
-      }
-      return y
-    })
-  })
-
-  const info = computed(() => {
-    return getConsumeableCollection(
-      'main',
-      viewIndex.value,
-      pageNoB1.value,
-      page.value.length,
-      arrayData.value.length,
-    )
-  })
+  // page
+  const apiPage = ref<TApiPage<'main', TCollectionView, TModule>[]>([])
 
   const loadPage: TFuncLoadPage = async function (
     pageNo: number,
@@ -99,6 +80,28 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     }
   }
 
+  const page = computed(() => {
+    return apiPage.value.map((x) => {
+      const tagAndSlug = tagAndSlugFromId(x.id)
+      let y = { ...x, ...tagAndSlug }
+      if ('urls' in y) {
+        const media = buildMedia(y.urls, module.value)
+        y = { ...y, ...{ media } }
+      }
+      return y
+    })
+  })
+
+  const info = computed(() => {
+    return getConsumeableCollection(
+      'main',
+      viewIndex.value,
+      pageNoB1.value,
+      page.value.length,
+      arrayData.value.length,
+    )
+  })
+
   const arrayEqualFunc: TArrayEqualFunc = function (a: TArray, b: TArray) {
     const aMain = a as TArray<'main'>
     const bMain = b as TArray<'main'>
@@ -119,14 +122,14 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
   }
 
   return {
+    setArray,
     array,
-    page,
     apiPage,
+    loadPage,
+    page,
     pageNoB1,
     viewIndex,
     info,
-    setArray,
-    loadPage,
     clear,
     arrayEqualFunc,
     pageEqualFunc,

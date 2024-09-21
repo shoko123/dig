@@ -21,34 +21,30 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
   const pageNoB1 = ref(1)
   const viewIndex = ref(0)
 
+  // array
   const arrayData = ref<TArray<'related'>[]>([])
-
-  const array = computed(() => {
-    return arrayData.value
-  })
 
   function setArray(arr: TArray[]) {
     arrayData.value = arr as unknown as TArray<'related'>[]
   }
 
-  const info = computed(() => {
-    return getConsumeableCollection(
-      'related',
-      viewIndex.value,
-      pageNoB1.value,
-      page.value.length,
-      arrayData.value.length,
-    )
+  const array = computed(() => {
+    return arrayData.value
   })
 
-  //relatedTableHeaders for the related.Tabular view
-  const relatedTableHeaders = computed(() => {
-    return [
-      { title: 'Tag', align: 'start', key: 'tag' },
-      { title: 'Relation', align: 'start', key: 'relation_name' },
-      { title: 'Short Description', align: 'start', key: 'short' },
-    ]
-  })
+  // page
+  const loadPage: TFuncLoadPage = async function (
+    pageNo: number,
+    view: TCollectionView,
+    pageLength: number,
+    module: TModule,
+  ) {
+    //related page is a sub-array of array, determined by computed(array, pageNoB1). So, just set pageNoB1
+    view
+    module
+    pageNoB1.value = pageNo
+    return { success: true, message: '' }
+  }
 
   const page = computed(() => {
     const ipp = getItemsPerPage('related', viewIndex.value)
@@ -92,18 +88,15 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     return res
   })
 
-  const loadPage: TFuncLoadPage = async function (
-    pageNo: number,
-    view: TCollectionView,
-    pageLength: number,
-    module: TModule,
-  ) {
-    //related page is a sub-array of array, determined by computed(array, pageNoB1). So, just set pageNoB1
-    view
-    module
-    pageNoB1.value = pageNo
-    return { success: true, message: '' }
-  }
+  const info = computed(() => {
+    return getConsumeableCollection(
+      'related',
+      viewIndex.value,
+      pageNoB1.value,
+      page.value.length,
+      arrayData.value.length,
+    )
+  })
 
   const arrayEqualFunc: TArrayEqualFunc = function (a: TArray, b: TArray) {
     const aArr = a as TArray<'related'>
@@ -126,6 +119,15 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     arrayData.value = []
     pageNoB1.value = 1
   }
+
+  //relatedTableHeaders for the related.Tabular view
+  const relatedTableHeaders = computed(() => {
+    return [
+      { title: 'Tag', align: 'start', key: 'tag' },
+      { title: 'Relation', align: 'start', key: 'relation_name' },
+      { title: 'Short Description', align: 'start', key: 'short' },
+    ]
+  })
 
   return {
     array,

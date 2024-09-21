@@ -28,18 +28,17 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-
 import { useAuthStore } from '../../../../scripts/stores/auth'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 import { useItemStore } from '../../../../scripts/stores/item'
-import { useCollectionMediaStore } from '../../../../scripts/stores/collections/collectionMedia'
+
 
 import { useNotificationsStore } from '../../../../scripts/stores/notifications'
 
 const { routerPush } = useRoutesMainStore()
 const { current } = storeToRefs(useRoutesMainStore())
 const { permissions } = storeToRefs(useAuthStore())
-const { array } = storeToRefs(useCollectionMediaStore())
+
 const { derived } = storeToRefs(useItemStore())
 const { itemRemove } = useItemStore()
 const { showSpinner, showSnackbar } = useNotificationsStore()
@@ -77,6 +76,9 @@ async function goToTagger() {
 }
 
 async function itemDelete() {
+  const { useCollectionMediaStore } = await import('../../../../scripts/stores/collections/collectionMedia')
+  const { array } = storeToRefs(useCollectionMediaStore())
+
   if (array.value.length > 0) {
     alert(`Delete aborted. Please delete related media!`)
     return

@@ -21,14 +21,31 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
   const pageNoB1 = ref(1)
   const viewIndex = ref(0)
 
+  // array
   const arrayData = ref<TArray<'media'>[]>([])
 
   function setArray(arr: TArray[]) {
     arrayData.value = arr as unknown as TArray<'media'>[]
   }
+
   const array = computed(() => {
     return arrayData.value
   })
+
+  // page
+  const loadPage: TFuncLoadPage = async function (
+    pageNo: number,
+    view: TCollectionView,
+    pageLength: number,
+    module: TModule,
+  ) {
+    //do nothing except setting pageNoB1
+    view
+    module
+    pageLength
+    pageNoB1.value = pageNo
+    return { success: true, message: '' }
+  }
 
   const page = computed(() => {
     const ipp = getItemsPerPage('media', viewIndex.value)
@@ -55,26 +72,6 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     )
   })
 
-  function switchArrayItems(indexA: number, indexB: number) {
-    const temp = { ...arrayData.value[indexA] }
-    arrayData.value[indexA] = { ...arrayData.value[indexB] }
-    arrayData.value[indexB] = { ...temp }
-  }
-
-  const loadPage: TFuncLoadPage = async function (
-    pageNo: number,
-    view: TCollectionView,
-    pageLength: number,
-    module: TModule,
-  ) {
-    //do nothing except setting pageNoB1
-    view
-    module
-    pageLength
-    pageNoB1.value = pageNo
-    return { success: true, message: '' }
-  }
-
   function clear() {
     console.log(`collectionMedia.clear()`)
     arrayData.value = []
@@ -93,14 +90,20 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     return eMedia.id === pMedia.id
   }
 
+  function switchArrayItems(indexA: number, indexB: number) {
+    const temp = { ...arrayData.value[indexA] }
+    arrayData.value[indexA] = { ...arrayData.value[indexB] }
+    arrayData.value[indexB] = { ...temp }
+  }
+
   return {
+    setArray,
     array,
+    loadPage,
     page,
     pageNoB1,
     viewIndex,
     info,
-    setArray,
-    loadPage,
     clear,
     arrayEqualFunc,
     pageEqualFunc,
