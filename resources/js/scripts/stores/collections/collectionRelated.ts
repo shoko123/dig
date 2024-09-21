@@ -21,10 +21,14 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
   const pageNoB1 = ref(1)
   const viewIndex = ref(0)
 
-  const array = ref<TArray<'related'>[]>([])
+  const arrayData = ref<TArray<'related'>[]>([])
+
+  const array = computed(() => {
+    return arrayData.value
+  })
 
   function setArray(arr: TArray[]) {
-    array.value = arr as unknown as TArray<'related'>[]
+    arrayData.value = arr as unknown as TArray<'related'>[]
   }
 
   const info = computed(() => {
@@ -33,7 +37,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
       viewIndex.value,
       pageNoB1.value,
       page.value.length,
-      array.value.length,
+      arrayData.value.length,
     )
   })
 
@@ -50,7 +54,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     const ipp = getItemsPerPage('related', viewIndex.value)
     const viewName = getViewName('related', viewIndex.value)
     const start = (pageNoB1.value - 1) * ipp
-    const slice = array.value.slice(start, start + ipp)
+    const slice = arrayData.value.slice(start, start + ipp)
     let res = []
 
     switch (viewName) {
@@ -119,7 +123,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
 
   function clear() {
     console.log(`collectionRelated.clear()`)
-    array.value = []
+    arrayData.value = []
     pageNoB1.value = 1
   }
 

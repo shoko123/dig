@@ -21,16 +21,19 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
   const pageNoB1 = ref(1)
   const viewIndex = ref(0)
 
-  const array = ref<TArray<'media'>[]>([])
+  const arrayData = ref<TArray<'media'>[]>([])
 
   function setArray(arr: TArray[]) {
-    array.value = arr as unknown as TArray<'media'>[]
+    arrayData.value = arr as unknown as TArray<'media'>[]
   }
+  const array = computed(() => {
+    return arrayData.value
+  })
 
   const page = computed(() => {
     const ipp = getItemsPerPage('media', viewIndex.value)
     const start = (pageNoB1.value - 1) * ipp
-    const slice = array.value.slice(start, start + ipp)
+    const slice = arrayData.value.slice(start, start + ipp)
     const res = slice.map((x) => {
       const media = buildMedia({ full: x.urls.full, tn: x.urls.tn })
       return {
@@ -48,14 +51,14 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
       viewIndex.value,
       pageNoB1.value,
       page.value.length,
-      array.value.length,
+      arrayData.value.length,
     )
   })
 
   function switchArrayItems(indexA: number, indexB: number) {
-    const temp = { ...array.value[indexA] }
-    array.value[indexA] = { ...array.value[indexB] }
-    array.value[indexB] = { ...temp }
+    const temp = { ...arrayData.value[indexA] }
+    arrayData.value[indexA] = { ...arrayData.value[indexB] }
+    arrayData.value[indexB] = { ...temp }
   }
 
   const loadPage: TFuncLoadPage = async function (
@@ -74,7 +77,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
 
   function clear() {
     console.log(`collectionMedia.clear()`)
-    array.value = []
+    arrayData.value = []
     pageNoB1.value = 1
   }
 

@@ -24,13 +24,17 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
 
   const pageNoB1 = ref(1)
   const viewIndex = ref(0)
-  const array = ref<TArray<'main'>[]>([])
+  const arrayData = ref<TArray<'main'>[]>([])
 
   const apiPage = ref<TApiPage<'main', TCollectionView, TModule>[]>([])
 
   function setArray(arr: TArray[]) {
-    array.value = arr as unknown as TArray<'main'>[]
+    arrayData.value = arr as unknown as TArray<'main'>[]
   }
+
+  const array = computed(() => {
+    return arrayData.value
+  })
 
   const page = computed(() => {
     return apiPage.value.map((x) => {
@@ -50,7 +54,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
       viewIndex.value,
       pageNoB1.value,
       page.value.length,
-      array.value.length,
+      arrayData.value.length,
     )
   })
 
@@ -65,7 +69,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
       return { success: false, message: 'Error: page size is 0.' }
     }
     const start = (pageNo - 1) * pageLength
-    const slice = array.value.slice(start, start + pageLength)
+    const slice = arrayData.value.slice(start, start + pageLength)
     console.log(`loadPage(main) v: ${view} pNo: ${pageNo}  len: ${pageLength} startIndex: ${start}`)
 
     switch (view) {
@@ -109,7 +113,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
 
   function clear() {
     console.log(`collectionMain.clear()`)
-    array.value = []
+    arrayData.value = []
     apiPage.value = []
     pageNoB1.value = 1
   }

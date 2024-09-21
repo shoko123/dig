@@ -44,8 +44,8 @@ export const useMediaStore = defineStore('media', () => {
   }
 
   function setItemMedia(media: TArray<'media'>[]) {
-    const { array } = storeToRefs(useCollectionMediaStore())
-    array.value = media
+    const { setArray } = useCollectionMediaStore()
+    setArray(media)
   }
 
   //mediaUpload
