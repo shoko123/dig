@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { TFieldsByModule, TFieldsUnion, TObjCategorizerByFieldName } from '@/js/types/moduleTypes'
+import { TFieldsByModule, TFieldsUnion, TObjCategorizerByFieldName } from '@/types/moduleTypes'
 import { useItemStore } from '../../../scripts/stores/item'
 
 export const useLocusStore = defineStore('locus', () => {

@@ -8,10 +8,10 @@ import type {
   TForgotPasswordForm,
   TResetPasswordForm,
   TUser,
-} from '@/js/types/authTypes'
+} from '@/types/authTypes'
 
-import type { TPageName } from '@/js/types/routesTypes'
-import type { TXhrEmptyResult, TXhrResult } from '@/js/types/xhrTypes'
+import type { TPageName } from '@/types/routesTypes'
+import type { TXhrEmptyResult, TXhrResult } from '@/types/xhrTypes'
 import { useXhrStore } from './xhr'
 import { useRoutesMainStore } from './routes/routesMain'
 

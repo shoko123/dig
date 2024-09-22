@@ -1,6 +1,6 @@
 import { defineStore, storeToRefs } from 'pinia'
-import type { TFieldsUnion, TFieldValue } from '@/js/types/moduleTypes'
-import type { TGroupField } from '@/js/types/trioTypes'
+import type { TFieldsUnion, TFieldValue } from '@/types/moduleTypes'
+import type { TGroupField } from '@/types/trioTypes'
 import { useXhrStore } from '../xhr'
 import { useItemStore } from '../item'
 import { useModuleStore } from '../module'

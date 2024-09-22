@@ -9,7 +9,7 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import { type TPageName } from '@/js/types/routesTypes'
+import { type TPageName } from '@/types/routesTypes'
 import { useItemStore } from '../../../../scripts/stores/item'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 

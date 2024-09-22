@@ -5,7 +5,7 @@ import type {
   TUrlModuleNameToModule,
   TModuleBtnsInfo,
   TModule,
-} from '@/js/types/moduleTypes'
+} from '@/types/moduleTypes'
 import { useXhrStore } from './xhr'
 import { useAuthStore } from './auth'
 

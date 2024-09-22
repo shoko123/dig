@@ -22,7 +22,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import type { TFieldsByModule } from '@/js/types/moduleTypes'
+import type { TFieldsByModule } from '@/types/moduleTypes'
 import { useStoneStore } from '../../../scripts/stores/modules/Stone'
 import { useItemNewStore } from '../../../scripts/stores/itemNew'
 const { availableItemNumbers } = storeToRefs(useStoneStore())

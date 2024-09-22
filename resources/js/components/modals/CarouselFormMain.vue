@@ -12,7 +12,7 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
-import { type TCarousel } from '@/js/types/mediaTypes'
+import { type TCarousel } from '@/types/mediaTypes'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { useCarouselStore } from '../../scripts/stores/modals/carousel'
 const { routerPush } = useRoutesMainStore()

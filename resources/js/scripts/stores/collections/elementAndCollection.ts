@@ -1,4 +1,4 @@
-import type { TCName, TArray, TPage } from '@/js/types/collectionTypes'
+import type { TCName, TArray, TPage } from '@/types/collectionTypes'
 
 import { defineStore } from 'pinia'
 

@@ -8,9 +8,9 @@
 
 import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type { TPlanAction } from '@/js/types/routesTypes'
-import type { TApiFieldsUnion, TApiModuleInit, TModule } from '@/js/types/moduleTypes'
-import type { TApiItemShow } from '@/js/types/itemTypes'
+import type { TPlanAction } from '@/types/routesTypes'
+import type { TApiFieldsUnion, TApiModuleInit, TModule } from '@/types/moduleTypes'
+import type { TApiItemShow } from '@/types/itemTypes'
 import type { LocationQuery } from 'vue-router'
 import { useXhrStore } from '../xhr'
 
@@ -22,7 +22,7 @@ import { useItemStore } from '../item'
 
 import { useRoutesMainStore } from './routesMain'
 import { useRoutesParserStore } from './routesParser'
-import { TArray } from '@/js/types/collectionTypes'
+import { TArray } from '@/types/collectionTypes'
 
 export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   const { send } = useXhrStore()

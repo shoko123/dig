@@ -1,5 +1,5 @@
-import type { TApiFieldsUnion, TFieldsUnion, TBespokeFieldsUnion } from '@/js/types/moduleTypes'
-import type { TApiItemShow, TApiTag } from '@/js/types/itemTypes'
+import type { TApiFieldsUnion, TFieldsUnion, TBespokeFieldsUnion } from '@/types/moduleTypes'
+import type { TApiItemShow, TApiTag } from '@/types/itemTypes'
 
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'

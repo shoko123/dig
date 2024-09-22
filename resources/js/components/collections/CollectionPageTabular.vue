@@ -11,8 +11,8 @@
 
 <script lang="ts" setup>
 import type { VDataTableVirtual } from 'vuetify/lib/components/index.mjs'
-import type { TModule } from '@/js/types/moduleTypes'
-import type { TCName, TPage } from '@/js/types/collectionTypes'
+import type { TModule } from '@/types/moduleTypes'
+import type { TCName, TPage } from '@/types/collectionTypes'
 
 import { ref, computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'

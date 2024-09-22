@@ -1,7 +1,7 @@
 // routesStore.js
-import type { TCollectionView } from '@/js/types/collectionTypes'
-import type { TModule, TUrlModule, TFieldValue } from '@/js/types/moduleTypes'
-import type { TFieldValueSource } from '@/js/types/trioTypes'
+import type { TCollectionView } from '@/types/collectionTypes'
+import type { TModule, TUrlModule, TFieldValue } from '@/types/moduleTypes'
+import type { TFieldValueSource } from '@/types/trioTypes'
 type TRoutes =
   | { name: 'home' }
   | { name: 'welcome'; params: { module: TUrlModule } }

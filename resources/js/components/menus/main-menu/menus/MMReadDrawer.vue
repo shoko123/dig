@@ -6,7 +6,7 @@
 
     <v-list-item v-for="(item, index) in moduleBtnsInfo" :key="index" :value="index" @click="goTo(item.url_module)">
       <v-list-item-title :disabled="disableLinks" :to="{ name: 'welcome', params: { module: item.url_module } }">{{
-      item.title }}</v-list-item-title>
+        item.title }}</v-list-item-title>
     </v-list-item>
 
     <v-divider />
@@ -24,7 +24,7 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
-import type { TUrlModule } from '@/js/types/moduleTypes'
+import type { TUrlModule } from '@/types/moduleTypes'
 import { useAuthStore } from '../../../../scripts/stores/auth'
 import { useMainStore } from '../../../../scripts/stores/main'
 import { useNotificationsStore } from '../../../../scripts/stores/notifications'

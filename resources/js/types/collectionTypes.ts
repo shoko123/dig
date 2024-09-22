@@ -1,5 +1,5 @@
-import { TMediaOfItem, TMediaUrls } from '@/js/types/mediaTypes'
-import { TModule, TApiTabularByModule, TTabularByModule } from '@/js/types/moduleTypes'
+import { TMediaOfItem, TMediaUrls } from '@/types/mediaTypes'
+import { TModule, TApiTabularByModule, TTabularByModule } from '@/types/moduleTypes'
 
 type TCollectionView = 'Gallery' | 'Chips' | 'Tabular'
 

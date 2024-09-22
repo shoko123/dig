@@ -18,7 +18,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { TFieldsByModule } from '@/js/types/moduleTypes'
+import { TFieldsByModule } from '@/types/moduleTypes'
 import { useItemStore } from '../../../scripts/stores/item'
 
 let { fields } = storeToRefs(useItemStore())

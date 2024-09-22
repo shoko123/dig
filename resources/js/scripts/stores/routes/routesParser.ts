@@ -4,7 +4,7 @@
 import { defineStore, storeToRefs } from 'pinia'
 import type { TModule, TUrlModule } from '../../../types/moduleTypes'
 import type { LocationQuery } from 'vue-router'
-import type { TGroupBase } from '@/js/types/trioTypes'
+import type { TGroupBase } from '@/types/trioTypes'
 
 import { useModuleStore } from '../module'
 import { useMainStore } from '../main'

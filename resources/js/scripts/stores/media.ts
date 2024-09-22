@@ -1,8 +1,8 @@
 // stores/media.js
-import { TFieldsUnion } from '@/js/types/moduleTypes'
-import { TMediaOfItem, TMediaUrls } from '@/js/types/mediaTypes'
-import type { TModule } from '@/js/types/moduleTypes'
-import type { TArray } from '@/js/types/collectionTypes'
+import { TFieldsUnion } from '@/types/moduleTypes'
+import { TMediaOfItem, TMediaUrls } from '@/types/mediaTypes'
+import type { TModule } from '@/types/moduleTypes'
+import type { TArray } from '@/types/collectionTypes'
 
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'

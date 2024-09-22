@@ -1,4 +1,4 @@
-import type { TModuleInfo } from '@/js/types/moduleTypes'
+import type { TModuleInfo } from '@/types/moduleTypes'
 
 type TCeramic<T extends TModuleInfo> = {
   url_name: 'ceramics'

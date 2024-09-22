@@ -7,9 +7,9 @@ import type {
   TCollectionView,
   TArrayEqualFunc,
   TPageEqualFunc,
-} from '@/js/types/collectionTypes'
-import type { TFuncLoadPage } from '@/js/types/routesTypes'
-import type { TModule } from '@/js/types/moduleTypes'
+} from '@/types/collectionTypes'
+import type { TFuncLoadPage } from '@/types/routesTypes'
+import type { TModule } from '@/types/moduleTypes'
 import { useModuleStore } from '../module'
 import { useXhrStore } from '../xhr'
 import { useMediaStore } from '../media'

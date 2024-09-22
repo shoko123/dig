@@ -10,7 +10,7 @@ import type {
 } from '../../types/moduleTypes'
 import { useMainStore } from './main'
 import { useRoutesMainStore } from './routes/routesMain'
-import { TCName } from '@/js/types/collectionTypes'
+import { TCName } from '@/types/collectionTypes'
 
 export const useModuleStore = defineStore('module', () => {
   const { bucketUrl } = storeToRefs(useMainStore())

@@ -31,7 +31,7 @@
 import { storeToRefs } from 'pinia'
 import { useDisplay } from 'vuetify'
 import { computed } from 'vue'
-import type { TCarousel } from '@/js/types/mediaTypes'
+import type { TCarousel } from '@/types/mediaTypes'
 import { useItemStore } from '../../scripts/stores/item'
 import { useCarouselStore } from '../../scripts/stores/modals/carousel'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'

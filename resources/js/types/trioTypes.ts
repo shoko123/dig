@@ -1,4 +1,4 @@
-import type { TFieldValue } from '@/js/types/moduleTypes'
+import type { TFieldValue } from '@/types/moduleTypes'
 type TrioSourceName = 'Item' | 'Tagger' | 'Filter'
 
 type TAllGroups = {

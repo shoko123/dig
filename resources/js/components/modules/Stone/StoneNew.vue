@@ -65,7 +65,7 @@
 </template>
 
 <script lang="ts" setup>
-import { TFieldsByModule } from '@/js/types/moduleTypes'
+import { TFieldsByModule } from '@/types/moduleTypes'
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useVuelidate } from '@vuelidate/core'

@@ -12,8 +12,8 @@ import type {
   TGroupOrFieldToKeyObj,
   TGroupField,
   TOptionTmp,
-} from '@/js/types/trioTypes'
-import type { TFieldValue, TObjAllCategorizerFuncs } from '@/js/types/moduleTypes'
+} from '@/types/trioTypes'
+import type { TFieldValue, TObjAllCategorizerFuncs } from '@/types/moduleTypes'
 
 export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   const { mediaCollectionNames } = storeToRefs(useMainStore())

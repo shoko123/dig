@@ -9,8 +9,8 @@ import {
   type RouteLocationNormalized,
   type RouteLocationRaw,
 } from 'vue-router'
-import type { TModule, TUrlModule } from '@/js/types/moduleTypes'
-import type { TRouteInfo, TPageName, TPlanAction } from '@/js/types/routesTypes'
+import type { TModule, TUrlModule } from '@/types/moduleTypes'
+import type { TRouteInfo, TPageName, TPlanAction } from '@/types/routesTypes'
 
 import { useRoutesParserStore } from './routesParser'
 import { useRoutesPlanTransitionStore } from './routesPlanTransition'

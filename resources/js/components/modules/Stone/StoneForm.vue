@@ -47,7 +47,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { TFieldsByModule, TBespokeFieldsByModule } from '@/js/types/moduleTypes'
+import { TFieldsByModule, TBespokeFieldsByModule } from '@/types/moduleTypes'
 import { useItemStore } from '../../../scripts/stores/item'
 import { dateStringFromDate } from '../../../scripts/utils/utils'
 

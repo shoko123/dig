@@ -1,6 +1,6 @@
 // mediaTypes.ts
-import { TModule } from '@/js/types/moduleTypes'
-import { TApiPage, TPage, TCName } from '@/js/types/collectionTypes'
+import { TModule } from '@/types/moduleTypes'
+import { TApiPage, TPage, TCName } from '@/types/collectionTypes'
 
 type TMediaUrls = { full: string; tn: string }
 

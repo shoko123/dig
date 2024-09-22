@@ -23,7 +23,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { type TCarousel } from '@/js/types/mediaTypes'
+import { type TCarousel } from '@/types/mediaTypes'
 import { useItemStore } from '../../scripts/stores/item'
 import { useCarouselStore } from '../../scripts/stores/modals/carousel'
 

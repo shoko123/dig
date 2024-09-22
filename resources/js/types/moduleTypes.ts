@@ -1,8 +1,8 @@
-import type { TApiTrio, TOption } from '@/js/types/trioTypes'
-import type { TCName, TCollectionView } from '@/js/types/collectionTypes'
-import type { TLocus } from '@/js/types/modules/Locus'
-import type { TStone } from '@/js/types/modules/Stone'
-import type { TCeramic } from '@/js/types/modules/Ceramic'
+import type { TApiTrio, TOption } from '@/types/trioTypes'
+import type { TCName, TCollectionView } from '@/types/collectionTypes'
+import type { TLocus } from '@/types/modules/Locus'
+import type { TStone } from '@/types/modules/Stone'
+import type { TCeramic } from '@/types/modules/Ceramic'
 
 type TModuleInfo = {
   url_name: string

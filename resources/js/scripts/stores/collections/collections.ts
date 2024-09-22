@@ -1,7 +1,7 @@
 import { defineStore, storeToRefs } from 'pinia'
 
-import type { TArray, TCName, TCollectionView } from '@/js/types/collectionTypes'
-import type { TModule } from '@/js/types/moduleTypes'
+import type { TArray, TCName, TCollectionView } from '@/types/collectionTypes'
+import type { TModule } from '@/types/moduleTypes'
 
 import { useModuleStore } from '../module'
 import { useCollectionMainStore } from './collectionMain'

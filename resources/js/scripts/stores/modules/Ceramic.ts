@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { required } from '@vuelidate/validators'
-import { TFieldsByModule, TFieldsUnion, TObjCategorizerByFieldName } from '@/js/types/moduleTypes'
+import { TFieldsByModule, TFieldsUnion, TObjCategorizerByFieldName } from '@/types/moduleTypes'
 import { useItemStore } from '../item'
 
 export const useCeramicStore = defineStore('ceramic', () => {

@@ -11,8 +11,8 @@ import type {
   TGroupField,
   TrioSourceName,
 } from '../../../types/trioTypes'
-import type { TFieldsUnion, TFieldInfo, TFieldValue } from '@/js/types/moduleTypes'
-import type { TApiFilters } from '@/js/types/routesTypes'
+import type { TFieldsUnion, TFieldInfo, TFieldValue } from '@/types/moduleTypes'
+import type { TApiFilters } from '@/types/routesTypes'
 import { useTrioNormalizerStore } from './trioNormalizer'
 import { useRoutesMainStore } from '../routes/routesMain'
 

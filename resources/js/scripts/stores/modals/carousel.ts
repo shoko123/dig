@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { TCName, TArray } from '@/js/types/collectionTypes'
-import { TApiCarousel, TApiCarouselUnion } from '@/js/types/mediaTypes'
+import { TCName, TArray } from '@/types/collectionTypes'
+import { TApiCarousel, TApiCarouselUnion } from '@/types/mediaTypes'
 
 import { useCollectionsStore } from '../collections/collections'
 import { useElementAndCollectionStore } from '../collections/elementAndCollection'

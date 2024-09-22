@@ -1,5 +1,5 @@
 import { defineStore, storeToRefs } from 'pinia'
-import type { TArray } from '@/js/types/collectionTypes'
+import type { TArray } from '@/types/collectionTypes'
 import { useXhrStore } from '../xhr'
 import { useModuleStore } from '../module'
 

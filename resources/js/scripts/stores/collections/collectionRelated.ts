@@ -1,14 +1,14 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { TModule } from '@/js/types/moduleTypes'
-import type { TFuncLoadPage } from '@/js/types/routesTypes'
+import type { TModule } from '@/types/moduleTypes'
+import type { TFuncLoadPage } from '@/types/routesTypes'
 import {
   TCollectionView,
   TArray,
   TPage,
   TArrayEqualFunc,
   TPageEqualFunc,
-} from '@/js/types/collectionTypes'
+} from '@/types/collectionTypes'
 import { useMediaStore } from '../media'
 import { useModuleStore } from '../module'
 import { useCollectionsStore } from './collections'

@@ -30,7 +30,7 @@
 <script setup lang="ts">
 import { computed, ref, reactive } from 'vue'
 import { storeToRefs } from 'pinia'
-import type { TPageName } from '@/js/types/routesTypes'
+import type { TPageName } from '@/types/routesTypes'
 import { useAuthStore } from '../../scripts/stores/auth'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
