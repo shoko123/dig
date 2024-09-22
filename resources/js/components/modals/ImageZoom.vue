@@ -56,12 +56,7 @@ watch(media, () => {
 })
 
 //isFiller includes a set function as v-overlays requires a modifiable boolean
-const isFiller = computed({
-  get: () => {
-    return !media.value?.hasMedia
-  },
-  set: (val) => {
-    val
-  },
+const isFiller = computed(() => {
+  return !media.value?.hasMedia
 })
 </script>

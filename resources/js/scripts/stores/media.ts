@@ -57,8 +57,7 @@ export const useMediaStore = defineStore('media', () => {
     return images.value.length !== 0 && !loadingToBrowser.value
   })
 
-  async function onInputChange(media: File[]) {
-    media //make eslint happy
+  async function onInputChange() {
     if (images.value.length > 6) {
       alert('Max number of files is 6 - Upload aborted!')
       clear()

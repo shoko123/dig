@@ -15,19 +15,14 @@ const options = computed(() => {
   return trioStore.visibleOptions
 })
 
-const selectedOptionIndexes = computed({
-  get: () => {
-    let selected: number[] = []
-    options.value.forEach((x, index) => {
-      if (x.selected === true) {
-        selected.push(index)
-      }
-    })
-    return selected
-  },
-  set: (val) => {
-    val
-  },
+const selectedOptionIndexes = computed(() => {
+  let selected: number[] = []
+  options.value.forEach((x, index) => {
+    if (x.selected === true) {
+      selected.push(index)
+    }
+  })
+  return selected
 })
 
 function paramClicked(prmKey: string) {

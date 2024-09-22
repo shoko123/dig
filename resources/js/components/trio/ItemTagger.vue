@@ -82,19 +82,14 @@ const grpIndex = computed({
   },
 })
 
-const selectedOptions = computed({
-  get: () => {
-    let selected: number[] = []
-    visibleOptions.value.forEach((x, index) => {
-      if (x.selected === true) {
-        selected.push(index)
-      }
-    })
-    return selected
-  },
-  set: (val) => {
-    val
-  },
+const selectedOptions = computed(() => {
+  let selected: number[] = []
+  visibleOptions.value.forEach((x, index) => {
+    if (x.selected === true) {
+      selected.push(index)
+    }
+  })
+  return selected
 })
 
 async function submit() {

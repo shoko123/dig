@@ -92,8 +92,8 @@ const imagesAsBrowserReadable = computed(() => {
   return m.imagesAsBrowserReadable
 })
 
-async function onInputChange(media: File[]) {
-  m.onInputChange(media)
+async function onInputChange() {
+  m.onInputChange()
 }
 
 function clear() {

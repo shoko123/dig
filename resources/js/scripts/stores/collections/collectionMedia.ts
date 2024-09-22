@@ -9,7 +9,7 @@ import {
   TArrayEqualFunc,
   TPageEqualFunc,
 } from '@/types/collectionTypes'
-import { useModuleStore } from '../module'
+import { useModuleStore } from '@/scripts/stores/module'
 import { useMediaStore } from '../media'
 import { useCollectionsStore } from './collections'
 
@@ -33,16 +33,16 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
   })
 
   // page
+
+  /* eslint-disable */
   const loadPage: TFuncLoadPage = async function (
     pageNo: number,
     view: TCollectionView,
     pageLength: number,
     module: TModule,
   ) {
+    /* eslint-enable */
     //do nothing except setting pageNoB1
-    view
-    module
-    pageLength
     pageNoB1.value = pageNo
     return { success: true, message: '' }
   }

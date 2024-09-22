@@ -33,15 +33,16 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
   })
 
   // page
+  /* eslint-disable */
   const loadPage: TFuncLoadPage = async function (
     pageNo: number,
     view: TCollectionView,
     pageLength: number,
     module: TModule,
   ) {
+    /* eslint-enable */
     //related page is a sub-array of array, determined by computed(array, pageNoB1). So, just set pageNoB1
-    view
-    module
+
     pageNoB1.value = pageNo
     return { success: true, message: '' }
   }
@@ -51,7 +52,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     const viewName = getViewName('related', viewIndex.value)
     const start = (pageNoB1.value - 1) * ipp
     const slice = arrayData.value.slice(start, start + ipp)
-    let res = []
+    let res: unknown[] = []
 
     switch (viewName) {
       case 'Tabular':
