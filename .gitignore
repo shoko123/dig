@@ -6,7 +6,7 @@
 /public/favicon.ico
 /storage/*.key
 /vendor
-.deploy
+.deploy-monty
 .env
 .env.backup
 .env.production
