@@ -94,7 +94,7 @@ export const useCollectionsStore = defineStore('collections', () => {
 
     const nextViewIndex = (info.viewIndex + 1) % info.views.length
     const nextItemsPerPage = getItemsPerPage(name, nextViewIndex)
-    const nextView = info.views[nextViewIndex]
+    const nextView = info.views[nextViewIndex]!
     const nextIndex = info.firstItemNo - 1
 
     console.log(

@@ -85,7 +85,7 @@ export const useStoneStore = defineStore('stone', () => {
       })
       .map((x) => {
         const sections = x.split('.')
-        return parseInt(sections[2])
+        return parseInt(sections[2]!)
       })
 
     const all = [...Array(200).keys()].map((i) => i + 1)

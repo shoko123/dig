@@ -91,9 +91,9 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
   }
 
   function switchArrayItems(indexA: number, indexB: number) {
-    const temp = { ...arrayData.value[indexA] }
-    arrayData.value[indexA] = { ...arrayData.value[indexB] }
-    arrayData.value[indexB] = { ...temp }
+    const temp = arrayData.value[indexA]!
+    arrayData.value[indexA] = arrayData.value[indexB]!
+    arrayData.value[indexB] = temp
   }
 
   return {

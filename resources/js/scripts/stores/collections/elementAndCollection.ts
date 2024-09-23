@@ -9,7 +9,7 @@ export const useElementAndCollectionStore = defineStore('elementAndCollection', 
 
   function arrayElementByIndex(name: TCName, index: number): TArray {
     const c = getCollectionStore(name)
-    return c.array[index]
+    return c.array[index]!
   }
 
   function indexByArrayElement(collectionName: TCName, element: TArray) {

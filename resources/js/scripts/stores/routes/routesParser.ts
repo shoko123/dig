@@ -66,7 +66,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
       if (undoUnderKey in groupLabelToGroupKeyObj.value === false) {
         return { success: false, message: `Unrecognized Url query optioneter "${undoUnderKey}"` }
       }
-      const group = trio.value.groupsObj[groupLabelToGroupKeyObj.value[undoUnderKey]]
+      const group = trio.value.groupsObj[groupLabelToGroupKeyObj.value[undoUnderKey]!]!
       const optionTexts = (<string>value).split(',')
       switch (group.code) {
         case 'OB':
@@ -117,14 +117,14 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
     const { useTrioStore } = await import('../trio/trio')
     const { trio } = storeToRefs(useTrioStore())
     for (const x of optionTexts) {
-      const i = group.optionKeys.findIndex((y) => trio.value.optionsObj[y].text === x)
+      const i = group.optionKeys.findIndex((y) => trio.value.optionsObj[y]!.text === x)
       if (i === -1) {
         return {
           success: false,
           message: `*** Url option "${x}" is illegal for optioneter "${group.label}".`,
         }
       }
-      selectedFilters.push(group.optionKeys[i])
+      selectedFilters.push(group.optionKeys[i] as string)
     }
     return { success: true }
   }
@@ -152,11 +152,13 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
         return { success: false, message: `Unrecognized url Order By optioneter "${x}".` }
       }
 
-      const firstEmptyOptionKey = group.optionKeys.find((x) => trio.value.optionsObj[x].text === '')
+      const firstEmptyOptionKey = group.optionKeys.find(
+        (x) => trio.value.optionsObj[x]!.text === '',
+      )
       if (firstEmptyOptionKey === undefined) {
         return { success: false, message: `Problem with url Order By optioneter "${x}".` }
       }
-      trio.value.optionsObj[firstEmptyOptionKey].text = x
+      trio.value.optionsObj[firstEmptyOptionKey]!.text = x
       filterAllOptions.push(firstEmptyOptionKey)
       selected.push(nameOnly)
     }
@@ -177,11 +179,13 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
       }
     }
     for (const x of optionTexts) {
-      const firstEmptyOptionKey = group.optionKeys.find((x) => trio.value.optionsObj[x].text === '')
+      const firstEmptyOptionKey = group.optionKeys.find(
+        (x) => trio.value.optionsObj[x]!.text === '',
+      )
       if (firstEmptyOptionKey === undefined) {
         return { success: false, message: `Problem with url search optioneter "${x}".` }
       }
-      trio.value.optionsObj[firstEmptyOptionKey].text = x
+      trio.value.optionsObj[firstEmptyOptionKey]!.text = x
       filterAllOptions.push(firstEmptyOptionKey)
     }
     return { success: true }
