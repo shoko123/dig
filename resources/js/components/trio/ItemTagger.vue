@@ -57,7 +57,7 @@ const header = computed(() => {
 })
 
 const groupHeader = computed(() => {
-  let group = visibleGroups.value[grpIndex.value]
+  let group = visibleGroups.value[grpIndex.value]!
   return `${group.required ? 'R' : 'Not r'}equired,  ${group.multiple ? 'multiple' : 'single'} selection`
 })
 
@@ -82,14 +82,18 @@ const grpIndex = computed({
   },
 })
 
-const selectedOptions = computed(() => {
-  let selected: number[] = []
-  visibleOptions.value.forEach((x, index) => {
-    if (x.selected === true) {
-      selected.push(index)
-    }
-  })
-  return selected
+const selectedOptions = computed({
+  get: () => {
+    let selected: number[] = []
+    visibleOptions.value.forEach((x, index) => {
+      if (x.selected === true) {
+        selected.push(index)
+      }
+    })
+    return selected
+  },
+  // eslint-disable-next-line 
+  set: (val) => { },
 })
 
 async function submit() {
