@@ -18,7 +18,7 @@ type TAllModules<T extends TModuleInfo = TModuleInfo> = {
   Ceramic: TCeramic<T>
 }
 
-type TAllByModule<TModuleName extends TModule> = TAllModules[TModuleName]
+type TAllByModule<M extends TModule> = TAllModules[M]
 
 type AddModuleProperty<T extends TAllModules> = {
   [k in keyof T]: T[k] & { module: k }
@@ -47,14 +47,11 @@ type TModule = keyof TAllModules
 
 type TUrlModule = ModuleUnion['url_name']
 
-type TCategorizedFields = ModuleUnion['categorizedFields']
+type TCategorizedFields<M extends TModule = TModule> = TAllByModule<M>['categorizedFields']
+type TFields<M extends TModule = TModule> = TAllByModule<M>['fields']
+type TBespokeFields<M extends TModule = TModule> = TAllByModule<M>['FD']
 
-type TFields<ModuleName extends TModule = TModule> = TAllByModule<ModuleName>['fields']
-type TBespokeFields<ModuleName extends TModule = TModule> = TAllByModule<ModuleName>['FD']
-
-type TApiFieldsUnion = SwapDatesWithStrings<TFields>
-type TApiPageMainTabularUnion = ModuleUnion['TabularViewFields'] & { slug: string }
-type TApiPageMainTabular = ModuleUnion['TabularViewFields']
+type TApiFields = SwapDatesWithStrings<TFields>
 type TFieldValue = string | number | boolean
 
 type TFieldInfo = {
@@ -67,13 +64,8 @@ type TFieldInfo = {
   index: number
 }
 
-type TTabularByModule<ModuleName extends TModule> = TAllByModule<ModuleName>['TabularViewFields']
-type TApiTabularByModule<ModuleName extends TModule> = AddTagAndSlugProperties<
-  TTabularByModule<ModuleName>
->
-type TFieldsToFieldInfo<T extends TBespokeFields> = {
-  [k in keyof T]: TFieldInfo
-}
+type TTabular<M extends TModule = TModule> = TAllByModule<M>['TabularViewFields']
+type TApiTabular<M extends TModule = TModule> = AddTagAndSlugProperties<TTabular<M>>
 
 type TCategorizedFieldsByModule<M extends TModule> = TAllByModule<M>['categorizedFields']
 
@@ -123,20 +115,18 @@ export {
   TUrlModule,
   TModuleToUrlName,
   TUrlModuleNameToModule,
-  TModuleBtnsInfo,
-  TFields,
-  TBespokeFields,
-  TApiFieldsUnion,
-  TApiPageMainTabularUnion,
-  TApiPageMainTabular,
-  TApiTabularByModule,
-  TTabularByModule,
   TApiModuleInit,
   TViewsForCollection,
   TItemsPerPageByView,
-  TFieldInfo,
-  TFieldsToFieldInfo,
+  TModuleBtnsInfo,
+  TApiTabular,
+  TTabular,
+  //item fields
   TFieldValue,
+  TApiFields,
+  TFields,
+  TBespokeFields,
+  TFieldInfo,
   TObjCategorizerByFieldName,
   TObjAllCategorizerFuncs,
   TCategorizedFieldsByModule,

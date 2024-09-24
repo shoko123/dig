@@ -9,7 +9,7 @@
 import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import type { TPlanAction } from '@/types/routesTypes'
-import type { TApiFieldsUnion, TApiModuleInit, TModule } from '@/types/moduleTypes'
+import type { TApiFields, TApiModuleInit, TModule } from '@/types/moduleTypes'
 import type { TApiItemShow } from '@/types/itemTypes'
 import type { LocationQuery } from 'vue-router'
 import { useXhrStore } from '../xhr'
@@ -242,7 +242,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       return { success: false, message: sp.message! }
     }
 
-    const res = await send<TApiItemShow<TApiFieldsUnion>>('module/show', 'post', {
+    const res = await send<TApiItemShow<TApiFields>>('module/show', 'post', {
       module,
       id: sp.id,
     })

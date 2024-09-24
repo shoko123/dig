@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type { TApiFieldsUnion, TFields, TFieldInfo } from '@/types/moduleTypes'
+import type { TApiFields, TFields, TFieldInfo } from '@/types/moduleTypes'
 import type { TApiItemShow } from '@/types/itemTypes'
 import { useCollectionsStore } from './collections/collections'
 import { useRoutesMainStore } from './routes/routesMain'
@@ -72,14 +72,10 @@ export const useItemNewStore = defineStore('itemNew', () => {
       `item.upload isCreate: ${isCreate}, module: ${module.value}, fields: ${JSON.stringify(newFields, null, 2)}`,
     )
 
-    const res = await send<TApiItemShow<TApiFieldsUnion>>(
-      'module/store',
-      isCreate ? 'post' : 'put',
-      {
-        module: module.value,
-        fields: newFields,
-      },
-    )
+    const res = await send<TApiItemShow<TApiFields>>('module/store', isCreate ? 'post' : 'put', {
+      module: module.value,
+      fields: newFields,
+    })
     if (!res.success) {
       return res
     }

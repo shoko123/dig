@@ -1,15 +1,15 @@
 import { TMediaOfItem, TMediaUrls } from '@/types/mediaTypes'
-import { TModule, TApiTabularByModule, TTabularByModule } from '@/types/moduleTypes'
+import { TModule, TApiTabular, TTabular } from '@/types/moduleTypes'
 
 type TCollectionView = 'Gallery' | 'Chips' | 'Tabular'
 
-type TApiPageMain<M extends TModule = TModule> = {
+type TApiPageMain = {
   Gallery: {
     id: string
     short: string
     urls: TMediaUrls
   }
-  Tabular: TTabularByModule<M>
+  Tabular: TTabular
   Chips: { id: string }
 }
 
@@ -43,10 +43,10 @@ type TApiPageRelated = {
   }
 }
 
-type TAllCollections<M extends TModule = TModule> = {
+type TAllCollections = {
   main: {
     array: string
-    apiPage: TApiPageMain<M>
+    apiPage: TApiPageMain
   }
   media: {
     array: TApiPageMedia['Gallery']
@@ -68,11 +68,7 @@ type TApiPage<
   C extends TCName = TCName,
   V extends TViewsByCName<C> = TViewsByCName<C>,
   M extends TModule = 'Stone',
-> = C extends 'main'
-  ? V extends 'Tabular'
-    ? TApiTabularByModule<M>
-    : TApiPage2<C, V>
-  : TApiPage2<C, V>
+> = C extends 'main' ? (V extends 'Tabular' ? TApiTabular<M> : TApiPage2<C, V>) : TApiPage2<C, V>
 
 type TPage<
   C extends TCName = TCName,

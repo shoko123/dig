@@ -1,4 +1,4 @@
-import type { TApiFieldsUnion, TFields, TBespokeFields } from '@/types/moduleTypes'
+import type { TApiFields, TFields, TBespokeFields } from '@/types/moduleTypes'
 import type { TApiItemShow, TApiTag } from '@/types/itemTypes'
 
 import { ref, computed } from 'vue'
@@ -51,7 +51,7 @@ export const useItemStore = defineStore('item', () => {
     }
   })
 
-  async function saveitemFieldsPlus<F extends TApiFieldsUnion>(apiItem: TApiItemShow<F>) {
+  async function saveitemFieldsPlus<F extends TApiFields>(apiItem: TApiItemShow<F>) {
     const { useTrioStore } = await import('./trio/trio')
     const { getFieldsOptions, setItemAllOptions } = useTrioStore()
     // save media & related collections
@@ -78,7 +78,7 @@ export const useItemStore = defineStore('item', () => {
     setItemAllOptions([...fieldsOptions, ...tagOptions])
   }
 
-  function saveItemFields<F extends TApiFieldsUnion>(apiFields: F) {
+  function saveItemFields<F extends TApiFields>(apiFields: F) {
     // If field_name contains '_date' and value is a string in YYYY-MM-DD format, assume that we deal with a date field, and make a new Date
     // TODO implement above
 
