@@ -57,15 +57,15 @@ export const useModuleStore = defineStore('module', () => {
   }
 
   function getItemsPerPage(collectionName: TCName, collectionViewIndex: number): number {
-    return itemsPerPage.value[collectionViews.value[collectionName][collectionViewIndex]]
+    return itemsPerPage.value[collectionViews.value[collectionName]![collectionViewIndex]!]!
   }
 
   function getViewName(collectionName: TCName, collectionViewIndex: number) {
-    return collectionViews.value[collectionName][collectionViewIndex]
+    return collectionViews.value[collectionName]![collectionViewIndex]!
   }
 
   function getCollectionViews(collectionName: TCName) {
-    return collectionViews.value[collectionName]
+    return collectionViews.value[collectionName]!
   }
   /*
    * if module is not included, use current (we include it e.g. when we want tags of related item)

@@ -76,12 +76,12 @@ const grpIndex = computed({
 
 const isColumnSearch = computed(() => {
   if (visibleGroups.value.length === 0) return false
-  return visibleGroups.value[groupIndex.value].groupType === 'FS'
+  return visibleGroups.value[groupIndex.value]!.groupType === 'FS'
 })
 
 const isOrderBy = computed(() => {
   if (visibleGroups.value.length === 0) return false
-  return visibleGroups.value[groupIndex.value].groupType === 'OB'
+  return visibleGroups.value[groupIndex.value]!.groupType === 'OB'
 })
 </script>
 <style scoped>

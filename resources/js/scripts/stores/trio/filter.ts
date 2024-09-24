@@ -24,10 +24,10 @@ export const useFilterStore = defineStore('filter', () => {
     })
 
     trioStore.filterAllOptions.forEach((k) => {
-      const optionUlined = trioStore.trio.optionsObj[k].text.replace(/ /g, '_')
+      const optionUlined = trioStore.trio.optionsObj[k]!.text.replace(/ /g, '_')
       const groupUlined = trioStore.trio.groupsObj[
-        trioStore.trio.optionsObj[k].groupKey
-      ].label.replace(/ /g, '_')
+        trioStore.trio.optionsObj[k]!.groupKey
+      ]!.label.replace(/ /g, '_')
       if (Object.prototype.hasOwnProperty.call(q, groupUlined)) {
         q[groupUlined] += ',' + optionUlined
       } else {
@@ -54,9 +54,9 @@ export const useFilterStore = defineStore('filter', () => {
   async function searchTextChanged(index: number, val: string) {
     const trioStore = await getTrioStore()
     const textSearchOptionKeys = trioStore.currentGroup?.optionKeys
-    const optionKey = textSearchOptionKeys![index]
+    const optionKey = textSearchOptionKeys![index]!
     //console.log(`changeOccured() index: ${index} setting option with key ${optionKey} to: ${val}`)
-    trioStore.trio.optionsObj[optionKey].text = val
+    trioStore.trio.optionsObj[optionKey]!.text = val
 
     //add/remove from selected filters
     const inSelected = trioStore.filterAllOptions.includes(optionKey)
@@ -74,7 +74,7 @@ export const useFilterStore = defineStore('filter', () => {
     console.log(`clear()`)
     const textSearchOptionKeys = trioStore.currentGroup?.optionKeys
     textSearchOptionKeys!.forEach((x) => {
-      trioStore.trio.optionsObj[x].text = ''
+      trioStore.trio.optionsObj[x]!.text = ''
 
       //if currently in selectedFilters, then remove.
       if (trioStore.filterAllOptions.includes(x)) {
@@ -104,10 +104,10 @@ export const useFilterStore = defineStore('filter', () => {
       return
     }
 
-    const label = `${trioStore.orderByAvailable[index].text}.${asc ? 'A' : 'D'}`
+    const label = `${trioStore.orderByAvailable[index]!.text}.${asc ? 'A' : 'D'}`
     // console.log(`optionClicked(${index}) asc: ${asc} options:  ${JSON.stringify(orderByOptions, null, 2)} key: ${firstEmptyOption.key} label: ${label}`)
 
-    trioStore.trio.optionsObj[firstEmptyOption.key].text = label
+    trioStore.trio.optionsObj[firstEmptyOption.key]!.text = label
     trioStore.filterAllOptions.push(firstEmptyOption.key)
   }
 
@@ -115,7 +115,7 @@ export const useFilterStore = defineStore('filter', () => {
     const trioStore = await getTrioStore()
     console.log(`orderClear`)
     trioStore.orderByGroup?.optionKeys.forEach((x) => {
-      trioStore.trio.optionsObj[x].text = ''
+      trioStore.trio.optionsObj[x]!.text = ''
       if (trioStore.filterAllOptions.includes(x)) {
         const i = trioStore.filterAllOptions.indexOf(x)
         trioStore.filterAllOptions.splice(i, 1)

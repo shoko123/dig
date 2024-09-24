@@ -54,7 +54,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
       categories.push({ name: cat.name, groupKeys: [] })
       cat.groups.forEach((grp) => {
         const grpKey = pad(grpCnt, 3)
-        categories[catCnt].groupKeys.push(grpKey)
+        categories[catCnt]!.groupKeys.push(grpKey)
         switch (grp.code) {
           case 'FD':
             handleFD(grp as TApiGroupByCode<'FD'>, categorizerObj)
@@ -123,9 +123,9 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   function processDependency(dependency: string[]) {
     return dependency.map((x) => {
       const pieces = x.split('.')
-      const group = groupsObj[groupLabelToGroupKeyObj[pieces[0]]]
+      const group = groupsObj[groupLabelToGroupKeyObj[pieces[0]!]!]!
       //console.log(`groupLabel: ${pieces[0]}. key: ${groupLabelToGroupKeyObj[pieces[0]]}  `);
-      const res = group.optionKeys.find((x) => optionsObj[x].text === pieces[1])
+      const res = group.optionKeys.find((x) => optionsObj[x]!.text === pieces[1])
       return res!
     })
   }

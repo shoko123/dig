@@ -102,9 +102,9 @@ export const useItemStore = defineStore('item', () => {
     // console.log(`SaveItem - Add extrnal (module and global) tags`)
     const tagOptions: string[] = []
     for (const x of apiTags) {
-      const group = trio.value.groupsObj[groupLabelToGroupKeyObj.value[x.group_label]]
+      const group = trio.value.groupsObj[groupLabelToGroupKeyObj.value[x.group_label]!]!
       // console.log(`Add Tag:  ${x.group_label} => "${x.tag_text}"`)
-      const optionKey = group.optionKeys.find((y) => trio.value.optionsObj[y].text === x.tag_text)
+      const optionKey = group.optionKeys.find((y) => trio.value.optionsObj[y]!.text === x.tag_text)
       if (optionKey === undefined) {
         throw new Error(
           `getSelectedTagOptions() - Can't find tag ${x.tag_text} in group ${group.label}`,

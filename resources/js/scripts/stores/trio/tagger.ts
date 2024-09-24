@@ -25,9 +25,9 @@ export const useTaggerStore = defineStore('tagger', () => {
     trioStore.taggerAllOptions = []
     // add fields dependent options (except 'Categorized') with default group.optionKeys[0]
     for (const x in trioStore.fieldsToGroupKeyObj) {
-      const group = trioStore.trio.groupsObj[trioStore.fieldsToGroupKeyObj[x]]
+      const group = trioStore.trio.groupsObj[trioStore.fieldsToGroupKeyObj[x]!]!
       if (group.code === 'FD' && (<TGroupField>group).tag_source !== 'Categorized') {
-        trioStore.taggerAllOptions.push(group.optionKeys[0])
+        trioStore.taggerAllOptions.push(group.optionKeys[0]!)
       }
       console.log(`Add Field Tag: ${group.label} => "${x}`)
     }
@@ -45,21 +45,21 @@ export const useTaggerStore = defineStore('tagger', () => {
 
     trioStore.taggerAllOptions.forEach((optionKey) => {
       const group = <TGroupField>(
-        trioStore.trio.groupsObj[trioStore.trio.optionsObj[optionKey].groupKey]
+        trioStore.trio.groupsObj[trioStore.trio.optionsObj[optionKey]!.groupKey]
       )
       switch (group.code) {
         case 'TG':
-          payload.global_tag_ids.push(<number>trioStore.trio.optionsObj[optionKey].extra)
+          payload.global_tag_ids.push(<number>trioStore.trio.optionsObj[optionKey]!.extra)
           break
 
         case 'TM':
-          payload.module_tag_ids.push(<number>trioStore.trio.optionsObj[optionKey].extra)
+          payload.module_tag_ids.push(<number>trioStore.trio.optionsObj[optionKey]!.extra)
           break
 
         case 'FD':
           {
             if (group.tag_source !== 'Categorized') {
-              const option = trioStore.trio.optionsObj[optionKey]
+              const option = trioStore.trio.optionsObj[optionKey]!
               payload.fields.push({
                 field_name: group.field_name,
                 val: option.extra,
