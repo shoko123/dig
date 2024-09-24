@@ -4,7 +4,7 @@ import type { TXhrResult, TXhrMethod } from '@/types/xhrTypes'
 
 export const useXhrStore = defineStore('xhr', () => {
   async function setAxios() {
-    axios.defaults.baseURL = `${window.location.protocol}//${window.location.host}`
+    axios.defaults.baseURL = window.location.origin
     axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
     //axios.defaults.headers.common['Content-Type'] = 'application/json' <- disabled because of media upload
     axios.defaults.headers.common['Accept'] = 'application/json'
