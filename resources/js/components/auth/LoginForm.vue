@@ -66,11 +66,11 @@ const rules = computed(() => {
 const v$ = useVuelidate(rules, data)
 
 const emailErrors = computed(() => {
-  return <string>(v$.value.email.$error ? v$.value.email.$errors[0].$message : undefined)
+  return v$.value.email.$errors.map(x => x.$message) as string[]
 })
 
 const passwordErrors = computed(() => {
-  return <string>(v$.value.password.$error ? v$.value.password.$errors[0].$message : undefined)
+  return v$.value.password.$errors.map(x => x.$message) as string[]
 })
 
 const visible = ref(false)

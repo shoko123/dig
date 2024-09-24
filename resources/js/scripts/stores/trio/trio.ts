@@ -518,7 +518,7 @@ export const useTrioStore = defineStore('trio', () => {
   }
 
   function copyItemOptionsToTaggerOptions() {
-    taggerAllOptions.value = itemAllOptions.value
+    taggerAllOptions.value = [...itemAllOptions.value]
   }
 
   const selectedFilterOptions = computed(() => {

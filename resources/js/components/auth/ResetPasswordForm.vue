@@ -1,39 +1,18 @@
 <template>
   <template v-if="!isLoggedIn">
     <div class="text-subtitle-1 text-medium-emphasis">Email</div>
-    <v-text-field
-      v-model="data.email"
-      readonly
-      :error-messages="emailErrors"
-      density="compact"
-      placeholder="Email address"
-      prepend-inner-icon="mdi-email-outline"
-      variant="outlined"
-    />
+    <v-text-field v-model="data.email" readonly :error-messages="emailErrors" density="compact"
+      placeholder="Email address" prepend-inner-icon="mdi-email-outline" variant="outlined" />
 
-    <v-text-field
-      v-model="data.password"
-      :error-messages="passwordErrors"
-      :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
-      :type="visible ? 'text' : 'password'"
-      density="compact"
-      placeholder="Enter your new password"
-      prepend-inner-icon="mdi-lock-outline"
-      variant="outlined"
-      @click:append-inner="visible = !visible"
-    />
+    <v-text-field v-model="data.password" :error-messages="passwordErrors"
+      :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'" :type="visible ? 'text' : 'password'" density="compact"
+      placeholder="Enter your new password" prepend-inner-icon="mdi-lock-outline" variant="outlined"
+      @click:append-inner="visible = !visible" />
 
-    <v-text-field
-      v-model="data.password_confirmation"
-      :error-messages="password_confirmationErrors"
-      :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
-      :type="visible ? 'text' : 'password'"
-      density="compact"
-      placeholder="Enter new password confirmation"
-      prepend-inner-icon="mdi-lock-outline"
-      variant="outlined"
-      @click:append-inner="visible = !visible"
-    />
+    <v-text-field v-model="data.password_confirmation" :error-messages="password_confirmationErrors"
+      :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'" :type="visible ? 'text' : 'password'" density="compact"
+      placeholder="Enter new password confirmation" prepend-inner-icon="mdi-lock-outline" variant="outlined"
+      @click:append-inner="visible = !visible" />
 
     <v-btn block class="mb-8" color="blue" size="large" variant="tonal" @click="sendResetPassword">
       Reset Password
@@ -104,19 +83,15 @@ const rules = computed(() => {
 const v$ = useVuelidate(rules, data)
 
 const emailErrors = computed(() => {
-  return <string>(v$.value.email.$error ? v$.value.email.$errors[0].$message : undefined)
+  return v$.value.email.$errors.map(x => x.$message) as string[]
 })
 
 const passwordErrors = computed(() => {
-  return <string>(v$.value.password.$error ? v$.value.password.$errors[0].$message : undefined)
+  return v$.value.password.$errors.map(x => x.$message) as string[]
 })
 
 const password_confirmationErrors = computed(() => {
-  return <string>(
-    (v$.value.password_confirmation.$error
-      ? v$.value.password_confirmation.$errors[0].$message
-      : undefined)
-  )
+  return v$.value.password_confirmation.$errors.map(x => x.$message) as string[]
 })
 
 async function sendResetPassword() {

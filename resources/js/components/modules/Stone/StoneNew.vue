@@ -60,7 +60,7 @@
       <v-textarea v-model="nf.specialist_description" label="Specialist Description"
         :error-messages="specialist_descriptionErrors" class="mr-1" filled />
     </v-row>
-    <slot :id="nf.id" name="newItem" :v="v" :new-fields="nf" />
+    <slot :id="nf.id" name="newItem" :v="v$" :new-fields="nf" />
   </v-container>
 </template>
 
@@ -82,58 +82,47 @@ const { rules, newItemIsInOC } = storeToRefs(useStoneStore())
 let { itemNewFieldsToOptionsObj, newFields } = storeToRefs(useItemNewStore())
 
 
-const v = useVuelidate(rules, newFields.value as TFieldsByModule<'Stone'>)
 
+const v$ = useVuelidate(rules, newFields.value as TFieldsByModule<'Stone'>, { $autoDirty: true })
 const nf = computed(() => {
   return newFields.value as TFieldsByModule<'Stone'>
 })
+
 // const idErrors = computed(() => {
-//   return <string>(v.value.id?.$error ? v.value.id.$errors[0].$message : undefined)
+//   return <string>(v$.value.id?.$error ? v$.value.id.$errors[0].$message : undefined)
 // })
 
 const squareErrors = computed(() => {
-  return <string>(v.value.square?.$error ? v.value.square.$errors[0].$message : undefined)
+  return v$.value.square?.$errors.map(x => x.$message) as string[]
 })
 
 const contextErrors = computed(() => {
-  return <string>(v.value.context?.$error ? v.value.context.$errors[0].$message : undefined)
+  return v$.value.context?.$errors.map(x => x.$message) as string[]
+
 })
 
 const occupation_levelErrors = computed(() => {
-  return <string>(
-    (v.value.occupation_level?.$error ? v.value.occupation_level.$errors[0].$message : undefined)
-  )
+  return v$.value.occupation_level?.$errors.map(x => x.$message) as string[]
 })
 
 const excavation_object_idErrors = computed(() => {
-  return <string>(
-    (v.value.excavation_object_id?.$error
-      ? v.value.excavation_object_id.$errors[0].$message
-      : undefined)
-  )
+  return v$.value.excavation_object_id?.$errors.map(x => x.$message) as string[]
 })
 
 const specialist_descriptionErrors = computed(() => {
-  return <string>(
-    (v.value.specialist_description?.$error
-      ? v.value.specialist_description.$errors[0].$message
-      : undefined)
-  )
+  return v$.value.specialist_description?.$errors.map(x => x.$message) as string[]
 })
 
-// const specialist_dateErrors = computed(() => {
-//   return <string>(v.value.specialist_date?.$error ? v.value.specialist_date.$errors[0].$message : undefined)
-// })
-
 const catalogerInfo = computed(() => {
-  return itemNewFieldsToOptionsObj.value['cataloger_id']
+  return itemNewFieldsToOptionsObj.value['cataloger_id']!
 })
 
 const materialInfo = computed(() => {
-  return itemNewFieldsToOptionsObj.value['material_id']
+  return itemNewFieldsToOptionsObj.value['material_id']!
 })
+
 const typologyInfo = computed(() => {
-  return itemNewFieldsToOptionsObj.value['base_type_id']
+  return itemNewFieldsToOptionsObj.value['base_type_id']!
 })
 
 function clearDate(field: string) {

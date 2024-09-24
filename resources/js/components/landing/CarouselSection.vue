@@ -45,7 +45,7 @@ const images = computed(() => {
 })
 
 const current = computed(() => {
-    return images.value[model.value]
+    return images.value[model.value]!
 })
 
 </script>

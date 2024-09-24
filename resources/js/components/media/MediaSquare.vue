@@ -12,7 +12,7 @@
         </v-card>
         <v-overlay v-if="isHovering">
           <template #activator>
-            <MediaOverlay :source="source" :item-index="itemIndex" :record="data.record" />
+            <MediaOverlay :source="source" :item-index="itemIndex" :record="record" />
           </template>
         </v-overlay>
       </v-img>
@@ -52,7 +52,6 @@ const data = computed(() => {
         tagText: record.value.tag,
         urls: record.value.media?.urls,//IMPORTANT required on transition between collection view Gallery -> Tabular
         short: record.value.short,
-        record: record.value,
       }
     case 'media':
       return {
@@ -60,7 +59,6 @@ const data = computed(() => {
         tagText: '',
         urls: record.value.media.urls,
         short: '',
-        record: record.value,
       }
     case 'related':
     default:
@@ -69,7 +67,6 @@ const data = computed(() => {
         tagText: `${record.value.module} ${record.value.tag}`,
         urls: record.value.media.urls,
         short: `${record.value.relation_name} :: ${record.value.short}`,
-        record: record.value,
       }
   }
 })
