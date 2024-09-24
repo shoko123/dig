@@ -1,5 +1,5 @@
 // stores/media.js
-import { TFieldsUnion } from '@/types/moduleTypes'
+import { TFields } from '@/types/moduleTypes'
 import { TMediaOfItem, TMediaUrls } from '@/types/mediaTypes'
 import type { TModule } from '@/types/moduleTypes'
 import type { TArray } from '@/types/collectionTypes'
@@ -116,7 +116,7 @@ export const useMediaStore = defineStore('media', () => {
       fd.append('media_files[]', file, file.name)
     })
 
-    const idAsString = (<TFieldsUnion>i.fields).id as unknown as string
+    const idAsString = (<TFields>i.fields).id as unknown as string
     fd.append('module', <TModule>r.current.module)
     fd.append('id', idAsString)
     fd.append('media_collection_name', mediaCollectionName.value)
@@ -137,13 +137,13 @@ export const useMediaStore = defineStore('media', () => {
     const r = useRoutesMainStore()
     const i = useItemStore()
     console.log(
-      `destroy() media_id: ${media_id}, model: ${r.current.module}, model_id: ${(<TFieldsUnion>i.fields).id}`,
+      `destroy() media_id: ${media_id}, model: ${r.current.module}, model_id: ${(<TFields>i.fields).id}`,
     )
 
     const res = await send<TArray<'media'>[]>('media/destroy', 'post', {
       media_id,
       module: r.current.module,
-      module_id: (<TFieldsUnion>i.fields).id,
+      module_id: (<TFields>i.fields).id,
     })
     if (res.success) {
       showUploader.value = false

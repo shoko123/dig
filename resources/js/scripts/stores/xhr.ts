@@ -9,7 +9,7 @@ export const useXhrStore = defineStore('xhr', () => {
     //axios.defaults.headers.common['Content-Type'] = 'application/json' <- disabled because of media upload
     axios.defaults.headers.common['Accept'] = 'application/json'
     axios.defaults.withCredentials = true
-    //console.log(`setAxios defaults: ${JSON.stringify(axios.defaults, null, 2)}`)
+    console.log(`set axios.defaults.baseUrl: ${window.location.origin}`)
 
     try {
       await axios.get(`/sanctum/csrf-cookie`)

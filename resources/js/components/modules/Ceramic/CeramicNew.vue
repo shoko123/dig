@@ -14,7 +14,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import type { TFieldsByModule } from '@/types/moduleTypes'
+import type { TFields } from '@/types/moduleTypes'
 import { useVuelidate } from '@vuelidate/core'
 
 import { useItemStore } from '../../../scripts/stores/item'
@@ -27,7 +27,7 @@ const { rules } = storeToRefs(useCeramicStore())
 let { newFields, itemNewFieldsToOptionsObj } = storeToRefs(useItemNewStore())
 
 const nf = computed(() => {
-  return newFields.value as TFieldsByModule<'Ceramic'>
+  return newFields.value as TFields<'Ceramic'>
 })
 
 
@@ -35,10 +35,10 @@ const nf = computed(() => {
 
 
 const currentItemFields = computed(() => {
-  return fields.value! as TFieldsByModule<'Ceramic'>
+  return fields.value! as TFields<'Ceramic'>
 })
 
-const v = useVuelidate(rules, newFields.value as TFieldsByModule<'Ceramic'>)
+const v = useVuelidate(rules, newFields.value as TFields<'Ceramic'>)
 
 const nameErrors = computed(() => {
   return <string>(v.value.name.$error ? v.value.name.$errors[0].$message : undefined)

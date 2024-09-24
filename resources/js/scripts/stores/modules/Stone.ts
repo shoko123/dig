@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { maxLength } from '@vuelidate/validators'
-import { TFieldsByModule, TFieldsUnion, TObjCategorizerByFieldName } from '@/types/moduleTypes'
+import { TFields, TObjCategorizerByFieldName } from '@/types/moduleTypes'
 import { useItemStore } from '../../../scripts/stores/item'
 
 export const useStoneStore = defineStore('stone', () => {
@@ -24,7 +24,7 @@ export const useStoneStore = defineStore('stone', () => {
     console.log(
       `prepNew(Stone) create(${isCreate}) fields: ${JSON.stringify(fields.value, null, 2)}`,
     )
-    const stone = newFields.value as TFieldsByModule<'Stone'>
+    const stone = newFields.value as TFields<'Stone'>
 
     newItemIsInOC.value = typeof stone.uri === 'string'
     if (isCreate) {
@@ -42,7 +42,7 @@ export const useStoneStore = defineStore('stone', () => {
     }
   }
 
-  const defaultFields: TFieldsByModule<'Stone'> = {
+  const defaultFields: TFields<'Stone'> = {
     id: 'change me',
     id_year: 7,
     id_access_no: 1,
@@ -95,14 +95,11 @@ export const useStoneStore = defineStore('stone', () => {
     })
   })
 
-  function beforeStore(
-    formFields: Partial<TFieldsUnion>,
-    isCreate: boolean,
-  ): Partial<TFieldsUnion> {
+  function beforeStore(formFields: Partial<TFields>, isCreate: boolean): Partial<TFields> {
     //console.log(`stone.beforStore() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
     // const { useItemNewStore } = await import('../../../scripts/stores/itemNew')
     // const { newFields } = storeToRefs(useItemNewStore())
-    const stone = formFields as TFieldsByModule<'Stone'>
+    const stone = formFields as TFields<'Stone'>
     const inOC = typeof stone.uri === 'string'
     if (inOC) {
       return {
@@ -114,7 +111,7 @@ export const useStoneStore = defineStore('stone', () => {
         specialist_date: new Date(),
       }
     } else {
-      const fieldsToSend: Partial<TFieldsByModule<'Stone'>> = {}
+      const fieldsToSend: Partial<TFields<'Stone'>> = {}
       Object.assign(fieldsToSend, stone)
       fieldsToSend.specialist_date = new Date()
       fieldsToSend.catalog_date = new Date()

@@ -22,7 +22,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import type { TFieldsByModule } from '@/types/moduleTypes'
+import type { TFields } from '@/types/moduleTypes'
 import { useStoneStore } from '../../../scripts/stores/modules/Stone'
 import { useItemNewStore } from '../../../scripts/stores/itemNew'
 const { availableItemNumbers } = storeToRefs(useStoneStore())
@@ -30,7 +30,7 @@ const { availableItemNumbers } = storeToRefs(useStoneStore())
 const { openIdSelectorModal, newFields } = storeToRefs(useItemNewStore())
 
 const nf = computed(() => {
-  return newFields.value as TFieldsByModule<'Stone'>
+  return newFields.value as TFields<'Stone'>
 })
 
 function selected(item_no: number) {

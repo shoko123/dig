@@ -65,7 +65,7 @@
 </template>
 
 <script lang="ts" setup>
-import { TFieldsByModule } from '@/types/moduleTypes'
+import { TFields } from '@/types/moduleTypes'
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useVuelidate } from '@vuelidate/core'
@@ -83,9 +83,9 @@ let { itemNewFieldsToOptionsObj, newFields } = storeToRefs(useItemNewStore())
 
 
 
-const v$ = useVuelidate(rules, newFields.value as TFieldsByModule<'Stone'>, { $autoDirty: true })
+const v$ = useVuelidate(rules, newFields.value as TFields<'Stone'>, { $autoDirty: true })
 const nf = computed(() => {
-  return newFields.value as TFieldsByModule<'Stone'>
+  return newFields.value as TFields<'Stone'>
 })
 
 // const idErrors = computed(() => {

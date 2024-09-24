@@ -1,4 +1,4 @@
-import type { TApiFieldsUnion, TFieldsUnion, TBespokeFieldsUnion } from '@/types/moduleTypes'
+import type { TApiFieldsUnion, TFields, TBespokeFields } from '@/types/moduleTypes'
 import type { TApiItemShow, TApiTag } from '@/types/itemTypes'
 
 import { ref, computed } from 'vue'
@@ -18,7 +18,7 @@ export const useItemStore = defineStore('item', () => {
   const { send } = useXhrStore()
 
   const mcs = getCollectionStore('main')
-  const fields = ref<TFieldsUnion | undefined>(undefined)
+  const fields = ref<TFields | undefined>(undefined)
   const slug = ref<string | undefined>(undefined)
   const tag = ref<string | undefined>(undefined)
   const short = ref<string | undefined>(undefined)
@@ -28,10 +28,10 @@ export const useItemStore = defineStore('item', () => {
   const itemViewIndex = ref<number>(0)
   const itemIndex = ref<number>(-1)
 
-  const itemFieldsToOptionsObj = ref<Partial<TBespokeFieldsUnion>>({})
+  const itemFieldsToOptionsObj = ref<Partial<TBespokeFields>>({})
 
   const id = computed(() => {
-    return typeof fields.value === 'undefined' ? undefined : (<TFieldsUnion>fields.value).id
+    return typeof fields.value === 'undefined' ? undefined : (<TFields>fields.value).id
   })
 
   const itemView = computed(() => {

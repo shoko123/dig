@@ -47,7 +47,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { TFieldsByModule, TBespokeFieldsByModule } from '@/types/moduleTypes'
+import { TFields, TBespokeFields } from '@/types/moduleTypes'
 import { useItemStore } from '../../../scripts/stores/item'
 import { dateStringFromDate } from '../../../scripts/utils/utils'
 
@@ -56,7 +56,7 @@ import { dateStringFromDate } from '../../../scripts/utils/utils'
 let { fields, tag, itemFieldsToOptionsObj } = storeToRefs(useItemStore())
 
 const item = computed(() => {
-  return <TFieldsByModule<'Stone'>>fields.value
+  return <TFields<'Stone'>>fields.value
 })
 
 const inOC = computed(() => {
@@ -72,7 +72,7 @@ const catalog_date = computed(() => {
 })
 
 const cvColumnsTyped = computed(() => {
-  return itemFieldsToOptionsObj.value as TBespokeFieldsByModule<'Stone'>
+  return itemFieldsToOptionsObj.value as TBespokeFields<'Stone'>
 })
 
 const cataloger = computed(() => {

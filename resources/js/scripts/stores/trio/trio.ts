@@ -12,7 +12,7 @@ import type {
   TrioSourceName,
   // TOption,
 } from '../../../types/trioTypes'
-import type { TFieldsUnion, TFieldInfo, TFieldValue } from '@/types/moduleTypes'
+import type { TFields, TFieldInfo, TFieldValue } from '@/types/moduleTypes'
 import type { TApiFilters } from '@/types/routesTypes'
 import { useTrioNormalizerStore } from './trioNormalizer'
 import { useRoutesMainStore } from '../routes/routesMain'
@@ -36,7 +36,7 @@ export const useTrioStore = defineStore('trio', () => {
   const groupIndex = ref<number>(0)
   const categorizer = ref<Record<string, (val: TFieldValue) => number>>({})
 
-  function getFieldsOptions(fields: TFieldsUnion) {
+  function getFieldsOptions(fields: TFields) {
     const optionKeys: string[] = []
     const all: TFieldInfo[] = []
     let optionKey: string | undefined
@@ -47,7 +47,7 @@ export const useTrioStore = defineStore('trio', () => {
     Object.entries(fieldsToGroupKeyObj.value).forEach(([key, value]) => {
       // console.log(`[key: ${key}] => ${value}`)
       const group = <TGroupField>trio.value.groupsObj[value]
-      val = fields[key as keyof TFieldsUnion]
+      val = fields[key as keyof TFields]
       let index = -1
       if (group.tag_source === 'Categorized') {
         // console.log(`categorized group: ${group.label} val: ${val}`)

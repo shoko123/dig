@@ -46,14 +46,13 @@ type ModuleUnion = AddModuleProperty<TAllModules>
 type TModule = keyof TAllModules
 
 type TUrlModule = ModuleUnion['url_name']
-type TFieldsUnion = ModuleUnion['fields']
+
 type TCategorizedFields = ModuleUnion['categorizedFields']
 
-type TFieldsByModule<ModuleName extends TModule> = TAllByModule<ModuleName>['fields']
-type TBespokeFieldsUnion = ModuleUnion['FD']
-type TBespokeFieldsByModule<ModuleName extends TModule> = TAllByModule<ModuleName>['FD']
+type TFields<ModuleName extends TModule = TModule> = TAllByModule<ModuleName>['fields']
+type TBespokeFields<ModuleName extends TModule = TModule> = TAllByModule<ModuleName>['FD']
 
-type TApiFieldsUnion = SwapDatesWithStrings<TFieldsUnion>
+type TApiFieldsUnion = SwapDatesWithStrings<TFields>
 type TApiPageMainTabularUnion = ModuleUnion['TabularViewFields'] & { slug: string }
 type TApiPageMainTabular = ModuleUnion['TabularViewFields']
 type TFieldValue = string | number | boolean
@@ -72,7 +71,7 @@ type TTabularByModule<ModuleName extends TModule> = TAllByModule<ModuleName>['Ta
 type TApiTabularByModule<ModuleName extends TModule> = AddTagAndSlugProperties<
   TTabularByModule<ModuleName>
 >
-type TFieldsToFieldInfo<T extends TBespokeFieldsUnion> = {
+type TFieldsToFieldInfo<T extends TBespokeFields> = {
   [k in keyof T]: TFieldInfo
 }
 
@@ -125,12 +124,11 @@ export {
   TModuleToUrlName,
   TUrlModuleNameToModule,
   TModuleBtnsInfo,
-  TFieldsUnion,
-  TBespokeFieldsUnion,
+  TFields,
+  TBespokeFields,
   TApiFieldsUnion,
   TApiPageMainTabularUnion,
   TApiPageMainTabular,
-  TFieldsByModule,
   TApiTabularByModule,
   TTabularByModule,
   TApiModuleInit,
@@ -138,7 +136,6 @@ export {
   TItemsPerPageByView,
   TFieldInfo,
   TFieldsToFieldInfo,
-  TBespokeFieldsByModule,
   TFieldValue,
   TObjCategorizerByFieldName,
   TObjAllCategorizerFuncs,

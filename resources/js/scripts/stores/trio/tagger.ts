@@ -1,5 +1,5 @@
 import { defineStore, storeToRefs } from 'pinia'
-import type { TFieldsUnion, TFieldValue } from '@/types/moduleTypes'
+import type { TFields, TFieldValue } from '@/types/moduleTypes'
 import type { TGroupField } from '@/types/trioTypes'
 import { useXhrStore } from '../xhr'
 import { useItemStore } from '../item'
@@ -37,7 +37,7 @@ export const useTaggerStore = defineStore('tagger', () => {
     const trioStore = await getTrioStore()
     const payload = {
       module: module.value,
-      module_id: (<TFieldsUnion>fields.value).id,
+      module_id: (<TFields>fields.value).id,
       global_tag_ids: <number[]>[],
       module_tag_ids: <number[]>[],
       fields: <{ field_name: string; val: TFieldValue }[]>[],

@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type { TApiFieldsUnion, TFieldsUnion, TFieldInfo } from '@/types/moduleTypes'
+import type { TApiFieldsUnion, TFields, TFieldInfo } from '@/types/moduleTypes'
 import type { TApiItemShow } from '@/types/itemTypes'
 import { useCollectionsStore } from './collections/collections'
 import { useRoutesMainStore } from './routes/routesMain'
@@ -14,7 +14,7 @@ export const useItemNewStore = defineStore('itemNew', () => {
   const { send } = useXhrStore()
   const { getCollectionStore } = useCollectionsStore()
 
-  const newFields = ref<Partial<TFieldsUnion>>({})
+  const newFields = ref<Partial<TFields>>({})
   const slug = ref<string | undefined>(undefined)
   const tag = ref<string | undefined>(undefined)
   const itemNewAllOptions = ref<string[]>([])
@@ -50,7 +50,7 @@ export const useItemNewStore = defineStore('itemNew', () => {
     const store = await getStore(module.value)
     await store.prepareForNew(isCreate, ids)
     const func = await getFuncFieldsOptions()
-    const fd = func(newFields.value! as TFieldsUnion)
+    const fd = func(newFields.value! as TFields)
     itemNewAllOptions.value = fd.map((x) => x.optionKey)
 
     //build object [field_name] : fieldInfo
@@ -59,14 +59,14 @@ export const useItemNewStore = defineStore('itemNew', () => {
     itemNewFieldsToOptionsObj.value = tmp.value
   }
 
-  async function beforeStore(newFields: Partial<TFieldsUnion>) {
+  async function beforeStore(newFields: Partial<TFields>) {
     const store = await getStore(module.value)
     return store.beforeStore(newFields, isCreate.value)
   }
 
   async function upload(
     isCreate: boolean,
-    newFields: Partial<TFieldsUnion>,
+    newFields: Partial<TFields>,
   ): Promise<{ success: true; slug: string } | { success: false; message: string }> {
     console.log(
       `item.upload isCreate: ${isCreate}, module: ${module.value}, fields: ${JSON.stringify(newFields, null, 2)}`,

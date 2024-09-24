@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { TFieldsByModule, TFieldsUnion, TObjCategorizerByFieldName } from '@/types/moduleTypes'
+import { TFields, TObjCategorizerByFieldName } from '@/types/moduleTypes'
 import { useItemStore } from '../../../scripts/stores/item'
 
 export const useLocusStore = defineStore('locus', () => {
@@ -11,7 +11,7 @@ export const useLocusStore = defineStore('locus', () => {
   async function prepareForNew(isCreate: boolean, ids?: string[]) {
     const { useItemNewStore } = await import('../../../scripts/stores/itemNew')
     const { newFields, openIdSelectorModal } = storeToRefs(useItemNewStore())
-    Object.assign(newFields.value, fields.value as TFieldsByModule<'Stone'>)
+    Object.assign(newFields.value, fields.value as TFields<'Stone'>)
 
     if (isCreate) {
       currentIds.value = ids!
@@ -19,10 +19,7 @@ export const useLocusStore = defineStore('locus', () => {
     }
   }
 
-  function beforeStore(
-    formFields: Partial<TFieldsUnion>,
-    isCreate: boolean,
-  ): Partial<TFieldsUnion> {
+  function beforeStore(formFields: Partial<TFields>, isCreate: boolean): Partial<TFields> {
     //console.log(`ceramic.beforStore() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
     if (isCreate) {
       //
