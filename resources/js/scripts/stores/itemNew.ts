@@ -2,6 +2,7 @@ import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import type { TApiFields, TFields, TFieldInfo } from '@/types/moduleTypes'
 import type { TApiItemShow } from '@/types/itemTypes'
+// import { type Validation } from '@vuelidate/core'
 import { useCollectionsStore } from './collections/collections'
 import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
@@ -20,7 +21,6 @@ export const useItemNewStore = defineStore('itemNew', () => {
   const itemNewAllOptions = ref<string[]>([])
   const ready = ref<boolean>(false)
   const openIdSelectorModal = ref<boolean>(false)
-
   const store = getCollectionStore('main')
 
   const mainArray = computed(() => {
@@ -48,7 +48,14 @@ export const useItemNewStore = defineStore('itemNew', () => {
 
   async function prepareForNew(isCreate: boolean, ids?: string[]) {
     const store = await getStore(module.value)
+
     await store.prepareForNew(isCreate, ids)
+    console.log(
+      `Stone.prepare(${isCreate ? 'Crt' : 'Updt'}), fields: ${JSON.stringify(newFields.value, null, 2)}`,
+    )
+
+    // v$.value = useVuelidate(rulesObj.value, newFields.value, { $autoDirty: true })
+
     const func = await getFuncFieldsOptions()
     const fd = func(newFields.value! as TFields)
     itemNewAllOptions.value = fd.map((x) => x.optionKey)

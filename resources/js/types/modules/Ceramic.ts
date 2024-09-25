@@ -4,8 +4,8 @@ type TCeramic<T extends TModuleInfo> = {
   url_name: 'ceramics'
   fields: {
     id: string
-    id_year: string
-    id_object_no: string
+    id_year: number
+    id_object_no: number
     field_description: string
     specialist_description: string
     base_type_id: number

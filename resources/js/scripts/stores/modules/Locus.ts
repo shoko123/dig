@@ -1,9 +1,22 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { TFields, TObjCategorizerByFieldName } from '@/types/moduleTypes'
+import { TFields, TObjCategorizerByFieldName, TFieldsDefaultsAndRules } from '@/types/moduleTypes'
 import { useItemStore } from '../../../scripts/stores/item'
 
 export const useLocusStore = defineStore('locus', () => {
+  const defaultsAndRules: TFieldsDefaultsAndRules<'Locus'> = {
+    id: { val: '4', rules: {} },
+    category: { val: '555', rules: {} },
+    a: { val: 3, rules: {} },
+    b: { val: 3, rules: {} },
+    oc_label: { val: '4', rules: {} },
+    square: { val: '555', rules: {} },
+    uri: { val: '4', rules: {} },
+    context_uri: { val: '555', rules: {} },
+    published_date: { val: '555', rules: {} },
+    updated_date: { val: '4', rules: {} },
+  }
+
   const { fields } = storeToRefs(useItemStore())
   const categorizer: TObjCategorizerByFieldName<'Locus'> = {}
   const currentIds = ref<string[]>([])
@@ -41,5 +54,6 @@ export const useLocusStore = defineStore('locus', () => {
     prepareForNew,
     beforeStore,
     categorizer,
+    defaultsAndRules,
   }
 })

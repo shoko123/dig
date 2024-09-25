@@ -8,14 +8,14 @@
         <v-text-field v-model="nf.id" label="Label" class="mr-1" filled disabled />
       </template>
 
-      <v-text-field v-model="nf.square" label="Square" :error-messages="squareErrors" class="mx-1" filled
+      <v-text-field v-model="nf.square" label="Square" :error-messages="errors.square" class="mx-1" filled
         :disabled="newItemIsInOC" />
-      <v-text-field v-model="nf.context" label="Context" :error-messages="contextErrors" class="mr-1" filled
+      <v-text-field v-model="nf.context" label="Context" :error-messages="errors.context" class="mr-1" filled
         :disabled="newItemIsInOC" />
-      <v-text-field v-model="nf.occupation_level" label="Occupation Level" :error-messages="occupation_levelErrors"
+      <v-text-field v-model="nf.occupation_level" label="Occupation Level" :error-messages="errors.occupation_level"
         class="mr-1" filled :disabled="newItemIsInOC" />
       <v-text-field v-model="nf.excavation_object_id" label="Excavation Object Id"
-        :error-messages="excavation_object_idErrors" class="mr-1" filled :disabled="newItemIsInOC" />
+        :error-messages="errors.excavation_object_id" class="mr-1" filled :disabled="newItemIsInOC" />
       <v-text-field v-model="nf.old_museum_id" label="Old Museum Id" class="mr-1" filled :disabled="newItemIsInOC" />
     </v-row>
 
@@ -58,7 +58,7 @@
     </v-row>
     <v-row wrap no-gutters>
       <v-textarea v-model="nf.specialist_description" label="Specialist Description"
-        :error-messages="specialist_descriptionErrors" class="mr-1" filled />
+        :error-messages="errors.specialist_description" class="mr-1" filled />
     </v-row>
     <slot :id="nf.id" name="newItem" :v="v$" :new-fields="nf" />
   </v-container>
@@ -78,40 +78,26 @@ const props = defineProps<{
   isCreate: boolean
 }>()
 
-const { rules, newItemIsInOC } = storeToRefs(useStoneStore())
+const { rulesObj, newItemIsInOC } = storeToRefs(useStoneStore())
 let { itemNewFieldsToOptionsObj, newFields } = storeToRefs(useItemNewStore())
 
 
 
-const v$ = useVuelidate(rules, newFields.value as TFields<'Stone'>, { $autoDirty: true })
+const v$ = useVuelidate(rulesObj.value, newFields.value as TFields<'Stone'>, { $autoDirty: true })
+// val$.value = useVuelidate(rulesObj.value, newFields.value as TFields<'Stone'>, { $autoDirty: true })
 const nf = computed(() => {
   return newFields.value as TFields<'Stone'>
 })
 
-// const idErrors = computed(() => {
-//   return <string>(v$.value.id?.$error ? v$.value.id.$errors[0].$message : undefined)
-// })
-
-const squareErrors = computed(() => {
-  return v$.value.square?.$errors.map(x => x.$message) as string[]
+const errors = computed(() => {
+  let errorObj: Partial<Record<keyof TFields<'Stone'>, string[]>> = {}
+  for (const key in newFields.value) {
+    errorObj[key as keyof TFields<'Stone'>] = v$[key].$errors.map(x => x.$message) as string[]
+  }
+  return errorObj as unknown as TFields<'Stone'>
 })
 
-const contextErrors = computed(() => {
-  return v$.value.context?.$errors.map(x => x.$message) as string[]
-
-})
-
-const occupation_levelErrors = computed(() => {
-  return v$.value.occupation_level?.$errors.map(x => x.$message) as string[]
-})
-
-const excavation_object_idErrors = computed(() => {
-  return v$.value.excavation_object_id?.$errors.map(x => x.$message) as string[]
-})
-
-const specialist_descriptionErrors = computed(() => {
-  return v$.value.specialist_description?.$errors.map(x => x.$message) as string[]
-})
+// console.log(`v$: ${JSON.stringify(errors.value, null, 2)}`)
 
 const catalogerInfo = computed(() => {
   return itemNewFieldsToOptionsObj.value['cataloger_id']!

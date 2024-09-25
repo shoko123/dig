@@ -1,13 +1,22 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { required } from '@vuelidate/validators'
-import { TFields, TObjCategorizerByFieldName } from '@/types/moduleTypes'
+import { required, between, maxLength } from '@vuelidate/validators'
+import { TFields, TFieldsDefaultsAndRules, TObjCategorizerByFieldName } from '@/types/moduleTypes'
 import { useItemStore } from '../item'
 
 export const useCeramicStore = defineStore('ceramic', () => {
   const { fields } = storeToRefs(useItemStore())
   const categorizer: TObjCategorizerByFieldName<'Ceramic'> = {}
   const currentIds = ref<string[]>([])
+
+  const defaultsAndRules: TFieldsDefaultsAndRules<'Ceramic'> = {
+    id: { val: '', rules: { required } },
+    id_year: { val: 1, rules: { required, between: between(1, 9) } },
+    id_object_no: { val: 1, rules: { required, between: between(1, 9) } },
+    field_description: { val: '', rules: { maxLength: maxLength(50) } },
+    specialist_description: { val: '4', rules: { maxLength: maxLength(50) } },
+    base_type_id: { val: 1, rules: { required, between: between(1, 9) } },
+  }
 
   async function prepareForNew(isCreate: boolean, ids?: string[]) {
     const { useItemNewStore } = await import('../../../scripts/stores/itemNew')
@@ -38,19 +47,11 @@ export const useCeramicStore = defineStore('ceramic', () => {
     ]
   })
 
-  const rules = computed(() => {
-    return {
-      id: {},
-      id_year: { required },
-      id_object_no: { required }, //from select list
-    }
-  })
-
   return {
     mainTableHeaders,
     prepareForNew,
     beforeStore,
     categorizer,
-    rules,
+    defaultsAndRules,
   }
 })

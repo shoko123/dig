@@ -1,10 +1,42 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { maxLength } from '@vuelidate/validators'
-import { TFields, TObjCategorizerByFieldName } from '@/types/moduleTypes'
+import { required, between, maxLength } from '@vuelidate/validators'
+import { TFields, TObjCategorizerByFieldName, TFieldsDefaultsAndRules } from '@/types/moduleTypes'
 import { useItemStore } from '../../../scripts/stores/item'
 
 export const useStoneStore = defineStore('stone', () => {
+  const defaultsAndRules: TFieldsDefaultsAndRules<'Stone'> = {
+    id: { val: '', rules: { required } },
+    id_year: { val: 1, rules: { required, between: between(1, 999) } },
+    id_access_no: { val: 1, rules: { required, between: between(1, 999) } },
+    id_object_no: { val: 1, rules: { between: between(1, 999) } },
+    square: { val: '', rules: { maxLength: maxLength(20) } },
+    context: { val: '', rules: { maxLength: maxLength(20) } },
+    excavation_date: { val: null, rules: {} },
+    occupation_level: { val: '', rules: {} },
+    cataloger_material: { val: '', rules: {} },
+    whole: { val: false, rules: {} },
+    cataloger_typology: { val: '', rules: { maxLength: maxLength(20) } },
+    cataloger_description: { val: '', rules: { maxLength: maxLength(20) } },
+    conservation_notes: { val: '', rules: { maxLength: maxLength(20) } },
+    weight: { val: '', rules: { maxLength: maxLength(20) } },
+    length: { val: '', rules: { maxLength: maxLength(20) } },
+    width: { val: '', rules: { maxLength: maxLength(20) } },
+    height: { val: '', rules: { maxLength: maxLength(20) } },
+    diameter: { val: '', rules: { maxLength: maxLength(20) } },
+    dimension_notes: { val: '', rules: { maxLength: maxLength(20) } },
+    cultural_period: { val: '', rules: { maxLength: maxLength(20) } },
+    excavation_object_id: { val: '', rules: { maxLength: maxLength(20) } },
+    old_museum_id: { val: '', rules: { maxLength: maxLength(20) } },
+    cataloger_id: { val: 1, rules: { maxLength: maxLength(20) } },
+    catalog_date: { val: null, rules: {} },
+    specialist_description: { val: '', rules: { maxLength: maxLength(20) } },
+    specialist_date: { val: null, rules: { maxLength: maxLength(20) } },
+    thumbnail: { val: '', rules: { maxLength: maxLength(20) } },
+    uri: { val: '', rules: { maxLength: maxLength(20) } },
+    base_type_id: { val: 1, rules: { between: between(1, 255) } },
+    material_id: { val: 1, rules: { between: between(1, 255) } },
+  }
   const { fields } = storeToRefs(useItemStore())
 
   const categorizer = computed<TObjCategorizerByFieldName<'Stone'>>(() => {
@@ -16,64 +48,37 @@ export const useStoneStore = defineStore('stone', () => {
     }
   })
 
-  const newItemIsInOC = ref<boolean>(false)
-
   async function prepareForNew(isCreate: boolean, ids?: string[]) {
     const { useItemNewStore } = await import('../../../scripts/stores/itemNew')
     const { newFields, openIdSelectorModal } = storeToRefs(useItemNewStore())
     console.log(
       `prepNew(Stone) create(${isCreate}) fields: ${JSON.stringify(fields.value, null, 2)}`,
     )
-    const stone = newFields.value as TFields<'Stone'>
-
-    newItemIsInOC.value = typeof stone.uri === 'string'
+    let newStone: Partial<TFields<'Stone'>> = {}
     if (isCreate) {
       currentIds.value = ids!
-
-      newFields.value = { ...defaultFields }
-      newFields.value.id = 'B2024.1.' + availableItemNumbers.value[0]
-      newFields.value.id_year = 24
-      newFields.value.id_access_no = 1
-      newFields.value.id_object_no = availableItemNumbers.value[0]
+      newStone = { ...defaultsObj.value }
+      newStone.id = 'B2024.1.' + availableItemNumbers.value[0]
+      newStone.id_year = 24
+      newStone.id_access_no = 1
+      newStone.id_object_no = availableItemNumbers.value[0]!
       console.log(`isCreate. current ids: ${currentIds.value}`)
       openIdSelectorModal.value = true
     } else {
-      newFields.value = { ...fields.value }
+      newStone = { ...fields.value }
     }
+    newItemIsInOC.value = typeof newStone.uri === 'string'
+    newFields.value = { ...newStone }
   }
+  const newItemIsInOC = ref<boolean>(false)
 
-  const defaultFields: TFields<'Stone'> = {
-    id: 'change me',
-    id_year: 7,
-    id_access_no: 1,
-    id_object_no: 1,
-    square: '',
-    context: '',
-    excavation_date: null,
-    occupation_level: '',
-    cataloger_material: '',
-    whole: true,
-    cataloger_typology: '',
-    cataloger_description: '',
-    conservation_notes: '',
-    weight: '',
-    length: '',
-    width: '',
-    height: '',
-    diameter: '',
-    dimension_notes: '',
-    cultural_period: '',
-    excavation_object_id: '',
-    old_museum_id: '',
-    cataloger_id: 10,
-    catalog_date: null,
-    specialist_description: '',
-    specialist_date: null,
-    thumbnail: '',
-    uri: null,
-    base_type_id: 1,
-    material_id: 1,
-  }
+  const defaultsObj = computed(() => {
+    return Object.fromEntries(Object.entries(defaultsAndRules).map(([k, v]) => [k, v.val]))
+  })
+
+  const rulesObj = computed(() => {
+    return Object.fromEntries(Object.entries(defaultsAndRules).map(([k, v]) => [k, v.rules]))
+  })
 
   const currentIds = ref<string[]>([])
 
@@ -122,37 +127,6 @@ export const useStoneStore = defineStore('stone', () => {
     }
   }
 
-  const rules = computed(() => {
-    return newItemIsInOC.value
-      ? {
-          id: {},
-          specialist_description: { maxLength: maxLength(25) },
-        }
-      : {
-          id: {},
-          square: { maxLength: maxLength(50) },
-          context: { maxLength: maxLength(50) },
-          excavation_date: {},
-          occupation_level: { maxLength: maxLength(10) },
-          cataloger_material: { maxLength: maxLength(50) },
-          whole: false,
-          cataloger_typology: { maxLength: maxLength(50) },
-          cataloger_description: { maxLength: maxLength(350) },
-          conservation_notes: { maxLength: maxLength(250) },
-          weight: { maxLength: maxLength(50) },
-          length: { maxLength: maxLength(50) },
-          width: { maxLength: maxLength(50) },
-          height: { maxLength: maxLength(50) },
-          diameter: { maxLength: maxLength(50) },
-          dimension_notes: { maxLength: maxLength(250) },
-          cultural_period: { maxLength: maxLength(50) },
-          excavation_object_id: { maxLength: maxLength(50) },
-          old_museum_id: { maxLength: maxLength(50) },
-          catalog_date: {},
-          specialist_description: { maxLength: maxLength(250) },
-        }
-  })
-
   const mainTableHeaders = computed(() => {
     return [
       { title: 'Label', align: 'start', key: 'tag' },
@@ -166,11 +140,14 @@ export const useStoneStore = defineStore('stone', () => {
   return {
     mainTableHeaders,
     currentIds,
-    rules,
+    defaultsAndRules,
     newItemIsInOC,
     availableItemNumbers,
     categorizer,
     prepareForNew,
     beforeStore,
+    // rules,
+    // defaultsObj,
+    rulesObj,
   }
 })

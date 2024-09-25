@@ -51,6 +51,14 @@ type TCategorizedFields<M extends TModule = TModule> = TAllByModule<M>['categori
 type TFields<M extends TModule = TModule> = TAllByModule<M>['fields']
 type TBespokeFields<M extends TModule = TModule> = TAllByModule<M>['FD']
 
+type TFieldsRules<M extends TModule = TModule> = {
+  [Key in keyof TFields<M>]: object
+}
+
+type TFieldsDefaultsAndRules<M extends TModule> = {
+  [Key in keyof TFields<M>]: { val: TFields<M>[Key]; rules: object }
+}
+
 type TApiFields = SwapDatesWithStrings<TFields>
 type TFieldValue = string | number | boolean
 
@@ -127,6 +135,8 @@ export {
   TFields,
   TBespokeFields,
   TFieldInfo,
+  TFieldsRules,
+  TFieldsDefaultsAndRules,
   TObjCategorizerByFieldName,
   TObjAllCategorizerFuncs,
   TCategorizedFieldsByModule,
