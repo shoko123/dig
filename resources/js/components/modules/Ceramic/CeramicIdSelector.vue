@@ -1,14 +1,14 @@
 <template>
   <v-card>
     <v-card-text>
-      <v-row wrap no-gutters>
+      <v-row wrap>
         <v-select v-model="nf.id_year" label="Select" item-title="text" item-value="extra"
           :items="yearInfo.options"></v-select>
         <v-select v-model="nf.id_object_no" label="Select" item-title="text" item-value="extra"
-          :items="availableObjectNos"></v-select>
+          :items="availableObjectNos" @update:model-value="objNoSelected"></v-select>
       </v-row>
       <v-row wrap>
-        <slot name="cancel"></slot>
+        <v-btn @click="accept">Accept</v-btn>
         <v-btn @click="cancel">Cancel</v-btn>
       </v-row>
     </v-card-text>
@@ -33,21 +33,23 @@ const yearInfo = computed(() => {
   return itemNewFieldsToOptionsObj.value['id_year']!
 })
 
-// function selected(item_no: number) {
-//   console.log(`Item selected: ${item_no}`)
-//   newFields.value.id = 'B2024.1.' + item_no
+function accept() {
+  openIdSelectorModal.value = false
+  console.log(`id accepted: ${newFields.value.id}`)
+}
 
-//   nf.value.id_object_no = item_no
-//   openIdSelectorModal.value = false
-// }
+
+function objNoSelected(selected: number) {
+  console.log(`objNoSelected(${selected})`)
+  nf.value.id = `${nf.value.id_year}.${nf.value.id_object_no}`
+}
 
 // function accept() {
 //   openIdSelectorModal.value = false
 //   console.log(`id accepted: ${newFields.value.id}`)
 // }
 function cancel() {
-  openIdSelectorModal.value = false
-  console.log(`id accepted: ${newFields.value.id}`)
+  console.log(`cancel`)
 }
 
 </script>

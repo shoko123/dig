@@ -2,7 +2,11 @@
   <v-container fluid class="pa-1 ma-0">
     <v-row wrap no-gutters>
       <template v-if="props.isCreate">
-        <!-- <id-selector></id-selector> -->
+        <id-selector>
+          <template #specific-id-selctor>
+            <CeramicIdSelector></CeramicIdSelector>
+          </template>
+        </id-selector>
       </template>
       <template v-else>
         <v-text-field v-model="nf.id" label="Label" class="mr-1" filled disabled />
@@ -38,6 +42,8 @@ import { useVuelidate } from '@vuelidate/core'
 // import { useItemStore } from '../../../scripts/stores/item'
 import { useItemNewStore } from '../../../scripts/stores/itemNew'
 import { useCeramicStore } from '../../../scripts/stores/modules/Ceramic'
+import IdSelector from '../../form-elements/IdSelector.vue'
+import CeramicIdSelector from './CeramicIdSelector.vue'
 
 const props = defineProps<{
   isCreate: boolean
