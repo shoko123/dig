@@ -2,7 +2,11 @@
   <v-container fluid class="pa-1 ma-0">
     <v-row wrap no-gutters>
       <template v-if="props.isCreate">
-        <id-selector></id-selector>
+        <id-selector>
+          <template #specific-id-selctor>
+            <StoneIdSelector></StoneIdSelector>
+          </template>
+        </id-selector>
       </template>
       <template v-else>
         <v-text-field v-model="nf.id" label="Label" class="mr-1" filled disabled />
@@ -78,7 +82,7 @@ import { VDateInput } from 'vuetify/labs/VDateInput'
 import { useStoneStore } from '../../../scripts/stores/modules/Stone'
 import { useItemNewStore } from '../../../scripts/stores/itemNew'
 import IdSelector from '../../form-elements/IdSelector.vue'
-
+import StoneIdSelector from './StoneIdSelector.vue'
 const props = defineProps<{
   isCreate: boolean
 }>()

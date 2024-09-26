@@ -11,7 +11,7 @@ export const useCeramicStore = defineStore('ceramic', () => {
 
   const defaultsAndRules: TFieldsDefaultsAndRules<'Ceramic'> = {
     id: { d: '', r: { required } },
-    id_year: { d: 1, r: { required, between: between(20, 24) } },
+    id_year: { d: 20, r: { required, between: between(20, 24) } },
     id_object_no: { d: 1, r: { required, between: between(1, 9) } },
     field_description: { d: '', r: { maxLength: maxLength(50) } },
     specialist_description: { d: '4', r: { maxLength: maxLength(50) } },
