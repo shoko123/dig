@@ -54,7 +54,9 @@ type TBespokeFields<M extends TModule = TModule> = TAllByModule<M>['FD']
 type TFieldsRules<M extends TModule = TModule> = {
   [Key in keyof TFields<M>]: object
 }
-
+type TFieldsErrors<M extends TModule = TModule> = {
+  [Key in keyof TFields<M>]: string | undefined
+}
 type TFieldsDefaultsAndRules<M extends TModule> = {
   [Key in keyof TFields<M>]: { val: TFields<M>[Key]; rules: object }
 }
@@ -136,6 +138,7 @@ export {
   TBespokeFields,
   TFieldInfo,
   TFieldsRules,
+  TFieldsErrors,
   TFieldsDefaultsAndRules,
   TObjCategorizerByFieldName,
   TObjAllCategorizerFuncs,

@@ -9,14 +9,14 @@
       </template>
 
       <v-text-field v-model="nf.square" label="Square" :error-messages="errors.square" class="mx-1" filled
-        :disabled="newItemIsInOC" />
+        :disabled="inOC" />
       <v-text-field v-model="nf.context" label="Context" :error-messages="errors.context" class="mr-1" filled
-        :disabled="newItemIsInOC" />
+        :disabled="inOC" />
       <v-text-field v-model="nf.occupation_level" label="Occupation Level" :error-messages="errors.occupation_level"
-        class="mr-1" filled :disabled="newItemIsInOC" />
+        class="mr-1" filled :disabled="inOC" />
       <v-text-field v-model="nf.excavation_object_id" label="Excavation Object Id"
-        :error-messages="errors.excavation_object_id" class="mr-1" filled :disabled="newItemIsInOC" />
-      <v-text-field v-model="nf.old_museum_id" label="Old Museum Id" class="mr-1" filled :disabled="newItemIsInOC" />
+        :error-messages="errors.excavation_object_id" class="mr-1" filled :disabled="inOC" />
+      <v-text-field v-model="nf.old_museum_id" label="Old Museum Id" class="mr-1" filled :disabled="inOC" />
     </v-row>
 
     <v-row wrap no-gutters>
@@ -32,27 +32,26 @@
 
     <v-row wrap no-gutters>
       <v-textarea v-model="nf.cataloger_description" label="Cataloger Description" class="mr-1" filled
-        :disabled="newItemIsInOC" />
-      <v-textarea v-model="nf.conservation_notes" label="Conservation Notes" class="mr-1" filled
-        :disabled="newItemIsInOC" />
-      <v-textarea v-model="nf.dimension_notes" label="Dimension Notes" class="mr-1" filled :disabled="newItemIsInOC" />
+        :disabled="inOC" />
+      <v-textarea v-model="nf.conservation_notes" label="Conservation Notes" class="mr-1" filled :disabled="inOC" />
+      <v-textarea v-model="nf.dimension_notes" label="Dimension Notes" class="mr-1" filled :disabled="inOC" />
     </v-row>
 
     <v-row wrap no-gutters>
-      <v-text-field v-model="nf.weight" label="Weight" class="mr-1" filled :disabled="newItemIsInOC" />
-      <v-text-field v-model="nf.length" label="Length" class="mr-1" filled :disabled="newItemIsInOC" />
-      <v-text-field v-model="nf.width" label="Width" class="mr-1" filled :disabled="newItemIsInOC" />
-      <v-text-field v-model="nf.diameter" label="Diameter" class="mr-1" filled :disabled="newItemIsInOC" />
+      <v-text-field v-model="nf.weight" label="Weight" class="mr-1" filled :disabled="inOC" />
+      <v-text-field v-model="nf.length" label="Length" class="mr-1" filled :disabled="inOC" />
+      <v-text-field v-model="nf.width" label="Width" class="mr-1" filled :disabled="inOC" />
+      <v-text-field v-model="nf.diameter" label="Diameter" class="mr-1" filled :disabled="inOC" />
     </v-row>
 
     <v-row wrap no-gutters>
       <v-text-field v-model="nf.cultural_period" label="Cataloger Assumed Period" class="mr-1" filled
-        :disabled="newItemIsInOC" />
-      <v-date-input v-model="nf.excavation_date" label="Excavation Date" clearable :disabled="newItemIsInOC"
-        max-width="368" @click:clear="clearDate('Excavation')"></v-date-input>
-      <template v-if="newItemIsInOC">
-        <!-- <v-text-field v-model="catalogerInfo." label="Cataloger" class="mx-1" filled :disabled="newItemIsInOC" /> -->
-        <v-date-input v-model="nf.catalog_date" label="Catalog Date" clearable :disabled="newItemIsInOC" max-width="368"
+        :disabled="inOC" />
+      <v-date-input v-model="nf.excavation_date" label="Excavation Date" clearable :disabled="inOC" max-width="368"
+        @click:clear="clearDate('Excavation')"></v-date-input>
+      <template v-if="inOC">
+        <!-- <v-text-field v-model="catalogerInfo." label="Cataloger" class="mx-1" filled :disabled="inOC" /> -->
+        <v-date-input v-model="nf.catalog_date" label="Catalog Date" clearable :disabled="inOC" max-width="368"
           @click:clear="clearDate('Catalog')"></v-date-input>
       </template>
     </v-row>
@@ -65,7 +64,7 @@
 </template>
 
 <script lang="ts" setup>
-import { TFields } from '@/types/moduleTypes'
+import { TFields, TFieldsErrors } from '@/types/moduleTypes'
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useVuelidate } from '@vuelidate/core'
@@ -78,24 +77,26 @@ const props = defineProps<{
   isCreate: boolean
 }>()
 
-const { rulesObj, newItemIsInOC } = storeToRefs(useStoneStore())
-let { itemNewFieldsToOptionsObj, newFields } = storeToRefs(useItemNewStore())
-
+const { rulesObj } = storeToRefs(useStoneStore())
+const { itemNewFieldsToOptionsObj, newFields } = storeToRefs(useItemNewStore())
 const v$ = useVuelidate(rulesObj.value, newFields.value, { $autoDirty: true })
-// val$.value = useVuelidate(rulesObj.value, newFields.value as TFields<'Stone'>, { $autoDirty: true })
+
 const nf = computed(() => {
   return newFields.value as TFields<'Stone'>
 })
 
-const errors = computed(() => {
-  let errorObj: Partial<Record<keyof TFields<'Stone'>, string>> = {}
-  for (const key in newFields.value) {
-    errorObj[key as keyof TFields<'Stone'>] = v$.value[key].$errors.map(x => x.$message) as string
-  }
-  return errorObj as unknown as TFields<'Stone'>
+const inOC = computed(() => {//in open context
+  return typeof nf.value.uri === 'string' && nf.value.uri.length > 0
 })
 
-// console.log(`v$: ${JSON.stringify(errors.value, null, 2)}`)
+const errors = computed(() => {
+  let errorObj: Partial<TFieldsErrors<'Stone'>> = {}
+  for (const key in newFields.value) {
+    const message = v$.value[key].$errors.length > 0 ? v$.value[key].$errors[0].$message : undefined
+    errorObj[key as keyof TFieldsErrors<'Stone'>] = message
+  }
+  return errorObj
+})
 
 const catalogerInfo = computed(() => {
   return itemNewFieldsToOptionsObj.value['cataloger_id']!

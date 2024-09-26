@@ -37,7 +37,14 @@ export const useStoneStore = defineStore('stone', () => {
     base_type_id: { val: 1, rules: { between: between(1, 255) } },
     material_id: { val: 1, rules: { between: between(1, 255) } },
   }
-  const { fields } = storeToRefs(useItemStore())
+
+  const defaultsObj = computed(() => {
+    return Object.fromEntries(Object.entries(defaultsAndRules).map(([k, v]) => [k, v.val]))
+  })
+
+  const rulesObj = computed(() => {
+    return Object.fromEntries(Object.entries(defaultsAndRules).map(([k, v]) => [k, v.rules]))
+  })
 
   const categorizer = computed<TObjCategorizerByFieldName<'Stone'>>(() => {
     return {
@@ -47,6 +54,8 @@ export const useStoneStore = defineStore('stone', () => {
       },
     }
   })
+
+  const { fields } = storeToRefs(useItemStore())
 
   async function prepareForNew(isCreate: boolean, ids?: string[]) {
     const { useItemNewStore } = await import('../../../scripts/stores/itemNew')
@@ -67,19 +76,10 @@ export const useStoneStore = defineStore('stone', () => {
     } else {
       newStone = { ...fields.value }
     }
-    newItemIsInOC.value = typeof newStone.uri === 'string' && newStone.uri.length > 0
     newFields.value = { ...newStone }
   }
-  const newItemIsInOC = ref<boolean>(false)
 
-  const defaultsObj = computed(() => {
-    return Object.fromEntries(Object.entries(defaultsAndRules).map(([k, v]) => [k, v.val]))
-  })
-
-  const rulesObj = computed(() => {
-    return Object.fromEntries(Object.entries(defaultsAndRules).map(([k, v]) => [k, v.rules]))
-  })
-
+  //new id selection
   const currentIds = ref<string[]>([])
 
   const availableItemNumbers = computed(() => {
@@ -141,13 +141,10 @@ export const useStoneStore = defineStore('stone', () => {
     mainTableHeaders,
     currentIds,
     defaultsAndRules,
-    newItemIsInOC,
     availableItemNumbers,
     categorizer,
     prepareForNew,
     beforeStore,
-    // rules,
-    // defaultsObj,
     rulesObj,
   }
 })
