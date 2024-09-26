@@ -81,18 +81,16 @@ const props = defineProps<{
 const { rulesObj, newItemIsInOC } = storeToRefs(useStoneStore())
 let { itemNewFieldsToOptionsObj, newFields } = storeToRefs(useItemNewStore())
 
-
-
-const v$ = useVuelidate(rulesObj.value, newFields.value as TFields<'Stone'>, { $autoDirty: true })
+const v$ = useVuelidate(rulesObj.value, newFields.value, { $autoDirty: true })
 // val$.value = useVuelidate(rulesObj.value, newFields.value as TFields<'Stone'>, { $autoDirty: true })
 const nf = computed(() => {
   return newFields.value as TFields<'Stone'>
 })
 
 const errors = computed(() => {
-  let errorObj: Partial<Record<keyof TFields<'Stone'>, string[]>> = {}
+  let errorObj: Partial<Record<keyof TFields<'Stone'>, string>> = {}
   for (const key in newFields.value) {
-    errorObj[key as keyof TFields<'Stone'>] = v$[key].$errors.map(x => x.$message) as string[]
+    errorObj[key as keyof TFields<'Stone'>] = v$.value[key].$errors.map(x => x.$message) as string
   }
   return errorObj as unknown as TFields<'Stone'>
 })

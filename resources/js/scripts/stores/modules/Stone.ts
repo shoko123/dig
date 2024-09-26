@@ -67,7 +67,7 @@ export const useStoneStore = defineStore('stone', () => {
     } else {
       newStone = { ...fields.value }
     }
-    newItemIsInOC.value = typeof newStone.uri === 'string'
+    newItemIsInOC.value = typeof newStone.uri === 'string' && newStone.uri.length > 0
     newFields.value = { ...newStone }
   }
   const newItemIsInOC = ref<boolean>(false)
