@@ -5,16 +5,16 @@ import { useItemStore } from '../../../scripts/stores/item'
 
 export const useLocusStore = defineStore('locus', () => {
   const defaultsAndRules: TFieldsDefaultsAndRules<'Locus'> = {
-    id: { val: '4', rules: {} },
-    category: { val: '555', rules: {} },
-    a: { val: 3, rules: {} },
-    b: { val: 3, rules: {} },
-    oc_label: { val: '4', rules: {} },
-    square: { val: '555', rules: {} },
-    uri: { val: '4', rules: {} },
-    context_uri: { val: '555', rules: {} },
-    published_date: { val: '555', rules: {} },
-    updated_date: { val: '4', rules: {} },
+    id: { d: 'Change me', r: {} },
+    category: { d: 'Bin', r: {} },
+    a: { d: 3, r: {} },
+    b: { d: 3, r: {} },
+    oc_label: { d: '4', r: {} },
+    square: { d: '', r: {} },
+    uri: { d: '', r: {} },
+    context_uri: { d: '', r: {} },
+    published_date: { d: '', r: {} },
+    updated_date: { d: '4', r: {} },
   }
 
   const { fields } = storeToRefs(useItemStore())

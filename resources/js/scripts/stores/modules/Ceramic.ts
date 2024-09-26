@@ -10,12 +10,12 @@ export const useCeramicStore = defineStore('ceramic', () => {
   const currentIds = ref<string[]>([])
 
   const defaultsAndRules: TFieldsDefaultsAndRules<'Ceramic'> = {
-    id: { val: '', rules: { required } },
-    id_year: { val: 1, rules: { required, between: between(1, 9) } },
-    id_object_no: { val: 1, rules: { required, between: between(1, 9) } },
-    field_description: { val: '', rules: { maxLength: maxLength(50) } },
-    specialist_description: { val: '4', rules: { maxLength: maxLength(50) } },
-    base_type_id: { val: 1, rules: { required, between: between(1, 9) } },
+    id: { d: '', r: { required } },
+    id_year: { d: 1, r: { required, between: between(1, 9) } },
+    id_object_no: { d: 1, r: { required, between: between(1, 9) } },
+    field_description: { d: '', r: { maxLength: maxLength(50) } },
+    specialist_description: { d: '4', r: { maxLength: maxLength(50) } },
+    base_type_id: { d: 1, r: { required, between: between(1, 9) } },
   }
 
   async function prepareForNew(isCreate: boolean, ids?: string[]) {

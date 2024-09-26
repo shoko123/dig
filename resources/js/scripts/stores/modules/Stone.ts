@@ -6,44 +6,44 @@ import { useItemStore } from '../../../scripts/stores/item'
 
 export const useStoneStore = defineStore('stone', () => {
   const defaultsAndRules: TFieldsDefaultsAndRules<'Stone'> = {
-    id: { val: '', rules: { required } },
-    id_year: { val: 1, rules: { required, between: between(1, 999) } },
-    id_access_no: { val: 1, rules: { required, between: between(1, 999) } },
-    id_object_no: { val: 1, rules: { between: between(1, 999) } },
-    square: { val: '', rules: { maxLength: maxLength(20) } },
-    context: { val: '', rules: { maxLength: maxLength(20) } },
-    excavation_date: { val: null, rules: {} },
-    occupation_level: { val: '', rules: {} },
-    cataloger_material: { val: '', rules: {} },
-    whole: { val: false, rules: {} },
-    cataloger_typology: { val: '', rules: { maxLength: maxLength(20) } },
-    cataloger_description: { val: '', rules: { maxLength: maxLength(20) } },
-    conservation_notes: { val: '', rules: { maxLength: maxLength(20) } },
-    weight: { val: '', rules: { maxLength: maxLength(20) } },
-    length: { val: '', rules: { maxLength: maxLength(20) } },
-    width: { val: '', rules: { maxLength: maxLength(20) } },
-    height: { val: '', rules: { maxLength: maxLength(20) } },
-    diameter: { val: '', rules: { maxLength: maxLength(20) } },
-    dimension_notes: { val: '', rules: { maxLength: maxLength(20) } },
-    cultural_period: { val: '', rules: { maxLength: maxLength(20) } },
-    excavation_object_id: { val: '', rules: { maxLength: maxLength(20) } },
-    old_museum_id: { val: '', rules: { maxLength: maxLength(20) } },
-    cataloger_id: { val: 1, rules: { maxLength: maxLength(20) } },
-    catalog_date: { val: null, rules: {} },
-    specialist_description: { val: '', rules: { maxLength: maxLength(20) } },
-    specialist_date: { val: null, rules: { maxLength: maxLength(20) } },
-    thumbnail: { val: '', rules: { maxLength: maxLength(20) } },
-    uri: { val: '', rules: { maxLength: maxLength(20) } },
-    base_type_id: { val: 1, rules: { between: between(1, 255) } },
-    material_id: { val: 1, rules: { between: between(1, 255) } },
+    id: { d: '', r: { required } },
+    id_year: { d: 1, r: { required, between: between(1, 999) } },
+    id_access_no: { d: 1, r: { required, between: between(1, 999) } },
+    id_object_no: { d: 1, r: { between: between(1, 999) } },
+    square: { d: '', r: { maxLength: maxLength(20) } },
+    context: { d: '', r: { maxLength: maxLength(20) } },
+    excavation_date: { d: null, r: {} },
+    occupation_level: { d: '', r: {} },
+    cataloger_material: { d: '', r: {} },
+    whole: { d: false, r: {} },
+    cataloger_typology: { d: '', r: { maxLength: maxLength(20) } },
+    cataloger_description: { d: '', r: { maxLength: maxLength(20) } },
+    conservation_notes: { d: '', r: { maxLength: maxLength(20) } },
+    weight: { d: '', r: { maxLength: maxLength(20) } },
+    length: { d: '', r: { maxLength: maxLength(20) } },
+    width: { d: '', r: { maxLength: maxLength(20) } },
+    height: { d: '', r: { maxLength: maxLength(20) } },
+    diameter: { d: '', r: { maxLength: maxLength(20) } },
+    dimension_notes: { d: '', r: { maxLength: maxLength(20) } },
+    cultural_period: { d: '', r: { maxLength: maxLength(20) } },
+    excavation_object_id: { d: '', r: { maxLength: maxLength(20) } },
+    old_museum_id: { d: '', r: { maxLength: maxLength(20) } },
+    cataloger_id: { d: 1, r: { maxLength: maxLength(20) } },
+    catalog_date: { d: null, r: {} },
+    specialist_description: { d: '', r: { maxLength: maxLength(20) } },
+    specialist_date: { d: null, r: { maxLength: maxLength(20) } },
+    thumbnail: { d: '', r: { maxLength: maxLength(20) } },
+    uri: { d: '', r: { maxLength: maxLength(20) } },
+    base_type_id: { d: 1, r: { between: between(1, 255) } },
+    material_id: { d: 1, r: { between: between(1, 255) } },
   }
 
   const defaultsObj = computed(() => {
-    return Object.fromEntries(Object.entries(defaultsAndRules).map(([k, v]) => [k, v.val]))
+    return Object.fromEntries(Object.entries(defaultsAndRules).map(([k, v]) => [k, v.d]))
   })
 
   const rulesObj = computed(() => {
-    return Object.fromEntries(Object.entries(defaultsAndRules).map(([k, v]) => [k, v.rules]))
+    return Object.fromEntries(Object.entries(defaultsAndRules).map(([k, v]) => [k, v.r]))
   })
 
   const categorizer = computed<TObjCategorizerByFieldName<'Stone'>>(() => {
@@ -104,20 +104,20 @@ export const useStoneStore = defineStore('stone', () => {
     //console.log(`stone.beforStore() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
     // const { useItemNewStore } = await import('../../../scripts/stores/itemNew')
     // const { newFields } = storeToRefs(useItemNewStore())
-    const stone = formFields as TFields<'Stone'>
-    const inOC = typeof stone.uri === 'string'
-    if (inOC) {
+
+    const newStone = formFields as TFields<'Stone'>
+    if (typeof newStone.uri === 'string' && newStone.uri.length > 0) {
       return {
-        id: stone.id,
-        id_year: stone.id_year,
-        id_access_no: stone.id_access_no,
-        id_object_no: stone.id_object_no,
-        specialist_description: stone.specialist_description,
+        id: newStone.id,
+        id_year: newStone.id_year,
+        id_access_no: newStone.id_access_no,
+        id_object_no: newStone.id_object_no,
+        specialist_description: newStone.specialist_description,
         specialist_date: new Date(),
       }
     } else {
       const fieldsToSend: Partial<TFields<'Stone'>> = {}
-      Object.assign(fieldsToSend, stone)
+      Object.assign(fieldsToSend, newStone)
       fieldsToSend.specialist_date = new Date()
       fieldsToSend.catalog_date = new Date()
       if (isCreate) {
@@ -140,7 +140,6 @@ export const useStoneStore = defineStore('stone', () => {
   return {
     mainTableHeaders,
     currentIds,
-    defaultsAndRules,
     availableItemNumbers,
     categorizer,
     prepareForNew,

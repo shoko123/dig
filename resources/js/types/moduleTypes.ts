@@ -58,7 +58,7 @@ type TFieldsErrors<M extends TModule = TModule> = {
   [Key in keyof TFields<M>]: string | undefined
 }
 type TFieldsDefaultsAndRules<M extends TModule> = {
-  [Key in keyof TFields<M>]: { val: TFields<M>[Key]; rules: object }
+  [Key in keyof TFields<M>]: { d: TFields<M>[Key]; r: object }
 }
 
 type TApiFields = SwapDatesWithStrings<TFields>
