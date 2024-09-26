@@ -1,58 +1,70 @@
 <template>
   <v-container fluid class="pa-1 ma-0">
     <v-row wrap no-gutters>
-      <v-text-field v-model="nf.id" label="Name" :error-messages="nameErrors" class="mr-1" filled />
-      <v-select v-model="nf.specialist_description" label="Specialist Description" :items="areas" />
-      <v-text-field v-model="nf.id" label="Square" :error-messages="squareErrors" class="mr-1" filled />
-      <v-text-field v-model="nf.id" label="stratum" :error-messages="stratumErrors" class="mr-1" filled />
+      <template v-if="props.isCreate">
+        <!-- <id-selector></id-selector> -->
+      </template>
+      <template v-else>
+        <v-text-field v-model="nf.id" label="Label" class="mr-1" filled disabled />
+      </template>
+      <!-- <v-text-field v-model="nf.id" label="Name" :error-messages="errors.id" class="mr-1" readonly filled /> -->
+      <!-- <v-select v-model="nf.specialist_description" label="Specialist Description" :items="areas" /> -->
+      <v-text-field v-model="nf.id_year" label="Year" :error-messages="errors.id_year" class="mr-1" filled />
+      <v-text-field v-model="nf.id_object_no" label="Object No." :error-messages="errors.id_object_no" class="mr-1"
+        filled />
     </v-row>
-    <v-row v-if="currentItemFields"></v-row>
-    <slot :id="nf.id" name="newFields" :v="v" :new-fields="nf" />
+
+    <v-row wrap no-gutters>
+
+      <v-textarea v-model="nf.field_description" label="Field Description" :error-messages="errors.field_description"
+        class="mr-1" filled />
+
+      <v-textarea v-model="nf.specialist_description" label="Specialist Description"
+        :error-messages="errors.specialist_description" class="mr-1" filled />
+      <v-textarea v-model="nf.notes" label="Notes" :error-messages="errors.notes" class="mr-1" filled />
+
+    </v-row>
+    <!-- <v-row v-if="currentItemFields"></v-row> -->
+    <slot :id="nf.id" name="newItem" :v="v$" :new-fields="nf" />
   </v-container>
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import type { TFields } from '@/types/moduleTypes'
+import type { TFields, TFieldsErrors } from '@/types/moduleTypes'
 import { useVuelidate } from '@vuelidate/core'
 
-import { useItemStore } from '../../../scripts/stores/item'
+// import { useItemStore } from '../../../scripts/stores/item'
 import { useItemNewStore } from '../../../scripts/stores/itemNew'
 import { useCeramicStore } from '../../../scripts/stores/modules/Ceramic'
 
+const props = defineProps<{
+  isCreate: boolean
+}>()
 
-const { fields } = storeToRefs(useItemStore())
-const { rules } = storeToRefs(useCeramicStore())
-let { newFields, itemNewFieldsToOptionsObj } = storeToRefs(useItemNewStore())
+// const { fields } = storeToRefs(useItemStore())
+const { rulesObj } = storeToRefs(useCeramicStore())
+let { newFields } = storeToRefs(useItemNewStore())
+const v$ = useVuelidate(rulesObj.value, newFields.value, { $autoDirty: true })
 
 const nf = computed(() => {
   return newFields.value as TFields<'Ceramic'>
 })
 
-
-
-
-
-const currentItemFields = computed(() => {
-  return fields.value! as TFields<'Ceramic'>
+const errors = computed(() => {
+  let errorObj: Partial<TFieldsErrors<'Ceramic'>> = {}
+  for (const key in newFields.value) {
+    const message = v$.value[key].$errors.length > 0 ? v$.value[key].$errors[0].$message : undefined
+    errorObj[key as keyof TFieldsErrors<'Ceramic'>] = message
+  }
+  return errorObj
 })
 
-const v = useVuelidate(rules, newFields.value as TFields<'Ceramic'>)
 
-const nameErrors = computed(() => {
-  return <string>(v.value.name.$error ? v.value.name.$errors[0].$message : undefined)
-})
 
-const squareErrors = computed(() => {
-  return <string>(v.value.square.$error ? v.value.square.$errors[0].$message : undefined)
-})
+// const currentItemFields = computed(() => {
+//   return fields.value! as TFields<'Ceramic'>
+// })
 
-const stratumErrors = computed(() => {
-  return <string>(v.value.stratum.$error ? v.value.stratum.$errors[0].$message : undefined)
-})
-
-const areas = computed(() => {
-  return itemNewFieldsToOptionsObj.value['area']
-})
 </script>

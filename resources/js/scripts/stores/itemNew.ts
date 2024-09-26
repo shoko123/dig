@@ -51,7 +51,7 @@ export const useItemNewStore = defineStore('itemNew', () => {
 
     await store.prepareForNew(isCreate, ids)
     console.log(
-      `Stone.prepare(${isCreate ? 'Crt' : 'Updt'}), fields: ${JSON.stringify(newFields.value, null, 2)}`,
+      `ItemNew: ${module.value}.prepare(${isCreate ? 'Create' : 'Update'}), fields: ${JSON.stringify(newFields.value, null, 2)}`,
     )
 
     // v$.value = useVuelidate(rulesObj.value, newFields.value, { $autoDirty: true })

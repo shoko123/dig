@@ -31,24 +31,30 @@
     </v-row>
 
     <v-row wrap no-gutters>
-      <v-textarea v-model="nf.cataloger_description" label="Cataloger Description" class="mr-1" filled
-        :disabled="inOC" />
-      <v-textarea v-model="nf.conservation_notes" label="Conservation Notes" class="mr-1" filled :disabled="inOC" />
-      <v-textarea v-model="nf.dimension_notes" label="Dimension Notes" class="mr-1" filled :disabled="inOC" />
+      <v-textarea v-model="nf.cataloger_description" label="Cataloger Description"
+        :error-messages="errors.cataloger_description" class="mr-1" filled :disabled="inOC" />
+      <v-textarea v-model="nf.conservation_notes" label="Conservation Notes" :error-messages="errors.conservation_notes"
+        class="mr-1" filled :disabled="inOC" />
+      <v-textarea v-model="nf.dimension_notes" label="Dimension Notes" :error-messages="errors.dimension_notes"
+        class="mr-1" filled :disabled="inOC" />
     </v-row>
 
     <v-row wrap no-gutters>
-      <v-text-field v-model="nf.weight" label="Weight" class="mr-1" filled :disabled="inOC" />
-      <v-text-field v-model="nf.length" label="Length" class="mr-1" filled :disabled="inOC" />
-      <v-text-field v-model="nf.width" label="Width" class="mr-1" filled :disabled="inOC" />
-      <v-text-field v-model="nf.diameter" label="Diameter" class="mr-1" filled :disabled="inOC" />
+      <v-text-field v-model="nf.weight" label="Weight" :error-messages="errors.weight" class="mr-1" filled
+        :disabled="inOC" />
+      <v-text-field v-model="nf.length" label="Length" :error-messages="errors.length" class="mr-1" filled
+        :disabled="inOC" />
+      <v-text-field v-model="nf.width" label="Width" :error-messages="errors.width" class="mr-1" filled
+        :disabled="inOC" />
+      <v-text-field v-model="nf.diameter" label="Diameter" :error-messages="errors.diameter" class="mr-1" filled
+        :disabled="inOC" />
     </v-row>
 
     <v-row wrap no-gutters>
-      <v-text-field v-model="nf.cultural_period" label="Cataloger Assumed Period" class="mr-1" filled
-        :disabled="inOC" />
-      <v-date-input v-model="nf.excavation_date" label="Excavation Date" clearable :disabled="inOC" max-width="368"
-        @click:clear="clearDate('Excavation')"></v-date-input>
+      <v-text-field v-model="nf.cultural_period" label="Cataloger Assumed Period"
+        :error-messages="errors.cultural_period" class="mr-1" filled :disabled="inOC" />
+      <v-date-input v-model="nf.excavation_date" label="Excavation Date" :error-messages="errors.excavation_date"
+        clearable :disabled="inOC" max-width="368" @click:clear="clearDate('Excavation')"></v-date-input>
       <template v-if="inOC">
         <!-- <v-text-field v-model="catalogerInfo." label="Cataloger" class="mx-1" filled :disabled="inOC" /> -->
         <v-date-input v-model="nf.catalog_date" label="Catalog Date" clearable :disabled="inOC" max-width="368"

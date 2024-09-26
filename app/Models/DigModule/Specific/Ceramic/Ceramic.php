@@ -13,8 +13,8 @@ class Ceramic extends DigModuleModel
     static protected function specificRestrictedFields(): array
     {
         return [
-            'id_year' => [22, 23, 24],
-            'id_object_no' => [1, 2, 3, 4, 5, 6, 7,],
+            'id_year' => [20, 21, 22, 23, 24],
+            'id_object_no' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         ];
     }
 
@@ -31,7 +31,7 @@ class Ceramic extends DigModuleModel
     protected function derivedId(): Attribute
     {
         return Attribute::make(
-            get: fn(mixed $value, array $attributes) => $attributes['id_year'] . '.' . $attributes['id_aobject']
+            get: fn(mixed $value, array $attributes) => $attributes['id_year'] . '.' . $attributes['id_object_no']
         );
     }
 
