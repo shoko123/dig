@@ -54,6 +54,11 @@ type TBespokeFields<M extends TModule = TModule> = TAllByModule<M>['FD']
 type TFieldsRules<M extends TModule = TModule> = {
   [Key in keyof TFields<M>]: object
 }
+
+type TFieldsTexts<M extends TModule = TModule> = {
+  [Key in keyof TFields<M>]: string
+}
+
 type TFieldsErrors<M extends TModule = TModule> = {
   [Key in keyof TFields<M>]: string | undefined
 }
@@ -136,6 +141,7 @@ export {
   TApiFields,
   TFields,
   TBespokeFields,
+  TFieldsTexts,
   TFieldInfo,
   TFieldsRules,
   TFieldsErrors,

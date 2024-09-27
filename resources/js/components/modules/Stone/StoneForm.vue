@@ -15,7 +15,7 @@
       <v-text-field v-model="item.id" label="Label" class="mr-1" filled readonly />
       <v-text-field v-model="item.excavation_object_id" label="Excavation Object ID" class="mr-1" filled readonly />
       <v-text-field v-model="item.old_museum_id" label="Old Museum ID" class="mr-1" filled readonly />
-      <v-text-field v-model="excavation_date" label="Excavation Date" class="mr-1" filled readonly />
+      <v-text-field v-model="item.excavation_date" label="Excavation Date" class="mr-1" filled readonly />
     </v-row>
     <v-row wrap no-gutters>
       <v-textarea v-model="item.cataloger_description" label="Cataloger Description" class="mr-1" filled readonly />
@@ -33,11 +33,10 @@
       <v-text-field v-model="item.diameter" label="Diameter" class="mr-1" filled readonly />
     </v-row>
     <v-row wrap no-gutters>
-      <!-- <v-text-field v-model="excavation_date" label="Excavation Date" class="mr-1" filled readonly /> -->
-      <v-text-field v-model="cataloger" label="Cataloger" class="mr-1" filled readonly />
-      <v-text-field v-model="catalog_date" label="Catalog Date" class="mr-1" filled readonly />
+      <v-text-field v-model="item.cataloger_id" label="Cataloger" class="mr-1" filled readonly />
+      <v-text-field v-model="item.catalog_date" label="Catalog Date" class="mr-1" filled readonly />
       <v-text-field v-model="specialist" label="Specialist" class="mr-1" filled readonly />
-      <v-text-field v-model="specialist_date" label="Specialist Date" class="mr-1" filled readonly />
+      <v-text-field v-model="item.specialist_date" label="Specialist Date" class="mr-1" filled readonly />
     </v-row>
     <v-row wrap no-gutters>
     </v-row>
@@ -47,44 +46,21 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { TFields, TBespokeFields } from '@/types/moduleTypes'
+import { TFieldsTexts, } from '@/types/moduleTypes'
 import { useItemStore } from '../../../scripts/stores/item'
-import { dateStringFromDate } from '../../../scripts/utils/utils'
 
-
-
-let { fields, tag, itemFieldsToOptionsObj } = storeToRefs(useItemStore())
+let { tag, fieldsTexts } = storeToRefs(useItemStore())
 
 const item = computed(() => {
-  return <TFields<'Stone'>>fields.value
+  return <TFieldsTexts<'Stone'>>fieldsTexts.value
 })
 
 const inOC = computed(() => {
   return typeof item.value.uri === 'string'
 })
 
-const excavation_date = computed(() => {
-  return dateStringFromDate(<Date>item.value.excavation_date)
-})
-
-const catalog_date = computed(() => {
-  return dateStringFromDate(<Date>item.value.catalog_date)
-})
-
-const cvColumnsTyped = computed(() => {
-  return itemFieldsToOptionsObj.value as TBespokeFields<'Stone'>
-})
-
-const cataloger = computed(() => {
-  return cvColumnsTyped.value['cataloger_id']
-})
-
 const specialist = computed(() => {
   return 'Jennie Ebeling'
-})
-
-const specialist_date = computed(() => {
-  return dateStringFromDate(<Date>item.value.specialist_date)
 })
 
 function openContextTab() {

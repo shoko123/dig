@@ -1,4 +1,4 @@
-import type { TApiFields, TFields, TBespokeFields } from '@/types/moduleTypes'
+import type { TApiFields, TFields, TBespokeFields, TFieldsTexts } from '@/types/moduleTypes'
 import type { TApiItemShow, TApiTag } from '@/types/itemTypes'
 
 import { ref, computed } from 'vue'
@@ -9,14 +9,16 @@ import { useElementAndCollectionStore } from './collections/elementAndCollection
 import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
 import { useModuleStore } from './module'
-
+import { useTrioStore } from './trio/trio'
+import { dateStringFromDate } from '../../scripts/utils/utils'
 export const useItemStore = defineStore('item', () => {
   const { current } = storeToRefs(useRoutesMainStore())
   const { getCollectionStore, setCollectionArray } = useCollectionsStore()
   const { tagAndSlugFromId } = useModuleStore()
   const { module } = storeToRefs(useModuleStore())
   const { send } = useXhrStore()
-
+  const { getFieldsOptions, setItemAllOptions } = useTrioStore()
+  const { groupLabelToGroupKeyObj, trio } = storeToRefs(useTrioStore())
   const mcs = getCollectionStore('main')
   const fields = ref<TFields | undefined>(undefined)
   const slug = ref<string | undefined>(undefined)
@@ -51,9 +53,25 @@ export const useItemStore = defineStore('item', () => {
     }
   })
 
+  const fieldsTexts = computed(() => {
+    const fo = getFieldsOptions(fields.value!)
+    const tmp: Partial<TFieldsTexts> = {}
+    fo.forEach((x) => (tmp[x.fieldName as keyof TFields] = x.optionLabel))
+    for (const key in fields.value!) {
+      if (tmp[key as keyof TFields] === undefined) {
+        const val = fields.value[key as keyof TFields]
+        if (Object.prototype.toString.call(val) === '[object Date]') {
+          console.log(`field: ${key} is of type Date`)
+          tmp[key as keyof TFields] = dateStringFromDate(val as unknown as Date)
+        } else {
+          tmp[key as keyof TFields] = val
+        }
+      }
+    }
+    return tmp
+  })
+
   async function saveitemFieldsPlus<F extends TApiFields>(apiItem: TApiItemShow<F>) {
-    const { useTrioStore } = await import('./trio/trio')
-    const { getFieldsOptions, setItemAllOptions } = useTrioStore()
     // save media & related collections
     setCollectionArray('media', apiItem.media)
     setCollectionArray('related', apiItem.related)
@@ -74,7 +92,7 @@ export const useItemStore = defineStore('item', () => {
 
     //set item's fields and tags options keys
     const fieldsOptions = fd.map((x) => x.optionKey)
-    const tagOptions = await getSelectedTagOptions(apiItem.model_tags.concat(apiItem.global_tags))
+    const tagOptions = getSelectedTagOptions(apiItem.model_tags.concat(apiItem.global_tags))
     setItemAllOptions([...fieldsOptions, ...tagOptions])
   }
 
@@ -96,9 +114,7 @@ export const useItemStore = defineStore('item', () => {
     fields.value = Object.fromEntries(tmpMap.entries())
   }
 
-  async function getSelectedTagOptions(apiTags: TApiTag[]) {
-    const { useTrioStore } = await import('./trio/trio')
-    const { trio, groupLabelToGroupKeyObj } = storeToRefs(useTrioStore())
+  function getSelectedTagOptions(apiTags: TApiTag[]) {
     // console.log(`SaveItem - Add extrnal (module and global) tags`)
     const tagOptions: string[] = []
     for (const x of apiTags) {
@@ -178,5 +194,6 @@ export const useItemStore = defineStore('item', () => {
     saveitemFieldsPlus,
     itemRemove,
     itemFieldsToOptionsObj,
+    fieldsTexts,
   }
 })
