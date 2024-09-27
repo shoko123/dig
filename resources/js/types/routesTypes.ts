@@ -39,6 +39,7 @@ type TPlanAction =
   | 'item.prepareForMedia'
   | 'page.load' //load pageB1 according to current item
   | 'page.load1' //load pageB1 = 1
+  | 'trio.reset.indices'
 
 type TRouteInfo = {
   name: TPageName

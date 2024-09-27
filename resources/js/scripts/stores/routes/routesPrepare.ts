@@ -146,7 +146,10 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
         case 'item.prepareForCreate':
           await routesPrepareForNew(module, true)
+          break
 
+        case 'trio.reset.indices':
+          await trioResetIndices()
           break
 
         default:
@@ -156,6 +159,12 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     }
     //console.log(`PrepareForNewRoute() success after completing queue`)
     return { success: true, message: '' }
+  }
+
+  async function trioResetIndices() {
+    const { useTrioStore } = await import('../trio/trio')
+    const { resetCategoryAndGroupIndices } = useTrioStore()
+    resetCategoryAndGroupIndices()
   }
 
   async function loadModule(module: TModule): Promise<{ success: boolean; message: string }> {

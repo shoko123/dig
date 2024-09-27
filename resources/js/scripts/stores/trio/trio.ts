@@ -61,6 +61,7 @@ export const useTrioStore = defineStore('trio', () => {
         )
 
         if (index === -1) {
+          console.log(`getFieldsOptions() - Can't find value ${val} in ${group.label} field ${key}`)
           throw new Error(
             `getFieldsOptions() - Can't find value ${val} in ${group.label} field ${key}`,
           )
@@ -722,7 +723,6 @@ export const useTrioStore = defineStore('trio', () => {
     optionClicked,
     resetCategoryAndGroupIndices,
     getFieldsOptions,
-    categorizer,
     taggerAllOptions,
     filterAllOptions,
     clearTaggerOptions,

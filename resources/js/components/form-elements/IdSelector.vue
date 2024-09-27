@@ -5,7 +5,8 @@
     <v-dialog v-model="openIdSelectorModal" fullscreen>
         <v-container fluid>
             <v-card height="97vh">
-                <v-card-title class="bg-blue-lighten-1"> Id Selector Form for a new {{ current.module }}</v-card-title>
+                <v-card-title class="bg-grey text-black py-0 mb-4"> Id Selector Form for a new {{ current.module
+                    }}</v-card-title>
                 <v-card-text>
                     <v-row class="my-4">
                         <slot name='specific-id-selctor'>

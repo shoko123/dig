@@ -18,7 +18,6 @@ export const useItemNewStore = defineStore('itemNew', () => {
   const newFields = ref<Partial<TFields>>({})
   const slug = ref<string | undefined>(undefined)
   const tag = ref<string | undefined>(undefined)
-  const itemNewAllOptions = ref<string[]>([])
   const ready = ref<boolean>(false)
   const openIdSelectorModal = ref<boolean>(false)
   const store = getCollectionStore('main')
@@ -58,7 +57,6 @@ export const useItemNewStore = defineStore('itemNew', () => {
 
     const func = await getFuncFieldsOptions()
     const fd = func(newFields.value! as TFields)
-    itemNewAllOptions.value = fd.map((x) => x.optionKey)
 
     //build object [field_name] : fieldInfo
     const tmp = ref<Record<string, TFieldInfo>>({})
@@ -101,7 +99,6 @@ export const useItemNewStore = defineStore('itemNew', () => {
     slug.value = undefined
 
     tag.value = undefined
-    itemNewAllOptions.value = []
   }
 
   return {
@@ -112,7 +109,6 @@ export const useItemNewStore = defineStore('itemNew', () => {
     id,
     isCreate,
     isUpdate,
-    itemNewAllOptions,
     openIdSelectorModal,
     itemNewFieldsToOptionsObj,
     itemClear,

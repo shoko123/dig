@@ -58,6 +58,10 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
             }
 
           case 'filter':
+            return {
+              success: true,
+              data: ['trio.reset.indices'],
+            }
           case 'index':
             if (changed.module) {
               return {
@@ -178,7 +182,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
             return { success: true, data: ['item.load'] }
 
           case 'tag':
-            return { success: true, data: ['item.load'] }
+            return { success: true, data: ['trio.reset.indices', 'item.load'] }
 
           case 'media':
             return { success: true, data: [] }
