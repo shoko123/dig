@@ -140,12 +140,16 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           prepareForMedia()
           break
 
-        case 'item.prepareForUpdate':
-          await routesPrepareForNew(module, false)
-          break
-
-        case 'item.prepareForCreate':
-          await routesPrepareForNew(module, true)
+        case 'prepare.for.create':
+        case 'prepare.for.update':
+          {
+            n.showSpinner(`Loading ${module} ids...`)
+            const res = await prepareForNewItem(module, x === 'prepare.for.create')
+            n.showSpinner(false)
+            if (!res.success) {
+              return res
+            }
+          }
           break
 
         case 'trio.reset.indices':
@@ -292,23 +296,10 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     }
   }
 
-  async function routesPrepareForNew(module: TModule, isCreate: boolean) {
+  async function prepareForNewItem(module: TModule, isCreate: boolean) {
     const { useItemNewStore } = await import('../itemNew')
-    const { prepareForNew } = useItemNewStore()
-
-    console.log(`routesPrepareForNew()`)
-    if (isCreate) {
-      const res = await send<TArray<'main'>[]>('module/index', 'post', {
-        module,
-      })
-      if (res.success) {
-        await prepareForNew(true, res.data)
-      } else {
-        return { success: false, message: `Error: failed to load current ids` }
-      }
-    } else {
-      await prepareForNew(false)
-    }
+    const { prepareForNewItem } = useItemNewStore()
+    return await prepareForNewItem(module, isCreate)
   }
 
   function prepareForMedia(): void {

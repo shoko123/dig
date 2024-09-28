@@ -1,6 +1,6 @@
 <template>
     <slot v-bind="{ idInfo }">
-        <v-text-field v-model="idInfo.id" label="tag" @click="changeLabel" />
+        <v-btn v-model="idInfo.id" label="tag" class="my-5" @click="changeLabel">{{ idInfo.tag }}</v-btn>
     </slot>
     <v-dialog v-model="openIdSelectorModal" fullscreen>
         <v-container fluid>
@@ -29,7 +29,7 @@ const { id, openIdSelectorModal } = storeToRefs(useItemNewStore())
 // const { routerPush } = useRoutesMainStore()
 
 const idInfo = computed(() => {
-    return { id: id.value, tag: "Fake tag" }
+    return { id: id.value, tag: `${current.value.module} ${id.value}` }
 })
 
 // async function cancel() {

@@ -23,32 +23,40 @@
 <script lang="ts" setup>
 import { computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import type { TFields } from '@/types/moduleTypes'
-import { useCeramicStore } from '../../../scripts/stores/modules/Ceramic'
+import type { TFields, TFieldInfo } from '@/types/moduleTypes'
 import { useItemNewStore } from '../../../scripts/stores/itemNew'
 
 onMounted(() => {
   objNoSelected(1)
 })
-const { availableObjectNos } = useCeramicStore()
-const { openIdSelectorModal, newFields, itemNewFieldsToOptionsObj } = storeToRefs(useItemNewStore())
+
+const { openIdSelectorModal, newFields, /*itemNewFieldsToOptionsObj */ fieldsWithOptions } = storeToRefs(useItemNewStore())
 
 const nf = computed(() => {
   return newFields.value as TFields<'Ceramic'>
 })
 
+const ceramicFieldsWithOptions = computed(() => {
+  return fieldsWithOptions.value as Partial<Record<keyof TFields<'Ceramic'>, TFieldInfo>> //TFields<'Ceramic'>
+})
+
+const availableObjectNos = computed(() => {
+  return [1, 2, 3, 4, 5, 6, 7, 8, 9]
+})
+
 const yearInfo = computed(() => {
-  return itemNewFieldsToOptionsObj.value['id_year']!
+  return ceramicFieldsWithOptions.value['id_year']!
 })
 
 function accept() {
+  nf.value.id = `${nf.value.id_year}.${nf.value.id_object_no}`
   openIdSelectorModal.value = false
   console.log(`id accepted: ${newFields.value.id}`)
 }
 
 function yearSelected(selected: number) {
   console.log(`yearSelected(${selected})`)
-  nf.value.id_object_no = availableObjectNos[0]!
+  nf.value.id_object_no = availableObjectNos.value[0]!
   nf.value.id = `${nf.value.id_year}.${nf.value.id_object_no}`
 }
 

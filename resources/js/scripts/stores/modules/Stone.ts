@@ -57,7 +57,7 @@ export const useStoneStore = defineStore('stone', () => {
 
   const { fields } = storeToRefs(useItemStore())
 
-  async function prepareForNew(isCreate: boolean, ids?: string[]) {
+  async function prepareForNew(isCreate: boolean) {
     const { useItemNewStore } = await import('../../../scripts/stores/itemNew')
     const { newFields, openIdSelectorModal } = storeToRefs(useItemNewStore())
     console.log(
@@ -65,7 +65,6 @@ export const useStoneStore = defineStore('stone', () => {
     )
     let newStone: Partial<TFields<'Stone'>> = {}
     if (isCreate) {
-      currentIds.value = ids!
       newStone = { ...defaultsObj.value }
       newStone.id = 'B2024.1.' + availableItemNumbers.value[0]
       newStone.id_year = 24

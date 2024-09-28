@@ -1,12 +1,14 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type { TApiFields, TFields, TFieldInfo } from '@/types/moduleTypes'
+import type { TModule, TApiFields, TFields, TFieldInfo } from '@/types/moduleTypes'
 import type { TApiItemShow } from '@/types/itemTypes'
+import type { TArray } from '@/types/collectionTypes'
 // import { type Validation } from '@vuelidate/core'
 import { useCollectionsStore } from './collections/collections'
 import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
 import { useModuleStore } from './module'
+import { useTrioStore } from './trio/trio'
 
 export const useItemNewStore = defineStore('itemNew', () => {
   const { current } = storeToRefs(useRoutesMainStore())
@@ -14,7 +16,9 @@ export const useItemNewStore = defineStore('itemNew', () => {
   const { tagAndSlugFromId, getStore } = useModuleStore()
   const { send } = useXhrStore()
   const { getCollectionStore } = useCollectionsStore()
+  const { getFieldsOptions } = useTrioStore()
 
+  const currentIds = ref<string[]>([])
   const newFields = ref<Partial<TFields>>({})
   const slug = ref<string | undefined>(undefined)
   const tag = ref<string | undefined>(undefined)
@@ -37,31 +41,36 @@ export const useItemNewStore = defineStore('itemNew', () => {
     return newFields.value!.id
   })
 
-  async function getFuncFieldsOptions() {
-    const { useTrioStore } = await import('./trio/trio')
-    const trio = useTrioStore()
-    return trio.getFieldsOptions
-  }
+  const fieldsWithOptions = computed(() => {
+    if (Object.keys(newFields.value).length === 0) {
+      return {}
+    }
+
+    const fo = getFieldsOptions(newFields.value as TFields)
+    const tmp: Partial<Record<keyof TFields, TFieldInfo>> = {}
+    fo.forEach((x) => (tmp[x.fieldName as keyof TFields] = x))
+    return tmp as Partial<Record<keyof TFields, TFieldInfo>>
+  })
 
   const itemNewFieldsToOptionsObj = ref<Record<string, TFieldInfo>>({})
 
-  async function prepareForNew(isCreate: boolean, ids?: string[]) {
-    const store = await getStore(module.value)
+  async function prepareForNewItem(
+    module: TModule,
+    isCreate: boolean,
+  ): Promise<{ success: true } | { success: false; message: string }> {
+    const res = await send<TArray<'main'>[]>('module/index', 'post', {
+      module,
+    })
 
-    await store.prepareForNew(isCreate, ids)
-    console.log(
-      `ItemNew: ${module.value}.prepare(${isCreate ? 'Create' : 'Update'}), fields: ${JSON.stringify(newFields.value, null, 2)}`,
-    )
-
-    // v$.value = useVuelidate(rulesObj.value, newFields.value, { $autoDirty: true })
-
-    const func = await getFuncFieldsOptions()
-    const fd = func(newFields.value! as TFields)
-
-    //build object [field_name] : fieldInfo
-    const tmp = ref<Record<string, TFieldInfo>>({})
-    fd.forEach((x) => (tmp.value[x.fieldName] = x))
-    itemNewFieldsToOptionsObj.value = tmp.value
+    if (isCreate) {
+      if (res.success) {
+        currentIds.value = res.data
+        console.log(`prepareForNew: ${currentIds.value}`)
+      } else {
+        return { success: false, message: `Error: failed to load current ids` }
+      }
+    }
+    return { success: true }
   }
 
   async function beforeStore(newFields: Partial<TFields>) {
@@ -95,24 +104,26 @@ export const useItemNewStore = defineStore('itemNew', () => {
     return { success: true, slug: tagAndSlug.slug }
   }
 
-  function itemClear() {
+  function itemNewClear() {
     slug.value = undefined
 
     tag.value = undefined
   }
 
   return {
+    currentIds,
+    newFields,
     slug,
     tag,
     ready,
-    newFields,
     id,
     isCreate,
     isUpdate,
     openIdSelectorModal,
     itemNewFieldsToOptionsObj,
-    itemClear,
-    prepareForNew,
+    prepareForNewItem,
+    fieldsWithOptions,
+    itemNewClear,
     beforeStore,
     upload,
   }

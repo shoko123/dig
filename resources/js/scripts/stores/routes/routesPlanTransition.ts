@@ -194,14 +194,14 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
       case 'create':
         switch (from.name) {
           case 'show':
-            return { success: true, data: ['item.prepareForCreate'] }
+            return { success: true, data: ['prepare.for.create'] }
           default:
             return { success: false, message: 'Error: Bad transition.' }
         }
       case 'update':
         switch (from.name) {
           case 'show':
-            return { success: true, data: ['item.prepareForUpdate'] }
+            return { success: true, data: ['prepare.for.update'] }
           default:
             return { success: false, message: 'Error: Bad transition.' }
         }

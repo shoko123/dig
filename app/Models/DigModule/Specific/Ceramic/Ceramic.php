@@ -14,7 +14,7 @@ class Ceramic extends DigModuleModel
     {
         return [
             'id_year' => [20, 21, 22, 23, 24],
-            'id_object_no' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            'id_object_no' => [1, 2, 3, 4, 5, 6, 7, 8, 9],
         ];
     }
 

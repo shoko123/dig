@@ -33,8 +33,8 @@ type TPlanAction =
   | 'item.load'
   | 'item.setIndexInCollection'
   | 'item.clear'
-  | 'item.prepareForCreate'
-  | 'item.prepareForUpdate'
+  | 'prepare.for.create'
+  | 'prepare.for.update'
   | 'item.prepareForTag'
   | 'item.prepareForMedia'
   | 'page.load' //load pageB1 according to current item

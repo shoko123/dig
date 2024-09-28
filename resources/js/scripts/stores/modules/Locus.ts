@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { TFields, TObjCategorizerByFieldName, TFieldsDefaultsAndRules } from '@/types/moduleTypes'
 import { useItemStore } from '../../../scripts/stores/item'
@@ -19,15 +19,13 @@ export const useLocusStore = defineStore('locus', () => {
 
   const { fields } = storeToRefs(useItemStore())
   const categorizer: TObjCategorizerByFieldName<'Locus'> = {}
-  const currentIds = ref<string[]>([])
 
-  async function prepareForNew(isCreate: boolean, ids?: string[]) {
+  async function prepareForNew(isCreate: boolean) {
     const { useItemNewStore } = await import('../../../scripts/stores/itemNew')
     const { newFields, openIdSelectorModal } = storeToRefs(useItemNewStore())
     Object.assign(newFields.value, fields.value as TFields<'Stone'>)
 
     if (isCreate) {
-      currentIds.value = ids!
       openIdSelectorModal.value = true
     }
   }
