@@ -1,51 +1,8 @@
-import { ref, computed } from 'vue'
-import { defineStore, storeToRefs } from 'pinia'
-import { required, between, maxLength } from '@vuelidate/validators'
-import { TFields, TObjCategorizerByFieldName, TFieldsDefaultsAndRules } from '@/types/moduleTypes'
-import { useItemStore } from '../../../scripts/stores/item'
+import { computed } from 'vue'
+import { defineStore } from 'pinia'
+import { TFields, TObjCategorizerByFieldName } from '@/types/moduleTypes'
 
 export const useStoneStore = defineStore('stone', () => {
-  const defaultsAndRules: TFieldsDefaultsAndRules<'Stone'> = {
-    id: { d: '', r: { required, maxLength: maxLength(20) } },
-    id_year: { d: 1, r: { required, between: between(1, 999) } },
-    id_access_no: { d: 1, r: { required, between: between(1, 999) } },
-    id_object_no: { d: 1, r: { between: between(1, 999) } },
-    square: { d: '', r: { maxLength: maxLength(50) } },
-    context: { d: '', r: { maxLength: maxLength(50) } },
-    excavation_date: { d: null, r: {} },
-    occupation_level: { d: '', r: { maxLength: maxLength(10) } },
-    cataloger_material: { d: '', r: { maxLength: maxLength(50) } },
-    whole: { d: false, r: {} },
-    cataloger_typology: { d: '', r: { maxLength: maxLength(50) } },
-    cataloger_description: { d: '', r: { maxLength: maxLength(350) } },
-    conservation_notes: { d: '', r: { maxLength: maxLength(250) } },
-    weight: { d: '', r: { maxLength: maxLength(50) } },
-    length: { d: '', r: { maxLength: maxLength(50) } },
-    width: { d: '', r: { maxLength: maxLength(50) } },
-    height: { d: '', r: { maxLength: maxLength(50) } },
-    diameter: { d: '', r: { maxLength: maxLength(50) } },
-    dimension_notes: { d: '', r: { maxLength: maxLength(250) } },
-    cultural_period: { d: '', r: { maxLength: maxLength(50) } },
-    excavation_object_id: { d: '', r: { maxLength: maxLength(50) } },
-    old_museum_id: { d: '', r: { maxLength: maxLength(50) } },
-    cataloger_id: { d: 1, r: { between: between(1, 2559) } },
-    catalog_date: { d: null, r: {} },
-    specialist_description: { d: '', r: { maxLength: maxLength(250) } },
-    specialist_date: { d: null, r: {} },
-    thumbnail: { d: '', r: { maxLength: maxLength(150) } },
-    uri: { d: '', r: { maxLength: maxLength(100) } },
-    base_type_id: { d: 1, r: { between: between(1, 255) } },
-    material_id: { d: 1, r: { between: between(1, 255) } },
-  }
-
-  const defaultsObj = computed(() => {
-    return Object.fromEntries(Object.entries(defaultsAndRules).map(([k, v]) => [k, v.d]))
-  })
-
-  const rulesObj = computed(() => {
-    return Object.fromEntries(Object.entries(defaultsAndRules).map(([k, v]) => [k, v.r]))
-  })
-
   const categorizer = computed<TObjCategorizerByFieldName<'Stone'>>(() => {
     return {
       old_museum_id: (val) => {
@@ -53,50 +10,6 @@ export const useStoneStore = defineStore('stone', () => {
         return val === null || (typeof val === 'string' && val.length === 0) ? 1 : 0
       },
     }
-  })
-
-  const { fields } = storeToRefs(useItemStore())
-
-  async function prepareForNew(isCreate: boolean) {
-    const { useItemNewStore } = await import('../../../scripts/stores/itemNew')
-    const { newFields, openIdSelectorModal } = storeToRefs(useItemNewStore())
-    console.log(
-      `prepNew(Stone) create(${isCreate}) fields: ${JSON.stringify(fields.value, null, 2)}`,
-    )
-    let newStone: Partial<TFields<'Stone'>> = {}
-    if (isCreate) {
-      newStone = { ...defaultsObj.value }
-      newStone.id = 'B2024.1.' + availableItemNumbers.value[0]
-      newStone.id_year = 24
-      newStone.id_access_no = 1
-      newStone.id_object_no = availableItemNumbers.value[0]!
-      console.log(`isCreate. current ids: ${currentIds.value}`)
-      openIdSelectorModal.value = true
-    } else {
-      newStone = { ...fields.value }
-    }
-    newFields.value = { ...newStone }
-  }
-
-  //new id selection
-  const currentIds = ref<string[]>([])
-
-  const availableItemNumbers = computed(() => {
-    const itemNos = currentIds.value
-      .filter((x) => {
-        const sections = x.split('.')
-        return sections[0] === 'B2024'
-      })
-      .map((x) => {
-        const sections = x.split('.')
-        return parseInt(sections[2]!)
-      })
-
-    const all = [...Array(200).keys()].map((i) => i + 1)
-
-    return all.filter((x) => {
-      return !itemNos.includes(x)
-    })
   })
 
   function beforeStore(formFields: Partial<TFields>, isCreate: boolean): Partial<TFields> {
@@ -138,11 +51,7 @@ export const useStoneStore = defineStore('stone', () => {
 
   return {
     mainTableHeaders,
-    currentIds,
-    availableItemNumbers,
     categorizer,
-    prepareForNew,
     beforeStore,
-    rulesObj,
   }
 })

@@ -30,7 +30,7 @@ onMounted(() => {
   objNoSelected(1)
 })
 
-const { openIdSelectorModal, newFields, /*itemNewFieldsToOptionsObj */ fieldsWithOptions } = storeToRefs(useItemNewStore())
+const { openIdSelectorModal, newFields, fieldsWithOptions } = storeToRefs(useItemNewStore())
 
 const nf = computed(() => {
   return newFields.value as TFields<'Ceramic'>

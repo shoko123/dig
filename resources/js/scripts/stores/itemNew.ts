@@ -52,20 +52,17 @@ export const useItemNewStore = defineStore('itemNew', () => {
     return tmp as Partial<Record<keyof TFields, TFieldInfo>>
   })
 
-  const itemNewFieldsToOptionsObj = ref<Record<string, TFieldInfo>>({})
-
   async function prepareForNewItem(
     module: TModule,
     isCreate: boolean,
   ): Promise<{ success: true } | { success: false; message: string }> {
-    const res = await send<TArray<'main'>[]>('module/index', 'post', {
-      module,
-    })
-
     if (isCreate) {
+      const res = await send<TArray<'main'>[]>('module/index', 'post', {
+        module,
+      })
       if (res.success) {
         currentIds.value = res.data
-        console.log(`prepareForNew: ${currentIds.value}`)
+        console.log(`prepareForCreate. Current ids: ${currentIds.value}`)
       } else {
         return { success: false, message: `Error: failed to load current ids` }
       }
@@ -120,7 +117,6 @@ export const useItemNewStore = defineStore('itemNew', () => {
     isCreate,
     isUpdate,
     openIdSelectorModal,
-    itemNewFieldsToOptionsObj,
     prepareForNewItem,
     fieldsWithOptions,
     itemNewClear,

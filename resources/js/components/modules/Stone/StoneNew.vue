@@ -74,25 +74,87 @@
 </template>
 
 <script lang="ts" setup>
-import { TFields, TFieldsErrors } from '@/types/moduleTypes'
+import { TFields, TFieldsErrors, TFieldInfo, TFieldsDefaultsAndRules } from '@/types/moduleTypes'
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useVuelidate } from '@vuelidate/core'
+import { required, between, maxLength } from '@vuelidate/validators'
 import { VDateInput } from 'vuetify/labs/VDateInput'
-import { useStoneStore } from '../../../scripts/stores/modules/Stone'
+import { useItemStore } from '../../../scripts/stores/item'
 import { useItemNewStore } from '../../../scripts/stores/itemNew'
 import IdSelector from '../../form-elements/IdSelector.vue'
 import StoneIdSelector from './StoneIdSelector.vue'
+
 const props = defineProps<{
   isCreate: boolean
 }>()
 
-const { rulesObj } = storeToRefs(useStoneStore())
-const { itemNewFieldsToOptionsObj, newFields } = storeToRefs(useItemNewStore())
-const v$ = useVuelidate(rulesObj.value, newFields.value, { $autoDirty: true })
+const defaultsAndRules: TFieldsDefaultsAndRules<'Stone'> = {
+  id: { d: '', r: { required, maxLength: maxLength(20) } },
+  id_year: { d: 1, r: { required, between: between(1, 999) } },
+  id_access_no: { d: 1, r: { required, between: between(1, 999) } },
+  id_object_no: { d: 1, r: { between: between(1, 999) } },
+  square: { d: '', r: { maxLength: maxLength(50) } },
+  context: { d: '', r: { maxLength: maxLength(50) } },
+  excavation_date: { d: null, r: {} },
+  occupation_level: { d: '', r: { maxLength: maxLength(10) } },
+  cataloger_material: { d: '', r: { maxLength: maxLength(50) } },
+  whole: { d: false, r: {} },
+  cataloger_typology: { d: '', r: { maxLength: maxLength(50) } },
+  cataloger_description: { d: '', r: { maxLength: maxLength(350) } },
+  conservation_notes: { d: '', r: { maxLength: maxLength(250) } },
+  weight: { d: '', r: { maxLength: maxLength(50) } },
+  length: { d: '', r: { maxLength: maxLength(50) } },
+  width: { d: '', r: { maxLength: maxLength(50) } },
+  height: { d: '', r: { maxLength: maxLength(50) } },
+  diameter: { d: '', r: { maxLength: maxLength(50) } },
+  dimension_notes: { d: '', r: { maxLength: maxLength(250) } },
+  cultural_period: { d: '', r: { maxLength: maxLength(50) } },
+  excavation_object_id: { d: '', r: { maxLength: maxLength(50) } },
+  old_museum_id: { d: '', r: { maxLength: maxLength(50) } },
+  cataloger_id: { d: 1, r: { between: between(1, 2559) } },
+  catalog_date: { d: null, r: {} },
+  specialist_description: { d: '', r: { maxLength: maxLength(250) } },
+  specialist_date: { d: null, r: {} },
+  thumbnail: { d: '', r: { maxLength: maxLength(150) } },
+  uri: { d: '', r: { maxLength: maxLength(100) } },
+  base_type_id: { d: 1, r: { between: between(1, 255) } },
+  material_id: { d: 1, r: { between: between(1, 255) } },
+}
+
+const defaultsObj = computed(() => {
+  return Object.fromEntries(Object.entries(defaultsAndRules).map(([k, v]) => [k, v.d]))
+})
+
+const rulesObj = computed(() => {
+  return Object.fromEntries(Object.entries(defaultsAndRules).map(([k, v]) => [k, v.r]))
+})
+
+const { fields } = storeToRefs(useItemStore())
+const { newFields, openIdSelectorModal, fieldsWithOptions } = storeToRefs(useItemNewStore())
+
+// setup
+let newStone: Partial<TFields<'Ceramic'>> = {}
+if (props.isCreate) {
+  newStone = { ...defaultsObj.value }
+  openIdSelectorModal.value = true
+} else {
+  newStone = { ...fields.value }
+}
+newFields.value = { ...newStone }
+
+console.log(
+  `Ceramic(${props.isCreate ? 'Create' : 'Update'}) fields: ${JSON.stringify(fields.value, null, 2)}`,
+)
+
+const v$ = useVuelidate(rulesObj.value, newFields.value as TFields<'Ceramic'>, { $autoDirty: true })
 
 const nf = computed(() => {
   return newFields.value as TFields<'Stone'>
+})
+
+const stoneFieldsWithOptions = computed(() => {
+  return fieldsWithOptions.value as Partial<Record<keyof TFields<'Stone'>, TFieldInfo>> //TFields<'Ceramic'>
 })
 
 const inOC = computed(() => {//in open context
@@ -109,15 +171,15 @@ const errors = computed(() => {
 })
 
 const catalogerInfo = computed(() => {
-  return itemNewFieldsToOptionsObj.value['cataloger_id']!
+  return stoneFieldsWithOptions.value['cataloger_id']!
 })
 
 const materialInfo = computed(() => {
-  return itemNewFieldsToOptionsObj.value['material_id']!
+  return stoneFieldsWithOptions.value['material_id']!
 })
 
 const typologyInfo = computed(() => {
-  return itemNewFieldsToOptionsObj.value['base_type_id']!
+  return stoneFieldsWithOptions.value['base_type_id']!
 })
 
 function clearDate(field: string) {

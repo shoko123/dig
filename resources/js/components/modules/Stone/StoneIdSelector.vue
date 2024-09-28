@@ -6,7 +6,7 @@
         from list below:
       </v-row>
       <v-row wrap>
-        <v-chip v-for="(item, index) in availableItemNumbers" :key="index" class="font-weight-normal ma-2 body-1"
+        <v-chip v-for="(item, index) in availableObjectNos" :key="index" class="font-weight-normal ma-2 body-1"
           @click="selected(item)">
           {{ item }}
         </v-chip>
@@ -23,22 +23,42 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import type { TFields } from '@/types/moduleTypes'
-import { useStoneStore } from '../../../scripts/stores/modules/Stone'
-import { useItemNewStore } from '../../../scripts/stores/itemNew'
-const { availableItemNumbers } = storeToRefs(useStoneStore())
 
-const { openIdSelectorModal, newFields } = storeToRefs(useItemNewStore())
+import { useItemNewStore } from '../../../scripts/stores/itemNew'
+
+const { openIdSelectorModal, newFields, currentIds } = storeToRefs(useItemNewStore())
 
 const nf = computed(() => {
   return newFields.value as TFields<'Stone'>
 })
 
-function selected(item_no: number) {
-  console.log(`Item selected: ${item_no}`)
-  newFields.value.id = 'B2024.1.' + item_no
+const availableObjectNos = computed(() => {
+  const itemNos = currentIds.value
+    .filter((x) => {
+      const sections = x.split('.')
+      return sections[0] === 'B2024'
+    })
+    .map((x) => {
+      const sections = x.split('.')
+      return parseInt(sections[2]!)
+    })
 
-  nf.value.id_object_no = item_no
-  openIdSelectorModal.value = false
+  const all = [...Array(200).keys()].map((i) => i + 1)
+
+  return all.filter((x) => {
+    return !itemNos.includes(x)
+  })
+})
+
+//set default selection
+selected(availableObjectNos.value[0]!)
+
+function selected(objectNo: number) {
+  console.log(`Item selected: ${objectNo}`)
+  nf.value.id = 'B2024.1.' + objectNo
+  nf.value.id_year = 24
+  nf.value.id_access_no = 1
+  nf.value.id_object_no = objectNo
 }
 
 function accept() {
