@@ -72,7 +72,7 @@ export const useItemNewStore = defineStore('itemNew', () => {
 
   async function beforeStore(newFields: Partial<TFields>) {
     const store = await getStore(module.value)
-    return store.beforeStore(newFields, isCreate.value)
+    return store.beforeStoreSpecific(newFields, isCreate.value)
   }
 
   async function upload(

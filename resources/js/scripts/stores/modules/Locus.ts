@@ -1,7 +1,6 @@
 import { computed } from 'vue'
-import { defineStore, storeToRefs } from 'pinia'
+import { defineStore } from 'pinia'
 import { TFields, TObjCategorizerByFieldName, TFieldsDefaultsAndRules } from '@/types/moduleTypes'
-import { useItemStore } from '../../../scripts/stores/item'
 
 export const useLocusStore = defineStore('locus', () => {
   const defaultsAndRules: TFieldsDefaultsAndRules<'Locus'> = {
@@ -17,25 +16,11 @@ export const useLocusStore = defineStore('locus', () => {
     updated_date: { d: '4', r: {} },
   }
 
-  const { fields } = storeToRefs(useItemStore())
   const categorizer: TObjCategorizerByFieldName<'Locus'> = {}
 
-  async function prepareForNew(isCreate: boolean) {
-    const { useItemNewStore } = await import('../../../scripts/stores/itemNew')
-    const { newFields, openIdSelectorModal } = storeToRefs(useItemNewStore())
-    Object.assign(newFields.value, fields.value as TFields<'Stone'>)
-
-    if (isCreate) {
-      openIdSelectorModal.value = true
-    }
-  }
-
-  function beforeStore(formFields: Partial<TFields>, isCreate: boolean): Partial<TFields> {
-    //console.log(`ceramic.beforStore() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
-    if (isCreate) {
-      //
-    }
-    return formFields
+  // eslint-disable-next-line
+  function beforeStoreSpecific(fieldsNew: Partial<TFields>, isCreate: boolean): Partial<TFields> {
+    return fieldsNew
   }
 
   const mainTableHeaders = computed(() => {
@@ -49,8 +34,7 @@ export const useLocusStore = defineStore('locus', () => {
 
   return {
     mainTableHeaders,
-    prepareForNew,
-    beforeStore,
+    beforeStoreSpecific,
     categorizer,
     defaultsAndRules,
   }

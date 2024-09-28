@@ -12,12 +12,9 @@ export const useStoneStore = defineStore('stone', () => {
     }
   })
 
-  function beforeStore(formFields: Partial<TFields>, isCreate: boolean): Partial<TFields> {
-    //console.log(`stone.beforStore() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
-    // const { useItemNewStore } = await import('../../../scripts/stores/itemNew')
-    // const { newFields } = storeToRefs(useItemNewStore())
-
-    const newStone = formFields as TFields<'Stone'>
+  // eslint-disable-next-line
+  function beforeStoreSpecific(fieldsNew: Partial<TFields>, isCreate: boolean): Partial<TFields> {
+    const newStone = fieldsNew as TFields<'Stone'>
     if (typeof newStone.uri === 'string' && newStone.uri.length > 0) {
       return {
         id: newStone.id,
@@ -32,9 +29,6 @@ export const useStoneStore = defineStore('stone', () => {
       Object.assign(fieldsToSend, newStone)
       fieldsToSend.specialist_date = new Date()
       fieldsToSend.catalog_date = new Date()
-      if (isCreate) {
-        // do something e.g. fieldsToSend.cataloger_id = 10
-      }
       return fieldsToSend
     }
   }
@@ -52,6 +46,6 @@ export const useStoneStore = defineStore('stone', () => {
   return {
     mainTableHeaders,
     categorizer,
-    beforeStore,
+    beforeStoreSpecific,
   }
 })

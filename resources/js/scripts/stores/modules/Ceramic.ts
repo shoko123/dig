@@ -5,12 +5,9 @@ import { TFields, TObjCategorizerByFieldName } from '@/types/moduleTypes'
 export const useCeramicStore = defineStore('ceramic', () => {
   const categorizer: TObjCategorizerByFieldName<'Ceramic'> = {}
 
-  function beforeStore(formFields: Partial<TFields>, isCreate: boolean): Partial<TFields> {
-    //console.log(`ceramic.beforStore() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
-    if (isCreate) {
-      //
-    }
-    return formFields
+  // eslint-disable-next-line
+  function beforeStoreSpecific(fieldsNew: Partial<TFields>, isCreate: boolean): Partial<TFields> {
+    return fieldsNew
   }
 
   const mainTableHeaders = computed(() => {
@@ -24,7 +21,7 @@ export const useCeramicStore = defineStore('ceramic', () => {
 
   return {
     mainTableHeaders,
-    beforeStore,
+    beforeStoreSpecific,
     categorizer,
   }
 })
