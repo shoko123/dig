@@ -36,27 +36,30 @@ class CeramicValidationRules extends ValidationRules
         return [];
     }
 
-    public function create_rules(): array
+    public function commonRules()
     {
-        $id_year_rule = 'required|numeric|in:' . implode(',', Ceramic::allowedValues('id_year'));
-        $id_object_no_rule = 'required|numeric|in:' . implode(',', Ceramic::allowedValues('id_object_no'));
         return [
-            'fields.id' => 'required|max:50',
-            'fields.id_year' => $id_year_rule,
-            'fields.id_object_no' => $id_object_no_rule,
             'fields.field_description' => 'max:200',
             'fields.specialist_description' => 'max:200',
             'fields.notes' => 'max:200',
         ];
     }
 
+    public function create_rules(): array
+    {
+        return collect($this->commonRules())
+            ->merge([
+                'fields.id' => 'required|unique:ceramics,id|max:20',
+                'fields.id_year' => 'required|numeric|in:' . implode(',', Ceramic::allowedValues('id_year')),
+                'fields.id_object_no' => 'required|numeric|in:' . implode(',', Ceramic::allowedValues('id_object_no'))
+            ])
+            ->toArray();
+    }
+
     public function update_rules(): array
     {
-        return [
-            'fields.id' => 'required|exists:ceramics,id',
-            'fields.field_description' => 'max:200',
-            'fields.specialist_description' => 'max:200',
-            'fields.notes' => 'max:200',
-        ];
+        return  collect($this->commonRules())
+            ->merge(['fields.id' => 'required|exists:ceramics,id|max:20'])
+            ->toArray();
     }
 }
