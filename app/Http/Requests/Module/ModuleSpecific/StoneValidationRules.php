@@ -36,16 +36,9 @@ class StoneValidationRules extends ValidationRules
         return ['base_type_id', 'material_id', 'cataloger_id', 'whole'];
     }
 
-    public function create_rules(): array
+    public function commonRules()
     {
-        $id_year_rule = 'required|numeric|in:' . implode(',', Stone::allowedValues('id_year'));
-        $id_access_no_rule = 'required|numeric|in:' . implode(',', Stone::allowedValues('id_access_no'));
-
         return [
-            'fields.id' => 'max:250',
-            'fields.id_year' => $id_year_rule,
-            'fields.id_access_no' => $id_access_no_rule,
-            'fields.id_object_no' => 'required|numeric|between:1,9999',
             'fields.square' => 'max:50',
             'fields.context' => 'max:50',
             'fields.excavation_date' => 'date|nullable',
@@ -74,8 +67,22 @@ class StoneValidationRules extends ValidationRules
         ];
     }
 
+    public function create_rules(): array
+    {
+        return collect($this->commonRules())
+            ->merge([
+                'fields.id' => 'required|unique:stones,id|max:15',
+                'fields.id_year' => 'required|numeric|in:' . implode(',', Stone::allowedValues('id_year')),
+                'fields.id_access_no' => 'required|numeric|in:' . implode(',', Stone::allowedValues('id_access_no')),
+                'fields.id_object_no' => 'required|numeric|between:1,255',
+            ])
+            ->toArray();
+    }
+
     public function update_rules(): array
     {
-        return $this->create_rules();
+        return  collect($this->commonRules())
+            ->merge(['fields.id' => 'required|exists:stones,id|max:15'])
+            ->toArray();
     }
 }

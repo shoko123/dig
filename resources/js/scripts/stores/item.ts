@@ -52,6 +52,10 @@ export const useItemStore = defineStore('item', () => {
   })
 
   const fieldsTexts = computed(() => {
+    if (Object.keys(fields.value).length === 0) {
+      return {}
+    }
+
     const fo = getFieldsOptions(fields.value as TFields)
     const tmp: Partial<TFieldsTexts> = {}
     fo.forEach((x) => (tmp[x.fieldName as keyof TFields] = x.optionLabel))
