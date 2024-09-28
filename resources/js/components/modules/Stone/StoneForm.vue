@@ -56,7 +56,7 @@ const item = computed(() => {
 })
 
 const inOC = computed(() => {
-  return typeof item.value.uri === 'string'
+  return typeof item.value.uri === 'string' && item.value.uri.length > 0
 })
 
 const specialist = computed(() => {

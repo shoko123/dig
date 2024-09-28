@@ -282,7 +282,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     //console.log(`prepare.setItemIndexInCollectionMain()`)
     const { indexByArrayElement } = useElementAndCollectionStore()
 
-    const itemIndex = indexByArrayElement('main', i.fields!.id)
+    const itemIndex = indexByArrayElement('main', i.fields.id!)
     if (itemIndex === -1) {
       i.itemIndex = -1
       return false

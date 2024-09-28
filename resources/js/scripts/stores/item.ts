@@ -1,4 +1,4 @@
-import type { TApiFields, TFields, TBespokeFields, TFieldsTexts } from '@/types/moduleTypes'
+import type { TApiFields, TFields, TFieldsTexts } from '@/types/moduleTypes'
 import type { TApiItemShow, TApiTag } from '@/types/itemTypes'
 
 import { ref, computed } from 'vue'
@@ -20,20 +20,18 @@ export const useItemStore = defineStore('item', () => {
   const { getFieldsOptions, setItemAllOptions } = useTrioStore()
   const { groupLabelToGroupKeyObj, trio } = storeToRefs(useTrioStore())
   const mcs = getCollectionStore('main')
-  const fields = ref<TFields | undefined>(undefined)
-  const slug = ref<string | undefined>(undefined)
-  const tag = ref<string | undefined>(undefined)
-  const short = ref<string | undefined>(undefined)
+  const fields = ref<Partial<TFields>>({})
+  const slug = ref<string>('')
+  const tag = ref<string>('')
+  const short = ref<string>('')
 
   const ready = ref<boolean>(false)
   const itemViews = ref<string[]>([])
   const itemViewIndex = ref<number>(0)
   const itemIndex = ref<number>(-1)
 
-  const itemFieldsToOptionsObj = ref<Partial<TBespokeFields>>({})
-
   const id = computed(() => {
-    return typeof fields.value === 'undefined' ? undefined : (<TFields>fields.value).id
+    return fields.value.id
   })
 
   const itemView = computed(() => {
@@ -49,12 +47,12 @@ export const useItemStore = defineStore('item', () => {
       module: current.value.module,
       slug: current.value.slug,
       tag: tag.value,
-      moduleAndTag: `${current.value === undefined ? '' : current.value.module} ${tag.value === undefined ? '' : tag.value}`,
+      moduleAndTag: `${current.value === undefined ? '' : current.value.module} ${tag.value}`,
     }
   })
 
   const fieldsTexts = computed(() => {
-    const fo = getFieldsOptions(fields.value!)
+    const fo = getFieldsOptions(fields.value as TFields)
     const tmp: Partial<TFieldsTexts> = {}
     fo.forEach((x) => (tmp[x.fieldName as keyof TFields] = x.optionLabel))
     for (const key in fields.value!) {
@@ -84,11 +82,6 @@ export const useItemStore = defineStore('item', () => {
 
     //get fields related options
     const fd = getFieldsOptions(apiItem.fields)
-
-    //build itemFieldsToOptionsObj [field_name] : tag.text
-    const tmp = ref<Record<string, string>>({})
-    fd.forEach((x) => (tmp.value[x.fieldName] = x.optionLabel))
-    itemFieldsToOptionsObj.value = tmp.value
 
     //set item's fields and tags options keys
     const fieldsOptions = fd.map((x) => x.optionKey)
@@ -133,11 +126,10 @@ export const useItemStore = defineStore('item', () => {
 
   function itemClear() {
     itemIndex.value = -1
-    fields.value = undefined
-    slug.value = undefined
-    short.value = undefined
-    tag.value = undefined
-    itemFieldsToOptionsObj.value = {}
+    fields.value = {}
+    slug.value = ''
+    short.value = ''
+    tag.value = ''
     setCollectionArray('media', [])
     setCollectionArray('related', [])
   }
@@ -193,7 +185,6 @@ export const useItemStore = defineStore('item', () => {
     saveItemFields,
     saveitemFieldsPlus,
     itemRemove,
-    itemFieldsToOptionsObj,
     fieldsTexts,
   }
 })
