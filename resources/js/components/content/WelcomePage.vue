@@ -1,5 +1,5 @@
 <template>
-  <v-img style="height: 95vh" :src="backgroundImage?.fullUrl" :lazy-src="backgroundImage?.tnUrl" cover>
+  <v-img style="height: 95vh" :src="bgUrls.fullUrl" :lazy-src="bgUrls.tnUrl" cover>
     <v-card :width="`${overlayWidth}%`" height="100%" flat color="rgb(255, 0, 0, 0)" class="opac">
       <v-card-title class="title text-white text-h4"> {{ module }} Module </v-card-title>
       <v-card-text class="text-white text-h5">
@@ -20,13 +20,22 @@ import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useDisplay } from 'vuetify'
 import { useModuleStore } from '../../scripts/stores/module'
-
+import { useMainStore } from '../../scripts/stores/main'
 const { smAndDown } = useDisplay()
-const { backgroundImage, counts, welcomeText, module } = storeToRefs(useModuleStore())
+const { counts, welcomeText, module } = storeToRefs(useModuleStore())
+const { bucketUrl } = storeToRefs(useMainStore())
 
 const overlayWidth = computed(() => {
   return smAndDown.value ? 100 : 30
 })
+
+const bgUrls = computed(() => {
+  return {
+    fullUrl: `${bucketUrl.value}app/background/${module.value}.jpg`,
+    tnUrl: `${bucketUrl.value}app/background/${module.value}-tn.jpg`,
+  }
+})
+
 </script>
 
 <style scoped>

@@ -9,14 +9,14 @@ import {
   type RouteLocationNormalized,
   type RouteLocationRaw,
 } from 'vue-router'
-import type { TModule, TUrlModule } from '@/types/moduleTypes'
+import type { TModule } from '@/types/moduleTypes'
 import type { TRouteInfo, TPageName, TPlanAction } from '@/types/routesTypes'
 
 import { useRoutesParserStore } from './routesParser'
 import { useRoutesPlanTransitionStore } from './routesPlanTransition'
 import { useRoutesPrepareStore } from './routesPrepare'
 import { useAuthStore } from '../auth'
-import { useMainStore } from '../main'
+import { useModuleStore } from '../module'
 
 import { useNotificationsStore } from '../notifications'
 
@@ -26,7 +26,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
 
   const { planTransition } = useRoutesPlanTransitionStore()
   const { showSnackbar, showSpinner } = useNotificationsStore()
-  const { moduleToUrlModuleName } = storeToRefs(useMainStore())
+  const { moduleToUrlModuleName } = storeToRefs(useModuleStore())
 
   const current = ref<TRouteInfo>({
     url_module: undefined,
@@ -79,7 +79,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     //parse module
     //console.log(`A.current: ${JSON.stringify(current.value, null, 2)}\nto: ${JSON.stringify(to.value, null, 2)})`)
     if (Object.prototype.hasOwnProperty.call(handle_to.params, 'module')) {
-      const res = parseModule(<TUrlModule>handle_to.params.module)
+      const res = parseModule(<string>handle_to.params.module)
       if (res.success) {
         to.value.module = <TModule>res.module
         to.value.url_module = res.url_module

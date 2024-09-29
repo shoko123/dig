@@ -1,5 +1,5 @@
 // stores/module.ts
-import { defineStore, storeToRefs } from 'pinia'
+import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type {
   TApiModuleInit,
@@ -7,21 +7,38 @@ import type {
   TObjIdTagAndSlugFuncsByModule,
   TItemsPerPageByView,
   TViewsForCollection,
+  TModuleToUrlName,
+  TUrlModuleNameToModule,
+  TModuleBtnsInfo,
 } from '../../types/moduleTypes'
-import { useMainStore } from './main'
-import { useRoutesMainStore } from './routes/routesMain'
+
 import { TCName } from '@/types/collectionTypes'
 
 export const useModuleStore = defineStore('module', () => {
-  const { bucketUrl } = storeToRefs(useMainStore())
-  const { current } = storeToRefs(useRoutesMainStore())
   const module = ref<TModule>('Locus')
   const counts = ref({ items: 0, media: 0 })
   const welcomeText = ref<string>('')
   const firstSlug = ref<string>('')
-
   const itemsPerPage = ref<TItemsPerPageByView>({ Gallery: 0, Tabular: 0, Chips: 0 })
   const collectionViews = ref<TViewsForCollection>({ main: [], media: [], related: [] })
+
+  const moduleToUrlModuleName = ref<TModuleToUrlName>({
+    Ceramic: 'ceramics',
+    Locus: 'loci',
+    Stone: 'stones',
+  })
+
+  const urlModuleNameToModule = ref<TUrlModuleNameToModule>(inverse(moduleToUrlModuleName.value))
+
+  function inverse<T extends TModuleToUrlName>(obj: T): TUrlModuleNameToModule {
+    const tmpMap = new Map()
+    let res: Partial<TUrlModuleNameToModule> = {}
+    Object.entries(obj).forEach(([key, value]) => {
+      tmpMap.set(value, key)
+    })
+    res = Object.fromEntries(tmpMap.entries())
+    return res as TUrlModuleNameToModule
+  }
 
   // This object is defined here (rather than having specific functions implemented in each module)
   // for better code splitting.
@@ -91,26 +108,6 @@ export const useModuleStore = defineStore('module', () => {
     }
   }
 
-  const backgroundImage = computed(() => {
-    switch (current.value.name) {
-      case 'welcome':
-        return {
-          fullUrl: `${bucketUrl.value}app/background/${module.value}.jpg`,
-          tnUrl: `${bucketUrl.value}app/background/${module.value}-tn.jpg`,
-        }
-      case 'login':
-      case 'register':
-      case 'forgot-password':
-      case 'reset-password':
-        return {
-          fullUrl: `${bucketUrl.value}app/background/Auth.jpg`,
-          tnUrl: `${bucketUrl.value}app/background/Auth-tn.jpg`,
-        }
-      default:
-        return undefined
-    }
-  })
-
   async function getStore(m?: TModule) {
     const mod = m === undefined ? module.value : m
 
@@ -134,6 +131,19 @@ export const useModuleStore = defineStore('module', () => {
     }
   }
 
+  const moduleBtnsInfo = computed<TModuleBtnsInfo[]>(() => {
+    const arr: TModuleBtnsInfo[] = []
+    Object.entries(moduleToUrlModuleName.value).forEach(([k, v]) => {
+      arr.push({
+        title: k,
+        url_module: v,
+        module: <TModule>k,
+      })
+    })
+
+    return arr
+  })
+
   return {
     setModuleInfo,
     getStore,
@@ -143,7 +153,9 @@ export const useModuleStore = defineStore('module', () => {
     firstSlug,
     itemsPerPage,
     collectionViews,
-    backgroundImage,
+    urlModuleNameToModule,
+    moduleToUrlModuleName,
+    moduleBtnsInfo,
     slugToId,
     tagAndSlugFromId,
     getCollectionViews,

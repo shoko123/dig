@@ -26,13 +26,13 @@ import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import type { TUrlModule } from '@/types/moduleTypes'
 import { useAuthStore } from '../../../../scripts/stores/auth'
-import { useMainStore } from '../../../../scripts/stores/main'
+import { useModuleStore } from '../../../../scripts/stores/module'
 import { useNotificationsStore } from '../../../../scripts/stores/notifications'
 
 const { authenticated, accessibility } = storeToRefs(useAuthStore())
 const { logout } = useAuthStore()
 const { showSnackbar } = useNotificationsStore()
-const { moduleBtnsInfo } = storeToRefs(useMainStore())
+const { moduleBtnsInfo } = storeToRefs(useModuleStore())
 
 const router = useRouter()
 async function logoutClicked() {

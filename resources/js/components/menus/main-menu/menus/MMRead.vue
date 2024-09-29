@@ -21,13 +21,13 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '../../../../scripts/stores/auth'
-import { useMainStore } from '../../../../scripts/stores/main'
+import { useModuleStore } from '../../../../scripts/stores/module'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 import LoginOrUser from '../elements/LoginOrUser.vue'
 
 const { authenticated, accessibility } = storeToRefs(useAuthStore())
 const { current } = storeToRefs(useRoutesMainStore())
-const { moduleBtnsInfo } = storeToRefs(useMainStore())
+const { moduleBtnsInfo } = storeToRefs(useModuleStore())
 
 const disableLinks = computed(() => {
   return accessibility.value.authenticatedUsersOnly && !authenticated.value

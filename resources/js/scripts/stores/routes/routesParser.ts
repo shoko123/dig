@@ -2,38 +2,28 @@
 //handles the entire routing mechanism - parsing, loading resources, error handling
 
 import { defineStore, storeToRefs } from 'pinia'
-import type { TModule, TUrlModule } from '../../../types/moduleTypes'
+import type { TModule, TUrlModule, TUrlModuleNameToModule } from '../../../types/moduleTypes'
 import type { LocationQuery } from 'vue-router'
 import type { TGroupBase } from '@/types/trioTypes'
 
 import { useModuleStore } from '../module'
-import { useMainStore } from '../main'
 
 export const useRoutesParserStore = defineStore('routesParser', () => {
-  const { urlModuleNameToModule } = storeToRefs(useMainStore())
+  const { urlModuleNameToModule } = storeToRefs(useModuleStore())
 
-  function parseModule(
-    urlModule: string,
-  ):
-    | { success: true; module: TModule; url_module: TUrlModule }
-    | { success: false; data: null; message: string } {
-    switch (urlModule) {
-      case 'loci':
-      case 'ceramics':
-      case 'stones':
-        return {
-          success: true,
-          module: <TModule>urlModuleNameToModule.value[urlModule],
-          url_module: urlModule,
-        }
-
-      default:
-        console.log(`******* URL Parser error: Unsupported urlModule name "${urlModule}" *********`)
-        return {
-          success: false,
-          data: null,
-          message: `Error: unknown url module "${urlModule}"`,
-        }
+  function parseModule(urlModule: string) {
+    if (urlModule in urlModuleNameToModule.value) {
+      return {
+        success: true,
+        module: urlModuleNameToModule.value[urlModule as keyof TUrlModuleNameToModule],
+        url_module: urlModule as TUrlModule,
+      }
+    } else {
+      return {
+        success: false,
+        data: null,
+        message: `Error: unknown url module "${urlModule}"`,
+      }
     }
   }
 
