@@ -1,14 +1,17 @@
 import { computed } from 'vue'
 import { defineStore } from 'pinia'
-import { TFields, TObjCategorizerByFieldName } from '@/types/moduleTypes'
+import { TObjCategorizerByFieldName } from '@/types/moduleTypes'
 
 export const useCeramicStore = defineStore('ceramic', () => {
-  const categorizer: TObjCategorizerByFieldName<'Ceramic'> = {}
+  const slugRegExp = computed(() => {
+    return new RegExp(/^\d{2}.\d{1}$/)
+  })
 
-  // eslint-disable-next-line
-  function beforeStoreSpecific(fieldsNew: Partial<TFields>, isCreate: boolean): Partial<TFields> {
-    return fieldsNew
+  function idToTagAndSlug(id: string) {
+    return { slug: id, tag: id }
   }
+
+  const categorizer: TObjCategorizerByFieldName<'Ceramic'> = {}
 
   const mainTableHeaders = computed(() => {
     return [
@@ -20,8 +23,9 @@ export const useCeramicStore = defineStore('ceramic', () => {
   })
 
   return {
-    mainTableHeaders,
-    beforeStoreSpecific,
+    slugRegExp,
     categorizer,
+    mainTableHeaders,
+    idToTagAndSlug,
   }
 })

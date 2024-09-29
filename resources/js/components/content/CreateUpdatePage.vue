@@ -5,7 +5,7 @@
         {{ title }}
       </v-card-title>
       <v-card-text>
-        <component :is="formNew" :is-create="isCreate">
+        <component :is="formNew" ref="childRef" :is-create="isCreate">
           <template #newItem="{ v }">
             <v-btn variant="outlined" @click="submit(v)"> Submit </v-btn>
             <v-btn variant="outlined" class="ml-1" @click="cancel"> Cancel </v-btn>
@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, type Component, defineAsyncComponent } from 'vue'
+import { computed, type Component, defineAsyncComponent, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { type Validation } from '@vuelidate/core'
 
@@ -30,10 +30,11 @@ const StoneNew = defineAsyncComponent(() => import('../modules/Stone/StoneNew.vu
 const CeramicNew = defineAsyncComponent(() => import('../modules/Ceramic/CeramicNew.vue'))
 
 let { showSpinner, showSnackbar } = useNotificationsStore()
-let { upload, beforeStore } = useItemNewStore()
-let { newFields, isCreate } = storeToRefs(useItemNewStore())
+let { upload } = useItemNewStore()
+let { isCreate } = storeToRefs(useItemNewStore())
 const { module } = storeToRefs(useModuleStore())
 let { routerPush } = useRoutesMainStore()
+
 
 
 const title = computed(() => {
@@ -52,6 +53,9 @@ const formNew = computed<Component>(() => {
   }
 })
 
+
+const childRef = ref();
+
 async function submit(v: Validation) {
   //console.log(`CreateUpdate.submit() data: ${JSON.stringify(data, null, 2)}`)
 
@@ -65,7 +69,9 @@ async function submit(v: Validation) {
     return
   }
 
-  let fieldsToSend = await beforeStore(newFields.value)
+  // call child
+  const fieldsToSend = childRef.value.beforeStore();
+
 
   showSpinner(`${isCreate.value ? 'Creating' : 'Updating'} ${module.value} item...`)
   const res = await upload(isCreate.value, fieldsToSend)

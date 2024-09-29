@@ -1,8 +1,18 @@
 import { computed } from 'vue'
 import { defineStore } from 'pinia'
-import { TFields, TObjCategorizerByFieldName, TFieldsDefaultsAndRules } from '@/types/moduleTypes'
+import { TObjCategorizerByFieldName, TFieldsDefaultsAndRules } from '@/types/moduleTypes'
 
 export const useLocusStore = defineStore('locus', () => {
+  const slugRegExp = computed(() => {
+    return new RegExp(/^[a-zA-Z -]{2,10}.\d{1,3}.\d{1,3}$/)
+  })
+
+  function idToTagAndSlug(id: string) {
+    return { slug: id, tag: id }
+  }
+
+  const categorizer: TObjCategorizerByFieldName<'Locus'> = {}
+
   const defaultsAndRules: TFieldsDefaultsAndRules<'Locus'> = {
     id: { d: 'Change me', r: {} },
     category: { d: 'Bin', r: {} },
@@ -16,13 +26,6 @@ export const useLocusStore = defineStore('locus', () => {
     updated_date: { d: '4', r: {} },
   }
 
-  const categorizer: TObjCategorizerByFieldName<'Locus'> = {}
-
-  // eslint-disable-next-line
-  function beforeStoreSpecific(fieldsNew: Partial<TFields>, isCreate: boolean): Partial<TFields> {
-    return fieldsNew
-  }
-
   const mainTableHeaders = computed(() => {
     return [
       { title: 'Label', align: 'start', key: 'tag' },
@@ -33,9 +36,10 @@ export const useLocusStore = defineStore('locus', () => {
   })
 
   return {
-    mainTableHeaders,
-    beforeStoreSpecific,
+    slugRegExp,
     categorizer,
+    mainTableHeaders,
+    idToTagAndSlug,
     defaultsAndRules,
   }
 })

@@ -13,7 +13,7 @@ import { useTrioStore } from './trio/trio'
 export const useItemNewStore = defineStore('itemNew', () => {
   const { current } = storeToRefs(useRoutesMainStore())
   const { module } = storeToRefs(useModuleStore())
-  const { tagAndSlugFromId, getStore } = useModuleStore()
+  const { tagAndSlugFromId } = useModuleStore()
   const { send } = useXhrStore()
   const { getCollectionStore } = useCollectionsStore()
   const { getFieldsOptions } = useTrioStore()
@@ -70,11 +70,6 @@ export const useItemNewStore = defineStore('itemNew', () => {
     return { success: true }
   }
 
-  async function beforeStore(newFields: Partial<TFields>) {
-    const store = await getStore(module.value)
-    return store.beforeStoreSpecific(newFields, isCreate.value)
-  }
-
   async function upload(
     isCreate: boolean,
     newFields: Partial<TFields>,
@@ -120,7 +115,6 @@ export const useItemNewStore = defineStore('itemNew', () => {
     prepareForNewItem,
     fieldsWithOptions,
     itemNewClear,
-    beforeStore,
     upload,
   }
 })

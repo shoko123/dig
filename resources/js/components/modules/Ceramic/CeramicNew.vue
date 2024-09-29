@@ -90,4 +90,13 @@ const errors = computed(() => {
   return errorObj
 })
 
+function beforeStore() {
+  console.log(`Ceramic.beforeStore()`)
+  return newFields.value
+}
+
+defineExpose({
+  beforeStore
+});
+
 </script>

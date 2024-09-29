@@ -1,8 +1,16 @@
 import { computed } from 'vue'
 import { defineStore } from 'pinia'
-import { TFields, TObjCategorizerByFieldName } from '@/types/moduleTypes'
+import { TObjCategorizerByFieldName } from '@/types/moduleTypes'
 
 export const useStoneStore = defineStore('stone', () => {
+  const slugRegExp = computed(() => {
+    return new RegExp(/^B20\d{2}.\d{1}.\d{1,3}$/)
+  })
+
+  function idToTagAndSlug(id: string) {
+    return { slug: id, tag: id }
+  }
+
   const categorizer = computed<TObjCategorizerByFieldName<'Stone'>>(() => {
     return {
       old_museum_id: (val) => {
@@ -11,27 +19,6 @@ export const useStoneStore = defineStore('stone', () => {
       },
     }
   })
-
-  // eslint-disable-next-line
-  function beforeStoreSpecific(fieldsNew: Partial<TFields>, isCreate: boolean): Partial<TFields> {
-    const newStone = fieldsNew as TFields<'Stone'>
-    if (typeof newStone.uri === 'string' && newStone.uri.length > 0) {
-      return {
-        id: newStone.id,
-        id_year: newStone.id_year,
-        id_access_no: newStone.id_access_no,
-        id_object_no: newStone.id_object_no,
-        specialist_description: newStone.specialist_description,
-        specialist_date: new Date(),
-      }
-    } else {
-      const fieldsToSend: Partial<TFields<'Stone'>> = {}
-      Object.assign(fieldsToSend, newStone)
-      fieldsToSend.specialist_date = new Date()
-      fieldsToSend.catalog_date = new Date()
-      return fieldsToSend
-    }
-  }
 
   const mainTableHeaders = computed(() => {
     return [
@@ -44,8 +31,9 @@ export const useStoneStore = defineStore('stone', () => {
   })
 
   return {
-    mainTableHeaders,
+    slugRegExp,
     categorizer,
-    beforeStoreSpecific,
+    mainTableHeaders,
+    idToTagAndSlug,
   }
 })

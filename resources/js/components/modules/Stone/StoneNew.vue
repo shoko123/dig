@@ -198,4 +198,29 @@ function clearDate(field: string) {
     default:
   }
 }
+
+function beforeStore() {
+  console.log(`Stone.beforeStore()`)
+  if (typeof nf.value.uri === 'string' && nf.value.uri.length > 0) {
+    return {
+      id: newStone.id,
+      id_year: nf.value.id_year,
+      id_access_no: nf.value.id_access_no,
+      id_object_no: nf.value.id_object_no,
+      specialist_description: nf.value.specialist_description,
+      specialist_date: new Date(),
+    }
+  } else {
+    const fieldsToSend: Partial<TFields<'Stone'>> = { ...newFields.value }
+    fieldsToSend.specialist_date = new Date()
+    fieldsToSend.catalog_date = new Date()
+    return fieldsToSend
+  }
+
+}
+
+defineExpose({
+  beforeStore
+})
+
 </script>

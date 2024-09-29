@@ -26,6 +26,12 @@ export const useModuleStore = defineStore('module', () => {
   // This object is defined here (rather than having specific functions implemented in each module)
   // for better code splitting.
   const IdTagSlugObj: TObjIdTagAndSlugFuncsByModule = {
+    Ceramic: {
+      regexp: new RegExp(/^\d{2}.\d{1}$/),
+      idToSlugTag: (id: string) => {
+        return { slug: id, tag: id }
+      },
+    },
     Locus: {
       regexp: new RegExp(/^[a-zA-Z -]{2,10}.\d{1,3}.\d{1,3}$/),
       idToSlugTag: (id: string) => {
@@ -34,12 +40,6 @@ export const useModuleStore = defineStore('module', () => {
     },
     Stone: {
       regexp: new RegExp(/^B20\d{2}.\d{1}.\d{1,3}$/),
-      idToSlugTag: (id: string) => {
-        return { slug: id, tag: id }
-      },
-    },
-    Ceramic: {
-      regexp: new RegExp(/^\d{2}.\d{1}$/),
       idToSlugTag: (id: string) => {
         return { slug: id, tag: id }
       },
@@ -72,6 +72,8 @@ export const useModuleStore = defineStore('module', () => {
    */
   function tagAndSlugFromId(id: string, m?: TModule) {
     const mod = m === undefined ? module.value : m
+    // const store = await getStore(mod)
+    // return store.idToTagAndSlug(id)
     const func = IdTagSlugObj[mod].idToSlugTag
     return func(id)
   }

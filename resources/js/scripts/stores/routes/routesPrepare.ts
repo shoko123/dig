@@ -32,7 +32,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   const r = useRoutesMainStore()
   const { parseSlug, parseUrlQuery } = useRoutesParserStore()
 
-  const { setModuleInfo, tagAndSlugFromId } = useModuleStore()
+  const { setModuleInfo } = useModuleStore()
 
   const fromUndef = ref<boolean>(false)
 
@@ -265,7 +265,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     }
 
     // console.log(`loadItem() success! res: ${JSON.stringify(res, null, 2)}`)
-    r.to.slug = tagAndSlugFromId(res.data.fields.id, module).slug
     await i.saveitemFieldsPlus(res.data)
     return { success: true, message: '' }
   }
