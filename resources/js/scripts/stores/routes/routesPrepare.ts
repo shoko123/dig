@@ -180,7 +180,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     if (!res.success) {
       return { success: false, message: `Error: failed to load module ${module}` }
     }
-    await setModuleInfo(res.data)
+    setModuleInfo(res.data)
     c.resetCollectionsViewIndex()
     c.clear(['main'])
     i.itemClear()

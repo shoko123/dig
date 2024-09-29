@@ -14,7 +14,7 @@ import type { VDataTableVirtual } from 'vuetify/lib/components/index.mjs'
 import type { TModule } from '@/types/moduleTypes'
 import type { TCName, TPage } from '@/types/collectionTypes'
 
-import { ref, computed, onMounted } from 'vue'
+import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 import { useCollectionRelatedStore } from '../../scripts/stores/collections/collectionRelated'
@@ -27,21 +27,13 @@ const props = defineProps<{
 }>()
 
 const { getCollectionStore } = useCollectionsStore()
+const { current } = storeToRefs(useRoutesMainStore())
 const { relatedTableHeaders } = storeToRefs(useCollectionRelatedStore())
 const { routerPush, moveToRelatedItem } = useRoutesMainStore()
 
-onMounted(async () => {
-  const { useModuleStore } = await import('../../scripts/stores/module')
-  let { getStore } = useModuleStore()
-  const store = await getStore()
-  mainTableHeaders.value = store.mainTableHeaders as THeader[]
-});
-
-const mainTableHeaders = ref<THeader[]>([])
-
 const headers = computed(() => {
   if (props.source === 'main') {
-    return mainTableHeaders.value as THeader[]
+    return mainHeaders.value
   } else {
     return relatedTableHeaders.value as THeader[]
   }
@@ -49,6 +41,10 @@ const headers = computed(() => {
 
 const c = computed(() => {
   return getCollectionStore(props.source)
+})
+
+const mainHeaders = computed(() => {
+  return headersByModule[current.value.module!]
 })
 
 const page = computed(() => {
@@ -74,5 +70,27 @@ async function btnClicked(item: TPage<'main', 'Tabular', TModule> | TPage<'relat
     const related = item as TPage<'related', 'Tabular'>
     await moveToRelatedItem(related.module, related.id)
   }
+}
+
+const headersByModule: Record<TModule, THeader[]> = {
+  Ceramic: [
+    { title: 'Name', align: 'start', key: 'tag' },
+    { title: 'Year', align: 'start', key: 'id_year' },
+    { title: 'Field Description', align: 'start', key: 'field_description' },
+    { title: 'Specialist Description', align: 'start', key: 'specialist_description' },
+  ],
+  Locus: [
+    { title: 'Label', align: 'start', key: 'tag' },
+    { title: 'OC Label', align: 'start', key: 'oc_label' },
+    { title: 'Square', align: 'start', key: 'square' },
+    { title: 'Published Date', align: 'start', key: 'published_date' },
+  ],
+  Stone: [
+    { title: 'Label', align: 'start', key: 'tag' },
+    { title: 'Context', align: 'start', key: 'context' },
+    { title: 'Excavation Date', align: 'start', key: 'excavation_date' },
+    { title: 'Cataloger Description', align: 'start', key: 'cataloger_description' },
+    { title: 'Conservation Notes', align: 'start', key: 'conservation_notes' },
+  ]
 }
 </script>

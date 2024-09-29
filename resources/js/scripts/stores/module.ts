@@ -4,7 +4,6 @@ import { ref, computed } from 'vue'
 import type {
   TApiModuleInit,
   TModule,
-  TObjIdTagAndSlugFuncsByModule,
   TItemsPerPageByView,
   TViewsForCollection,
   TModuleToUrlName,
@@ -41,29 +40,6 @@ export const useModuleStore = defineStore('module', () => {
     return res as TUrlModuleNameToModule
   }
 
-  // This object is defined here (rather than having specific functions implemented in each module)
-  // for better code splitting.
-  const IdTagSlugObj: TObjIdTagAndSlugFuncsByModule = {
-    Ceramic: {
-      regexp: new RegExp(/^\d{2}.\d{1}$/),
-      idToSlugTag: (id: string) => {
-        return { slug: id, tag: id }
-      },
-    },
-    Locus: {
-      regexp: new RegExp(/^[a-zA-Z -]{2,10}.\d{1,3}.\d{1,3}$/),
-      idToSlugTag: (id: string) => {
-        return { slug: id, tag: id }
-      },
-    },
-    Stone: {
-      regexp: new RegExp(/^B20\d{2}.\d{1}.\d{1,3}$/),
-      idToSlugTag: (id: string) => {
-        return { slug: id, tag: id }
-      },
-    },
-  }
-
   const details: TObjModuleDetails = {
     Ceramic: {
       regexp: new RegExp(/^\d{2}.\d{1}$/),
@@ -93,7 +69,7 @@ export const useModuleStore = defineStore('module', () => {
     },
   }
 
-  async function setModuleInfo(initData: TApiModuleInit) {
+  function setModuleInfo(initData: TApiModuleInit) {
     module.value = initData.module
     counts.value = initData.counts
     welcomeText.value = initData.welcome_text
@@ -119,9 +95,8 @@ export const useModuleStore = defineStore('module', () => {
    */
   function tagAndSlugFromId(id: string, m?: TModule) {
     const mod = m === undefined ? module.value : m
-    // const store = await getStore(mod)
-    // return store.idToTagAndSlug(id)
-    const func = IdTagSlugObj[mod].idToSlugTag
+
+    const func = details[mod].idToSlugTag
     return func(id)
   }
 
@@ -130,7 +105,7 @@ export const useModuleStore = defineStore('module', () => {
   }
 
   function slugToId(m: TModule, slug: string) {
-    if (!IdTagSlugObj[m].regexp.test(slug)) {
+    if (!details[m].regexp.test(slug)) {
       return {
         success: false,
         message: `Unsupported ${module.value} slug: ${slug}`,
@@ -139,29 +114,6 @@ export const useModuleStore = defineStore('module', () => {
     return {
       success: true,
       id: slug,
-    }
-  }
-
-  async function getStore(m?: TModule) {
-    const mod = m === undefined ? module.value : m
-
-    switch (mod) {
-      case 'Locus':
-        {
-          const { useLocusStore } = await import('./modules/Locus')
-          return useLocusStore()
-        }
-        break
-      case 'Stone':
-        {
-          const { useStoneStore } = await import('./modules/Stone')
-          return useStoneStore()
-        }
-        break
-      case 'Ceramic': {
-        const { useCeramicStore } = await import('./modules/Ceramic')
-        return useCeramicStore()
-      }
     }
   }
 
@@ -174,13 +126,11 @@ export const useModuleStore = defineStore('module', () => {
         module: <TModule>k,
       })
     })
-
     return arr
   })
 
   return {
     setModuleInfo,
-    getStore,
     module,
     counts,
     welcomeText,
