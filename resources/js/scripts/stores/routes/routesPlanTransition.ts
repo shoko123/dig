@@ -13,12 +13,12 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
 
     const to = {
       name: handle_to.name,
-      module: <string>handle_to.params.module,
+      url_module: <string>handle_to.params.url_module,
       slug: handle_to.params.slug,
     }
     const from = {
       name: handle_from.name,
-      module: <string>handle_from.params.module,
+      url_module: <string>handle_from.params.url_module,
       slug: handle_from.params.slug,
     }
     if (from.name === undefined) {
@@ -26,7 +26,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
     }
     const changed = { module: false, name: false, slug: false, query: false }
 
-    changed.module = to.module !== from.module
+    changed.module = to.url_module !== from.url_module
     changed.name = to.name !== from.name
     changed.slug = to.slug !== from.slug
     changed.query = JSON.stringify(handle_to.query) !== JSON.stringify(handle_from.query)

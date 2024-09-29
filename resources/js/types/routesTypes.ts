@@ -4,18 +4,30 @@ import type { TModule, TUrlModule, TFieldValue } from '@/types/moduleTypes'
 import type { TFieldValueSource } from '@/types/trioTypes'
 type TRoutes =
   | { name: 'home' }
-  | { name: 'welcome'; params: { module: TUrlModule } }
-  | { name: 'filter'; module: TModule; params: { module: TUrlModule } }
-  | { name: 'index'; module: TModule; params: { module: TUrlModule; query: string } }
-  | { name: 'show'; module: TModule; params: { module: TUrlModule; query: string; slug: string } }
-  | { name: 'create'; module: TModule; params: { module: TUrlModule } }
+  | { name: 'welcome'; params: { url_module: TUrlModule } }
+  | { name: 'filter'; module: TModule; params: { url_module: TUrlModule } }
+  | { name: 'index'; module: TModule; params: { url_module: TUrlModule; query: string } }
+  | {
+      name: 'show'
+      module: TModule
+      params: { url_module: TUrlModule; query: string; slug: string }
+    }
+  | { name: 'create'; module: TModule; params: { url_module: TUrlModule } }
   | {
       name: 'update'
       module: TModule
-      params: { module: TUrlModule; slug: string; action: 'update' }
+      params: { url_module: TUrlModule; slug: string; action: 'update' }
     }
-  | { name: 'tag'; module: TModule; params: { module: TUrlModule; slug: string; action: 'tag' } }
-  | { name: 'media'; media: TModule; params: { module: TUrlModule; slug: string; action: 'media' } }
+  | {
+      name: 'tag'
+      module: TModule
+      params: { url_module: TUrlModule; slug: string; action: 'tag' }
+    }
+  | {
+      name: 'media'
+      media: TModule
+      params: { url_module: TUrlModule; slug: string; action: 'media' }
+    }
   | { name: 'login' }
   | { name: 'register' }
   | { name: 'forgot-password' }

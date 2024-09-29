@@ -5,7 +5,7 @@
     <v-divider />
 
     <v-list-item v-for="(item, index) in moduleBtnsInfo" :key="index" :value="index" @click="goTo(item.url_module)">
-      <v-list-item-title :disabled="disableLinks" :to="{ name: 'welcome', params: { module: item.url_module } }">{{
+      <v-list-item-title :disabled="disableLinks" :to="{ name: 'welcome', params: { url_module: item.url_module } }">{{
         item.title }}</v-list-item-title>
     </v-list-item>
 
@@ -40,7 +40,7 @@ async function logoutClicked() {
   showSnackbar(res.success ? 'You have successfully logged out.' : 'Logout Failed!')
 }
 async function goTo(urlModule: TUrlModule) {
-  router.push({ name: 'welcome', params: { module: urlModule } })
+  router.push({ name: 'welcome', params: { url_module: urlModule } })
   console.log(`goTo(${urlModule})`)
 }
 const disableLinks = computed(() => {

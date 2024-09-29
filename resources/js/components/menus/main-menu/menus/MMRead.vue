@@ -7,7 +7,7 @@
 
   <div v-for="(item, index) in moduleBtnsInfo" :key='index' class="hidden-sm-and-down">
     <v-btn :disabled="disableLinks" :class="selectedModuleIndex === index ? 'bg-light-blue-darken-2' : ''"
-      :to="{ name: 'welcome', params: { module: item.url_module } }">
+      :to="{ name: 'welcome', params: { url_module: item.url_module } }">
       {{ item.title }}
     </v-btn>
   </div>

@@ -31,7 +31,7 @@ async function submit() {
   console.log(`filter.submit()`)
   const query = await filterStore.filtersToQueryObject()
   resetCategoryAndGroupIndices()
-  router.push({ name: 'index', params: { module: current.value.url_module }, query })
+  router.push({ name: 'index', params: { url_module: current.value.url_module }, query })
 }
 
 async function getCnt() {

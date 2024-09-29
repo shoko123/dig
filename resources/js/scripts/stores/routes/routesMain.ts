@@ -77,9 +77,11 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     to.value.url_full_path = handle_to.fullPath
 
     //parse module
-    //console.log(`A.current: ${JSON.stringify(current.value, null, 2)}\nto: ${JSON.stringify(to.value, null, 2)})`)
-    if (Object.prototype.hasOwnProperty.call(handle_to.params, 'module')) {
-      const res = parseModule(<string>handle_to.params.module)
+    if ('url_module' in handle_to.params) {
+      //  if (Object.prototype.hasOwnProperty.call(handle_to.params, 'url_module')) {
+      const res = parseModule(<string>handle_to.params.url_module)
+      console.log(`After parse url_module. res: ${JSON.stringify(res, null, 2)}`)
+
       if (res.success) {
         to.value.module = <TModule>res.module
         to.value.url_module = res.url_module
@@ -113,7 +115,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     inTransition.value = true
 
     const res = await prepareForNewRoute(
-      <TModule>to.value.module,
+      to.value.module!,
       handle_to.query,
       <string>handle_to.params.slug,
       <TPlanAction[]>res1.data,
@@ -215,7 +217,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
       case 'create':
         urlModule =
           module === 'current' ? current.value.url_module : moduleToUrlModuleName.value[module]
-        await router.push({ name: routeName, params: { module: urlModule } })
+        await router.push({ name: routeName, params: { url_module: urlModule } })
         break
 
       case 'index':
@@ -224,7 +226,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         query = keepQuery ? current.value.queryParams : ''
         await router.push({
           name: 'index',
-          params: { module: urlModule },
+          params: { url_module: urlModule },
           query: <LocationQueryRaw>query,
         })
         break
@@ -235,7 +237,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         query = keepQuery ? current.value.queryParams : ''
         await router.push({
           name: 'show',
-          params: { module: urlModule, slug: slug },
+          params: { url_module: urlModule, slug: slug },
           query: <LocationQueryRaw>query,
         })
         break
@@ -245,7 +247,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
       case 'tag':
         await router.push({
           name: routeName,
-          params: { module: current.value.url_module, slug: slug },
+          params: { url_module: current.value.url_module, slug: slug },
         })
         break
     }

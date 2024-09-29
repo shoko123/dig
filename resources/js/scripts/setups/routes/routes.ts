@@ -41,48 +41,48 @@ const routes = [
   },
   //dig modules ( loci, stones, etc...)
   {
-    path: '/:module',
+    path: '/:url_module',
     component: () => import('@/components/content/IndexPage.vue'),
     name: 'index',
   },
   {
-    path: '/:module/welcome',
+    path: '/:url_module/welcome',
     component: () => import('@/components/content/WelcomePage.vue'),
     name: 'welcome',
   },
   {
-    path: '/:module/filter',
+    path: '/:url_module/filter',
     component: () => import('@/components/content/FilterPage.vue'),
     name: 'filter',
   },
 
   {
-    path: '/:module/create',
+    path: '/:url_module/create',
     component: () => import('@/components/content/CreateUpdatePage.vue'),
     name: 'create',
   },
   {
-    path: '/:module/:slug',
+    path: '/:url_module/:slug',
     component: () => import('@/components/content/ShowPage.vue'),
     name: 'show',
   },
   {
-    path: '/:module/:slug/update',
+    path: '/:url_module/:slug/update',
     component: () => import('@/components/content/CreateUpdatePage.vue'),
     name: 'update',
   },
   {
-    path: '/:module/:slug/media',
+    path: '/:url_module/:slug/media',
     component: () => import('@/components/media/MediaEditor.vue'),
     name: 'media',
   },
   {
-    path: '/:module/:slug/tag',
+    path: '/:url_module/:slug/tag',
     component: () => import('@/components/content/TaggerPage.vue'),
     name: 'tag',
   },
   {
-    path: '/:module/:slug/:catchAll(.*)',
+    path: '/:url_module/:slug/:catchAll(.*)',
     component: () => import('@/components/routes/NotFound.vue'),
     name: 'not-found-item-action',
   },

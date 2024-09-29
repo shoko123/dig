@@ -3,7 +3,7 @@
   <v-list-item @click="getCnt"> Count </v-list-item>
   <v-list-item @click="clear"> Clear </v-list-item>
   <v-divider />
-  <v-list-item :to="{ name: 'welcome', params: { module } }"> Welcome </v-list-item>
+  <v-list-item :to="{ name: 'welcome', params: { url_module } }"> Welcome </v-list-item>
 </template>
 
 <script lang="ts" setup>
@@ -24,7 +24,7 @@ async function getFilterStore() {
   const { useFilterStore } = await import('../../../../scripts/stores/trio/filter')
   return useFilterStore()
 }
-const module = computed(() => {
+const url_module = computed(() => {
   return current.value.url_module
 })
 
@@ -32,7 +32,7 @@ async function submit() {
   const filterStore = await getFilterStore()
   const query = await filterStore.filtersToQueryObject()
   resetCategoryAndGroupIndices()
-  push({ name: 'index', params: { module: current.value.url_module }, query })
+  push({ name: 'index', params: { url_module: current.value.url_module }, query })
 }
 
 async function getCnt() {
