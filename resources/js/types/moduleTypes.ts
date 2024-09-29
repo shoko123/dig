@@ -104,6 +104,14 @@ type TObjIdTagAndSlugFuncsByModule = Record<
   }
 >
 
+type TObjModuleDetails = Record<
+  TModule,
+  {
+    idToSlugTag: TFuncIdToTagAndSlug
+    regexp: RegExp
+    categorizerObj: TObjCategorizerFuncsByModule<TModule>
+  }
+>
 type TItemsPerPageByView = Record<TCollectionView, number>
 
 type TViewsForCollection = Record<TCName, TCollectionView[]>
@@ -126,6 +134,7 @@ type TApiModuleInit = {
 
 export {
   TModuleInfo,
+  TObjModuleDetails,
   TModule,
   TUrlModule,
   TModuleToUrlName,

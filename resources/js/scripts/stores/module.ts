@@ -10,6 +10,7 @@ import type {
   TModuleToUrlName,
   TUrlModuleNameToModule,
   TModuleBtnsInfo,
+  TObjModuleDetails,
 } from '../../types/moduleTypes'
 
 import { TCName } from '@/types/collectionTypes'
@@ -63,6 +64,35 @@ export const useModuleStore = defineStore('module', () => {
     },
   }
 
+  const details: TObjModuleDetails = {
+    Ceramic: {
+      regexp: new RegExp(/^\d{2}.\d{1}$/),
+      idToSlugTag: (id: string) => {
+        return { slug: id, tag: id }
+      },
+      categorizerObj: {},
+    },
+    Locus: {
+      regexp: new RegExp(/^[a-zA-Z -]{2,10}.\d{1,3}.\d{1,3}$/),
+      idToSlugTag: (id: string) => {
+        return { slug: id, tag: id }
+      },
+      categorizerObj: {},
+    },
+    Stone: {
+      regexp: new RegExp(/^B20\d{2}.\d{1}.\d{1,3}$/),
+      idToSlugTag: (id: string) => {
+        return { slug: id, tag: id }
+      },
+      categorizerObj: {
+        old_museum_id: (val: string) => {
+          // console.log(`old_museum_idCategorizer(${val})`)
+          return val === null || (typeof val === 'string' && val.length === 0) ? 1 : 0
+        },
+      },
+    },
+  }
+
   async function setModuleInfo(initData: TApiModuleInit) {
     module.value = initData.module
     counts.value = initData.counts
@@ -93,6 +123,10 @@ export const useModuleStore = defineStore('module', () => {
     // return store.idToTagAndSlug(id)
     const func = IdTagSlugObj[mod].idToSlugTag
     return func(id)
+  }
+
+  function getCategorizer() {
+    return details[module.value].categorizerObj
   }
 
   function slugToId(m: TModule, slug: string) {
@@ -161,5 +195,6 @@ export const useModuleStore = defineStore('module', () => {
     getCollectionViews,
     getViewName,
     getItemsPerPage,
+    getCategorizer,
   }
 })
