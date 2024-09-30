@@ -4,24 +4,19 @@ import type { TGroupField } from '@/types/trioTypes'
 import { useXhrStore } from '../xhr'
 import { useItemStore } from '../item'
 import { useModuleStore } from '../module'
+import { useTrioStore } from './trio'
 
 export const useTaggerStore = defineStore('tagger', () => {
   const { fields } = storeToRefs(useItemStore())
   const { send } = useXhrStore()
   const { module } = storeToRefs(useModuleStore())
+  const trioStore = useTrioStore()
 
-  async function getTrioStore() {
-    const { useTrioStore } = await import('./trio')
-    return useTrioStore()
-  }
-
-  async function prepareTagger() {
-    const trioStore = await getTrioStore()
+  function prepareTagger() {
     trioStore.copyItemOptionsToTaggerOptions()
   }
 
   async function setDefaultOptions() {
-    const trioStore = await getTrioStore()
     trioStore.taggerAllOptions = []
     // add fields dependent options (except 'Categorized') with default group.optionKeys[0]
     for (const x in trioStore.fieldsToGroupKeyObj) {
@@ -34,7 +29,6 @@ export const useTaggerStore = defineStore('tagger', () => {
   }
 
   async function sync() {
-    const trioStore = await getTrioStore()
     const payload = {
       module: module.value,
       module_id: (<TFields>fields.value).id,

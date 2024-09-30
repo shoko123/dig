@@ -19,21 +19,22 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-const { useTrioStore } = await import('../../scripts/stores/trio/trio')
+import { useTrioStore } from '../../scripts/stores/trio/trio'
+import { useFilterStore } from '../../scripts/stores/trio/filter'
+
 const { textSearchValues } = storeToRefs(useTrioStore())
 
-async function getFilterStore() {
-  const { useFilterStore } = await import('../../scripts/stores/trio/filter')
+function getFilterStore() {
   return useFilterStore()
 }
 
-async function localSearchTextChanged(index: number, val: string) {
-  const filterStore = await getFilterStore()
-  await filterStore.searchTextChanged(index, val)
+function localSearchTextChanged(index: number, val: string) {
+  const filterStore = getFilterStore()
+  filterStore.searchTextChanged(index, val)
 }
 
-async function localSearchTextClearCurrent() {
-  const filterStore = await getFilterStore()
-  await filterStore.searchTextClearCurrent()
+function localSearchTextClearCurrent() {
+  const filterStore = getFilterStore()
+  filterStore.searchTextClearCurrent()
 }
 </script>

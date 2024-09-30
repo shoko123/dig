@@ -4,9 +4,7 @@
       <ItemCard />
     </v-col>
     <v-col :cols="widths[1]">
-      <Suspense>
-        <ItemSelected  source="Item"/>
-      </Suspense>
+      <ItemSelected source="Item" />
     </v-col>
   </v-row>
   <CollectionForm source="media" class="my-2" />

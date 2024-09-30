@@ -19,19 +19,13 @@
 
       <v-sheet elevation="10" class="ma-2">
         <div v-if="isColumnSearch">
-          <Suspense>
-            <OptionsAsTextSearch />
-          </Suspense>
+          <OptionsAsTextSearch />
         </div>
         <div v-else-if="isOrderBy">
-          <Suspense>
-            <OptionsAsOrderBy />
-          </Suspense>
+          <OptionsAsOrderBy />
         </div>
         <div v-else>
-          <Suspense>
-            <OptionsAsChips />
-          </Suspense>
+          <OptionsAsChips />
         </div>
       </v-sheet>
     </v-card-text>
@@ -42,10 +36,12 @@
 <script lang="ts" setup>
 import { computed, defineAsyncComponent } from 'vue'
 import { storeToRefs } from 'pinia'
+import { useTrioStore } from '../../scripts/stores/trio/trio'
+
 const OptionsAsChips = defineAsyncComponent(() => import('./OptionsAsChips.vue'))
 const OptionsAsTextSearch = defineAsyncComponent(() => import('./OptionsAsTextSearch.vue'))
 const OptionsAsOrderBy = defineAsyncComponent(() => import('./OptionsAsOrderBy.vue'))
-const { useTrioStore } = await import('../../scripts/stores/trio/trio')
+
 
 const { visibleCategories, visibleGroups, categoryIndex, groupIndex } = storeToRefs(useTrioStore())
 

@@ -43,7 +43,7 @@ import { storeToRefs } from 'pinia'
 import { useTaggerStore } from '../../scripts/stores/trio/tagger'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
-const { useTrioStore } = await import('../../scripts/stores/trio/trio')
+import { useTrioStore } from '../../scripts/stores/trio/trio'
 
 const { routerPush } = useRoutesMainStore()
 const { visibleCategories, visibleGroups, visibleOptions, categoryIndex, groupIndex } =

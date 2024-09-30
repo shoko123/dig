@@ -2,14 +2,10 @@
   <div>
     <v-row wrap dense class="mt-1">
       <v-col :cols="widths[0]">
-        <Suspense>
-          <FilterSelected source="Filter" />
-        </Suspense>
+        <FilterSelected source="Filter" />
       </v-col>
       <v-col :cols="widths[1]">
-        <Suspense>
-          <FilterSelector />
-        </Suspense>
+        <FilterSelector />
       </v-col>
     </v-row>
   </div>

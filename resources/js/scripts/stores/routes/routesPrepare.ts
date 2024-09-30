@@ -19,6 +19,7 @@ import { useElementAndCollectionStore } from '../collections/elementAndCollectio
 import { useModuleStore } from '../module'
 import { useNotificationsStore } from '../notifications'
 import { useItemStore } from '../item'
+import { useTrioStore } from '../trio/trio'
 
 import { useRoutesMainStore } from './routesMain'
 import { useRoutesParserStore } from './routesParser'
@@ -60,7 +61,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
         case 'module.clear':
           {
             //TODO commented because it forces an unnecessary loading of the trio store on landing page
-            // const { useTrioStore } = await import('../trio/trio')
             // const { resetTrio } = useTrioStore()
             // resetTrio()
           }
@@ -166,13 +166,11 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   }
 
   async function trioResetIndices() {
-    const { useTrioStore } = await import('../trio/trio')
     const { resetCategoryAndGroupIndices } = useTrioStore()
     resetCategoryAndGroupIndices()
   }
 
   async function loadModule(module: TModule): Promise<{ success: boolean; message: string }> {
-    const { useTrioStore } = await import('../trio/trio')
     const { setTrio, resetTrio } = useTrioStore()
     resetTrio()
 
@@ -209,8 +207,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     query: LocationQuery,
   ): Promise<{ success: boolean; message: string }> {
     const { setCollectionArray } = useCollectionsStore()
-    const { useTrioStore } = await import('../trio/trio')
-    // const { useFilterStore } = await import('../trio/filter')
     const { clearFilterOptions } = useTrioStore()
     const { apiQueryPayload } = storeToRefs(useTrioStore())
 

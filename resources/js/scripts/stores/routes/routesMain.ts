@@ -17,7 +17,8 @@ import { useRoutesPlanTransitionStore } from './routesPlanTransition'
 import { useRoutesPrepareStore } from './routesPrepare'
 import { useAuthStore } from '../auth'
 import { useModuleStore } from '../module'
-
+import { useTrioStore } from '../trio/trio'
+import { useElementAndCollectionStore } from '../collections/elementAndCollection'
 import { useNotificationsStore } from '../notifications'
 
 export const useRoutesMainStore = defineStore('routesMain', () => {
@@ -254,9 +255,6 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
   }
 
   async function moveToRelatedItem(module: TModule, id: string) {
-    const { useTrioStore } = await import('../trio/trio')
-    const { useElementAndCollectionStore } = await import('../collections/elementAndCollection')
-    const { useModuleStore } = await import('../module')
     const { indexByArrayElement } = useElementAndCollectionStore()
     const { clearFilterOptions } = useTrioStore()
     const { tagAndSlugFromId } = useModuleStore()

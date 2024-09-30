@@ -3,9 +3,7 @@
     Filters
     <v-tooltip activator="parent" location="bottom left">
       <v-text-field>{{ tip }}</v-text-field>
-      <Suspense>
-        <FilterSelected source="Filter" />
-      </Suspense>
+      <FilterSelected source="Filter" />
     </v-tooltip>
   </v-btn>
 </template>

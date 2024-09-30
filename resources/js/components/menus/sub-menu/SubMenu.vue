@@ -1,16 +1,11 @@
 <template>
   <v-app-bar :height="35">
     <v-app-bar-nav-icon class="hidden-md-and-up" @click="showDrawer = !showDrawer" />
-    <Suspense>
-      <component :is="menu?.elements" />
-    </Suspense>
+    <component :is="menu?.elements" />
   </v-app-bar>
 
   <v-navigation-drawer v-model="showDrawer" temporary color="blue-grey darken-4">
-    <Suspense>
-      <component :is="menu!.drawer" />
-    </Suspense>
-
+    <component :is="menu!.drawer" />
   </v-navigation-drawer>
 </template>
 

@@ -31,8 +31,7 @@ import { storeToRefs } from 'pinia'
 import { useAuthStore } from '../../../../scripts/stores/auth'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 import { useItemStore } from '../../../../scripts/stores/item'
-
-
+import { useCollectionMediaStore } from '../../../../scripts/stores/collections/collectionMedia'
 import { useNotificationsStore } from '../../../../scripts/stores/notifications'
 
 const { routerPush } = useRoutesMainStore()
@@ -76,7 +75,6 @@ async function goToTagger() {
 }
 
 async function itemDelete() {
-  const { useCollectionMediaStore } = await import('../../../../scripts/stores/collections/collectionMedia')
   const { array } = storeToRefs(useCollectionMediaStore())
 
   if (array.value.length > 0) {

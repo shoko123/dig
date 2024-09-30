@@ -3,14 +3,10 @@
     <v-container fluid class="ma-0">
       <v-row wrap dense>
         <v-col md="12" lg="3" class="d-flex flex-column">
-          <Suspense>
-            <TaggerSelected source="Tagger" />
-          </Suspense>
+          <TaggerSelected source="Tagger" />
         </v-col>
         <v-col md="12" lg="9" class="d-flex flex-column">
-          <Suspense>
-            <ItemTagger />
-          </Suspense>
+          <ItemTagger />
           <ItemCard class="mt-2" />
         </v-col>
       </v-row>

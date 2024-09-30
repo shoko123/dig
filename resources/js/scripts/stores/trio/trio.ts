@@ -16,6 +16,7 @@ import type { TFields, TFieldInfo, TFieldValue } from '@/types/moduleTypes'
 import type { TApiFilters } from '@/types/routesTypes'
 import { useTrioNormalizerStore } from './trioNormalizer'
 import { useRoutesMainStore } from '../routes/routesMain'
+import { useModuleStore } from '../module'
 
 export const useTrioStore = defineStore('trio', () => {
   const { normalizetrio } = useTrioNormalizerStore()
@@ -419,7 +420,6 @@ export const useTrioStore = defineStore('trio', () => {
 
   async function setTrio(apiTrio: TApiTrio) {
     resetTrio()
-    const { useModuleStore } = await import('../module')
     const { getCategorizer } = useModuleStore()
     categorizer.value = getCategorizer()
     const res = await normalizetrio(apiTrio, categorizer.value)

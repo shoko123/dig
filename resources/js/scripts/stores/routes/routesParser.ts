@@ -7,6 +7,7 @@ import type { LocationQuery } from 'vue-router'
 import type { TGroupBase } from '@/types/trioTypes'
 
 import { useModuleStore } from '../module'
+import { useTrioStore } from '../trio/trio'
 
 export const useRoutesParserStore = defineStore('routesParser', () => {
   const { urlModuleNameToModule } = storeToRefs(useModuleStore())
@@ -33,7 +34,6 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
   }
 
   async function parseUrlQuery(qp: LocationQuery) {
-    const { useTrioStore } = await import('../trio/trio')
     //console.log(`urlQueryToApiFilters().urlQuery: ${JSON.stringify(qp, null, 2)}`);
     const { trio, groupLabelToGroupKeyObj, filterAllOptions } = storeToRefs(useTrioStore())
 
@@ -104,7 +104,6 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
     optionTexts: string[],
     selectedFilters: string[],
   ) {
-    const { useTrioStore } = await import('../trio/trio')
     const { trio } = storeToRefs(useTrioStore())
     for (const x of optionTexts) {
       const i = group.optionKeys.findIndex((y) => trio.value.optionsObj[y]!.text === x)
@@ -124,7 +123,6 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
     optionTexts: string[],
     filterAllOptions: string[],
   ) {
-    const { useTrioStore } = await import('../trio/trio')
     const { trio, orderByOptions } = storeToRefs(useTrioStore())
     const selected: string[] = []
 
@@ -160,7 +158,6 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
     optionTexts: string[],
     filterAllOptions: string[],
   ) {
-    const { useTrioStore } = await import('../trio/trio')
     const { trio } = storeToRefs(useTrioStore())
     if (optionTexts.length > 6) {
       return {

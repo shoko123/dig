@@ -2,19 +2,14 @@ import { defineStore, storeToRefs } from 'pinia'
 import type { TArray } from '@/types/collectionTypes'
 import { useXhrStore } from '../xhr'
 import { useModuleStore } from '../module'
+import { useTrioStore } from './trio'
 
 export const useFilterStore = defineStore('filter', () => {
+  const trioStore = useTrioStore()
   const { send } = useXhrStore()
   const { module } = storeToRefs(useModuleStore())
 
-  async function getTrioStore() {
-    const { useTrioStore } = await import('./trio')
-    return useTrioStore()
-  }
-
-  async function filtersToQueryObject() {
-    const trioStore = await getTrioStore()
-
+  function filtersToQueryObject() {
     const q: {
       [key: string]: string
     } = {}
@@ -39,7 +34,6 @@ export const useFilterStore = defineStore('filter', () => {
   }
 
   async function getCount() {
-    const trioStore = await getTrioStore()
     const res = await send<TArray[]>('module/index', 'post', {
       module: module.value,
       query: trioStore.apiQueryPayload,
@@ -51,8 +45,7 @@ export const useFilterStore = defineStore('filter', () => {
   //   return (<TGroupBase>currentGroup.value).optionKeys
   // })
 
-  async function searchTextChanged(index: number, val: string) {
-    const trioStore = await getTrioStore()
+  function searchTextChanged(index: number, val: string) {
     const textSearchOptionKeys = trioStore.currentGroup?.optionKeys
     const optionKey = textSearchOptionKeys![index]!
     //console.log(`changeOccured() index: ${index} setting option with key ${optionKey} to: ${val}`)
@@ -69,8 +62,7 @@ export const useFilterStore = defineStore('filter', () => {
     }
   }
 
-  async function searchTextClearCurrent() {
-    const trioStore = await getTrioStore()
+  function searchTextClearCurrent() {
     console.log(`clear()`)
     const textSearchOptionKeys = trioStore.currentGroup?.optionKeys
     textSearchOptionKeys!.forEach((x) => {
@@ -87,8 +79,7 @@ export const useFilterStore = defineStore('filter', () => {
   //order by
   ///////////
 
-  async function orderOptionClicked(index: number, asc: boolean) {
-    const trioStore = await getTrioStore()
+  function orderOptionClicked(index: number, asc: boolean) {
     const orderByOptions = trioStore.orderByGroup?.optionKeys.map((x) => {
       return { ...trioStore.trio.optionsObj[x], key: x }
     })
@@ -111,8 +102,7 @@ export const useFilterStore = defineStore('filter', () => {
     trioStore.filterAllOptions.push(firstEmptyOption.key)
   }
 
-  async function orderByClear() {
-    const trioStore = await getTrioStore()
+  function orderByClear() {
     console.log(`orderClear`)
     trioStore.orderByGroup?.optionKeys.forEach((x) => {
       trioStore.trio.optionsObj[x]!.text = ''

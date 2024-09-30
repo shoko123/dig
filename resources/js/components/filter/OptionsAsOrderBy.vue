@@ -69,22 +69,22 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-const { useTrioStore } = await import('../../scripts/stores/trio/trio')
+import { useTrioStore } from '../../scripts/stores/trio/trio'
+import { useFilterStore } from '../../scripts/stores/trio/filter'
 const { orderByAvailable, orderBySelected } = storeToRefs(useTrioStore())
 
-async function getFilterStore() {
-  const { useFilterStore } = await import('../../scripts/stores/trio/filter')
+function getFilterStore() {
   return useFilterStore()
 }
 
-async function orderOptionClicked(index: number, asc: boolean) {
-  const filterStore = await getFilterStore()
-  await filterStore.orderOptionClicked(index, asc)
+function orderOptionClicked(index: number, asc: boolean) {
+  const filterStore = getFilterStore()
+  filterStore.orderOptionClicked(index, asc)
 }
 
-async function orderByClear() {
-  const filterStore = await getFilterStore()
-  await filterStore.orderByClear()
+function orderByClear() {
+  const filterStore = getFilterStore()
+  filterStore.orderByClear()
 }
 
 const selected = computed(() => {

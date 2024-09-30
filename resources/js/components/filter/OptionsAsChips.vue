@@ -8,7 +8,8 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-const { useTrioStore } = await import('../../scripts/stores/trio/trio')
+import { useTrioStore } from '../../scripts/stores/trio/trio'
+
 const trioStore = useTrioStore()
 
 const options = computed(() => {
