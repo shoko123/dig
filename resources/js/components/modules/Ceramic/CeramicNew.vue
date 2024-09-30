@@ -3,7 +3,11 @@
     <v-row wrap no-gutters>
       <template v-if="props.isCreate">
         <id-selector>
-          <template #specific-id-selctor>
+          <template #id-selector-activator>
+            <v-btn v-model="newFields.id" label="tag" class="bg-grey text-black my-5"
+              @click="openIdSelectorModal = true">NEW ID: "{{ nf.id }}"</v-btn>
+          </template>
+          <template #id-selector-form>
             <CeramicIdSelector></CeramicIdSelector>
           </template>
         </id-selector>
@@ -45,7 +49,7 @@ const defaultsAndRules: TFieldsDefaultsAndRules<'Ceramic'> = {
   id_year: { d: 20, r: { required, between: between(20, 24) } },
   id_object_no: { d: 1, r: { required, between: between(1, 9) } },
   field_description: { d: '', r: { maxLength: maxLength(50) } },
-  specialist_description: { d: '4', r: { maxLength: maxLength(50) } },
+  specialist_description: { d: '', r: { maxLength: maxLength(50) } },
   notes: { d: '', r: { maxLength: maxLength(50) } },
   base_type_id: { d: 1, r: { required, between: between(1, 9) } },
 }

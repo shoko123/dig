@@ -8,10 +8,7 @@
           @update:model-value="objNoSelected"></v-select>
       </v-row>
       <v-row>
-        <v-btn class="bg-grey text-black my-4">{{ label }}</v-btn>
-      </v-row>
-      <v-row>
-        <v-btn class="mx-4" :disabled="objectNo === undefined" @click="accept">Accept</v-btn>
+        <v-btn class="ma-5" :disabled="!ready" @click="accept">{{ label }}</v-btn>
       </v-row>
     </v-card-text>
   </v-card>
@@ -24,7 +21,10 @@ import type { TFields, TFieldInfo } from '@/types/moduleTypes'
 import { useItemNewStore } from '../../../scripts/stores/itemNew'
 
 onMounted(() => {
-  yearSelected(20)
+  year.value = nf.value.id_year
+  if (availableObjectNos.value.length > 0) {
+    objectNo.value = nf.value.id_object_no
+  }
 })
 
 const { openIdSelectorModal, newFields, fieldsWithOptions, currentIds } = storeToRefs(useItemNewStore())
@@ -46,8 +46,12 @@ const yearInfo = computed(() => {
   return ceramicFieldsWithOptions.value['id_year']!
 })
 
+const ready = computed(() => {
+  return objectNo.value !== undefined
+})
+
 const label = computed(() => {
-  return objectNo.value === undefined ? `ID not set` : `20${year.value}.${objectNo.value}`
+  return ready.value ? `20${year.value}.${objectNo.value}` : `ID not set`
 })
 
 const availableObjectNos = computed(() => {

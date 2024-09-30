@@ -1,9 +1,14 @@
 <template>
   <v-container fluid class="pa-1 ma-0">
-    <v-row wrap no-gutters>
+    <div class="d-flex">
+      <!-- <v-row wrap no-gutters> -->
       <template v-if="props.isCreate">
         <id-selector>
-          <template #specific-id-selctor>
+          <template #id-selector-activator>
+            <v-btn v-model="newFields.id" label="tag" class="bg-grey text-black my-1"
+              @click="openIdSelectorModal = true">NEW ID: "{{ nf.id }}"</v-btn>
+          </template>
+          <template #id-selector-form>
             <StoneIdSelector></StoneIdSelector>
           </template>
         </id-selector>
@@ -21,8 +26,8 @@
       <v-text-field v-model="nf.excavation_object_id" label="Excavation Object Id"
         :error-messages="errors.excavation_object_id" class="mr-1" filled :disabled="inOC" />
       <v-text-field v-model="nf.old_museum_id" label="Old Museum Id" class="mr-1" filled :disabled="inOC" />
-    </v-row>
-
+      <!-- </v-row> -->
+    </div>
     <v-row wrap no-gutters>
       <v-select v-model="nf.cataloger_id" label="Select" item-title="text" item-value="extra"
         :items="catalogerInfo.options"></v-select>
