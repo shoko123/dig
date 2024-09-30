@@ -14,7 +14,7 @@
     <v-row wrap no-gutters>
       <v-text-field v-model="item.id" label="Label" class="mr-1" filled readonly />
       <v-text-field v-model="item.excavation_object_id" label="Excavation Object ID" class="mr-1" filled readonly />
-      <v-text-field v-model="item.old_museum_id" label="Old Museum ID" class="mr-1" filled readonly />
+      <v-text-field v-model="old_museum_id" label="Old Museum ID" class="mr-1" filled readonly />
       <v-text-field v-model="item.excavation_date" label="Excavation Date" class="mr-1" filled readonly />
     </v-row>
     <v-row wrap no-gutters>
@@ -46,13 +46,20 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { TFieldsTexts, } from '@/types/moduleTypes'
+import { TFields, TFieldsTexts, } from '@/types/moduleTypes'
 import { useItemStore } from '../../../scripts/stores/item'
 
-let { tag, fieldsTexts } = storeToRefs(useItemStore())
+// 'fields' contains actual values; 'fieldsTexts' - labels related to the value. e.g. value in lookup table
+let { tag, fieldsTexts, fields } = storeToRefs(useItemStore())
 
 const item = computed(() => {
   return <TFieldsTexts<'Stone'>>fieldsTexts.value
+})
+
+// old_museum_id is the only Categorized field. The actual value is in 'fields'
+const old_museum_id = computed(() => {
+  const stoneFields = fields.value as TFields<'Stone'>
+  return stoneFields.old_museum_id
 })
 
 const inOC = computed(() => {
