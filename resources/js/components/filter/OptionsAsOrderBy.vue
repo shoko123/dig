@@ -42,13 +42,6 @@
           <v-card-title class="bg-grey text-black py-0 mb-4"> SELECTED </v-card-title>
           <v-card-item>
             <v-table>
-              <!-- <thead>
-                <tr>
-                  <th class="text-left">
-                    Name
-                  </th>
-                </tr>
-              </thead> -->
               <tbody>
                 <tr v-for="(item, index) in selected" :key="index">
                   <td>
@@ -72,20 +65,7 @@ import { storeToRefs } from 'pinia'
 import { useTrioStore } from '../../scripts/stores/trio/trio'
 import { useFilterStore } from '../../scripts/stores/trio/filter'
 const { orderByAvailable, orderBySelected } = storeToRefs(useTrioStore())
-
-function getFilterStore() {
-  return useFilterStore()
-}
-
-function orderOptionClicked(index: number, asc: boolean) {
-  const filterStore = getFilterStore()
-  filterStore.orderOptionClicked(index, asc)
-}
-
-function orderByClear() {
-  const filterStore = getFilterStore()
-  filterStore.orderByClear()
-}
+const { orderOptionClicked, orderByClear } = useFilterStore()
 
 const selected = computed(() => {
   return orderBySelected.value.map((x) => {

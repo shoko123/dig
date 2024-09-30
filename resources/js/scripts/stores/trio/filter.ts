@@ -114,8 +114,6 @@ export const useFilterStore = defineStore('filter', () => {
   }
 
   return {
-    // filterAllOptions,
-    // apiQueryPayload,
     orderOptionClicked,
     orderByClear,
     filtersToQueryObject,
