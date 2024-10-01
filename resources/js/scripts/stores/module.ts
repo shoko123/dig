@@ -104,7 +104,10 @@ export const useModuleStore = defineStore('module', () => {
     return details[module.value].categorizerObj
   }
 
-  function slugToId(m: TModule, slug: string) {
+  function slugToId(
+    m: TModule,
+    slug: string,
+  ): { success: true; id: string } | { success: false; message: string } {
     if (!details[m].regexp.test(slug)) {
       return {
         success: false,

@@ -12,28 +12,32 @@ import type { TPlanAction } from '@/types/routesTypes'
 import type { TApiFields, TApiModuleInit, TModule } from '@/types/moduleTypes'
 import type { TApiItemShow } from '@/types/itemTypes'
 import type { LocationQuery } from 'vue-router'
-import { useXhrStore } from '../xhr'
-
-import { useCollectionsStore } from '../collections/collections'
-import { useElementAndCollectionStore } from '../collections/elementAndCollection'
-import { useModuleStore } from '../module'
-import { useNotificationsStore } from '../notifications'
-import { useItemStore } from '../item'
-import { useTrioStore } from '../trio/trio'
+import type { TArray } from '@/types/collectionTypes'
 
 import { useRoutesMainStore } from './routesMain'
 import { useRoutesParserStore } from './routesParser'
-import { TArray } from '@/types/collectionTypes'
+import { useXhrStore } from '../xhr'
+import { useModuleStore } from '../module'
+import { useTrioStore } from '../trio/trio'
+
+import { useNotificationsStore } from '../notifications'
+import { useCollectionsStore } from '../collections/collections'
+import { useItemStore } from '../item'
+import { useElementAndCollectionStore } from '../collections/elementAndCollection'
 
 export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
-  const { send } = useXhrStore()
+  const r = useRoutesMainStore()
+
   const n = useNotificationsStore()
   const c = useCollectionsStore()
   const i = useItemStore()
-  const r = useRoutesMainStore()
-  const { parseSlug, parseUrlQuery } = useRoutesParserStore()
 
+  const { parseSlug, parseUrlQuery } = useRoutesParserStore()
+  const { send } = useXhrStore()
   const { setModuleInfo } = useModuleStore()
+
+  const { indices } = storeToRefs(useElementAndCollectionStore())
+  const { setIndexByElement } = useElementAndCollectionStore()
 
   const fromUndef = ref<boolean>(false)
 
@@ -109,7 +113,8 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           break
 
         case 'item.setIndexInCollection':
-          if (!setItemIndexInCollectionMain()) {
+          setItemIndexInCollectionMain()
+          if (indices.value.Show.index === -1) {
             return { success: false, message: 'Error: Item not found in Collection.' }
           }
           break
@@ -271,7 +276,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       'main',
       info.viewName,
       info.itemsPerPage,
-      firstPage ? 0 : i.itemIndex,
+      firstPage ? 0 : indices.value.Show.index,
       <TModule>r.to.module,
     )
     return res
@@ -279,16 +284,16 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
   function setItemIndexInCollectionMain() {
     //console.log(`prepare.setItemIndexInCollectionMain()`)
-    const { indexByArrayElement } = useElementAndCollectionStore()
 
-    const itemIndex = indexByArrayElement('main', i.fields.id!)
-    if (itemIndex === -1) {
-      i.itemIndex = -1
-      return false
-    } else {
-      i.itemIndex = itemIndex
-      return true
-    }
+    setIndexByElement('Show', 'main', i.fields.id!)
+    // const itemIndex = indexByArrayElement('main', i.fields.id!)
+    // if (itemIndex === -1) {
+    //   i.itemIndex = -1
+    //   return false
+    // } else {
+    //   i.itemIndex = itemIndex
+    //   return true
+    // }
   }
 
   async function prepareForNewItem(module: TModule, isCreate: boolean) {

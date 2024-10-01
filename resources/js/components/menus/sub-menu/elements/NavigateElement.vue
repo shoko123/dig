@@ -17,20 +17,22 @@ import { useModuleStore } from '../../../../scripts/stores/module'
 import { useItemStore } from '../../../../scripts/stores/item'
 import { useElementAndCollectionStore } from '../../../../scripts/stores/collections/elementAndCollection'
 
-const { derived, itemIndex } = storeToRefs(useItemStore())
+const { derived } = storeToRefs(useItemStore())
+const { setNextIndex, getElement } = useElementAndCollectionStore()
+const { indices } = storeToRefs(useElementAndCollectionStore())
 const { routerPush } = useRoutesMainStore()
 const { inTransition, current } = storeToRefs(useRoutesMainStore())
 const { getCollectionStore } = useCollectionsStore()
 const { tagAndSlugFromId } = useModuleStore()
 const mcs = getCollectionStore('main')
+
 const tag = computed(() => {
-  return derived.value.tag ? `${derived.value.tag} (${itemIndex.value + 1}/${mcs.array.length})` : `...`
+  return derived.value.tag ? `${derived.value.tag} (${indices.value.Show.index + 1}/${mcs.array.length})` : `...`
 })
 
 async function next(isRight: boolean) {
-  const { nextArrayElement } = useElementAndCollectionStore()
-  const nextItem = nextArrayElement('main', itemIndex.value, isRight)
-  const tagAndSlug = tagAndSlugFromId(<string>nextItem.item, current.value.module)
+  setNextIndex('Show', isRight)
+  const tagAndSlug = tagAndSlugFromId(getElement('Show') as string, current.value.module)
   await routerPush('show', tagAndSlug.slug)
 }
 </script>

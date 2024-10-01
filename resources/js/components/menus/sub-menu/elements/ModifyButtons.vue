@@ -96,7 +96,7 @@ async function itemDelete() {
   }
 
   if (res.slug === null) {
-    showSnackbar('Item deleted successfully. Redirected to Welcome page')
+    showSnackbar('Item deleted successfully. Current result-set is empty - Redirected to Welcome page')
     await routerPush('welcome', 'none')
   } else {
     showSnackbar('Item deleted successfully.')

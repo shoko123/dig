@@ -11,24 +11,23 @@ import { useXhrStore } from './xhr'
 import { useModuleStore } from './module'
 import { useTrioStore } from './trio/trio'
 import { dateStringFromDate } from '../../scripts/utils/utils'
+
 export const useItemStore = defineStore('item', () => {
   const { current } = storeToRefs(useRoutesMainStore())
-  const { getCollectionStore, setCollectionArray } = useCollectionsStore()
-  const { tagAndSlugFromId } = useModuleStore()
-  const { module } = storeToRefs(useModuleStore())
-  const { send } = useXhrStore()
   const { getFieldsOptions, setItemAllOptions } = useTrioStore()
   const { groupLabelToGroupKeyObj, trio } = storeToRefs(useTrioStore())
-  const mcs = getCollectionStore('main')
+  const { tagAndSlugFromId } = useModuleStore()
+  const { module } = storeToRefs(useModuleStore())
+  const { getCollectionStore, setCollectionArray } = useCollectionsStore()
+  const { send } = useXhrStore()
+
   const fields = ref<Partial<TFields>>({})
   const slug = ref<string>('')
   const tag = ref<string>('')
   const short = ref<string>('')
-
   const ready = ref<boolean>(false)
   const itemViews = ref<string[]>([])
   const itemViewIndex = ref<number>(0)
-  const itemIndex = ref<number>(-1)
 
   const id = computed(() => {
     return fields.value.id
@@ -129,7 +128,6 @@ export const useItemStore = defineStore('item', () => {
   }
 
   function itemClear() {
-    itemIndex.value = -1
     fields.value = {}
     slug.value = ''
     short.value = ''
@@ -138,13 +136,12 @@ export const useItemStore = defineStore('item', () => {
     setCollectionArray('related', [])
   }
 
-  const mainArray = computed(() => {
-    return mcs.array as string[]
-  })
-
   async function itemRemove(): Promise<
     { success: true; slug: string | null } | { success: false; message: string }
   > {
+    const mcs = getCollectionStore('main')
+    const mainArray = mcs.array as string[]
+    const ecStore = useElementAndCollectionStore()
     const res = await send<{ deleted_id: string }>('module/destroy', 'post', {
       module: module.value,
       id: fields.value?.id,
@@ -154,21 +151,20 @@ export const useItemStore = defineStore('item', () => {
       return res
     }
 
-    const { nextArrayElement } = useElementAndCollectionStore()
-    const prevItem = nextArrayElement('main', itemIndex.value, false)
-    const tagAndSlug = tagAndSlugFromId(<string>prevItem.item, current.value.module)
-    const prevSlug = tagAndSlug.slug
-
-    const index = mainArray.value.indexOf(res.data.deleted_id)
-    if (index > -1) {
-      mainArray.value.splice(index, 1)
+    // If we splice at index 0, the index will remain 0, else move to one on left.
+    if (ecStore.indices.Show.index === 0) {
+      mainArray.splice(ecStore.indices.Show.index, 1)
+    } else {
+      ecStore.setNextIndex('Show', false)
+      mainArray.splice(ecStore.indices.Show.index + 1, 1)
     }
 
-    //return of slug === null means that is was the last element in the current array.
-    if (mainArray.value.length === 0) {
+    if (mainArray.length === 0) {
       return { success: true, slug: null }
     } else {
-      return { success: true, slug: prevSlug }
+      const id = ecStore.getElement('Show') as string
+      const tagAndSlug = tagAndSlugFromId(id, current.value.module)
+      return { success: true, slug: tagAndSlug.slug }
     }
   }
 
@@ -180,7 +176,6 @@ export const useItemStore = defineStore('item', () => {
     fields,
     id,
     derived,
-    itemIndex,
     itemClear,
     itemViews,
     itemViewIndex,

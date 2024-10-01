@@ -74,11 +74,13 @@ const counter = computed(() => {
 function mainHeader(item: TCarousel<'main'>) {
   return `${item?.module} ${item?.tag} ${counter.value}`
 }
+
 function relatedHeader(item: TCarousel<'related'>) {
   return smAndDown.value
     ? ``
     : `${item?.module} ${item?.tag}. Relation: ${item?.relation_name} ${counter.value}`
 }
+
 function mediaHeader() {
   return `${derived.value.moduleAndTag}: Media  ${counter.value}`
 }

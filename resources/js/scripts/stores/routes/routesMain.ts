@@ -18,8 +18,8 @@ import { useRoutesPrepareStore } from './routesPrepare'
 import { useAuthStore } from '../auth'
 import { useModuleStore } from '../module'
 import { useTrioStore } from '../trio/trio'
-import { useElementAndCollectionStore } from '../collections/elementAndCollection'
 import { useNotificationsStore } from '../notifications'
+import { useElementAndCollectionStore } from '../collections/elementAndCollection'
 
 export const useRoutesMainStore = defineStore('routesMain', () => {
   const router = useRouter()
@@ -143,7 +143,6 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
   function authorize(path: string) {
     //has to be here to prevent circular reference
     const { authenticated, accessibility } = storeToRefs(useAuthStore())
-
     if (path === '/auth/login' || path === '/') {
       return true
     }
