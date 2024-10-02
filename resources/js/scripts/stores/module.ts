@@ -1,6 +1,5 @@
 // stores/module.ts
-import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+
 import type {
   TApiModuleInit,
   TModule,
@@ -12,7 +11,11 @@ import type {
   TObjModuleDetails,
 } from '../../types/moduleTypes'
 
-import { TCName } from '@/types/collectionTypes'
+import type { TCName } from '@/types/collectionTypes'
+type TItemViews = { options: string[]; index: number }
+
+import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
 
 export const useModuleStore = defineStore('module', () => {
   const module = ref<TModule>('Locus')
@@ -21,24 +24,7 @@ export const useModuleStore = defineStore('module', () => {
   const firstSlug = ref<string>('')
   const itemsPerPage = ref<TItemsPerPageByView>({ Gallery: 0, Tabular: 0, Chips: 0 })
   const collectionViews = ref<TViewsForCollection>({ main: [], media: [], related: [] })
-
-  const moduleToUrlModuleName = ref<TModuleToUrlName>({
-    Ceramic: 'ceramics',
-    Locus: 'loci',
-    Stone: 'stones',
-  })
-
-  const urlModuleNameToModule = ref<TUrlModuleNameToModule>(inverse(moduleToUrlModuleName.value))
-
-  function inverse<T extends TModuleToUrlName>(obj: T): TUrlModuleNameToModule {
-    const tmpMap = new Map()
-    let res: Partial<TUrlModuleNameToModule> = {}
-    Object.entries(obj).forEach(([key, value]) => {
-      tmpMap.set(value, key)
-    })
-    res = Object.fromEntries(tmpMap.entries())
-    return res as TUrlModuleNameToModule
-  }
+  const itemViews = ref<TItemViews>({ options: [], index: -1 })
 
   const details: TObjModuleDetails = {
     Ceramic: {
@@ -77,13 +63,45 @@ export const useModuleStore = defineStore('module', () => {
     firstSlug.value = ts.slug
     itemsPerPage.value = initData.display_options.items_per_page
     collectionViews.value = initData.display_options.collection_views
+    itemViews.value.index = 0
+    itemViews.value.options = initData.display_options.item_views
+  }
+
+  const moduleToUrlModuleName = ref<TModuleToUrlName>({
+    Ceramic: 'ceramics',
+    Locus: 'loci',
+    Stone: 'stones',
+  })
+
+  function setNextItemView() {
+    itemViews.value.index = (itemViews.value.index + 1) % itemViews.value.options.length
+  }
+
+  function resetItemView() {
+    itemViews.value.index = 0
+  }
+
+  const itemView = computed(() => {
+    return itemViews.value.options[itemViews.value.index]
+  })
+
+  const urlModuleNameToModule = ref<TUrlModuleNameToModule>(inverse(moduleToUrlModuleName.value))
+
+  function inverse<T extends TModuleToUrlName>(obj: T): TUrlModuleNameToModule {
+    const tmpMap = new Map()
+    let res: Partial<TUrlModuleNameToModule> = {}
+    Object.entries(obj).forEach(([key, value]) => {
+      tmpMap.set(value, key)
+    })
+    res = Object.fromEntries(tmpMap.entries())
+    return res as TUrlModuleNameToModule
   }
 
   function getItemsPerPage(collectionName: TCName, collectionViewIndex: number): number {
     return itemsPerPage.value[collectionViews.value[collectionName]![collectionViewIndex]!]!
   }
 
-  function getViewName(collectionName: TCName, collectionViewIndex: number) {
+  function getCollectionViewName(collectionName: TCName, collectionViewIndex: number) {
     return collectionViews.value[collectionName]![collectionViewIndex]!
   }
 
@@ -146,8 +164,12 @@ export const useModuleStore = defineStore('module', () => {
     slugToId,
     tagAndSlugFromId,
     getCollectionViews,
-    getViewName,
+    getCollectionViewName,
     getItemsPerPage,
     getCategorizer,
+    // item views
+    setNextItemView,
+    resetItemView,
+    itemView,
   }
 })

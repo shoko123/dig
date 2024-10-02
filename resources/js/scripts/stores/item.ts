@@ -26,20 +26,20 @@ export const useItemStore = defineStore('item', () => {
   const tag = ref<string>('')
   const short = ref<string>('')
   const ready = ref<boolean>(false)
-  const itemViews = ref<string[]>([])
-  const itemViewIndex = ref<number>(0)
+  // const itemViews = ref<string[]>([])
+  // const itemViewIndex = ref<number>(0)
 
   const id = computed(() => {
     return fields.value.id
   })
 
-  const itemView = computed(() => {
-    return itemViews.value[itemViewIndex.value]
-  })
+  // const itemView = computed(() => {
+  //   return itemViews.value[itemViewIndex.value]
+  // })
 
-  function setItemViewIndex(index: number) {
-    itemViewIndex.value = index
-  }
+  // function setItemViewIndex(index: number) {
+  //   itemViewIndex.value = index
+  // }
 
   const derived = computed(() => {
     return {
@@ -177,10 +177,10 @@ export const useItemStore = defineStore('item', () => {
     id,
     derived,
     itemClear,
-    itemViews,
-    itemViewIndex,
-    itemView,
-    setItemViewIndex,
+    // itemViews,
+    // itemViewIndex,
+    // itemView,
+    // setItemViewIndex,
     saveItemFields,
     saveitemFieldsPlus,
     itemRemove,

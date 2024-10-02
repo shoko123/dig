@@ -187,8 +187,8 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     c.resetCollectionsViewIndex()
     c.clear(['main'])
     i.itemClear()
-    i.setItemViewIndex(0)
-    i.itemViews = res.data.display_options.item_views
+    // i.setItemViewIndex(0)
+    // i.itemViews = res.data.display_options.item_views
 
     await setTrio(res.data.trio)
     return { success: true, message: '' }

@@ -15,7 +15,7 @@ import { useCollectionsStore } from './collections'
 
 export const useCollectionRelatedStore = defineStore('collectionRelated', () => {
   const { buildMedia } = useMediaStore()
-  const { tagAndSlugFromId, getViewName, getItemsPerPage } = useModuleStore()
+  const { tagAndSlugFromId, getCollectionViewName, getItemsPerPage } = useModuleStore()
   const { getConsumeableCollection } = useCollectionsStore()
 
   const pageNoB1 = ref(1)
@@ -49,7 +49,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
 
   const page = computed(() => {
     const ipp = getItemsPerPage('related', viewIndex.value)
-    const viewName = getViewName('related', viewIndex.value)
+    const viewName = getCollectionViewName('related', viewIndex.value)
     const start = (pageNoB1.value - 1) * ipp
     const slice = arrayData.value.slice(start, start + ipp)
     let res: unknown[] = []

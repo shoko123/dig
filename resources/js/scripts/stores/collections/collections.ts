@@ -9,7 +9,7 @@ import { useCollectionMediaStore } from './collectionMedia'
 import { useCollectionRelatedStore } from './collectionRelated'
 
 export const useCollectionsStore = defineStore('collections', () => {
-  const { getItemsPerPage, getViewName, getCollectionViews } = useModuleStore()
+  const { getItemsPerPage, getCollectionViewName, getCollectionViews } = useModuleStore()
   const { module } = storeToRefs(useModuleStore())
 
   function getCollectionStore(source: TCName) {
@@ -39,7 +39,7 @@ export const useCollectionsStore = defineStore('collections', () => {
     return {
       views: getCollectionViews(name), //.map(x => ECollectionViews[x]),
       viewIndex,
-      viewName: getViewName(name, viewIndex),
+      viewName: getCollectionViewName(name, viewIndex),
       itemsPerPage,
       pageNoB1,
       noOfItems: arrayLength,

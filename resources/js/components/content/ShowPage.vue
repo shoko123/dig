@@ -7,20 +7,23 @@
 <script lang="ts" setup>
 import type { Component } from 'vue'
 import { computed } from 'vue'
-import { useItemStore } from '../../scripts/stores/item'
+import { storeToRefs } from 'pinia'
+
+import { useModuleStore } from '../../scripts/stores/module'
 import ShowView0 from '../item/layouts/ShowView0.vue'
 import ShowView1 from '../item/layouts/ShowView1.vue'
 import ShowView2 from '../item/layouts/ShowView2.vue'
 
-let is = useItemStore()
+
+const { itemView } = storeToRefs(useModuleStore())
 
 const view = computed<Component>(() => {
-  switch (is.itemViewIndex) {
-    case 0:
+  switch (itemView.value) {
+    case 'Main':
       return ShowView0
-    case 1:
+    case 'Media':
       return ShowView1
-    case 2:
+    case 'Related':
       return ShowView2
     default:
       console.log(`Show.vue invalid itemViewIndex`)
