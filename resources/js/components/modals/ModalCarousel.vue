@@ -45,7 +45,7 @@ const { smAndDown } = useDisplay()
 const { close, nextItem } = useCarouselStore()
 const { showSpinner } = useNotificationsStore()
 const { pushHome } = useRoutesMainStore()
-const { isOpen, index, sourceArrayLength, collectionName, carouselComputed } =
+const { isOpen, sourceArrayLength, collectionName, carouselComputed, index } =
   storeToRefs(useCarouselStore())
 
 const { derived } = storeToRefs(useItemStore())

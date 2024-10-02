@@ -1,6 +1,6 @@
 import type { TCName, TArray, TPage } from '@/types/collectionTypes'
 
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 
 import { useCollectionsStore } from './collections'
@@ -16,6 +16,20 @@ export const useElementAndCollectionStore = defineStore('elementAndCollection', 
     Show: { index: -1, collectionName: 'main' },
     Carousel: { index: -1, collectionName: 'main' },
   })
+
+  // debug
+  const showElement = computed(() => {
+    return getElement('Show')
+  })
+
+  const carouselElement = computed(() => {
+    return getElement('Carousel')
+  })
+  // debug end
+  function setElementIndex(indexName: TIndexName, collectionName: TCName, index: number) {
+    indices.value[indexName].collectionName = collectionName
+    indices.value[indexName].index = index
+  }
 
   function setIndexByElement(indexName: TIndexName, collectionName: TCName, element: TArray) {
     const c = getCollectionStore(collectionName)
@@ -103,6 +117,11 @@ export const useElementAndCollectionStore = defineStore('elementAndCollection', 
 
   return {
     indices,
+    // debug
+    showElement,
+    carouselElement,
+    // debug- end
+    setElementIndex,
     setIndexByElement,
     resetElementIndex,
     setNextIndex,
