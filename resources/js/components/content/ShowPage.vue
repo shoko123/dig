@@ -26,7 +26,7 @@ const view = computed<Component>(() => {
     case 'Related':
       return ShowView2
     default:
-      console.log(`Show.vue invalid itemViewIndex`)
+      console.log(`Show.vue invalid itemView: "${itemView.value}"`)
       return ShowView0
   }
 })

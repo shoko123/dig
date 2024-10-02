@@ -26,6 +26,13 @@ export const useModuleStore = defineStore('module', () => {
   const collectionViews = ref<TViewsForCollection>({ main: [], media: [], related: [] })
   const itemViews = ref<TItemViews>({ options: [], index: -1 })
 
+  // Next 2 structures define the modules and their required properties.
+  const moduleToUrlModuleName = ref<TModuleToUrlName>({
+    Ceramic: 'ceramics',
+    Locus: 'loci',
+    Stone: 'stones',
+  })
+
   const details: TObjModuleDetails = {
     Ceramic: {
       regexp: new RegExp(/^\d{2}.\d{1}$/),
@@ -67,24 +74,7 @@ export const useModuleStore = defineStore('module', () => {
     itemViews.value.options = initData.display_options.item_views
   }
 
-  const moduleToUrlModuleName = ref<TModuleToUrlName>({
-    Ceramic: 'ceramics',
-    Locus: 'loci',
-    Stone: 'stones',
-  })
-
-  function setNextItemView() {
-    itemViews.value.index = (itemViews.value.index + 1) % itemViews.value.options.length
-  }
-
-  function resetItemView() {
-    itemViews.value.index = 0
-  }
-
-  const itemView = computed(() => {
-    return itemViews.value.options[itemViews.value.index]
-  })
-
+  // Construct necessary module related structures (access by module instead of url_module).
   const urlModuleNameToModule = ref<TUrlModuleNameToModule>(inverse(moduleToUrlModuleName.value))
 
   function inverse<T extends TModuleToUrlName>(obj: T): TUrlModuleNameToModule {
@@ -97,6 +87,12 @@ export const useModuleStore = defineStore('module', () => {
     return res as TUrlModuleNameToModule
   }
 
+  // Required by trio to handle categorized item fields.
+  function getCategorizer() {
+    return details[module.value].categorizerObj
+  }
+
+  // Collection views related functionality
   function getItemsPerPage(collectionName: TCName, collectionViewIndex: number): number {
     return itemsPerPage.value[collectionViews.value[collectionName]![collectionViewIndex]!]!
   }
@@ -108,18 +104,13 @@ export const useModuleStore = defineStore('module', () => {
   function getCollectionViews(collectionName: TCName) {
     return collectionViews.value[collectionName]!
   }
-  /*
-   * if module is not included, use current (we include it e.g. when we want tags of related item)
-   */
-  function tagAndSlugFromId(id: string, m?: TModule) {
-    const mod = m === undefined ? module.value : m
 
+  // id, tag and slug conversions
+  function tagAndSlugFromId(id: string, m?: TModule) {
+    // If the module is not provided, use current.
+    const mod = m === undefined ? module.value : m
     const func = details[mod].idToSlugTag
     return func(id)
-  }
-
-  function getCategorizer() {
-    return details[module.value].categorizerObj
   }
 
   function slugToId(
@@ -150,6 +141,19 @@ export const useModuleStore = defineStore('module', () => {
     return arr
   })
 
+  // item views related
+  function setNextItemView() {
+    itemViews.value.index = (itemViews.value.index + 1) % itemViews.value.options.length
+  }
+
+  function resetItemView() {
+    itemViews.value.index = 0
+  }
+
+  const itemView = computed(() => {
+    return itemViews.value.options[itemViews.value.index]
+  })
+
   return {
     setModuleInfo,
     module,
@@ -167,9 +171,8 @@ export const useModuleStore = defineStore('module', () => {
     getCollectionViewName,
     getItemsPerPage,
     getCategorizer,
-    // item views
+    itemView,
     setNextItemView,
     resetItemView,
-    itemView,
   }
 })
