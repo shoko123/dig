@@ -43,7 +43,7 @@ export const useTrioStore = defineStore('trio', () => {
     let optionKey: string | undefined
     let val: TFieldValue = 0
 
-    console.log(`getFieldsOptions() fields:${JSON.stringify(fields, null, 2)}`)
+    // console.log(`getFieldsOptions() fields:${JSON.stringify(fields, null, 2)}`)
 
     Object.entries(fieldsToGroupKeyObj.value).forEach(([key, value]) => {
       // console.log(`[key: ${key}] => ${value}`)
@@ -377,7 +377,7 @@ export const useTrioStore = defineStore('trio', () => {
     }
   })
 
-  function resetTrio() {
+  function clearTrio() {
     clearFilterOptions()
     clearTaggerOptions()
     itemAllOptions.value = []
@@ -419,7 +419,7 @@ export const useTrioStore = defineStore('trio', () => {
   }
 
   async function setTrio(apiTrio: TApiTrio) {
-    resetTrio()
+    clearTrio()
     const { getCategorizer } = useModuleStore()
     categorizer.value = getCategorizer()
     const res = await normalizetrio(apiTrio, categorizer.value)
@@ -711,7 +711,7 @@ export const useTrioStore = defineStore('trio', () => {
     orderBySelected,
     groups,
     textSearchValues,
-    resetTrio,
+    clearTrio,
     setTrio,
     categoryIndex,
     groupIndex,

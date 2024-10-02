@@ -42,16 +42,16 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
 
     switch (to.name) {
       case 'home':
-        return { success: true, data: ['item.clear', 'collection.clear', 'module.clear'] }
+        return { success: true, data: ['clear.item', 'clear.collection', 'clear.module'] }
 
       case 'welcome':
         switch (from.name) {
           case 'home':
-            return { success: true, data: ['module.load'] }
+            return { success: true, data: ['load.module'] }
 
           case 'welcome':
             if (changed.module) {
-              return { success: true, data: ['module.load', 'item.clear', 'collection.clear'] }
+              return { success: true, data: ['load.module', 'clear.item', 'clear.collection'] }
             } else {
               console.log('routes - welcome -> welcome with the same module')
               return { success: true, data: [] }
@@ -60,13 +60,13 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
           case 'filter':
             return {
               success: true,
-              data: ['trio.reset.indices'],
+              data: ['resetIndices.trio'],
             }
           case 'index':
             if (changed.module) {
               return {
                 success: true,
-                data: ['module.load', 'item.clear', 'collection.clear'],
+                data: ['load.module', 'clear.item', 'clear.collection'],
               }
             } else {
               console.log("routes - 'filter' or 'index' -> 'welcome' with the same module")
@@ -77,10 +77,10 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
             if (changed.module) {
               return {
                 success: true,
-                data: ['item.clear', 'collection.clear', 'module.clear', 'module.load'],
+                data: ['clear.item', 'clear.collection', 'clear.module', 'load.module'],
               }
             } else {
-              return { success: true, data: ['item.clear'] }
+              return { success: true, data: ['clear.item'] }
             }
 
           default:
@@ -91,18 +91,18 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
       case 'filter':
         switch (from.name) {
           case 'home':
-            return { success: true, data: ['module.load'] }
+            return { success: true, data: ['load.module'] }
 
           case 'index':
-            return { success: true, data: ['collection.clear', 'item.clear'] }
+            return { success: true, data: ['clear.collection', 'clear.item'] }
 
           case 'welcome':
           case 'show':
             if (changed.module) {
-              return { success: true, data: ['module.load', 'collection.clear', 'item.clear'] }
+              return { success: true, data: ['load.module', 'clear.collection', 'clear.item'] }
             } else {
               console.log('routes - filter from the same module')
-              return { success: true, data: ['collection.clear', 'item.clear'] }
+              return { success: true, data: ['clear.collection', 'clear.item'] }
             }
 
           default:
@@ -112,19 +112,19 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
       case 'index':
         switch (from.name) {
           case 'home':
-            return { success: true, data: ['module.load', 'collection.load', 'page.load1'] }
+            return { success: true, data: ['load.module', 'load.collection', 'load.firstPage'] }
           case 'welcome':
             if (changed.module) {
-              return { success: true, data: ['module.load', 'collection.load', 'page.load1'] }
+              return { success: true, data: ['load.module', 'load.collection', 'load.firstPage'] }
             } else {
-              return { success: true, data: ['collection.load', 'page.load1'] }
+              return { success: true, data: ['load.collection', 'load.firstPage'] }
             }
 
           case 'filter':
-            return { success: true, data: ['collection.load', 'page.load1'] }
+            return { success: true, data: ['load.collection', 'load.firstPage'] }
 
           case 'show':
-            return { success: true, data: ['page.load', 'item.clear'] }
+            return { success: true, data: ['load.pageByIndex', 'clear.item'] }
           default:
             return { success: false, message: 'Error: Bad transition.' }
         }
@@ -137,12 +137,12 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
               return {
                 success: true,
                 data: [
-                  'item.clear',
-                  'collection.clear',
-                  'module.clear',
-                  'module.load',
-                  'collection.item.load',
-                  'item.setIndexInCollection',
+                  'clear.item',
+                  'clear.collection',
+                  'clear.module',
+                  'load.module',
+                  'load.itemAndCollection',
+                  'setIndex.ItemInMainCollection',
                 ],
               }
             }
@@ -151,14 +151,14 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                 return {
                   success: true,
                   data: [
-                    'item.clear',
-                    'collection.clear',
-                    'collection.item.load',
-                    'item.setIndexInCollection',
+                    'clear.item',
+                    'clear.collection',
+                    'load.itemAndCollection',
+                    'setIndex.ItemInMainCollection',
                   ],
                 }
               } else {
-                return { success: true, data: ['item.load', 'item.setIndexInCollection'] }
+                return { success: true, data: ['load.item', 'setIndex.ItemInMainCollection'] }
               }
             }
             return { success: false, message: 'Error: Bad transition.' }
@@ -166,23 +166,26 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
           case 'home':
             return {
               success: true,
-              data: ['module.load', 'collection.item.load', 'item.setIndexInCollection'],
+              data: ['load.module', 'load.itemAndCollection', 'setIndex.ItemInMainCollection'],
             }
 
           case 'welcome':
-            return { success: true, data: ['collection.item.load', 'item.setIndexInCollection'] }
+            return {
+              success: true,
+              data: ['load.itemAndCollection', 'setIndex.ItemInMainCollection'],
+            }
 
           case 'index':
-            return { success: true, data: ['item.load', 'item.setIndexInCollection'] }
+            return { success: true, data: ['load.item', 'setIndex.ItemInMainCollection'] }
 
           case 'create':
-            return { success: true, data: ['item.load', 'item.setIndexInCollection'] }
+            return { success: true, data: ['load.item', 'setIndex.ItemInMainCollection'] }
 
           case 'update':
-            return { success: true, data: ['item.load'] }
+            return { success: true, data: ['load.item'] }
 
           case 'tag':
-            return { success: true, data: ['trio.reset.indices', 'item.load'] }
+            return { success: true, data: ['resetIndices.trio', 'load.item'] }
 
           case 'media':
             return { success: true, data: [] }
@@ -194,14 +197,14 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
       case 'create':
         switch (from.name) {
           case 'show':
-            return { success: true, data: ['prepare.for.create'] }
+            return { success: true, data: ['prepareFor.create'] }
           default:
             return { success: false, message: 'Error: Bad transition.' }
         }
       case 'update':
         switch (from.name) {
           case 'show':
-            return { success: true, data: ['prepare.for.update'] }
+            return { success: true, data: ['prepareFor.update'] }
           default:
             return { success: false, message: 'Error: Bad transition.' }
         }
@@ -215,7 +218,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
       case 'media':
         switch (from.name) {
           case 'show':
-            return { success: true, data: ['item.prepareForMedia'] }
+            return { success: true, data: ['prepareFor.media'] }
           default:
             return { success: false, message: 'Error: Bad transition.' }
         }

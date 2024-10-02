@@ -117,7 +117,7 @@ export const useItemStore = defineStore('item', () => {
     return tagOptions
   }
 
-  function itemClear() {
+  function clearItem() {
     fields.value = {}
     slug.value = ''
     short.value = ''
@@ -166,7 +166,7 @@ export const useItemStore = defineStore('item', () => {
     fields,
     id,
     derived,
-    itemClear,
+    clearItem,
     saveItemFields,
     saveitemFieldsPlus,
     itemRemove,

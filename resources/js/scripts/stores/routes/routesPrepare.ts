@@ -1,10 +1,10 @@
-//routesPrepare
-//At this point the new route is assured to have a correct form and all
-//relevant fields are stored in routesStore.from+.to. Actions needed
-//to complete the transition to the new route are stored in TPlanAction[].
-//Here we execute the loading of assets (collection, page, item)and other
-//activities (e.g. clear, copy current -> new,), before
-//proceeding to the new route.
+// routesPrepare
+// At this point the new route is assured to have a correct form and all
+// relevant fields are stored in routesStore.from+to. Actions needed
+// to complete the transition to the new route are stored in TPlanAction[].
+// Here we execute the loading of assets (collection, page, item) and other
+// activities (e.g. clear, copy current -> new,), before
+// proceeding to the new route.
 
 import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
@@ -51,7 +51,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     fromUndef.value = fromUndefined
     for (const x of plan) {
       switch (x) {
-        case 'module.load':
+        case 'load.module':
           {
             n.showSpinner('Loading module data ...')
             const res = await loadModule(module)
@@ -62,26 +62,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           }
           break
 
-        case 'module.clear':
-          {
-            //TODO commented because it forces an unnecessary loading of the trio store on landing page
-            // const { resetTrio } = useTrioStore()
-            // resetTrio()
-          }
-          break
-
-        case 'collection.item.load':
-          {
-            n.showSpinner('Loading collection and item...')
-            const res = await loadCollectionAndItem(module, query, slug)
-            n.showSpinner(false)
-            if (!res.success) {
-              return res
-            }
-          }
-          break
-
-        case 'collection.load':
+        case 'load.collection':
           {
             n.showSpinner(`Loading ${module} collection...`)
             const res = await loadMainCollection(module, query)
@@ -93,33 +74,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           }
           break
 
-        case 'collection.clear':
-          c.clear(['main'])
-          break
-
-        case 'item.load':
-          {
-            n.showSpinner(`Loading ${module} item...`)
-            const res = await loadItem(module, slug)
-            n.showSpinner(false)
-            if (!res.success) {
-              return res
-            }
-          }
-          break
-
-        case 'item.clear':
-          i.itemClear()
-          break
-
-        case 'item.setIndexInCollection':
-          setItemIndexInCollectionMain()
-          if (indices.value.Show.index === -1) {
-            return { success: false, message: 'Error: Item not found in Collection.' }
-          }
-          break
-
-        case 'page.load':
+        case 'load.pageByIndex':
           {
             n.showSpinner(`Loading ${module} page...`)
             const res = await loadPage(false)
@@ -130,7 +85,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           }
           break
 
-        case 'page.load1':
+        case 'load.firstPage':
           {
             n.showSpinner(`Loading ${module} page...`)
             const res = await loadPage(true)
@@ -141,15 +96,10 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           }
           break
 
-        case 'item.prepareForMedia':
-          prepareForMedia()
-          break
-
-        case 'prepare.for.create':
-        case 'prepare.for.update':
+        case 'load.item':
           {
-            n.showSpinner(`Loading ${module} ids...`)
-            const res = await prepareForNewItem(module, x === 'prepare.for.create')
+            n.showSpinner(`Loading ${module} item...`)
+            const res = await loadItem(module, slug)
             n.showSpinner(false)
             if (!res.success) {
               return res
@@ -157,8 +107,62 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           }
           break
 
-        case 'trio.reset.indices':
-          await trioResetIndices()
+        case 'load.itemAndCollection':
+          {
+            n.showSpinner('Loading collection and item...')
+            const res = await loadCollectionAndItem(module, query, slug)
+            n.showSpinner(false)
+            if (!res.success) {
+              return res
+            }
+          }
+          break
+
+        case 'clear.module':
+          {
+            //TODO commented because it forces an unnecessary loading of the trio store on landing page
+            // const { clearTrio } = useTrioStore()
+            // clearTrio()
+          }
+          break
+
+        case 'clear.collection':
+          c.clear(['main'])
+          break
+
+        case 'clear.item':
+          i.clearItem()
+          break
+
+        case 'prepareFor.create':
+        case 'prepareFor.update':
+          {
+            n.showSpinner(`Loading ${module} ids...`)
+            const res = await prepareForNewItem(module, x === 'prepareFor.create')
+            n.showSpinner(false)
+            if (!res.success) {
+              return res
+            }
+          }
+          break
+
+        case 'prepareFor.media':
+          prepareForTag()
+          break
+
+        case 'prepareFor.tag':
+          prepareForMedia()
+          break
+
+        case 'setIndex.ItemInMainCollection':
+          setItemIndexInCollectionMain()
+          if (indices.value.Show.index === -1) {
+            return { success: false, message: 'Error: Item not found in Collection.' }
+          }
+          break
+
+        case 'resetIndices.trio':
+          await resetTrioIndices()
           break
 
         default:
@@ -170,14 +174,14 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     return { success: true, message: '' }
   }
 
-  async function trioResetIndices() {
+  async function resetTrioIndices() {
     const { resetCategoryAndGroupIndices } = useTrioStore()
     resetCategoryAndGroupIndices()
   }
 
   async function loadModule(module: TModule): Promise<{ success: boolean; message: string }> {
-    const { setTrio, resetTrio } = useTrioStore()
-    resetTrio()
+    const { setTrio, clearTrio } = useTrioStore()
+    clearTrio()
 
     const res = await send<TApiModuleInit>('module/init', 'post', { module: module })
     if (!res.success) {
@@ -186,7 +190,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     setModuleInfo(res.data)
     c.resetCollectionsViewIndex()
     c.clear(['main'])
-    i.itemClear()
+    i.clearItem()
 
     await setTrio(res.data.trio)
     return { success: true, message: '' }
@@ -292,6 +296,10 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
   function prepareForMedia(): void {
     console.log(`prepareForMedia()`)
+  }
+
+  function prepareForTag(): void {
+    console.log(`prepareForTag()`)
   }
 
   return { prepareForNewRoute }
