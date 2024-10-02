@@ -175,6 +175,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   }
 
   async function resetTrioIndices() {
+    console.log(`resetTrioIndices`)
     const { resetCategoryAndGroupIndices } = useTrioStore()
     resetCategoryAndGroupIndices()
   }
@@ -206,6 +207,8 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
         return x
       }
     }
+    // Once both are loaded, set index
+    setItemIndexInCollectionMain()
     return res[0]
   }
 
@@ -285,6 +288,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   }
 
   function setItemIndexInCollectionMain() {
+    console.log(`setItemIndexInCollectionMain()`)
     setIndexByElement('Show', 'main', i.fields.id!)
   }
 

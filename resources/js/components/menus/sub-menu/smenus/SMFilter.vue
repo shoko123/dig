@@ -27,7 +27,6 @@ const filterStore = useFilterStore()
 function submit() {
   console.log(`filter.submit()`)
   const query = filterStore.filtersToQueryObject()
-  resetCategoryAndGroupIndices()
   router.push({ name: 'index', params: { url_module: current.value.url_module }, query })
 }
 

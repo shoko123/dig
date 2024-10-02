@@ -34,7 +34,7 @@ type TRoutes =
   | { name: 'reset-password' }
   | { name: 'reset-dashboard' }
 
-type TPageName = TRoutes['name']
+type TPageName = TRoutes['name'] | 'undefined-route-name'
 
 type TPlanAction =
   | 'load.module'

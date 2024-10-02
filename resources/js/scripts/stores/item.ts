@@ -52,7 +52,7 @@ export const useItemStore = defineStore('item', () => {
       if (tmp[key as keyof TFields] === undefined) {
         const val = fields.value[key as keyof TFields]
         if (Object.prototype.toString.call(val) === '[object Date]') {
-          console.log(`field: ${key} is of type Date`)
+          // console.log(`field: ${key} is of type Date`)
           tmp[key as keyof TFields] = dateStringFromDate(val as unknown as Date)
         } else {
           tmp[key as keyof TFields] = val

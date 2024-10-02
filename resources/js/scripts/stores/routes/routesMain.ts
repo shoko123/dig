@@ -79,9 +79,8 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
 
     //parse module
     if ('url_module' in handle_to.params) {
-      //  if (Object.prototype.hasOwnProperty.call(handle_to.params, 'url_module')) {
-      const res = parseModule(<string>handle_to.params.url_module)
-      console.log(`After parse url_module. res: ${JSON.stringify(res, null, 2)}`)
+      const res = parseModule(handle_to.params.url_module as string)
+      // console.log(`After parse url_module. res: ${JSON.stringify(res, null, 2)}`)
 
       if (res.success) {
         to.value.module = <TModule>res.module

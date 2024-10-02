@@ -378,11 +378,11 @@ export const useTrioStore = defineStore('trio', () => {
   })
 
   function clearTrio() {
+    console.log(`clearTrio()`)
     clearFilterOptions()
     clearTaggerOptions()
     itemAllOptions.value = []
-    groupIndex.value = 0
-    categoryIndex.value = 0
+    resetCategoryAndGroupIndices()
     trio.value = { categories: [], groupsObj: {}, optionsObj: {} }
     groupLabelToGroupKeyObj.value = {}
     orderByOptions.value = []
@@ -509,6 +509,7 @@ export const useTrioStore = defineStore('trio', () => {
   })
 
   function resetCategoryAndGroupIndices() {
+    console.log(`resetCategoryAndGroupIndices`)
     groupIndex.value = 0
     categoryIndex.value = 0
   }
