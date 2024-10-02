@@ -171,6 +171,7 @@ export const useModuleStore = defineStore('module', () => {
     getCollectionViewName,
     getItemsPerPage,
     getCategorizer,
+    itemViews, // itemView will not be refreshed unless itemViews are exposed
     itemView,
     setNextItemView,
     resetItemView,

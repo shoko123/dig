@@ -10,24 +10,23 @@ import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 
 import { useModuleStore } from '../../scripts/stores/module'
-import ShowView0 from '../item/layouts/ShowView0.vue'
-import ShowView1 from '../item/layouts/ShowView1.vue'
-import ShowView2 from '../item/layouts/ShowView2.vue'
-
+import ShowMainView from '../item/layouts/ShowMainView.vue'
+import ShowMediaView from '../item/layouts/ShowMediaView.vue'
+import ShowRelatedView from '../item/layouts/ShowRelatedView.vue'
 
 const { itemView } = storeToRefs(useModuleStore())
 
 const view = computed<Component>(() => {
   switch (itemView.value) {
     case 'Main':
-      return ShowView0
+      return ShowMainView
     case 'Media':
-      return ShowView1
+      return ShowMediaView
     case 'Related':
-      return ShowView2
+      return ShowRelatedView
     default:
       console.log(`Show.vue invalid itemView: "${itemView.value}"`)
-      return ShowView0
+      return ShowMainView
   }
 })
 </script>
