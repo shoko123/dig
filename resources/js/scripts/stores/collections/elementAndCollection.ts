@@ -17,15 +17,6 @@ export const useElementAndCollectionStore = defineStore('elementAndCollection', 
     Carousel: { index: -1, collectionName: 'main' },
   })
 
-  // debug
-  const showElement = computed(() => {
-    return getElement('Show')
-  })
-
-  const carouselElement = computed(() => {
-    return getElement('Carousel')
-  })
-  // debug end
   function setElementIndex(indexName: TIndexName, collectionName: TCName, index: number) {
     indices.value[indexName].collectionName = collectionName
     indices.value[indexName].index = index
@@ -37,15 +28,6 @@ export const useElementAndCollectionStore = defineStore('elementAndCollection', 
       return c.arrayEqualFunc(x, element)
     })
     indices.value[indexName] = { collectionName, index }
-  }
-
-  function getElement(indexName: TIndexName) {
-    const m = indices.value[indexName]
-    if (m.index === -1) {
-      return undefined
-    }
-    const c = getCollectionStore(indices.value[indexName].collectionName)
-    return c.array[indices.value[indexName].index]
   }
 
   function setNextIndex(indexName: TIndexName, isRight: boolean) {
@@ -69,21 +51,27 @@ export const useElementAndCollectionStore = defineStore('elementAndCollection', 
     })
   }
 
-  function arrayElementByIndex(name: TCName, index: number): TArray {
-    const c = getCollectionStore(name)
-    return c.array[index]!
+  // debug
+  const showElement = computed(() => {
+    return getElement('Show')
+  })
+
+  const carouselElement = computed(() => {
+    return getElement('Carousel')
+  })
+  // debug end
+
+  function getElement(indexName: TIndexName) {
+    if (indices.value[indexName].index === -1) {
+      return undefined
+    }
+    const c = getCollectionStore(indices.value[indexName].collectionName)
+    return c.array[indices.value[indexName].index]
   }
 
-  function indexByArrayElement(collectionName: TCName, element: TArray) {
-    setIndexByElement('Show', collectionName, element)
-    const c = getCollectionStore(collectionName)
-    const index = c.array.findIndex((x) => {
-      return c.arrayEqualFunc(x, element)
-    })
-    console.log(
-      `indexByArrayElement() name: ${collectionName}, element: ${JSON.stringify(element, null, 2)}\n=> ${index}`,
-    )
-    return index
+  function arrayLength(indexName: TIndexName) {
+    const c = getCollectionStore(indices.value[indexName].collectionName)
+    return c.array.length
   }
 
   function elementInPage<A extends TArray, C extends TCName>(collectionName: C, element: A) {
@@ -93,43 +81,18 @@ export const useElementAndCollectionStore = defineStore('elementAndCollection', 
     })
   }
 
-  function nextArrayIndex(name: TCName, index: number, isRight: boolean) {
-    const c = getCollectionStore(name)
-    const length = c.array.length
-    let newIndex
-
-    if (isRight) {
-      newIndex = index === length - 1 ? 0 : index + 1
-    } else {
-      newIndex = index === 0 ? length - 1 : index - 1
-    }
-    return newIndex
-  }
-
-  function nextArrayElement(
-    name: TCName,
-    index: number,
-    isRight: boolean,
-  ): { item: TArray; index: number } {
-    const newIndex = nextArrayIndex(name, index, isRight)
-    return { item: arrayElementByIndex(name, newIndex), index: newIndex }
-  }
-
   return {
     indices,
-    // debug
-    showElement,
-    carouselElement,
-    // debug- end
     setElementIndex,
     setIndexByElement,
     resetElementIndex,
     setNextIndex,
     getElement,
-    arrayElementByIndex,
-    nextArrayElement,
-    nextArrayIndex,
-    indexByArrayElement,
+    arrayLength,
     elementInPage,
+    // debug
+    showElement,
+    carouselElement,
+    // debug- end
   }
 })

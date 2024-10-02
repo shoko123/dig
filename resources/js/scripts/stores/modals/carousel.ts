@@ -17,21 +17,21 @@ export const useCarouselStore = defineStore('carousel', () => {
   const { buildMedia } = useMediaStore()
   const { tagAndSlugFromId, getItemsPerPage } = useModuleStore()
   const {
-    arrayElementByIndex,
-    // nextArrayElement,
-    indexByArrayElement,
     elementInPage,
     resetElementIndex,
+    setIndexByElement,
     setElementIndex,
     setNextIndex,
     getElement,
+    arrayLength,
   } = useElementAndCollectionStore()
   const { indices } = storeToRefs(useElementAndCollectionStore())
-
   const isOpen = ref<boolean>(false)
-  const collectionName = ref<TCName>('main')
-  // const index = ref<number>(-1)
   const current = ref<TApiCarouselUnion | null>(null)
+
+  const collectionName = computed(() => {
+    return indices.value.Carousel.collectionName
+  })
 
   const carouselComputed = computed(() => {
     if (current.value === null) {
@@ -68,32 +68,28 @@ export const useCarouselStore = defineStore('carousel', () => {
     }
   })
 
-  const sourceArrayLength = computed(() => {
-    const store = getCollectionStore(collectionName.value)
-    return store.array.length
-  })
-
   const index = computed(() => {
     return indices.value.Carousel.index
   })
 
-  async function open(source: TCName, openIndex: number) {
-    collectionName.value = source
+  const carouselArrayLength = computed(() => {
+    return arrayLength('Carousel')
+  })
 
-    const arrayElement = arrayElementByIndex(source, openIndex)
-    const res = await loadCarousel(arrayElement)
+  async function open(source: TCName, openIndex: number) {
     setElementIndex('Carousel', source, openIndex)
+    const res = await loadCarousel(getElement('Carousel')!)
     if (res) {
-      // index.value = openIndex
       isOpen.value = true
       return true
     } else {
+      console.log(`*** Failed to load carousel item.`)
       return false
     }
   }
 
   async function loadCarousel(arrayElement: TArray): Promise<boolean> {
-    switch (collectionName.value) {
+    switch (indices.value.Carousel.collectionName) {
       case 'related':
         current.value = arrayElement as TArray<'related'>
         return true
@@ -139,18 +135,12 @@ export const useCarouselStore = defineStore('carousel', () => {
 
   async function nextItem(isRight: boolean) {
     setNextIndex('Carousel', isRight)
-    // const nextItem = nextArrayElement(collectionName.value, index.value, isRight)
-    //  const res = await loadCarousel(nextItem.item)
-    const res = await loadCarousel(getElement('Carousel')!)
-    // setNextIndex('Carousel', isRight)
-    // if (res) {
-    //   index.value = nextItem.index
-    // }
-    return res
+    return await loadCarousel(getElement('Carousel')!)
   }
 
   async function close(): Promise<boolean> {
     let element: TArray
+
     switch (collectionName.value) {
       case 'main': {
         const car = carouselComputed.value as unknown as TApiCarousel<'main'>
@@ -165,40 +155,34 @@ export const useCarouselStore = defineStore('carousel', () => {
       }
       case 'related': {
         const car = carouselComputed.value as unknown as TApiCarousel<'related'>
-        element = { ...car } //{
-        //   relation_name: car.relation_name,
-        //   module: car.module,
-        //   id: car.id,
-        //   short: car.short,
-        //   urls: car.urls,
-        // }
+        element = { ...car }
         break
       }
     }
-    resetElementIndex(['Carousel'])
 
     //If current carousel item is in the currently loaded page, close.
     if (elementInPage(collectionName.value, element)) {
       console.log(`carousel.close() no need to load a new page`)
       isOpen.value = false
+      resetElementIndex(['Carousel'])
       return true
     }
 
-    console.log(`carousel-load new page by element: ${JSON.stringify(element, null, 2)}`)
+    console.log(`carousel.close() - load new page by element: ${JSON.stringify(element, null, 2)}`)
     const store = getCollectionStore(collectionName.value)
     const ipp = getItemsPerPage(collectionName.value, store.viewIndex)
-
-    const index = indexByArrayElement(collectionName.value, element)
+    setIndexByElement('Carousel', collectionName.value, element)
 
     const res = await loadPageByItemIndex(
       collectionName.value,
       'Gallery',
       ipp,
-      index,
+      indices.value.Carousel.index,
       derived.value.module!,
     )
 
     isOpen.value = false
+    resetElementIndex(['Carousel'])
     return res.success
   }
 
@@ -207,7 +191,7 @@ export const useCarouselStore = defineStore('carousel', () => {
     collectionName,
     current,
     carouselComputed,
-    sourceArrayLength,
+    carouselArrayLength,
     index,
     open,
     close,

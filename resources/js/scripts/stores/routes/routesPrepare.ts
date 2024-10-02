@@ -283,17 +283,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   }
 
   function setItemIndexInCollectionMain() {
-    //console.log(`prepare.setItemIndexInCollectionMain()`)
-
     setIndexByElement('Show', 'main', i.fields.id!)
-    // const itemIndex = indexByArrayElement('main', i.fields.id!)
-    // if (itemIndex === -1) {
-    //   i.itemIndex = -1
-    //   return false
-    // } else {
-    //   i.itemIndex = itemIndex
-    //   return true
-    // }
   }
 
   async function prepareForNewItem(module: TModule, isCreate: boolean) {

@@ -254,7 +254,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
   }
 
   async function moveToRelatedItem(module: TModule, id: string) {
-    const { indexByArrayElement } = useElementAndCollectionStore()
+    const { setIndexByElement, getElement } = useElementAndCollectionStore()
     const { clearFilterOptions } = useTrioStore()
     const { tagAndSlugFromId } = useModuleStore()
 
@@ -264,7 +264,8 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
       return await routerPush('show', tas.slug, module, false)
     }
 
-    if (indexByArrayElement('main', id) !== -1) {
+    setIndexByElement('Show', 'main', id)
+    if (getElement('Show') !== undefined) {
       console.log(`moveToRelated "${module} ${tas.slug}" - IN collection`)
       return await routerPush('show', tas.slug, module)
     } else {

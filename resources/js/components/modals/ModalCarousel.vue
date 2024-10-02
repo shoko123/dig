@@ -45,7 +45,7 @@ const { smAndDown } = useDisplay()
 const { close, nextItem } = useCarouselStore()
 const { showSpinner } = useNotificationsStore()
 const { pushHome } = useRoutesMainStore()
-const { isOpen, sourceArrayLength, collectionName, carouselComputed, index } =
+const { isOpen, carouselArrayLength, collectionName, carouselComputed, index } =
   storeToRefs(useCarouselStore())
 
 const { derived } = storeToRefs(useItemStore())
@@ -68,7 +68,7 @@ const details = computed(() => {
 })
 
 const counter = computed(() => {
-  return `(${index.value + 1}/${sourceArrayLength.value})`
+  return `(${index.value + 1}/${carouselArrayLength.value})`
 })
 
 function mainHeader(item: TCarousel<'main'>) {
@@ -90,7 +90,7 @@ const widths = computed(() => {
 })
 
 const showNextArrows = computed(() => {
-  return sourceArrayLength.value > 1
+  return carouselArrayLength.value > 1
 })
 
 async function nextClicked(isRight: boolean) {
