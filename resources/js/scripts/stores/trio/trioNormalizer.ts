@@ -30,7 +30,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   let tmpGroup: TGroupTmpUnion | null = null
   let tmpOptions: TOptionTmp[] = []
 
-  function reset() {
+  function clear() {
     categories = []
     groupsObj = {}
     optionsObj = {}
@@ -47,7 +47,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     apiTrio: TApiTrio,
     categorizerObj: Record<string, (val: TFieldValue) => number>,
   ) {
-    reset()
+    clear()
     console.log(`normalizeTrio()`)
 
     apiTrio.forEach((cat) => {

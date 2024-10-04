@@ -82,13 +82,13 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
 
           case 'welcome':
             if (changed.module) {
-              console.log('welcome -> welcome (different module')
+              console.log('welcome -> welcome (different module)')
               return {
                 success: true,
-                data: ['resetIndices.trio', 'load.module', 'clear.item', 'clear.collection'],
+                data: ['load.module', 'clear.item', 'clear.collection'],
               }
             } else {
-              console.log('routes - welcome -> welcome with the same module')
+              console.log('welcome -> welcome (same module)')
               return { success: true, data: [] }
             }
           case 'index':
@@ -115,12 +115,13 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
 
           case 'welcome':
             if (changed.module) {
-              console.log('filter -> welcome (different module')
+              console.log('filter -> welcome (different module)')
               return {
                 success: true,
-                data: ['resetIndices.trio', 'load.module', 'clear.item', 'clear.collection'],
+                data: ['load.module'],
               }
             } else {
+              console.log('filter -> welcome (same module)')
               return { success: true, data: [] }
             }
           case 'index':
@@ -138,10 +139,10 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
 
           case 'welcome':
             if (changed.module) {
-              console.log('index -> welcome (different module')
+              console.log('index -> welcome (different module)')
               return {
                 success: true,
-                data: ['resetIndices.trio', 'load.module', 'clear.collection'],
+                data: ['load.module', 'clear.collection'],
               }
             } else {
               return { success: true, data: ['clear.collection'] }
@@ -164,10 +165,10 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
 
           case 'welcome':
             if (changed.module) {
-              console.log('index -> welcome (different module')
+              console.log('show -> welcome (different module)')
               return {
                 success: true,
-                data: ['resetIndices.trio', 'clear.item', 'clear.collection'],
+                data: ['load.module', 'clear.collection', 'clear.item'],
               }
             } else {
               return { success: true, data: ['clear.collection'] }
@@ -183,7 +184,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
               console.log('show -> show (different module)')
               return {
                 success: true,
-                data: ['resetIndices.trio', 'clear.item', 'load.module', 'load.itemAndCollection'],
+                data: ['load.module', 'load.itemAndCollection'],
               }
             } else {
               if (changed.query) {

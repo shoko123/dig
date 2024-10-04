@@ -51,10 +51,11 @@ const header = computed(() => {
 
 const catIndex = computed({
   get: () => {
+    console.log(`Filter.categoryIndex get: ${categoryIndex.value}`)
     return categoryIndex.value
   },
   set: (val) => {
-    console.log(`categoryIndex set to ${val}`)
+    console.log(`Filter.categoryIndex set: ${val}`)
     groupIndex.value = 0
     categoryIndex.value = val
   },
@@ -62,10 +63,11 @@ const catIndex = computed({
 
 const grpIndex = computed({
   get: () => {
+    console.log(`groupIndex get:  ${groupIndex.value}`)
     return groupIndex.value
   },
   set: (val) => {
-    console.log(`groupIndex set to ${val}`)
+    console.log(`groupIndex set: ${val}`)
     groupIndex.value = val
   },
 })
