@@ -5,13 +5,13 @@
     </v-card-title>
     <v-card-text>
       <v-tabs v-model="catIndex" class="primary">
-        <v-tab v-for="(cat, index) in categoryTabs" :key="index" color="purple"
+        <v-tab v-for="(cat, index) in trioSelectorCategoryTabs" :key="index" color="purple"
           :class="cat.selectedCount > 0 ? 'has-selected' : ''">
           {{ cat.selectedCount > 0 ? `${cat.catName}(*)` : cat.catName }}
         </v-tab>
       </v-tabs>
       <v-tabs v-model="grpIndex">
-        <v-tab v-for="(group, index) in groupTabs" :key="index" color="purple"
+        <v-tab v-for="(group, index) in trioSelectorGroupTabs" :key="index" color="purple"
           :class="[group.selectedCount! > 0 ? 'has-selected' : '', 'text-capitalize']">
           {{ group.selectedCount === 0 ? group.name : `${group.name}(${group.selectedCount})` }}
         </v-tab>
@@ -34,14 +34,14 @@ const OptionsAsChips = defineAsyncComponent(() => import('./OptionsAsChips.vue')
 const OptionsAsTextSearch = defineAsyncComponent(() => import('./OptionsAsTextSearch.vue'))
 const OptionsAsOrderBy = defineAsyncComponent(() => import('./OptionsAsOrderBy.vue'))
 
-const { categoryIndex, groupIndex, categoryTabs, groupTabs } = storeToRefs(useTrioStore())
+const { categoryIndex, groupIndex, trioSelectorCategoryTabs, trioSelectorGroupTabs } = storeToRefs(useTrioStore())
 
 const header = computed(() => {
   return 'Filter Selector'
 })
 
 const OptionForm = computed<Component>(() => {
-  switch (groupTabs.value[groupIndex.value]?.groupType) {
+  switch (trioSelectorGroupTabs.value[groupIndex.value]?.groupType) {
     case 'OB':
       return OptionsAsOrderBy
     case 'FS':

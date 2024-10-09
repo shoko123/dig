@@ -1,5 +1,5 @@
 import type { TApiFields, TFields, TFieldsTexts } from '@/types/moduleTypes'
-import type { TApiItemShow, TApiTag } from '@/types/itemTypes'
+import type { TApiItemShow } from '@/types/itemTypes'
 
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
@@ -14,8 +14,7 @@ import { dateStringFromDate } from '../../scripts/utils/utils'
 
 export const useItemStore = defineStore('item', () => {
   const { current } = storeToRefs(useRoutesMainStore())
-  const { getFieldsOptions, setItemAllOptionKeys } = useTrioStore()
-  const { groupLabelToGroupKeyObj, trio } = storeToRefs(useTrioStore())
+  const { getFieldsOptions, setItemAllOptionKeys, convertApiTagsToOptionKeys } = useTrioStore()
   const { tagAndSlugFromId } = useModuleStore()
   const { module } = storeToRefs(useModuleStore())
   const { getCollectionStore, setCollectionArray } = useCollectionsStore()
@@ -78,7 +77,7 @@ export const useItemStore = defineStore('item', () => {
 
     //set item's fields and tags options keys
     const fieldsOptions = fd.map((x) => x.optionKey)
-    const tagOptions = getSelectedTagOptions(apiItem.model_tags.concat(apiItem.global_tags))
+    const tagOptions = convertApiTagsToOptionKeys(apiItem.model_tags.concat(apiItem.global_tags))
     setItemAllOptionKeys([...fieldsOptions, ...tagOptions])
   }
 
@@ -98,23 +97,6 @@ export const useItemStore = defineStore('item', () => {
       }
     })
     fields.value = Object.fromEntries(tmpMap.entries())
-  }
-
-  function getSelectedTagOptions(apiTags: TApiTag[]) {
-    // console.log(`SaveItem - Add extrnal (module and global) tags`)
-    const tagOptions: string[] = []
-    for (const x of apiTags) {
-      const group = trio.value.groupsObj[groupLabelToGroupKeyObj.value[x.group_label]!]!
-      // console.log(`Add Tag:  ${x.group_label} => "${x.tag_text}"`)
-      const optionKey = group.optionKeys.find((y) => trio.value.optionsObj[y]!.text === x.tag_text)
-      if (optionKey === undefined) {
-        throw new Error(
-          `getSelectedTagOptions() - Can't find tag ${x.tag_text} in group ${group.label}`,
-        )
-      }
-      tagOptions.push(optionKey)
-    }
-    return tagOptions
   }
 
   function clearItem() {

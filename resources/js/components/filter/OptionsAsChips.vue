@@ -13,7 +13,7 @@ import { useTrioStore } from '../../scripts/stores/trio/trio'
 const trioStore = useTrioStore()
 
 const options = computed(() => {
-  return trioStore.visibleOptions
+  return trioStore.trioSelectorOptions
 })
 
 const selectedOptionIndexes = computed({
