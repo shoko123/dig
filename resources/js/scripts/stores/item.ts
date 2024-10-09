@@ -14,7 +14,7 @@ import { dateStringFromDate } from '../../scripts/utils/utils'
 
 export const useItemStore = defineStore('item', () => {
   const { current } = storeToRefs(useRoutesMainStore())
-  const { getFieldsOptions, setItemAllOptions } = useTrioStore()
+  const { getFieldsOptions, setItemAllOptionKeys } = useTrioStore()
   const { groupLabelToGroupKeyObj, trio } = storeToRefs(useTrioStore())
   const { tagAndSlugFromId } = useModuleStore()
   const { module } = storeToRefs(useModuleStore())
@@ -79,7 +79,7 @@ export const useItemStore = defineStore('item', () => {
     //set item's fields and tags options keys
     const fieldsOptions = fd.map((x) => x.optionKey)
     const tagOptions = getSelectedTagOptions(apiItem.model_tags.concat(apiItem.global_tags))
-    setItemAllOptions([...fieldsOptions, ...tagOptions])
+    setItemAllOptionKeys([...fieldsOptions, ...tagOptions])
   }
 
   function saveItemFields<F extends TApiFields>(apiFields: F) {

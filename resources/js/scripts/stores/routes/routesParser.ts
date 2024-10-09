@@ -35,7 +35,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
 
   async function parseUrlQuery(qp: LocationQuery) {
     //console.log(`urlQueryToApiFilters().urlQuery: ${JSON.stringify(qp, null, 2)}`);
-    const { trio, groupLabelToGroupKeyObj, filterAllOptions } = storeToRefs(useTrioStore())
+    const { trio, groupLabelToGroupKeyObj, filterAllOptionKeys } = storeToRefs(useTrioStore())
 
     if (qp === null) {
       return { success: true }
@@ -95,7 +95,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
           break
       }
     }
-    filterAllOptions.value = selectedFilters
+    filterAllOptionKeys.value = selectedFilters
     return { success: true }
   }
 
@@ -121,7 +121,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
   async function processUrlOB(
     group: TGroupBase,
     optionTexts: string[],
-    filterAllOptions: string[],
+    filterAllOptionKeys: string[],
   ) {
     const { trio, orderByOptions } = storeToRefs(useTrioStore())
     const selected: string[] = []
@@ -147,7 +147,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
         return { success: false, message: `Problem with url Order By optioneter "${x}".` }
       }
       trio.value.optionsObj[firstEmptyOptionKey]!.text = x
-      filterAllOptions.push(firstEmptyOptionKey)
+      filterAllOptionKeys.push(firstEmptyOptionKey)
       selected.push(nameOnly)
     }
     return { success: true }
@@ -156,7 +156,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
   async function processUrlCS(
     group: TGroupBase,
     optionTexts: string[],
-    filterAllOptions: string[],
+    filterAllOptionKeys: string[],
   ) {
     const { trio } = storeToRefs(useTrioStore())
     if (optionTexts.length > 6) {
@@ -173,7 +173,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
         return { success: false, message: `Problem with url search optioneter "${x}".` }
       }
       trio.value.optionsObj[firstEmptyOptionKey]!.text = x
-      filterAllOptions.push(firstEmptyOptionKey)
+      filterAllOptionKeys.push(firstEmptyOptionKey)
     }
     return { success: true }
   }

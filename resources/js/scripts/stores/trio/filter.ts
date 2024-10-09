@@ -14,11 +14,11 @@ export const useFilterStore = defineStore('filter', () => {
       [key: string]: string
     } = {}
 
-    trioStore.filterAllOptions.sort((a, b) => {
+    trioStore.filterAllOptionKeys.sort((a, b) => {
       return a > b ? 1 : -1
     })
 
-    trioStore.filterAllOptions.forEach((k) => {
+    trioStore.filterAllOptionKeys.forEach((k) => {
       const optionUlined = trioStore.trio.optionsObj[k]!.text.replace(/ /g, '_')
       const groupUlined = trioStore.trio.groupsObj[
         trioStore.trio.optionsObj[k]!.groupKey
@@ -52,13 +52,13 @@ export const useFilterStore = defineStore('filter', () => {
     trioStore.trio.optionsObj[optionKey]!.text = val
 
     //add/remove from selected filters
-    const inSelected = trioStore.filterAllOptions.includes(optionKey)
+    const inSelected = trioStore.filterAllOptionKeys.includes(optionKey)
     if (inSelected && val === '') {
-      const i = trioStore.filterAllOptions.indexOf(optionKey)
-      trioStore.filterAllOptions.splice(i, 1)
+      const i = trioStore.filterAllOptionKeys.indexOf(optionKey)
+      trioStore.filterAllOptionKeys.splice(i, 1)
     }
     if (!inSelected && val !== '') {
-      trioStore.filterAllOptions.push(optionKey)
+      trioStore.filterAllOptionKeys.push(optionKey)
     }
   }
 
@@ -69,9 +69,9 @@ export const useFilterStore = defineStore('filter', () => {
       trioStore.trio.optionsObj[x]!.text = ''
 
       //if currently in selectedFilters, then remove.
-      if (trioStore.filterAllOptions.includes(x)) {
-        const i = trioStore.filterAllOptions.indexOf(x)
-        trioStore.filterAllOptions.splice(i, 1)
+      if (trioStore.filterAllOptionKeys.includes(x)) {
+        const i = trioStore.filterAllOptionKeys.indexOf(x)
+        trioStore.filterAllOptionKeys.splice(i, 1)
       }
     })
   }
@@ -99,16 +99,16 @@ export const useFilterStore = defineStore('filter', () => {
     // console.log(`optionClicked(${index}) asc: ${asc} options:  ${JSON.stringify(orderByOptions, null, 2)} key: ${firstEmptyOption.key} label: ${label}`)
 
     trioStore.trio.optionsObj[firstEmptyOption.key]!.text = label
-    trioStore.filterAllOptions.push(firstEmptyOption.key)
+    trioStore.filterAllOptionKeys.push(firstEmptyOption.key)
   }
 
   function orderByClear() {
     console.log(`orderClear`)
     trioStore.orderByGroup?.optionKeys.forEach((x) => {
       trioStore.trio.optionsObj[x]!.text = ''
-      if (trioStore.filterAllOptions.includes(x)) {
-        const i = trioStore.filterAllOptions.indexOf(x)
-        trioStore.filterAllOptions.splice(i, 1)
+      if (trioStore.filterAllOptionKeys.includes(x)) {
+        const i = trioStore.filterAllOptionKeys.indexOf(x)
+        trioStore.filterAllOptionKeys.splice(i, 1)
       }
     })
   }

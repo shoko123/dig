@@ -1,5 +1,7 @@
 import type { TFieldValue } from '@/types/moduleTypes'
-type TrioSourceName = 'Item' | 'Tagger' | 'Filter'
+
+type TrioSelectorSource = 'Filter' | 'Tagger'
+type TrioSourceName = TrioSelectorSource | 'Item'
 
 type TAllGroups = {
   FD: {
@@ -136,6 +138,7 @@ type TTrio = { categories: TCategoriesArray; groupsObj: TGroupObj; optionsObj: T
 
 export {
   TrioSourceName,
+  TrioSelectorSource,
   TTrio,
   TApiTrio,
   TApiOption,
@@ -154,4 +157,5 @@ export {
   TGroupTag,
   TFieldValueSource,
   TCategorizerFunc,
+  TCodeUnion,
 }

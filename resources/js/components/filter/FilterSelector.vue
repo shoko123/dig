@@ -5,28 +5,20 @@
     </v-card-title>
     <v-card-text>
       <v-tabs v-model="catIndex" class="primary">
-        <v-tab v-for="(cat, index) in visibleCategories" :key="index" color="purple"
-          :class="cat.hasSelected ? 'has-selected' : ''">
-          {{ cat.hasSelected ? `${cat.catName}(*)` : cat.catName }}
+        <v-tab v-for="(cat, index) in categoryTabs" :key="index" color="purple"
+          :class="cat.selectedCount > 0 ? 'has-selected' : ''">
+          {{ cat.selectedCount > 0 ? `${cat.catName}(*)` : cat.catName }}
         </v-tab>
       </v-tabs>
       <v-tabs v-model="grpIndex">
-        <v-tab v-for="(group, index) in visibleGroups" :key="index" color="purple"
-          :class="[group.selectedCount > 0 ? 'has-selected' : '', 'text-capitalize']">
+        <v-tab v-for="(group, index) in groupTabs" :key="index" color="purple"
+          :class="[group.selectedCount! > 0 ? 'has-selected' : '', 'text-capitalize']">
           {{ group.selectedCount === 0 ? group.name : `${group.name}(${group.selectedCount})` }}
         </v-tab>
       </v-tabs>
 
       <v-sheet elevation="10" class="ma-2">
-        <div v-if="isColumnSearch">
-          <OptionsAsTextSearch />
-        </div>
-        <div v-else-if="isOrderBy">
-          <OptionsAsOrderBy />
-        </div>
-        <div v-else>
-          <OptionsAsChips />
-        </div>
+        <component :is="OptionForm" />
       </v-sheet>
     </v-card-text>
   </v-card>
@@ -34,7 +26,7 @@
 
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent } from 'vue'
+import { computed, defineAsyncComponent, type Component } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useTrioStore } from '../../scripts/stores/trio/trio'
 
@@ -42,11 +34,21 @@ const OptionsAsChips = defineAsyncComponent(() => import('./OptionsAsChips.vue')
 const OptionsAsTextSearch = defineAsyncComponent(() => import('./OptionsAsTextSearch.vue'))
 const OptionsAsOrderBy = defineAsyncComponent(() => import('./OptionsAsOrderBy.vue'))
 
-
-const { visibleCategories, visibleGroups, categoryIndex, groupIndex } = storeToRefs(useTrioStore())
+const { categoryIndex, groupIndex, categoryTabs, groupTabs } = storeToRefs(useTrioStore())
 
 const header = computed(() => {
   return 'Filter Selector'
+})
+
+const OptionForm = computed<Component>(() => {
+  switch (groupTabs.value[groupIndex.value]?.groupType) {
+    case 'OB':
+      return OptionsAsOrderBy
+    case 'FS':
+      return OptionsAsTextSearch
+    default:
+      return OptionsAsChips
+  }
 })
 
 const catIndex = computed({
@@ -72,15 +74,6 @@ const grpIndex = computed({
   },
 })
 
-const isColumnSearch = computed(() => {
-  if (visibleGroups.value.length === 0) return false
-  return visibleGroups.value[groupIndex.value]!.groupType === 'FS'
-})
-
-const isOrderBy = computed(() => {
-  if (visibleGroups.value.length === 0) return false
-  return visibleGroups.value[groupIndex.value]!.groupType === 'OB'
-})
 </script>
 <style scoped>
 .has-selected {

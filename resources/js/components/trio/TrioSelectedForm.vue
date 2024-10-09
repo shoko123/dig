@@ -39,7 +39,7 @@ import { useItemStore } from '../../scripts/stores/item'
 import { useTrioStore } from '../../scripts/stores/trio/trio'
 
 const { derived } = storeToRefs(useItemStore())
-const { selectedFilterOptions, selectedItemOptions, selectedTaggerOptions } = storeToRefs(useTrioStore())
+const { displayedSelectedFilter, displayedSelectedItem, displayedSelectedTagger } = storeToRefs(useTrioStore())
 
 const props = defineProps<{
   source: TrioSourceName
@@ -49,14 +49,14 @@ const d = computed(() => {
   switch (props.source) {
     case 'Filter':
       return {
-        data: selectedFilterOptions.value,
+        data: displayedSelectedFilter.value,
         header: `Selected Filters`,
         emptyTitle: `[ No filters selected ]`,
       }
 
     case 'Item':
       return {
-        data: selectedItemOptions.value,
+        data: displayedSelectedItem.value,
         header: `${derived.value.moduleAndTag} - Tags`,
         emptyTitle: `[ Item has no tags ]`,
       }
@@ -64,7 +64,7 @@ const d = computed(() => {
     case 'Tagger':
     default:
       return {
-        data: selectedTaggerOptions.value,
+        data: displayedSelectedTagger.value,
         header: `Selected Tags`,
         emptyTitle: `[ No tags selected ]`,
       }

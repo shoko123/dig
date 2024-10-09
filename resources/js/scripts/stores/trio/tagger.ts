@@ -17,12 +17,12 @@ export const useTaggerStore = defineStore('tagger', () => {
   }
 
   async function setDefaultOptions() {
-    trioStore.taggerAllOptions = []
+    trioStore.taggerAllOptionKeys = []
     // add fields dependent options (except 'Categorized') with default group.optionKeys[0]
     for (const x in trioStore.fieldsToGroupKeyObj) {
       const group = trioStore.trio.groupsObj[trioStore.fieldsToGroupKeyObj[x]!]!
       if (group.code === 'FD' && (<TGroupField>group).tag_source !== 'Categorized') {
-        trioStore.taggerAllOptions.push(group.optionKeys[0]!)
+        trioStore.taggerAllOptionKeys.push(group.optionKeys[0]!)
       }
       console.log(`Add Field Tag: ${group.label} => "${x}`)
     }
@@ -37,7 +37,7 @@ export const useTaggerStore = defineStore('tagger', () => {
       fields: <{ field_name: string; val: TFieldValue }[]>[],
     }
 
-    trioStore.taggerAllOptions.forEach((optionKey) => {
+    trioStore.taggerAllOptionKeys.forEach((optionKey) => {
       const group = <TGroupField>(
         trioStore.trio.groupsObj[trioStore.trio.optionsObj[optionKey]!.groupKey]
       )
