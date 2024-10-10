@@ -48,8 +48,8 @@ import { useTrioStore } from '../../scripts/stores/trio/trio'
 const { routerPush } = useRoutesMainStore()
 const { trioSelectorCategoryTabs, trioSelectorGroupTabs, trioSelectorOptions, categoryIndex, groupIndex } =
   storeToRefs(useTrioStore())
-const { resetCategoryAndGroupIndices, optionClicked, clearTaggerOptions } = useTrioStore()
-const { sync, prepareTagger, setDefaultOptions } = useTaggerStore()
+const { resetCategoryAndGroupIndices, optionClicked, taggerClearOptions, taggerSetDefaultOptions, taggerCopyItemOptionsToTagger } = useTrioStore()
+const { sync } = useTaggerStore()
 const { showSpinner, showSnackbar } = useNotificationsStore()
 
 const header = computed(() => {
@@ -103,7 +103,7 @@ async function submit() {
 
   if (res.success) {
     resetCategoryAndGroupIndices()
-    clearTaggerOptions()
+    taggerClearOptions()
     await routerPush('back1')
   } else {
     showSnackbar(`Syncing of tags failed. Error: ${res.message}`)
@@ -113,20 +113,20 @@ async function submit() {
 async function cancel() {
   console.log(`cancelClicked`)
   resetCategoryAndGroupIndices()
-  clearTaggerOptions()
+  taggerClearOptions()
   await routerPush('back1')
 }
 
 function resetToItem() {
   console.log(`resetToItem`)
   resetCategoryAndGroupIndices()
-  prepareTagger()
+  taggerCopyItemOptionsToTagger()
 }
 
 function clear() {
   console.log(`clear`)
   resetCategoryAndGroupIndices()
-  setDefaultOptions()
+  taggerSetDefaultOptions()
 }
 </script>
 <style scoped>

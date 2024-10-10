@@ -31,6 +31,7 @@ import { storeToRefs } from 'pinia'
 import { useAuthStore } from '../../../../scripts/stores/auth'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 import { useItemStore } from '../../../../scripts/stores/item'
+import { useTrioStore } from '../../../../scripts/stores/trio/trio'
 import { useCollectionMediaStore } from '../../../../scripts/stores/collections/collectionMedia'
 import { useNotificationsStore } from '../../../../scripts/stores/notifications'
 
@@ -41,6 +42,7 @@ const { permissions } = storeToRefs(useAuthStore())
 const { derived } = storeToRefs(useItemStore())
 const { itemRemove } = useItemStore()
 const { showSpinner, showSnackbar } = useNotificationsStore()
+const { taggerCopyItemOptionsToTagger } = useTrioStore()
 
 const module = computed(() => {
   return current.value.module
@@ -68,9 +70,7 @@ async function goToMedia() {
 
 async function goToTagger() {
   console.log(`goToTagger`)
-  const { useTaggerStore } = await import('../../../../scripts/stores/trio/tagger')
-  const { prepareTagger } = useTaggerStore()
-  prepareTagger()
+  taggerCopyItemOptionsToTagger()
   await routerPush('tag', <string>derived.value.slug)
 }
 

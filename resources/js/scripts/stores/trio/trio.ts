@@ -25,18 +25,41 @@ export const useTrioStore = defineStore('trio', () => {
   const trio = ref<TTrio>({ categories: [], groupsObj: {}, optionsObj: {} })
   const groupLabelToGroupKeyObj = ref<TGroupOrFieldToKeyObj>({})
   const fieldsToGroupKeyObj = ref<TGroupOrFieldToKeyObj>({})
+  const categorizer = ref<Record<string, (val: TFieldValue) => number>>({})
+  const orderByOptions = ref<TApiOption[]>([])
 
   const taggerAllOptionKeys = ref<string[]>([])
   const filterAllOptionKeys = ref<string[]>([])
   const itemAllOptionKeys = ref<string[]>([])
 
-  const orderByOptions = ref<TApiOption[]>([])
-
   //current indices of visible categories/groups
   const categoryIndex = ref<number>(0)
   const groupIndex = ref<number>(0)
-  const categorizer = ref<Record<string, (val: TFieldValue) => number>>({})
 
+  // Setup trio
+  async function setTrio(apiTrio: TApiTrio) {
+    clearTrio()
+    const { getCategorizer } = useModuleStore()
+    categorizer.value = getCategorizer()
+    const res = await normalizetrio(apiTrio, categorizer.value)
+    trio.value = res.trio
+    groupLabelToGroupKeyObj.value = res.groupLabelToGroupKeyObj
+    orderByOptions.value = res.orderByOptions
+    fieldsToGroupKeyObj.value = res.fieldsToGroupKeyObj
+  }
+
+  function clearTrio() {
+    console.log(`clearTrio()`)
+    clearFilterOptions()
+    taggerClearOptions()
+    itemAllOptionKeys.value = []
+    resetCategoryAndGroupIndices()
+    trio.value = { categories: [], groupsObj: {}, optionsObj: {} }
+    groupLabelToGroupKeyObj.value = {}
+    orderByOptions.value = []
+  }
+
+  // Displayed options (Read Only)
   const availableGroupKeys = computed(() => {
     const tmp: Record<TrioSelectorSource, string[]> = { Filter: [], Tagger: [] }
     for (const grpKey in trio.value.groupsObj) {
@@ -137,9 +160,8 @@ export const useTrioStore = defineStore('trio', () => {
         catIndex: x,
         catName: cat.name,
         groupKeys: cat.groupKeys,
-        selectedCount: cat.groupKeys.reduce((accumulator, current) => {
-          const toAdd = availableGroupsSelectedCounterObj.value[current]
-          return accumulator + (toAdd === undefined ? 0 : <number>toAdd)
+        selectedCount: cat.groupKeys.reduce((accumulator, groupKey) => {
+          return accumulator + availableGroupsSelectedCounterObj.value[groupKey]!
         }, 0),
       }
     })
@@ -168,12 +190,6 @@ export const useTrioStore = defineStore('trio', () => {
     })
   })
 
-  function selectedCount(arr1: string[], arr2: string[]) {
-    return arr1.reduce((accumulator, option) => {
-      return accumulator + (arr2.includes(option) ? 1 : 0)
-    }, 0)
-  }
-
   const availableGroupsSelectedCounterObj = computed(() => {
     const tmp: Record<string, number> = {}
 
@@ -184,12 +200,28 @@ export const useTrioStore = defineStore('trio', () => {
     return tmp
   })
 
+  function selectedCount(arr1: string[], arr2: string[]) {
+    return arr1.reduce((accumulator, option) => {
+      return accumulator + (arr2.includes(option) ? 1 : 0)
+    }, 0)
+  }
+
   // Visible groupKeys depend on categoryIndex and can be either filter or tag.
   const visibleGroupKeys = computed(() => {
     const categoryGroupKeys =
       trio.value.categories[visibleCatIndices.value[categoryIndex.value]!]!.groupKeys
     return categoryGroupKeys.filter((x) => {
       return availableGroupKeys.value[indicesSourceIsTagger.value ? 'Tagger' : 'Filter'].includes(x)
+    })
+  })
+
+  const trioSelectorOptions = computed(() => {
+    return currentGroup.value.optionKeys.map((x) => {
+      return {
+        ...trio.value.optionsObj[x],
+        selected: selectedOptionKeysByRoute.value.includes(x),
+        key: x,
+      }
     })
   })
 
@@ -270,8 +302,11 @@ export const useTrioStore = defineStore('trio', () => {
     return displayedSelected('Filter', filterAllOptionKeys.value)
   })
 
-  ////////////////// NEW - END //////////////////////
+  ////////////////// Display section - END //////////////////////
 
+  // Item options
+
+  // Get options from item's fields
   function getFieldsOptions(fields: TFields) {
     const optionKeys: string[] = []
     const all: TFieldInfo[] = []
@@ -340,7 +375,7 @@ export const useTrioStore = defineStore('trio', () => {
       return
     }
 
-    //new tags for item
+    // Tagger
     switch (group.code) {
       case 'TG':
       case 'TM':
@@ -467,32 +502,6 @@ export const useTrioStore = defineStore('trio', () => {
     })
   }
 
-  const trioSelectorOptions = computed(() => {
-    const optionKeys = currentGroup.value!.optionKeys
-    return optionKeys.map((x) => {
-      return {
-        ...trio.value.optionsObj[x],
-        selected: selectedOptionKeysByRoute.value.includes(x),
-        key: x,
-      }
-    })
-  })
-
-  function clearTrio() {
-    console.log(`clearTrio()`)
-    clearFilterOptions()
-    clearTaggerOptions()
-    itemAllOptionKeys.value = []
-    resetCategoryAndGroupIndices()
-    trio.value = { categories: [], groupsObj: {}, optionsObj: {} }
-    groupLabelToGroupKeyObj.value = {}
-    orderByOptions.value = []
-  }
-
-  function clearTaggerOptions() {
-    taggerAllOptionKeys.value = []
-  }
-
   function clearFilterOptions() {
     console.log(`trio.clearFilterOptions`)
     //clear search options
@@ -506,6 +515,7 @@ export const useTrioStore = defineStore('trio', () => {
         })
       }
     }
+
     // clear order by options
     orderByGroup.value?.optionKeys.forEach((x) => {
       trio.value.optionsObj[x]!.text = ''
@@ -519,27 +529,16 @@ export const useTrioStore = defineStore('trio', () => {
     filterAllOptionKeys.value = []
   }
 
-  async function setTrio(apiTrio: TApiTrio) {
-    clearTrio()
-    const { getCategorizer } = useModuleStore()
-    categorizer.value = getCategorizer()
-    const res = await normalizetrio(apiTrio, categorizer.value)
-    trio.value = res.trio
-    groupLabelToGroupKeyObj.value = res.groupLabelToGroupKeyObj
-    orderByOptions.value = res.orderByOptions
-    fieldsToGroupKeyObj.value = res.fieldsToGroupKeyObj
-  }
-
   function assert(condition: unknown, msg?: string): asserts condition {
     if (condition === false) throw new Error(msg)
   }
 
   const currentGroup = computed(() => {
-    return trio.value.groupsObj[visibleGroupKeys.value[groupIndex.value]!]
+    return trio.value.groupsObj[visibleGroupKeys.value[groupIndex.value]!]!
   })
 
   const textSearchValues = computed(() => {
-    if (currentGroup.value === undefined || currentGroup.value.code !== 'FS') {
+    if (currentGroup.value.code !== 'FS') {
       return []
     }
     const vals: string[] = []
@@ -586,10 +585,6 @@ export const useTrioStore = defineStore('trio', () => {
 
   function setItemAllOptionKeys(options: string[]) {
     itemAllOptionKeys.value = options
-  }
-
-  function copyItemOptionsToTaggerOptions() {
-    taggerAllOptionKeys.value = [...itemAllOptionKeys.value]
   }
 
   const apiQueryPayload = computed<TApiFilters>(() => {
@@ -696,41 +691,108 @@ export const useTrioStore = defineStore('trio', () => {
     return tagOptionKey
   }
 
+  // Tagger
+  function taggerCopyItemOptionsToTagger() {
+    taggerAllOptionKeys.value = [...itemAllOptionKeys.value]
+  }
+
+  function taggerSetDefaultOptions() {
+    taggerAllOptionKeys.value = []
+    // add fields dependent options (except 'Categorized') with default group.optionKeys[0]
+    for (const x in fieldsToGroupKeyObj.value) {
+      const group = trio.value.groupsObj[fieldsToGroupKeyObj.value[x]!]!
+      if (group.code === 'FD' && (<TGroupField>group).tag_source !== 'Categorized') {
+        taggerAllOptionKeys.value.push(group.optionKeys[0]!)
+      }
+      console.log(`Add Field Tag: ${group.label} => "${x}`)
+    }
+  }
+
+  function taggerConvertSelectedToApi() {
+    const optionsParams = {
+      global_tag_ids: <number[]>[],
+      module_tag_ids: <number[]>[],
+      fields: <{ field_name: string; val: TFieldValue }[]>[],
+    }
+
+    taggerAllOptionKeys.value.forEach((optionKey) => {
+      const group = <TGroupField>trio.value.groupsObj[trio.value.optionsObj[optionKey]!.groupKey]
+      switch (group.code) {
+        case 'TG':
+          optionsParams.global_tag_ids.push(<number>trio.value.optionsObj[optionKey]!.extra)
+          break
+
+        case 'TM':
+          optionsParams.module_tag_ids.push(<number>trio.value.optionsObj[optionKey]!.extra)
+          break
+
+        case 'FD':
+          {
+            if (group.tag_source !== 'Categorized') {
+              const option = trio.value.optionsObj[optionKey]!
+              optionsParams.fields.push({
+                field_name: group.field_name,
+                val: option.extra,
+              })
+            }
+          }
+          break
+      }
+    })
+    // console.log(`taggerConvertSelectedToApi: ${JSON.stringify(optionsParams, null, 2)}`)
+    return optionsParams
+  }
+
+  function taggerClearOptions() {
+    taggerAllOptionKeys.value = []
+  }
+
   return {
+    // Trio setup and data structures
+    trio,
+    groupLabelToGroupKeyObj,
+    categorizer,
+    clearTrio,
+    setTrio,
+
+    // Display selected
     displayedSelectedItem,
     displayedSelectedFilter,
     displayedSelectedTagger,
+
+    // Item tags
+    itemAllOptionKeys,
+    fieldsToGroupKeyObj,
+    convertApiTagsToOptionKeys,
+    setItemAllOptionKeys,
+    getFieldsOptions,
+
+    // Selector Display
+    categoryIndex,
+    groupIndex,
     trioSelectorCategoryTabs,
     trioSelectorGroupTabs,
     trioSelectorOptions,
-    visibleGroupKeys,
+    currentGroup,
 
-    trio,
-    groupLabelToGroupKeyObj,
-    fieldsToGroupKeyObj,
+    // Selector actions
+    optionClicked,
+    resetCategoryAndGroupIndices,
+
+    // Filter
+    filterAllOptionKeys,
     orderByOptions,
     orderByGroup,
     orderByAvailable,
     orderBySelected,
     textSearchValues,
-    clearTrio,
-    setTrio,
-    categoryIndex,
-    groupIndex,
-    currentGroup,
-
-    optionClicked,
-    resetCategoryAndGroupIndices,
-    getFieldsOptions,
-    taggerAllOptionKeys,
-    filterAllOptionKeys,
-    clearTaggerOptions,
     clearFilterOptions,
-    setItemAllOptionKeys,
-    copyItemOptionsToTaggerOptions,
-    itemAllOptionKeys,
-    convertApiTagsToOptionKeys,
     apiQueryPayload,
-    categorizer,
+
+    // Tagger
+    taggerCopyItemOptionsToTagger,
+    taggerSetDefaultOptions,
+    taggerConvertSelectedToApi,
+    taggerClearOptions,
   }
 })
