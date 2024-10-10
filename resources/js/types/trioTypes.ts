@@ -76,7 +76,7 @@ type TOption = TOptionTmp & {
   groupKey: string
 }
 
-//"Tmp" ending is for group fields prior to adding the trio "keep track" mechanisms (categoryIndex & optionKeys).
+//"Tmp" ending is for group fields prior to adding the trio "keep track" mechanisms (selectorCategoryIndex & optionKeys).
 
 type TGroupBaseTmp = {
   label: string
@@ -106,7 +106,7 @@ type TGroupFieldTmp = TGroupBaseTmp & {
 }
 
 type AddTrioFields<T> = T & {
-  categoryIndex: number
+  selectorCategoryIndex: number
   optionKeys: string[]
 }
 

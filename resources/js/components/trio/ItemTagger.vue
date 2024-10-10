@@ -11,14 +11,14 @@
         <v-btn class="ml-2" color="blue" @click="clear"> Clear </v-btn>
       </div>
       <v-tabs v-model="catIndex" class="primary">
-        <v-tab v-for="(cat, index) in trioSelectorCategoryTabs" :key="index" color="purple"
+        <v-tab v-for="(cat, index) in selectorCategoryTabs" :key="index" color="purple"
           :class="cat.selectedCount > 0 ? 'has-selected' : ''">
           {{ cat.selectedCount > 0 ? `${cat.catName}(*)` : cat.catName }}
         </v-tab>
       </v-tabs>
 
       <v-tabs v-model="grpIndex">
-        <v-tab v-for="(group, index) in trioSelectorGroupTabs" :key="index" color="purple"
+        <v-tab v-for="(group, index) in selectorGroupTabs" :key="index" color="purple"
           :class="[group.selectedCount > 0 ? 'has-selected' : '', 'text-capitalize']">
           {{ group.selectedCount === 0 ? group.name : `${group.name}(${group.selectedCount})` }}
         </v-tab>
@@ -27,7 +27,7 @@
       <v-sheet elevation="10" class="mt-2 pa-4">
         <div>{{ groupHeader }}</div>
         <v-chip-group v-model="selectedOptions" multiple column active-class="primary">
-          <v-chip v-for="(option, index) in trioSelectorOptions" :key="index" color="blue" large
+          <v-chip v-for="(option, index) in selectorOptions" :key="index" color="blue" large
             @click="optionClicked(option.key)">
             {{ option.text }}
           </v-chip>
@@ -46,7 +46,7 @@ import { useNotificationsStore } from '../../scripts/stores/notifications'
 import { useTrioStore } from '../../scripts/stores/trio/trio'
 
 const { routerPush } = useRoutesMainStore()
-const { trioSelectorCategoryTabs, trioSelectorGroupTabs, trioSelectorOptions, categoryIndex, groupIndex } =
+const { selectorCategoryTabs, selectorGroupTabs, selectorOptions, selectorCategoryIndex, selectorGroupIndex } =
   storeToRefs(useTrioStore())
 const { resetCategoryAndGroupIndices, optionClicked, taggerClearOptions, taggerSetDefaultOptions, taggerCopyItemOptionsToTagger } = useTrioStore()
 const { sync } = useTaggerStore()
@@ -57,35 +57,35 @@ const header = computed(() => {
 })
 
 const groupHeader = computed(() => {
-  let group = trioSelectorGroupTabs.value[grpIndex.value]!
+  let group = selectorGroupTabs.value[grpIndex.value]!
   return `${group.required ? 'R' : 'Not r'}equired,  ${group.multiple ? 'multiple' : 'single'} selection`
 })
 
 const catIndex = computed({
   get: () => {
-    return categoryIndex.value
+    return selectorCategoryIndex.value
   },
   set: (val) => {
-    console.log(`categoryIndex set to ${val}`)
-    groupIndex.value = 0
-    categoryIndex.value = val
+    console.log(`selectorCategoryIndex set to ${val}`)
+    selectorGroupIndex.value = 0
+    selectorCategoryIndex.value = val
   },
 })
 
 const grpIndex = computed({
   get: () => {
-    return groupIndex.value
+    return selectorGroupIndex.value
   },
   set: (val) => {
-    console.log(`groupIndex set to ${val}`)
-    groupIndex.value = val
+    console.log(`selectorGroupIndex set to ${val}`)
+    selectorGroupIndex.value = val
   },
 })
 
 const selectedOptions = computed({
   get: () => {
     let selected: number[] = []
-    trioSelectorOptions.value.forEach((x, index) => {
+    selectorOptions.value.forEach((x, index) => {
       if (x.selected === true) {
         selected.push(index)
       }

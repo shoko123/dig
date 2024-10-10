@@ -5,13 +5,13 @@
     </v-card-title>
     <v-card-text>
       <v-tabs v-model="catIndex" class="primary">
-        <v-tab v-for="(cat, index) in trioSelectorCategoryTabs" :key="index" color="purple"
+        <v-tab v-for="(cat, index) in selectorCategoryTabs" :key="index" color="purple"
           :class="cat.selectedCount > 0 ? 'has-selected' : ''">
           {{ cat.selectedCount > 0 ? `${cat.catName}(*)` : cat.catName }}
         </v-tab>
       </v-tabs>
       <v-tabs v-model="grpIndex">
-        <v-tab v-for="(group, index) in trioSelectorGroupTabs" :key="index" color="purple"
+        <v-tab v-for="(group, index) in selectorGroupTabs" :key="index" color="purple"
           :class="[group.selectedCount! > 0 ? 'has-selected' : '', 'text-capitalize']">
           {{ group.selectedCount === 0 ? group.name : `${group.name}(${group.selectedCount})` }}
         </v-tab>
@@ -34,14 +34,14 @@ const OptionsAsChips = defineAsyncComponent(() => import('./OptionsAsChips.vue')
 const OptionsAsTextSearch = defineAsyncComponent(() => import('./OptionsAsTextSearch.vue'))
 const OptionsAsOrderBy = defineAsyncComponent(() => import('./OptionsAsOrderBy.vue'))
 
-const { categoryIndex, groupIndex, trioSelectorCategoryTabs, trioSelectorGroupTabs } = storeToRefs(useTrioStore())
+const { selectorCategoryIndex, selectorGroupIndex, selectorCategoryTabs, selectorGroupTabs } = storeToRefs(useTrioStore())
 
 const header = computed(() => {
   return 'Filter Selector'
 })
 
 const OptionForm = computed<Component>(() => {
-  switch (trioSelectorGroupTabs.value[groupIndex.value]?.groupType) {
+  switch (selectorGroupTabs.value[selectorGroupIndex.value]?.groupType) {
     case 'OB':
       return OptionsAsOrderBy
     case 'FS':
@@ -53,24 +53,24 @@ const OptionForm = computed<Component>(() => {
 
 const catIndex = computed({
   get: () => {
-    console.log(`Filter.categoryIndex get: ${categoryIndex.value}`)
-    return categoryIndex.value
+    console.log(`Filter.selectorCategoryIndex get: ${selectorCategoryIndex.value}`)
+    return selectorCategoryIndex.value
   },
   set: (val) => {
-    console.log(`Filter.categoryIndex set: ${val}`)
-    groupIndex.value = 0
-    categoryIndex.value = val
+    console.log(`Filter.selectorCategoryIndex set: ${val}`)
+    selectorGroupIndex.value = 0
+    selectorCategoryIndex.value = val
   },
 })
 
 const grpIndex = computed({
   get: () => {
-    console.log(`groupIndex get:  ${groupIndex.value}`)
-    return groupIndex.value
+    console.log(`selectorGroupIndex get:  ${selectorGroupIndex.value}`)
+    return selectorGroupIndex.value
   },
   set: (val) => {
-    console.log(`groupIndex set: ${val}`)
-    groupIndex.value = val
+    console.log(`selectorGroupIndex set: ${val}`)
+    selectorGroupIndex.value = val
   },
 })
 

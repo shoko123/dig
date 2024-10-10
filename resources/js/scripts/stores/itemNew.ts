@@ -16,7 +16,7 @@ export const useItemNewStore = defineStore('itemNew', () => {
   const { tagAndSlugFromId } = useModuleStore()
   const { send } = useXhrStore()
   const { getCollectionStore } = useCollectionsStore()
-  const { getFieldsOptions } = useTrioStore()
+  const { itemFieldsOptions } = useTrioStore()
 
   const currentIds = ref<string[]>([])
   const newFields = ref<Partial<TFields>>({})
@@ -46,7 +46,7 @@ export const useItemNewStore = defineStore('itemNew', () => {
       return {}
     }
 
-    const fo = getFieldsOptions(newFields.value as TFields)
+    const fo = itemFieldsOptions(newFields.value as TFields)
     const tmp: Partial<Record<keyof TFields, TFieldInfo>> = {}
     fo.forEach((x) => (tmp[x.fieldName as keyof TFields] = x))
     return tmp as Partial<Record<keyof TFields, TFieldInfo>>

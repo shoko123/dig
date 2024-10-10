@@ -36,7 +36,7 @@ export const useFilterStore = defineStore('filter', () => {
   async function getCount() {
     const res = await send<TArray[]>('module/index', 'post', {
       module: module.value,
-      query: trioStore.apiQueryPayload,
+      query: trioStore.filterApiQueryParams(),
     })
     return res.success ? res.data.length : -1
   }

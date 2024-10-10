@@ -24,7 +24,7 @@ export const useTrioStore = defineStore('trio', () => {
 
   const trio = ref<TTrio>({ categories: [], groupsObj: {}, optionsObj: {} })
   const groupLabelToGroupKeyObj = ref<TGroupOrFieldToKeyObj>({})
-  const fieldsToGroupKeyObj = ref<TGroupOrFieldToKeyObj>({})
+  const itemFieldsToGroupKeyObj = ref<TGroupOrFieldToKeyObj>({})
   const categorizer = ref<Record<string, (val: TFieldValue) => number>>({})
   const orderByOptions = ref<TApiOption[]>([])
 
@@ -33,8 +33,8 @@ export const useTrioStore = defineStore('trio', () => {
   const itemAllOptionKeys = ref<string[]>([])
 
   //current indices of visible categories/groups
-  const categoryIndex = ref<number>(0)
-  const groupIndex = ref<number>(0)
+  const selectorCategoryIndex = ref<number>(0)
+  const selectorGroupIndex = ref<number>(0)
 
   // Setup trio
   async function setTrio(apiTrio: TApiTrio) {
@@ -45,7 +45,7 @@ export const useTrioStore = defineStore('trio', () => {
     trio.value = res.trio
     groupLabelToGroupKeyObj.value = res.groupLabelToGroupKeyObj
     orderByOptions.value = res.orderByOptions
-    fieldsToGroupKeyObj.value = res.fieldsToGroupKeyObj
+    itemFieldsToGroupKeyObj.value = res.itemFieldsToGroupKeyObj
   }
 
   function clearTrio() {
@@ -150,7 +150,7 @@ export const useTrioStore = defineStore('trio', () => {
   const visibleCatIndices = computed(() => {
     const indices: number[] = []
     availableGroupKeysByRoute.value.forEach((x) => {
-      const catIndex = trio.value.groupsObj[x]!.categoryIndex
+      const catIndex = trio.value.groupsObj[x]!.selectorCategoryIndex
       if (!indices.includes(catIndex)) {
         indices.push(catIndex)
       }
@@ -159,7 +159,7 @@ export const useTrioStore = defineStore('trio', () => {
     return indices
   })
 
-  const trioSelectorCategoryTabs = computed(() => {
+  const selectorCategoryTabs = computed(() => {
     return visibleCatIndices.value.map((x) => {
       const cat = trio.value.categories[x]!
 
@@ -174,7 +174,7 @@ export const useTrioStore = defineStore('trio', () => {
     })
   })
 
-  const trioSelectorGroupTabs = computed(() => {
+  const selectorGroupTabs = computed(() => {
     return visibleGroupKeys.value.map((x) => {
       const group = trio.value.groupsObj[x]!
       if (indicesSourceIsFilter.value) {
@@ -213,16 +213,16 @@ export const useTrioStore = defineStore('trio', () => {
     }, 0)
   }
 
-  // Visible groupKeys depend on categoryIndex and can be either filter or tag.
+  // Visible groupKeys depend on selectorCategoryIndex and can be either filter or tag.
   const visibleGroupKeys = computed(() => {
     const categoryGroupKeys =
-      trio.value.categories[visibleCatIndices.value[categoryIndex.value]!]!.groupKeys
+      trio.value.categories[visibleCatIndices.value[selectorCategoryIndex.value]!]!.groupKeys
     return categoryGroupKeys.filter((x) => {
       return availableGroupKeys.value[indicesSourceIsTagger.value ? 'Tagger' : 'Filter'].includes(x)
     })
   })
 
-  const trioSelectorOptions = computed(() => {
+  const selectorOptions = computed(() => {
     return currentGroup.value.optionKeys.map((x) => {
       return {
         ...trio.value.optionsObj[x],
@@ -264,7 +264,7 @@ export const useTrioStore = defineStore('trio', () => {
         groups.push({
           groupKey,
           label: group.label,
-          catIndex: group.categoryIndex,
+          catIndex: group.selectorCategoryIndex,
           options: [trio.value.optionsObj[key]!.text],
         })
         // console.log(
@@ -314,15 +314,15 @@ export const useTrioStore = defineStore('trio', () => {
   // Item options
 
   // Get options from item's fields
-  function getFieldsOptions(fields: TFields) {
+  function itemFieldsOptions(fields: TFields) {
     const optionKeys: string[] = []
     const all: TFieldInfo[] = []
     let optionKey: string | undefined
     let val: TFieldValue = 0
 
-    // console.log(`getFieldsOptions() fields:${JSON.stringify(fields, null, 2)}`)
+    // console.log(`itemFieldsOptions() fields:${JSON.stringify(fields, null, 2)}`)
 
-    Object.entries(fieldsToGroupKeyObj.value).forEach(([key, value]) => {
+    Object.entries(itemFieldsToGroupKeyObj.value).forEach(([key, value]) => {
       // console.log(`[key: ${key}] => ${value}`)
       const group = <TGroupField>trio.value.groupsObj[value]
       val = fields[key as keyof TFields]
@@ -339,9 +339,11 @@ export const useTrioStore = defineStore('trio', () => {
         )
 
         if (index === -1) {
-          console.log(`getFieldsOptions() - Can't find value ${val} in ${group.label} field ${key}`)
+          console.log(
+            `itemFieldsOptions() - Can't find value ${val} in ${group.label} field ${key}`,
+          )
           throw new Error(
-            `getFieldsOptions() - Can't find value ${val} in ${group.label} field ${key}`,
+            `itemFieldsOptions() - Can't find value ${val} in ${group.label} field ${key}`,
           )
         }
         optionKey = group.optionKeys[index]!
@@ -362,7 +364,7 @@ export const useTrioStore = defineStore('trio', () => {
       optionKeys.push(optionKey)
     })
 
-    // console.log(`getFieldsOptions() options: ${JSON.stringify(all, null, 2)}`)
+    // console.log(`itemFieldsOptions() options: ${JSON.stringify(all, null, 2)}`)
     return all
   }
 
@@ -438,10 +440,16 @@ export const useTrioStore = defineStore('trio', () => {
 
   function selectOption(prmKey: string) {
     console.log(`selectOption(${prmKey})`)
-    selectedOptionKeysByRoute.value.push(prmKey)
-    selectedOptionKeysByRoute.value.sort((a, b) => {
+    const tmp = [...selectedOptionKeysByRoute.value]
+    tmp.push(prmKey)
+    tmp.sort((a, b) => {
       return a > b ? 1 : -1
     })
+    if (current.value.name === 'filter') {
+      filterAllOptionKeys.value = tmp
+    } else {
+      taggerAllOptionKeys.value = tmp
+    }
   }
 
   function unSelectOption(optionKey: string) {
@@ -544,7 +552,7 @@ export const useTrioStore = defineStore('trio', () => {
   }
 
   const currentGroup = computed(() => {
-    return trio.value.groupsObj[visibleGroupKeys.value[groupIndex.value]!]!
+    return trio.value.groupsObj[visibleGroupKeys.value[selectorGroupIndex.value]!]!
   })
 
   const textSearchValues = computed(() => {
@@ -589,18 +597,17 @@ export const useTrioStore = defineStore('trio', () => {
 
   function resetCategoryAndGroupIndices() {
     console.log(`resetCategoryAndGroupIndices`)
-    groupIndex.value = 0
-    categoryIndex.value = 0
+    selectorGroupIndex.value = 0
+    selectorCategoryIndex.value = 0
   }
 
-  function setItemAllOptionKeys(options: string[]) {
-    itemAllOptionKeys.value = options
-    itemAllOptionKeys.value.sort((a, b) => {
+  function itemSetAllOptionKeys(options: string[]) {
+    itemAllOptionKeys.value = options.sort((a, b) => {
       return a > b ? 1 : -1
     })
   }
 
-  const apiQueryPayload = computed<TApiFilters>(() => {
+  function filterApiQueryParams() {
     const all: TApiFilters = {
       model_tag_ids: [],
       global_tag_ids: [],
@@ -608,10 +615,6 @@ export const useTrioStore = defineStore('trio', () => {
       field_search: [],
       media: [],
       order_by: [],
-    }
-
-    if (trio.value.categories.length === 0) {
-      return all
     }
 
     //push options into their correct arrays, according to group type
@@ -685,9 +688,9 @@ export const useTrioStore = defineStore('trio', () => {
       }
     })
     return all
-  })
+  }
 
-  function convertApiTagsToOptionKeys(apiTags: TApiTag[]) {
+  function itemApiTagsToOptionKeys(apiTags: TApiTag[]) {
     // console.log(`SaveItem - Add extrnal (module and global) tags`)
     const tagOptionKey: string[] = []
     for (const x of apiTags) {
@@ -706,25 +709,29 @@ export const useTrioStore = defineStore('trio', () => {
 
   // Tagger
   function taggerCopyItemOptionsToTagger() {
-    taggerAllOptionKeys.value = [...itemAllOptionKeys.value]
-    taggerAllOptionKeys.value.sort((a, b) => {
-      return a > b ? 1 : -1
-    })
+    const tmp = [...itemAllOptionKeys.value]
+    taggerAllOptionKeys.value = [
+      ...tmp.sort((a, b) => {
+        return a > b ? 1 : -1
+      }),
+    ]
   }
 
   function taggerSetDefaultOptions() {
-    taggerAllOptionKeys.value = []
+    const tmp: string[] = []
     // add fields dependent options (except 'Categorized') with default group.optionKeys[0]
-    for (const x in fieldsToGroupKeyObj.value) {
-      const group = trio.value.groupsObj[fieldsToGroupKeyObj.value[x]!]!
+    for (const x in itemFieldsToGroupKeyObj.value) {
+      const group = trio.value.groupsObj[itemFieldsToGroupKeyObj.value[x]!]!
       if (group.code === 'FD' && (<TGroupField>group).tag_source !== 'Categorized') {
-        taggerAllOptionKeys.value.push(group.optionKeys[0]!)
+        tmp.push(group.optionKeys[0]!)
       }
       console.log(`Add Field Tag: ${group.label} => "${x}`)
     }
-    taggerAllOptionKeys.value.sort((a, b) => {
-      return a > b ? 1 : -1
-    })
+    taggerAllOptionKeys.value = [
+      ...tmp.sort((a, b) => {
+        return a > b ? 1 : -1
+      }),
+    ]
   }
 
   function taggerConvertSelectedToApi() {
@@ -763,6 +770,7 @@ export const useTrioStore = defineStore('trio', () => {
   }
 
   function taggerClearOptions() {
+    resetCategoryAndGroupIndices()
     taggerAllOptionKeys.value = []
   }
 
@@ -777,17 +785,18 @@ export const useTrioStore = defineStore('trio', () => {
 
     // Item tags
     itemAllOptionKeys,
-    fieldsToGroupKeyObj,
-    convertApiTagsToOptionKeys,
-    setItemAllOptionKeys,
-    getFieldsOptions,
+    itemFieldsToGroupKeyObj,
+    itemApiTagsToOptionKeys,
+    itemSetAllOptionKeys,
+    itemFieldsOptions,
 
-    // Selector Display
-    categoryIndex,
-    groupIndex,
-    trioSelectorCategoryTabs,
-    trioSelectorGroupTabs,
-    trioSelectorOptions,
+    // Selector related
+    selectorCategoryIndex,
+    selectorGroupIndex,
+    selectorCategoryTabs,
+    selectorGroupTabs,
+    selectorOptions,
+
     currentGroup,
 
     // Selector actions
@@ -796,13 +805,13 @@ export const useTrioStore = defineStore('trio', () => {
 
     // Filter
     filterAllOptionKeys,
+    filterApiQueryParams,
     orderByOptions,
     orderByGroup,
     orderByAvailable,
     orderBySelected,
     textSearchValues,
     clearFilterOptions,
-    apiQueryPayload,
 
     // Tagger
     taggerCopyItemOptionsToTagger,

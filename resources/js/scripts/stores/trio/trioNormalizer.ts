@@ -22,7 +22,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   let groupsObj: TGroupObj = {}
   let optionsObj: TOptionObj = {}
   let groupLabelToGroupKeyObj: TGroupOrFieldToKeyObj = {}
-  let fieldsToGroupKeyObj: TGroupOrFieldToKeyObj = {}
+  let itemFieldsToGroupKeyObj: TGroupOrFieldToKeyObj = {}
   let orderByOptions: TApiOption[] = []
   let catCnt = 0
   let grpCnt = 0
@@ -35,7 +35,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     groupsObj = {}
     optionsObj = {}
     groupLabelToGroupKeyObj = {}
-    fieldsToGroupKeyObj = {}
+    itemFieldsToGroupKeyObj = {}
     catCnt = 0
     grpCnt = 0
     prmCnt = 0
@@ -91,7 +91,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     return {
       trio: { categories, groupsObj, optionsObj },
       groupLabelToGroupKeyObj,
-      fieldsToGroupKeyObj,
+      itemFieldsToGroupKeyObj,
       orderByOptions,
     }
   }
@@ -103,7 +103,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     const grpToSave: TGroupUnion = {
       ...(tmpGroup as TGroupTmpUnion),
       optionKeys: <string[]>[],
-      categoryIndex: catCnt,
+      selectorCategoryIndex: catCnt,
     }
 
     tmpOptions.forEach((p) => {
@@ -116,7 +116,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
     groupLabelToGroupKeyObj[grpToSave.label] = grpKey
 
     if ('FD' === grpToSave.code) {
-      fieldsToGroupKeyObj[(<TGroupField>grpToSave).field_name] = grpKey
+      itemFieldsToGroupKeyObj[(<TGroupField>grpToSave).field_name] = grpKey
     }
   }
 

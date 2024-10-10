@@ -14,7 +14,7 @@ import { dateStringFromDate } from '../../scripts/utils/utils'
 
 export const useItemStore = defineStore('item', () => {
   const { current } = storeToRefs(useRoutesMainStore())
-  const { getFieldsOptions, setItemAllOptionKeys, convertApiTagsToOptionKeys } = useTrioStore()
+  const { itemFieldsOptions, itemSetAllOptionKeys, itemApiTagsToOptionKeys } = useTrioStore()
   const { tagAndSlugFromId } = useModuleStore()
   const { module } = storeToRefs(useModuleStore())
   const { getCollectionStore, setCollectionArray } = useCollectionsStore()
@@ -44,7 +44,7 @@ export const useItemStore = defineStore('item', () => {
       return {}
     }
 
-    const fo = getFieldsOptions(fields.value as TFields)
+    const fo = itemFieldsOptions(fields.value as TFields)
     const tmp: Partial<TFieldsTexts> = {}
     fo.forEach((x) => (tmp[x.fieldName as keyof TFields] = x.optionLabel))
     for (const key in fields.value!) {
@@ -73,12 +73,12 @@ export const useItemStore = defineStore('item', () => {
     slug.value = res.slug
 
     //get fields related options
-    const fd = getFieldsOptions(apiItem.fields)
+    const fd = itemFieldsOptions(apiItem.fields)
 
     //set item's fields and tags options keys
     const fieldsOptions = fd.map((x) => x.optionKey)
-    const tagOptions = convertApiTagsToOptionKeys(apiItem.model_tags.concat(apiItem.global_tags))
-    setItemAllOptionKeys([...fieldsOptions, ...tagOptions])
+    const tagOptions = itemApiTagsToOptionKeys(apiItem.model_tags.concat(apiItem.global_tags))
+    itemSetAllOptionKeys([...fieldsOptions, ...tagOptions])
   }
 
   function saveItemFields<F extends TApiFields>(apiFields: F) {

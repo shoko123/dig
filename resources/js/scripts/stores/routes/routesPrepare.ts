@@ -218,8 +218,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     query: LocationQuery,
   ): Promise<{ success: boolean; message: string }> {
     const { setCollectionArray } = useCollectionsStore()
-    const { clearFilterOptions } = useTrioStore()
-    const { apiQueryPayload } = storeToRefs(useTrioStore())
+    const { clearFilterOptions, filterApiQueryParams } = useTrioStore()
 
     clearFilterOptions()
     const resParseUrl = await parseUrlQuery(query)
@@ -233,7 +232,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
     const res2 = await send<TArray[]>('module/index', 'post', {
       module: module,
-      query: apiQueryPayload.value,
+      query: filterApiQueryParams(),
     })
 
     if (res2.success) {
