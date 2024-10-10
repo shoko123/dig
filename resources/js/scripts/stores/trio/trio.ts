@@ -59,7 +59,12 @@ export const useTrioStore = defineStore('trio', () => {
     orderByOptions.value = []
   }
 
+  ////////////////////////////////
   // Displayed options (Read Only)
+  ////////////////////////////////
+
+  // Returns an object with Filter & Tagger keys and all available groupKeys according to group's dependencies
+  // Indedendant of route.
   const availableGroupKeys = computed(() => {
     const tmp: Record<TrioSelectorSource, string[]> = { Filter: [], Tagger: [] }
     for (const grpKey in trio.value.groupsObj) {
@@ -116,6 +121,7 @@ export const useTrioStore = defineStore('trio', () => {
     )
   }
 
+  // Route dependent: welcome, index, show, filter. Also create, and update routes
   const indicesSourceIsFilter = computed(() => {
     return current.value.name !== 'tag'
   })
@@ -142,14 +148,15 @@ export const useTrioStore = defineStore('trio', () => {
 
   // dependent on route and selectedKeys (filter or tag)
   const visibleCatIndices = computed(() => {
-    // TODO remove set implementation because order is not guranteed
-    const set = new Set<number>()
+    const indices: number[] = []
     availableGroupKeysByRoute.value.forEach((x) => {
       const catIndex = trio.value.groupsObj[x]!.categoryIndex
-      set.add(catIndex)
+      if (!indices.includes(catIndex)) {
+        indices.push(catIndex)
+      }
     })
 
-    return [...set]
+    return indices
   })
 
   const trioSelectorCategoryTabs = computed(() => {
@@ -161,7 +168,7 @@ export const useTrioStore = defineStore('trio', () => {
         catName: cat.name,
         groupKeys: cat.groupKeys,
         selectedCount: cat.groupKeys.reduce((accumulator, groupKey) => {
-          return accumulator + availableGroupsSelectedCounterObj.value[groupKey]!
+          return accumulator + (availableGroupsSelectedCounterObj.value[groupKey]! ?? 0) // Avoid apparent race condition
         }, 0),
       }
     })
@@ -432,6 +439,9 @@ export const useTrioStore = defineStore('trio', () => {
   function selectOption(prmKey: string) {
     console.log(`selectOption(${prmKey})`)
     selectedOptionKeysByRoute.value.push(prmKey)
+    selectedOptionKeysByRoute.value.sort((a, b) => {
+      return a > b ? 1 : -1
+    })
   }
 
   function unSelectOption(optionKey: string) {
@@ -585,6 +595,9 @@ export const useTrioStore = defineStore('trio', () => {
 
   function setItemAllOptionKeys(options: string[]) {
     itemAllOptionKeys.value = options
+    itemAllOptionKeys.value.sort((a, b) => {
+      return a > b ? 1 : -1
+    })
   }
 
   const apiQueryPayload = computed<TApiFilters>(() => {
@@ -694,6 +707,9 @@ export const useTrioStore = defineStore('trio', () => {
   // Tagger
   function taggerCopyItemOptionsToTagger() {
     taggerAllOptionKeys.value = [...itemAllOptionKeys.value]
+    taggerAllOptionKeys.value.sort((a, b) => {
+      return a > b ? 1 : -1
+    })
   }
 
   function taggerSetDefaultOptions() {
@@ -706,6 +722,9 @@ export const useTrioStore = defineStore('trio', () => {
       }
       console.log(`Add Field Tag: ${group.label} => "${x}`)
     }
+    taggerAllOptionKeys.value.sort((a, b) => {
+      return a > b ? 1 : -1
+    })
   }
 
   function taggerConvertSelectedToApi() {
@@ -748,12 +767,8 @@ export const useTrioStore = defineStore('trio', () => {
   }
 
   return {
-    // Trio setup and data structures
-    trio,
-    groupLabelToGroupKeyObj,
-    categorizer,
-    clearTrio,
-    setTrio,
+    taggerAllOptionKeys,
+    availableGroupsSelectedCounterObj,
 
     // Display selected
     displayedSelectedItem,
@@ -794,5 +809,12 @@ export const useTrioStore = defineStore('trio', () => {
     taggerSetDefaultOptions,
     taggerConvertSelectedToApi,
     taggerClearOptions,
+
+    // Trio setup and data structures
+    trio,
+    groupLabelToGroupKeyObj,
+    categorizer,
+    clearTrio,
+    setTrio,
   }
 })
