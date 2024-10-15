@@ -76,46 +76,7 @@ export const useFilterStore = defineStore('filter', () => {
     })
   }
 
-  //order by
-  ///////////
-
-  function orderOptionClicked(index: number, asc: boolean) {
-    const orderByOptions = trioStore.orderByGroup?.optionKeys.map((x) => {
-      return { ...trioStore.trio.optionsObj[x], key: x }
-    })
-
-    if (orderByOptions === undefined) {
-      console.log(`serious error - abort *********`)
-      return
-    }
-
-    const firstEmptyOption = orderByOptions.find((x) => x.text === '')
-    if (firstEmptyOption === undefined) {
-      console.log(`serious error - abort *********`)
-      return
-    }
-
-    const label = `${trioStore.orderByAvailable[index]!.text}.${asc ? 'A' : 'D'}`
-    // console.log(`optionClicked(${index}) asc: ${asc} options:  ${JSON.stringify(orderByOptions, null, 2)} key: ${firstEmptyOption.key} label: ${label}`)
-
-    trioStore.trio.optionsObj[firstEmptyOption.key]!.text = label
-    trioStore.filterAllOptionKeys.push(firstEmptyOption.key)
-  }
-
-  function orderByClear() {
-    console.log(`orderClear`)
-    trioStore.orderByGroup?.optionKeys.forEach((x) => {
-      trioStore.trio.optionsObj[x]!.text = ''
-      if (trioStore.filterAllOptionKeys.includes(x)) {
-        const i = trioStore.filterAllOptionKeys.indexOf(x)
-        trioStore.filterAllOptionKeys.splice(i, 1)
-      }
-    })
-  }
-
   return {
-    orderOptionClicked,
-    orderByClear,
     filtersToQueryObject,
     getCount,
     searchTextChanged,

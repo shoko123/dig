@@ -123,7 +123,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
     optionTexts: string[],
     filterAllOptionKeys: string[],
   ) {
-    const { trio, orderByOptions } = storeToRefs(useTrioStore())
+    const { trio, orderByFieldNameAndLabel } = storeToRefs(useTrioStore())
     const selected: string[] = []
 
     for (const x of optionTexts) {
@@ -134,7 +134,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
         return { success: false, message: `Duplicate url Order By optioneter "${nameOnly}".` }
       }
 
-      const ordeByIndex = orderByOptions.value.findIndex((y) => y.text === nameOnly)
+      const ordeByIndex = orderByFieldNameAndLabel.value.findIndex((y) => y.text === nameOnly)
 
       if (ordeByIndex === undefined || (lastTwo !== '.A' && lastTwo !== '.D')) {
         return { success: false, message: `Unrecognized url Order By optioneter "${x}".` }

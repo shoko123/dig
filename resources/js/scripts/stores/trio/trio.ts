@@ -26,7 +26,7 @@ export const useTrioStore = defineStore('trio', () => {
   const groupLabelToGroupKeyObj = ref<TGroupOrFieldToKeyObj>({})
   const itemFieldsToGroupKeyObj = ref<TGroupOrFieldToKeyObj>({})
   const categorizer = ref<Record<string, (val: TFieldValue) => number>>({})
-  const orderByOptions = ref<TApiOption[]>([])
+  const orderByFieldNameAndLabel = ref<TApiOption[]>([])
 
   const taggerAllOptionKeys = ref<string[]>([])
   const filterAllOptionKeys = ref<string[]>([])
@@ -44,7 +44,7 @@ export const useTrioStore = defineStore('trio', () => {
     const res = await normalizetrio(apiTrio, categorizer.value)
     trio.value = res.trio
     groupLabelToGroupKeyObj.value = res.groupLabelToGroupKeyObj
-    orderByOptions.value = res.orderByOptions
+    orderByFieldNameAndLabel.value = res.orderByFieldNameAndLabel
     itemFieldsToGroupKeyObj.value = res.itemFieldsToGroupKeyObj
   }
 
@@ -56,7 +56,7 @@ export const useTrioStore = defineStore('trio', () => {
     resetCategoryAndGroupIndices()
     trio.value = { categories: [], groupsObj: {}, optionsObj: {} }
     groupLabelToGroupKeyObj.value = {}
-    orderByOptions.value = []
+    orderByFieldNameAndLabel.value = []
   }
 
   ////////////////////////////////
@@ -534,14 +534,7 @@ export const useTrioStore = defineStore('trio', () => {
       }
     }
 
-    // clear order by options
-    orderByGroup.value?.optionKeys.forEach((x) => {
-      trio.value.optionsObj[x]!.text = ''
-      if (filterAllOptionKeys.value.includes(x)) {
-        const i = filterAllOptionKeys.value.indexOf(x)
-        filterAllOptionKeys.value.splice(i, 1)
-      }
-    })
+    orderByClear()
 
     // clear filters
     filterAllOptionKeys.value = []
@@ -555,6 +548,7 @@ export const useTrioStore = defineStore('trio', () => {
     return trio.value.groupsObj[visibleGroupKeys.value[selectorGroupIndex.value]!]!
   })
 
+  /////////// Search in field ///////////////////////
   const textSearchValues = computed(() => {
     if (currentGroup.value.code !== 'FS') {
       return []
@@ -566,34 +560,20 @@ export const useTrioStore = defineStore('trio', () => {
     return vals
   })
 
+  ////// Order By //////////////
   const orderByGroup = computed(() => {
     return trio.value.groupsObj[groupLabelToGroupKeyObj.value['Order By']!]
   })
 
-  const orderBySelected = computed(() => {
-    if (orderByGroup.value === undefined) {
-      return []
-    }
-
-    return orderByGroup.value.optionKeys
-      .filter((x) => {
-        const label = trio.value.optionsObj[x]!.text
-        return label !== ''
-      })
-      .map((x) => {
-        return { label: trio.value.optionsObj[x]!.text, key: x }
-      })
-  })
-
-  const orderByAvailable = computed(() => {
-    if (orderByGroup.value === undefined) {
-      return []
-    }
-
-    return orderByOptions.value.filter((x) => {
-      return !orderBySelected.value.some((y) => y.label.slice(0, -2) === x.text)
+  function orderByClear() {
+    orderByGroup.value?.optionKeys.forEach((x) => {
+      trio.value.optionsObj[x]!.text = ''
+      if (filterAllOptionKeys.value.includes(x)) {
+        const i = filterAllOptionKeys.value.indexOf(x)
+        filterAllOptionKeys.value.splice(i, 1)
+      }
     })
-  })
+  }
 
   function resetCategoryAndGroupIndices() {
     console.log(`resetCategoryAndGroupIndices`)
@@ -676,7 +656,9 @@ export const useTrioStore = defineStore('trio', () => {
 
         case 'OB':
           {
-            const ordeByItem = orderByOptions.value.find((x) => x.text === option.text.slice(0, -2))
+            const ordeByItem = orderByFieldNameAndLabel.value.find(
+              (x) => x.text === option.text.slice(0, -2),
+            )
             assert(ordeByItem !== undefined, `Selected OrderBy option "${option.text} not found`)
 
             all.order_by.push({
@@ -775,9 +757,6 @@ export const useTrioStore = defineStore('trio', () => {
   }
 
   return {
-    taggerAllOptionKeys,
-    availableGroupsSelectedCounterObj,
-
     // Display selected
     displayedSelectedItem,
     displayedSelectedFilter,
@@ -790,7 +769,7 @@ export const useTrioStore = defineStore('trio', () => {
     itemSetAllOptionKeys,
     itemFieldsOptions,
 
-    // Selector related
+    // Selector
     selectorCategoryIndex,
     selectorGroupIndex,
     selectorCategoryTabs,
@@ -806,14 +785,14 @@ export const useTrioStore = defineStore('trio', () => {
     // Filter
     filterAllOptionKeys,
     filterApiQueryParams,
-    orderByOptions,
+    orderByFieldNameAndLabel,
     orderByGroup,
-    orderByAvailable,
-    orderBySelected,
+    orderByClear,
     textSearchValues,
     clearFilterOptions,
 
     // Tagger
+    // taggerAllOptionKeys,
     taggerCopyItemOptionsToTagger,
     taggerSetDefaultOptions,
     taggerConvertSelectedToApi,

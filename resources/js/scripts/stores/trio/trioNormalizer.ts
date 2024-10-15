@@ -23,7 +23,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   let optionsObj: TOptionObj = {}
   let groupLabelToGroupKeyObj: TGroupOrFieldToKeyObj = {}
   let itemFieldsToGroupKeyObj: TGroupOrFieldToKeyObj = {}
-  let orderByOptions: TApiOption[] = []
+  let orderByFieldNameAndLabel: TApiOption[] = []
   let catCnt = 0
   let grpCnt = 0
   let prmCnt = 0
@@ -92,7 +92,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
       trio: { categories, groupsObj, optionsObj },
       groupLabelToGroupKeyObj,
       itemFieldsToGroupKeyObj,
-      orderByOptions,
+      orderByFieldNameAndLabel,
     }
   }
 
@@ -190,7 +190,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   }
 
   function handleOB(grp: TApiGroupByCode<'OB'>) {
-    orderByOptions = grp.options
+    orderByFieldNameAndLabel = grp.options
 
     tmpOptions = Array(grp.options.length).fill({ text: '', extra: null })
 
