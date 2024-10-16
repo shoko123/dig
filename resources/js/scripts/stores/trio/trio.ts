@@ -50,10 +50,10 @@ export const useTrioStore = defineStore('trio', () => {
 
   function clearTrio() {
     console.log(`clearTrio()`)
-    filterClearOptions()
-    taggerClearOptions()
-    itemAllOptionKeys.value = []
     resetCategoryAndGroupIndices()
+    filterClearOptions(false)
+    taggerClearOptions(false)
+    itemAllOptionKeys.value = []
     trio.value = { categories: [], groupsObj: {}, optionsObj: {} }
     groupLabelToGroupKeyObj.value = {}
     orderByFieldNameAndLabel.value = []
@@ -257,27 +257,17 @@ export const useTrioStore = defineStore('trio', () => {
 
     // Build groups
     selected.forEach((key) => {
-      // console.log(
-      //   `processing option: "${key}" => ${trio.value.optionsObj[key]!.text}\ngroup: "${trio.value.optionsObj[key]!.groupKey}" => ${trio.value.groupsObj[trio.value.optionsObj[key]!.groupKey]?.label}`,
-      // )
-      // console.log(`selected Groups: (${groups.map((x) => x.groupKey)}`)
       const index = groups.findIndex((x) => x.groupKey === trio.value.optionsObj[key]!.groupKey)
       if (index === -1) {
-        // console.log(`Group Not Found`)
         const groupKey = trio.value.optionsObj[key]!.groupKey
         const group = trio.value.groupsObj[groupKey]!
-        // console.log(`Group: ${JSON.stringify(group, null, 2)}`)
         groups.push({
           groupKey,
           label: group.label,
           catIndex: group.selectorCategoryIndex,
           options: [trio.value.optionsObj[key]!.text],
         })
-        // console.log(
-        //   `key(${key}) Not Found. Pushed ${JSON.stringify(groups[groups.length - 1], null, 2)}`,
-        // )
       } else {
-        // console.log(`key(${key}) Found. Index: ${index}`)
         groups[index]?.options.push(trio.value.optionsObj[key]!.text)
       }
     })
@@ -526,13 +516,21 @@ export const useTrioStore = defineStore('trio', () => {
     })
   }
 
-  function filterClearOptions() {
+  // Tagger
+  function taggerClearOptions(resetIndices = true) {
+    if (resetIndices) {
+      resetCategoryAndGroupIndices()
+    }
+    taggerAllOptionKeys.value = []
+  }
+
+  function filterClearOptions(resetIndices = true) {
     console.log(`trio.filterClearOptions`)
-    resetCategoryAndGroupIndices()
+    if (resetIndices) {
+      resetCategoryAndGroupIndices()
+    }
     SearchTextClear()
     orderByClear()
-
-    // clear filters
     filterAllOptionKeys.value = []
   }
 
@@ -612,12 +610,6 @@ export const useTrioStore = defineStore('trio', () => {
       tagOptionKey.push(optionKey)
     }
     return tagOptionKey
-  }
-
-  // Tagger
-  function taggerClearOptions() {
-    resetCategoryAndGroupIndices()
-    taggerAllOptionKeys.value = []
   }
 
   return {

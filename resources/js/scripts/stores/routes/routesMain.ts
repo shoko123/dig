@@ -91,9 +91,6 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         inTransition.value = false
         return { name: 'home' }
       }
-    } else {
-      to.value.module = undefined
-      to.value.url_module = undefined
     }
 
     //console.log(`after successful module parse. to: ${JSON.stringify(to.value, null, 2)})`)

@@ -13,7 +13,7 @@ import { useTrioStore } from './trio/trio'
 import { dateStringFromDate } from '../../scripts/utils/utils'
 
 export const useItemStore = defineStore('item', () => {
-  const { current } = storeToRefs(useRoutesMainStore())
+  const { current, to } = storeToRefs(useRoutesMainStore())
   const { itemFieldsOptions, itemSetAllOptionKeys, itemApiTagsToOptionKeys } = useTrioStore()
   const { tagAndSlugFromId } = useModuleStore()
   const { module } = storeToRefs(useModuleStore())
@@ -40,7 +40,9 @@ export const useItemStore = defineStore('item', () => {
   })
 
   const fieldsTexts = computed(() => {
-    if (Object.keys(fields.value).length === 0) {
+    // Following onditions occur on initial item load & module switch.
+    // This is not an elegant solution, but it works.
+    if (Object.keys(fields.value).length === 0 || current.value.module !== to.value.module) {
       return {}
     }
 

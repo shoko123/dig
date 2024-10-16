@@ -196,7 +196,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     i.clearItem()
 
     await setTrio(res.data.trio)
-    r.current.module = r.to.module
     return { success: true, message: '' }
   }
 
@@ -222,7 +221,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     const { setCollectionArray } = useCollectionsStore()
     const { filterClearOptions } = useTrioStore()
     const { filterApiQueryParams } = useFilterStore()
-    filterClearOptions()
+
     const resParseUrl = await parseUrlQuery(query)
     console.log(`parseUrlQuery result: ${JSON.stringify(resParseUrl, null, 2)}`)
 
