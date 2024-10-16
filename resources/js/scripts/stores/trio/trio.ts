@@ -222,8 +222,12 @@ export const useTrioStore = defineStore('trio', () => {
     })
   })
 
+  const currentGroup = computed(() => {
+    return trio.value.groupsObj[visibleGroupKeys.value[selectorGroupIndex.value]!]
+  })
+
   const selectorOptions = computed(() => {
-    return currentGroup.value.optionKeys.map((x) => {
+    return currentGroup.value?.optionKeys.map((x) => {
       return {
         ...trio.value.optionsObj[x],
         selected: selectedOptionKeysByRoute.value.includes(x),
@@ -522,43 +526,12 @@ export const useTrioStore = defineStore('trio', () => {
 
   function clearFilterOptions() {
     console.log(`trio.clearFilterOptions`)
-    //clear search options
-    for (const value of Object.values(groupLabelToGroupKeyObj.value)) {
-      const group = trio.value.groupsObj[value]!
-      if (group.code === 'FS') {
-        group.optionKeys.forEach((x) => {
-          const param = trio.value.optionsObj[x]!
-          param.text = ''
-          param.extra = ''
-        })
-      }
-    }
-
+    SearchTextClear()
     orderByClear()
 
     // clear filters
     filterAllOptionKeys.value = []
   }
-
-  function assert(condition: unknown, msg?: string): asserts condition {
-    if (condition === false) throw new Error(msg)
-  }
-
-  const currentGroup = computed(() => {
-    return trio.value.groupsObj[visibleGroupKeys.value[selectorGroupIndex.value]!]!
-  })
-
-  /////////// Search in field ///////////////////////
-  const textSearchValues = computed(() => {
-    if (currentGroup.value.code !== 'FS') {
-      return []
-    }
-    const vals: string[] = []
-    currentGroup.value.optionKeys.forEach((x) => {
-      vals.push(trio.value.optionsObj[x]!.text)
-    })
-    return vals
-  })
 
   ////// Order By //////////////
   const orderByGroup = computed(() => {
@@ -573,6 +546,40 @@ export const useTrioStore = defineStore('trio', () => {
         filterAllOptionKeys.value.splice(i, 1)
       }
     })
+  }
+
+  ////// Textual Search Clear //////////////
+  function SearchTextClear(currentGroupOnly: boolean = false) {
+    if (currentGroupOnly) {
+      // Clear relevant options' text, and remove from filterAllOptionKeys
+      assert(
+        currentGroup.value?.code === 'FS',
+        `SearchTextClear of not a FieldSearch group "${currentGroup.value?.label}"`,
+      )
+
+      currentGroup.value.optionKeys.forEach((x) => {
+        if (filterAllOptionKeys.value.includes(x)) {
+          const i = filterAllOptionKeys.value.indexOf(x)
+          filterAllOptionKeys.value.splice(i, 1)
+        }
+        const param = trio.value.optionsObj[x]!
+        param.text = ''
+        param.extra = ''
+      })
+      return
+    }
+
+    // Clear only FieldSearch options' text. filterAllOptionKeys will be cleared by calling function clearFilterOptions()
+    for (const value of Object.values(groupLabelToGroupKeyObj.value)) {
+      const group = trio.value.groupsObj[value]!
+      if (group.code === 'FS') {
+        group.optionKeys.forEach((x) => {
+          const param = trio.value.optionsObj[x]!
+          param.text = ''
+          param.extra = ''
+        })
+      }
+    }
   }
 
   function resetCategoryAndGroupIndices() {
@@ -756,6 +763,10 @@ export const useTrioStore = defineStore('trio', () => {
     taggerAllOptionKeys.value = []
   }
 
+  function assert(condition: unknown, msg?: string): asserts condition {
+    if (condition === false) throw new Error(msg)
+  }
+
   return {
     // Display selected
     displayedSelectedItem,
@@ -775,10 +786,9 @@ export const useTrioStore = defineStore('trio', () => {
     selectorCategoryTabs,
     selectorGroupTabs,
     selectorOptions,
-
     currentGroup,
 
-    // Selector actions
+    // Selector "tag" actions (all except text search & order by)
     optionClicked,
     resetCategoryAndGroupIndices,
 
@@ -788,8 +798,8 @@ export const useTrioStore = defineStore('trio', () => {
     orderByFieldNameAndLabel,
     orderByGroup,
     orderByClear,
-    textSearchValues,
     clearFilterOptions,
+    SearchTextClear,
 
     // Tagger
     // taggerAllOptionKeys,

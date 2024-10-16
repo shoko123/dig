@@ -85,7 +85,7 @@ const grpIndex = computed({
 const selectedOptions = computed({
   get: () => {
     let selected: number[] = []
-    selectorOptions.value.forEach((x, index) => {
+    selectorOptions.value?.forEach((x, index) => {
       if (x.selected === true) {
         selected.push(index)
       }

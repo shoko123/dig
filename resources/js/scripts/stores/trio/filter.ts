@@ -41,45 +41,8 @@ export const useFilterStore = defineStore('filter', () => {
     return res.success ? res.data.length : -1
   }
 
-  // const textSearchOptionKeys = computed(() => {
-  //   return (<TGroupBase>currentGroup.value).optionKeys
-  // })
-
-  function searchTextChanged(index: number, val: string) {
-    const textSearchOptionKeys = trioStore.currentGroup?.optionKeys
-    const optionKey = textSearchOptionKeys![index]!
-    //console.log(`changeOccured() index: ${index} setting option with key ${optionKey} to: ${val}`)
-    trioStore.trio.optionsObj[optionKey]!.text = val
-
-    //add/remove from selected filters
-    const inSelected = trioStore.filterAllOptionKeys.includes(optionKey)
-    if (inSelected && val === '') {
-      const i = trioStore.filterAllOptionKeys.indexOf(optionKey)
-      trioStore.filterAllOptionKeys.splice(i, 1)
-    }
-    if (!inSelected && val !== '') {
-      trioStore.filterAllOptionKeys.push(optionKey)
-    }
-  }
-
-  function searchTextClearCurrent() {
-    console.log(`clear()`)
-    const textSearchOptionKeys = trioStore.currentGroup?.optionKeys
-    textSearchOptionKeys!.forEach((x) => {
-      trioStore.trio.optionsObj[x]!.text = ''
-
-      //if currently in selectedFilters, then remove.
-      if (trioStore.filterAllOptionKeys.includes(x)) {
-        const i = trioStore.filterAllOptionKeys.indexOf(x)
-        trioStore.filterAllOptionKeys.splice(i, 1)
-      }
-    })
-  }
-
   return {
     filtersToQueryObject,
     getCount,
-    searchTextChanged,
-    searchTextClearCurrent,
   }
 })
