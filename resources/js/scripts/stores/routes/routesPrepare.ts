@@ -18,6 +18,7 @@ import { useRoutesMainStore } from './routesMain'
 import { useRoutesParserStore } from './routesParser'
 import { useXhrStore } from '../xhr'
 import { useModuleStore } from '../module'
+import { useFilterStore } from '../trio/filter'
 import { useTrioStore } from '../trio/trio'
 
 import { useNotificationsStore } from '../notifications'
@@ -218,8 +219,8 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     query: LocationQuery,
   ): Promise<{ success: boolean; message: string }> {
     const { setCollectionArray } = useCollectionsStore()
-    const { clearFilterOptions, filterApiQueryParams } = useTrioStore()
-
+    const { clearFilterOptions } = useTrioStore()
+    const { filterApiQueryParams } = useFilterStore()
     clearFilterOptions()
     const resParseUrl = await parseUrlQuery(query)
     console.log(`parseUrlQuery result: ${JSON.stringify(resParseUrl, null, 2)}`)
