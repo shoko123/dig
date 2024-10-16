@@ -118,7 +118,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
               console.log('filter -> welcome (different module)')
               return {
                 success: true,
-                data: ['load.module'],
+                data: ['resetIndices.trio', 'load.module'],
               }
             } else {
               console.log('filter -> welcome (same module)')
@@ -252,7 +252,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
         /////////
         switch (to.name) {
           case 'show':
-            return { success: true, data: ['resetIndices.trio'] }
+            return { success: true, data: ['resetIndices.trio', 'load.item'] }
 
           default:
             return badTransition(from.name, to.name)

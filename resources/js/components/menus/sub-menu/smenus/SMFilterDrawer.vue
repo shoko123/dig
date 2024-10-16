@@ -16,7 +16,7 @@ import { useTrioStore } from '../../../../scripts/stores/trio/trio'
 import { useFilterStore } from '../../../../scripts/stores/trio/filter'
 
 const { current } = storeToRefs(useRoutesMainStore())
-const { resetCategoryAndGroupIndices, clearFilterOptions } = useTrioStore()
+const { resetCategoryAndGroupIndices, filterClearOptions } = useTrioStore()
 const { push } = useRouter()
 
 const filterStore = useFilterStore()
@@ -41,7 +41,6 @@ async function getCnt() {
 
 function clear() {
   console.log(`filter.clear()`)
-  resetCategoryAndGroupIndices()
-  clearFilterOptions()
+  filterClearOptions()
 }
 </script>

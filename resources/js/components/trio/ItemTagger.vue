@@ -48,8 +48,8 @@ import { useTrioStore } from '../../scripts/stores/trio/trio'
 const { routerPush } = useRoutesMainStore()
 const { selectorCategoryTabs, selectorGroupTabs, selectorOptions, selectorCategoryIndex, selectorGroupIndex } =
   storeToRefs(useTrioStore())
-const { resetCategoryAndGroupIndices, optionClicked, taggerClearOptions, taggerSetDefaultOptions, taggerCopyItemOptionsToTagger } = useTrioStore()
-const { sync } = useTaggerStore()
+const { resetCategoryAndGroupIndices, optionClicked, taggerClearOptions } = useTrioStore()
+const { sync, taggerCopyItemOptionsToTagger, taggerSetDefaultOptions } = useTaggerStore()
 const { showSpinner, showSnackbar } = useNotificationsStore()
 
 const header = computed(() => {
@@ -102,7 +102,6 @@ async function submit() {
   showSpinner(false)
 
   if (res.success) {
-    resetCategoryAndGroupIndices()
     taggerClearOptions()
     await routerPush('back1')
   } else {
@@ -112,7 +111,6 @@ async function submit() {
 
 async function cancel() {
   console.log(`cancelClicked`)
-  resetCategoryAndGroupIndices()
   taggerClearOptions()
   await routerPush('back1')
 }

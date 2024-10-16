@@ -254,7 +254,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
 
   async function moveToRelatedItem(module: TModule, id: string) {
     const { setIndexByElement, getElement } = useElementAndCollectionStore()
-    const { clearFilterOptions } = useTrioStore()
+    const { filterClearOptions } = useTrioStore()
     const { tagAndSlugFromId } = useModuleStore()
 
     const tas = tagAndSlugFromId(id, module)
@@ -271,7 +271,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
       console.log(
         `moveToRelated "${module} ${tas.slug}" - NOT in collection: Filters cleared and result set reloaded`,
       )
-      clearFilterOptions()
+      filterClearOptions()
       await routerPush('show', tas.slug, module, false)
       showSnackbar(`Filters removed and result set reloaded`)
     }

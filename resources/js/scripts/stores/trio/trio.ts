@@ -50,7 +50,7 @@ export const useTrioStore = defineStore('trio', () => {
 
   function clearTrio() {
     console.log(`clearTrio()`)
-    clearFilterOptions()
+    filterClearOptions()
     taggerClearOptions()
     itemAllOptionKeys.value = []
     resetCategoryAndGroupIndices()
@@ -216,7 +216,7 @@ export const useTrioStore = defineStore('trio', () => {
   // Visible groupKeys depend on selectorCategoryIndex and can be either filter or tag.
   const visibleGroupKeys = computed(() => {
     const categoryGroupKeys =
-      trio.value.categories[visibleCatIndices.value[selectorCategoryIndex.value]!]!.groupKeys
+      trio.value.categories[visibleCatIndices.value[selectorCategoryIndex.value]!]?.groupKeys ?? []
     return categoryGroupKeys.filter((x) => {
       return availableGroupKeys.value[indicesSourceIsTagger.value ? 'Tagger' : 'Filter'].includes(x)
     })
@@ -227,13 +227,15 @@ export const useTrioStore = defineStore('trio', () => {
   })
 
   const selectorOptions = computed(() => {
-    return currentGroup.value?.optionKeys.map((x) => {
-      return {
-        ...trio.value.optionsObj[x],
-        selected: selectedOptionKeysByRoute.value.includes(x),
-        key: x,
-      }
-    })
+    return currentGroup.value === undefined
+      ? []
+      : currentGroup.value.optionKeys.map((x) => {
+          return {
+            ...trio.value.optionsObj[x],
+            selected: selectedOptionKeysByRoute.value.includes(x),
+            key: x,
+          }
+        })
   })
 
   function displayedSelected(source: TrioSourceName, selected: string[]) {
@@ -524,8 +526,9 @@ export const useTrioStore = defineStore('trio', () => {
     })
   }
 
-  function clearFilterOptions() {
-    console.log(`trio.clearFilterOptions`)
+  function filterClearOptions() {
+    console.log(`trio.filterClearOptions`)
+    resetCategoryAndGroupIndices()
     SearchTextClear()
     orderByClear()
 
@@ -569,7 +572,7 @@ export const useTrioStore = defineStore('trio', () => {
       return
     }
 
-    // Clear only FieldSearch options' text. filterAllOptionKeys will be cleared by calling function clearFilterOptions()
+    // Clear only FieldSearch options' text. filterAllOptionKeys will be cleared by calling function filterClearOptions()
     for (const value of Object.values(groupLabelToGroupKeyObj.value)) {
       const group = trio.value.groupsObj[value]!
       if (group.code === 'FS') {
@@ -612,67 +615,6 @@ export const useTrioStore = defineStore('trio', () => {
   }
 
   // Tagger
-  function taggerCopyItemOptionsToTagger() {
-    const tmp = [...itemAllOptionKeys.value]
-    taggerAllOptionKeys.value = [
-      ...tmp.sort((a, b) => {
-        return a > b ? 1 : -1
-      }),
-    ]
-  }
-
-  function taggerSetDefaultOptions() {
-    const tmp: string[] = []
-    // add fields dependent options (except 'Categorized') with default group.optionKeys[0]
-    for (const x in itemFieldsToGroupKeyObj.value) {
-      const group = trio.value.groupsObj[itemFieldsToGroupKeyObj.value[x]!]!
-      if (group.code === 'FD' && (<TGroupField>group).tag_source !== 'Categorized') {
-        tmp.push(group.optionKeys[0]!)
-      }
-      console.log(`Add Field Tag: ${group.label} => "${x}`)
-    }
-    taggerAllOptionKeys.value = [
-      ...tmp.sort((a, b) => {
-        return a > b ? 1 : -1
-      }),
-    ]
-  }
-
-  function taggerConvertSelectedToApi() {
-    const optionsParams = {
-      global_tag_ids: <number[]>[],
-      module_tag_ids: <number[]>[],
-      fields: <{ field_name: string; val: TFieldValue }[]>[],
-    }
-
-    taggerAllOptionKeys.value.forEach((optionKey) => {
-      const group = <TGroupField>trio.value.groupsObj[trio.value.optionsObj[optionKey]!.groupKey]
-      switch (group.code) {
-        case 'TG':
-          optionsParams.global_tag_ids.push(<number>trio.value.optionsObj[optionKey]!.extra)
-          break
-
-        case 'TM':
-          optionsParams.module_tag_ids.push(<number>trio.value.optionsObj[optionKey]!.extra)
-          break
-
-        case 'FD':
-          {
-            if (group.tag_source !== 'Categorized') {
-              const option = trio.value.optionsObj[optionKey]!
-              optionsParams.fields.push({
-                field_name: group.field_name,
-                val: option.extra,
-              })
-            }
-          }
-          break
-      }
-    })
-    // console.log(`taggerConvertSelectedToApi: ${JSON.stringify(optionsParams, null, 2)}`)
-    return optionsParams
-  }
-
   function taggerClearOptions() {
     resetCategoryAndGroupIndices()
     taggerAllOptionKeys.value = []
@@ -708,14 +650,11 @@ export const useTrioStore = defineStore('trio', () => {
     orderByFieldNameAndLabel,
     orderByGroup,
     orderByClear,
-    clearFilterOptions,
+    filterClearOptions,
     SearchTextClear,
 
     // Tagger
-    // taggerAllOptionKeys,
-    taggerCopyItemOptionsToTagger,
-    taggerSetDefaultOptions,
-    taggerConvertSelectedToApi,
+    taggerAllOptionKeys,
     taggerClearOptions,
 
     // Trio setup and data structures

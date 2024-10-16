@@ -31,7 +31,7 @@ import { storeToRefs } from 'pinia'
 import { useAuthStore } from '../../../../scripts/stores/auth'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 import { useItemStore } from '../../../../scripts/stores/item'
-import { useTrioStore } from '../../../../scripts/stores/trio/trio'
+import { useTaggerStore } from '../../../../scripts/stores/trio/tagger'
 import { useCollectionMediaStore } from '../../../../scripts/stores/collections/collectionMedia'
 import { useNotificationsStore } from '../../../../scripts/stores/notifications'
 
@@ -42,7 +42,7 @@ const { permissions } = storeToRefs(useAuthStore())
 const { derived } = storeToRefs(useItemStore())
 const { itemRemove } = useItemStore()
 const { showSpinner, showSnackbar } = useNotificationsStore()
-const { taggerCopyItemOptionsToTagger } = useTrioStore()
+const { taggerCopyItemOptionsToTagger } = useTaggerStore()
 
 const module = computed(() => {
   return current.value.module
